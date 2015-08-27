@@ -1,0 +1,14 @@
+Package: protrazor
+Type: Package
+Title: Minimal Protein set Explaining Peptides
+Version: 0.1
+Date: 2015-08-27
+Author: Witold Wolski
+Maintainer: Witold Wolski <wewolski@gmail.com>
+Description: Determine minimal Protein set given list of peptide protein mappings and various weighting functions
+License:  GPL-3
+LazyData: TRUE
+Imports: scales, gplots, RColorBrewer
+URL: https://github.com/wolski/protrazor
+BugReports: https://github.com/wolski/protrazor/issues
+Repository: CRAN
