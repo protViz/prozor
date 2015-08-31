@@ -2,7 +2,6 @@
 #' @param data  column 1 proteins, column 2 peptides
 #' @value sparse matrix
 #' @export
-
 prepareMatrix <- function(data){
     fprots = as.factor(data[,"prots"])
     prots = as.integer(fprots)
