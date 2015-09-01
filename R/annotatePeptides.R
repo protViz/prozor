@@ -68,7 +68,6 @@ annotatePeptides <- function(pepinfo,
     restab <<- restab
     pepinfo <<- pepinfo
     res = merge(restab,pepinfo,by.x="peptideSequence",by.y="peptideSequence")
-
     return(res)
 }
 
