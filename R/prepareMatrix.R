@@ -8,12 +8,7 @@ prepareMatrix <- function(data){
     fpeps = as.factor(data[,"peps"])
     peps = as.integer(fpeps)
 
-
-    pepProt =sparseMatrix(peps, prots,x = 1 )
-    dim(pepProt)
-
-    sum(duplicated(levels(fpeps)))
-    sum(duplicated(levels(fprots)))
+    pepProt =sparseMatrix(peps , prots,x = 1 )
 
     colnames(pepProt) <- levels(fprots)
     rownames(pepProt) <- levels(fpeps)
