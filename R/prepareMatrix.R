@@ -22,11 +22,3 @@ prepareMatrix <- function(data, weight = c("count", "AA", "coverage")){
     return(pepProt)
 }
 
-tmp = .makePeptideID(res)
-
-peprot <- res
-
-tmp = peprot[,c("peptideModSequence","z")]
-head(tmp)
-paste(tmp[1:10,])
-tmp[1:10,]
