@@ -1,14 +1,28 @@
+.removeZeroRows <-function(x){
+    tmp <- rowSums(x)
+    cat("sum" , sum(tmp == 0) )
+    y = x[tmp > 0,, drop=FALSE ]
+    return(y)
+}
+
 #' Given matrix
+#' @
+#' @export
+#' @examples
+#' library(prozor)
 #'
-#'
+#' data(prottabmeta)
+#' xx = prepareMatrix(prottabmeta, weight= "count")
+#' dim(xx)
+#' es = occam(as.matrix(xx))
+#' pepprot<-xx
 occam <- function(pepprot, ncolX = ncol(pepprot)){
     res<-vector(ncolX , mode="list")
     idxx <-NULL
     for(i in 1:ncolX)
     {
-
         if(i %% 10 == 0){
-            pepprot <- removeZeroRows(pepprot)
+            pepprot <- prozor:::.removeZeroRows(pepprot)
             drumm <<-pepprot
             idxxx <<- idxx
             cat("length(idxx)" , length(idxx), "\n")
@@ -32,9 +46,7 @@ occam <- function(pepprot, ncolX = ncol(pepprot)){
         cat(i, " ", idx, " ", sum(dele), "\n")
         if(sum(dele) > 0){
             set = cbind(rep(dele > 0, ncol(pepprot)))
-            #for(j in 1:ncol(pepprot)){
             pepprot[set] <- 0
-            #}
         }
         newtime <- Sys.time()
         cat("time ",newtime - oldtime, "\n")

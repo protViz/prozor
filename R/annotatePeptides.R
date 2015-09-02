@@ -20,7 +20,7 @@
         mcCores <- min(6,parallel::detectCores(logical=FALSE))
         message(paste("going to use : " , mcCores ," cores."))
         registerDoParallel(mcCores)
-        res <- foreach(i=data ) %dopar% protrazor:::.annotateProteinIDGrep(i, fasta, digestPattern)
+        res <- foreach(i=data ) %dopar% prozor:::.annotateProteinIDGrep(i, fasta, digestPattern)
         stopImplicitCluster()
     }else{
         res <- lapply(data, .annotateProteinIDGrep, fasta, digestPattern)
@@ -38,15 +38,17 @@
 #' @param digestPatter - default "(([RK])|(^)|(^M))"
 #' @export
 #' @examples
+#' library(prozor)
 #' library(doParallel)
 #' library(foreach)
+#' library(seqinr)
 #' data(pepprot)
 #' head(pepprot)
-#' file = file.path(path.package("protrazor"),"extdata/fgcz_10090_20140715.fasta" )
+#' file = file.path(path.package("prozor"),"extdata/fgcz_10090_20140715.fasta" )
 #' fasta = read.fasta(file = file, as.string = TRUE, seqtype="AA")
 #' res = annotatePeptides(pepprot, fasta)
-#' head(res2)
-#'
+#' head(res)
+#' write.table(res, file="data/prottabmeta.tab")
 annotatePeptides <- function(pepinfo,
                                 fasta,
                                 digestPattern = "(([RK])|(^)|(^M))"
@@ -56,7 +58,7 @@ annotatePeptides <- function(pepinfo,
     pepinfo = cbind(pepinfo,"lengthPeptide"=lengthPeptide)
 
     pepseq  = unique(as.character(pepinfo[,"peptideSequence"]))
-    res = protrazor:::.getMatchingProteinIDX(pepseq, fasta,digestPattern)
+    res = prozor:::.getMatchingProteinIDX(pepseq, fasta,digestPattern)
     lengthFasta  = sapply(fasta,nchar)
     namesFasta = names(fasta)
     protLength = vector(length(res),mode="list")
@@ -64,7 +66,7 @@ annotatePeptides <- function(pepinfo,
         protLength[[i]] =rbind("lengthProtein"=lengthFasta[res[[i]]],"proteinID"=namesFasta[res[[i]]],"peptideSequence"=names(res)[i])
     }
     restab = matrix(unlist(protLength),ncol=3,byrow=TRUE)
-    colnames(restab) = c("lengthProtein","proteinSequence","peptideSequence")
+    colnames(restab) = c("lengthProtein","proteinID","peptideSequence")
     restab <<- restab
     pepinfo <<- pepinfo
     res = merge(restab,pepinfo,by.x="peptideSequence",by.y="peptideSequence")

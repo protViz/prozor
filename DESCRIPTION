@@ -1,4 +1,4 @@
-Package: protrazor
+Package: prozor
 Type: Package
 Title: Minimal Protein set Explaining Peptides/Sequences
 Version: 0.1
@@ -9,6 +9,6 @@ Description: Determine minimal Protein set given list of peptide protein mapping
 License:  GPL-3
 LazyData: TRUE
 Imports: Matrix, seqinr
-URL: https://github.com/wolski/protrazor
-BugReports: https://github.com/wolski/protrazor/issues
+URL: https://github.com/wolski/prozor
+BugReports: https://github.com/wolski/prozor/issues
 Repository: CRAN

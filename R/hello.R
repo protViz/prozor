@@ -1,4 +1,4 @@
 #'Minimal Protein set Explaining Peptides
-#'@name protrazor
+#'@name prozor
 #'@docType package
 #'@import Matrix, doParallel, foreach
