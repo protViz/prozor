@@ -1,14 +1,14 @@
 Package: prozor
 Type: Package
-Title: Minimal Protein set Explaining Peptides/Sequences
+Title: Minimal Protein Set explaining Peptide Precursors
 Version: 0.1
 Date: 2015-08-27
 Author: Witold Wolski
 Maintainer: Witold Wolski <wewolski@gmail.com>
-Description: Determine minimal Protein set given list of peptide protein mappings.
+Description: Determine minimal Protein set explaining peptide precursors.
 License:  GPL-3
 LazyData: TRUE
-Imports: Matrix, seqinr
+Imports: Matrix, doParallel, foreach, seqinr
 URL: https://github.com/wolski/prozor
 BugReports: https://github.com/wolski/prozor/issues
 Repository: CRAN

@@ -4,32 +4,31 @@
     y = x[tmp > 0,, drop=FALSE ]
     return(y)
 }
-
-#' Given matrix
-#' @
+#' given matrix
+#' @param pepprot matrix as returned by prepareMatrix
 #' @export
 #' @examples
 #' library(prozor)
 #'
-#' data(prottabmeta)
-#' xx = prepareMatrix(prottabmeta, weight= "count")
+#' data(protpepmeta)
+#' xx = prepareMatrix(protpepmeta, weight= "count")
 #' dim(xx)
 #' es = occam(as.matrix(xx))
-#' pepprot<-xx
-occam <- function(pepprot, ncolX = ncol(pepprot)){
+occam <- function(pepprot ){
+    ncolX = ncol(pepprot)
     res<-vector(ncolX , mode="list")
     idxx <-NULL
     for(i in 1:ncolX)
     {
         if(i %% 10 == 0){
-            pepprot <- prozor:::.removeZeroRows(pepprot)
-            drumm <<-pepprot
-            idxxx <<- idxx
-            cat("length(idxx)" , length(idxx), "\n")
+            pepprot <- .removeZeroRows(pepprot)
+            #drumm <<-pepprot
+            #idxxx <<- idxx
+            message(paste("length(idxx)" , length(idxx),sep= " "))
             pepprot <- pepprot[,-idxx,drop=FALSE]
 
             idxx <-NULL
-            cat("new dim" , dim(pepprot), "\n")
+            message(paste("new dim" , dim(pepprot)))
         }
         if(nrow(pepprot) == 0)
             break()
@@ -43,13 +42,13 @@ occam <- function(pepprot, ncolX = ncol(pepprot)){
         dele <- pepprot[,idx]
         tmpRes = list(prot = colnames(pepprot)[idx], peps = rownames(pepprot)[dele>0])
         res[[i]] <- tmpRes
-        cat(i, " ", idx, " ", sum(dele), "\n")
+        message(paste(i, " ", idx, " ", sum(dele)))
         if(sum(dele) > 0){
             set = cbind(rep(dele > 0, ncol(pepprot)))
             pepprot[set] <- 0
         }
         newtime <- Sys.time()
-        cat("time ",newtime - oldtime, "\n")
+        message(paste("time ",newtime - oldtime))
 
     }
     return(list(res = res))

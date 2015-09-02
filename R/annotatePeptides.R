@@ -20,7 +20,7 @@
         mcCores <- min(6,parallel::detectCores(logical=FALSE))
         message(paste("going to use : " , mcCores ," cores."))
         registerDoParallel(mcCores)
-        res <- foreach(i=data ) %dopar% prozor:::.annotateProteinIDGrep(i, fasta, digestPattern)
+        res <- foreach(i = data ) %dopar% .annotateProteinIDGrep(i, fasta, digestPattern)
         stopImplicitCluster()
     }else{
         res <- lapply(data, .annotateProteinIDGrep, fasta, digestPattern)
@@ -33,22 +33,22 @@
 
 
 #' annotate peptides with protein ids
-#' @param data - list of peptides - sequence, optional modified sequence, charge state.
+#' @param pepinfo - list of peptides - sequence, optional modified sequence, charge state.
 #' @param fasta - object as created by read.fasta in pacakge seqinr
-#' @param digestPatter - default "(([RK])|(^)|(^M))"
+#' @param digestPattern - default "(([RK])|(^)|(^M))"
 #' @export
 #' @examples
 #' library(prozor)
 #' library(doParallel)
 #' library(foreach)
 #' library(seqinr)
-#' data(pepprot)
-#' head(pepprot)
+#' data(pepdata)
+#' head(pepdata)
 #' file = file.path(path.package("prozor"),"extdata/fgcz_10090_20140715.fasta" )
 #' fasta = read.fasta(file = file, as.string = TRUE, seqtype="AA")
-#' res = annotatePeptides(pepprot, fasta)
+#' res = annotatePeptides(pepdata, fasta)
 #' head(res)
-#' write.table(res, file="data/prottabmeta.tab")
+#'
 annotatePeptides <- function(pepinfo,
                                 fasta,
                                 digestPattern = "(([RK])|(^)|(^M))"
@@ -58,7 +58,7 @@ annotatePeptides <- function(pepinfo,
     pepinfo = cbind(pepinfo,"lengthPeptide"=lengthPeptide)
 
     pepseq  = unique(as.character(pepinfo[,"peptideSequence"]))
-    res = prozor:::.getMatchingProteinIDX(pepseq, fasta,digestPattern)
+    res = .getMatchingProteinIDX(pepseq, fasta,digestPattern)
     lengthFasta  = sapply(fasta,nchar)
     namesFasta = names(fasta)
     protLength = vector(length(res),mode="list")
