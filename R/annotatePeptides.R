@@ -13,11 +13,13 @@
 
 .getMatchingProteinIDX <- function(data,
                                    fasta,
-                                   digestPattern = "(([RK])|(^)|(^M))"
+                                   digestPattern = "(([RK])|(^)|(^M))",mcCores=NULL
 ){
     timeStart <- Sys.time();
     if( length(data) > 200 & parallel::detectCores(logical=FALSE) > 1){
-        mcCores <- min(6,parallel::detectCores(logical=FALSE))
+        if(is.null(mcCores)){
+            mcCores <- min(6,parallel::detectCores(logical=FALSE))
+        }
         message(paste("going to use : " , mcCores ," cores."))
         registerDoParallel(mcCores)
         res <- foreach(i = data ) %dopar% .annotateProteinIDGrep(i, fasta, digestPattern)
@@ -36,6 +38,7 @@
 #' @param pepinfo - list of peptides - sequence, optional modified sequence, charge state.
 #' @param fasta - object as created by read.fasta in pacakge seqinr
 #' @param digestPattern - default "(([RK])|(^)|(^M))"
+#' @param mcCores number of cores to use
 #' @export
 #' @examples
 #' library(prozor)
@@ -46,19 +49,20 @@
 #' head(pepdata)
 #' file = file.path(path.package("prozor"),"extdata/fgcz_10090_20140715.fasta" )
 #' fasta = read.fasta(file = file, as.string = TRUE, seqtype="AA")
-#' res = annotatePeptides(pepdata, fasta)
+#' res = annotatePeptides(pepdata[1:200,], fasta,mcCores=1)
 #' head(res)
+#' write.table(res, file="data/protpepmeta.tab")
 #'
 annotatePeptides <- function(pepinfo,
                                 fasta,
-                                digestPattern = "(([RK])|(^)|(^M))"
+                                digestPattern = "(([RK])|(^)|(^M))",mcCores=NULL
 ){
     pepinfo = apply(pepinfo,2,as.character)
     lengthPeptide = sapply(pepinfo[,"peptideSequence"],nchar)
     pepinfo = cbind(pepinfo,"lengthPeptide"=lengthPeptide)
 
     pepseq  = unique(as.character(pepinfo[,"peptideSequence"]))
-    res = .getMatchingProteinIDX(pepseq, fasta,digestPattern)
+    res = .getMatchingProteinIDX(pepseq, fasta,digestPattern,mcCores)
     lengthFasta  = sapply(fasta,nchar)
     namesFasta = names(fasta)
     protLength = vector(length(res),mode="list")

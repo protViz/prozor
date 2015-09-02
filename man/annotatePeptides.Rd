@@ -4,7 +4,8 @@
 \alias{annotatePeptides}
 \title{annotate peptides with protein ids}
 \usage{
-annotatePeptides(pepinfo, fasta, digestPattern = "(([RK])|(^)|(^M))")
+annotatePeptides(pepinfo, fasta, digestPattern = "(([RK])|(^)|(^M))",
+  mcCores = NULL)
 }
 \arguments{
 \item{pepinfo}{- list of peptides - sequence, optional modified sequence, charge state.}
@@ -12,6 +13,8 @@ annotatePeptides(pepinfo, fasta, digestPattern = "(([RK])|(^)|(^M))")
 \item{fasta}{- object as created by read.fasta in pacakge seqinr}
 
 \item{digestPattern}{- default "(([RK])|(^)|(^M))"}
+
+\item{mcCores}{number of cores to use}
 }
 \description{
 annotate peptides with protein ids
@@ -25,7 +28,7 @@ data(pepdata)
 head(pepdata)
 file = file.path(path.package("prozor"),"extdata/fgcz_10090_20140715.fasta" )
 fasta = read.fasta(file = file, as.string = TRUE, seqtype="AA")
-res = annotatePeptides(pepdata, fasta)
+res = annotatePeptides(pepdata, fasta,mcCores=1)
 head(res)
 }
 
