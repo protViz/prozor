@@ -51,7 +51,7 @@
 #' fasta = read.fasta(file = file, as.string = TRUE, seqtype="AA")
 #' # we use a subset of the data to speedup the computation
 #' #res = annotatePeptides(pepdata, fasta)
-#' res = annotatePeptides(pepdata[1:200,], fasta,mcCores=1)
+#' res = annotatePeptides(pepdata[1:20,], fasta,mcCores=1)
 #' head(res)
 #'
 annotatePeptides <- function(pepinfo,

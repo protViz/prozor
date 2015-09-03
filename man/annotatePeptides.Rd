@@ -28,7 +28,9 @@ data(pepdata)
 head(pepdata)
 file = file.path(path.package("prozor"),"extdata/fgcz_10090_20140715.fasta" )
 fasta = read.fasta(file = file, as.string = TRUE, seqtype="AA")
-res = annotatePeptides(pepdata, fasta,mcCores=1)
+# we use a subset of the data to speedup the computation
+#res = annotatePeptides(pepdata, fasta)
+res = annotatePeptides(pepdata[1:20,], fasta,mcCores=1)
 head(res)
 }
 
