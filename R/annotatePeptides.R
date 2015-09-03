@@ -47,13 +47,15 @@
 #' library(seqinr)
 #' data(pepdata)
 #' head(pepdata)
-#' file = file.path(path.package("prozor"),"extdata/fgcz_10090_20140715.fasta" )
+#'
+#' file = file.path(path.package("prozor"),"extdata/shortfasta.fasta" )
 #' fasta = read.fasta(file = file, as.string = TRUE, seqtype="AA")
 #' # we use a subset of the data to speedup the computation
 #' #res = annotatePeptides(pepdata, fasta)
 #' res = annotatePeptides(pepdata[1:20,], fasta,mcCores=1)
 #' head(res)
 #'
+
 annotatePeptides <- function(pepinfo,
                                 fasta,
                                 digestPattern = "(([RK])|(^)|(^M))",mcCores=NULL
