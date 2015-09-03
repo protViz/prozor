@@ -9,13 +9,13 @@
 #' @return sparse matrix
 #' @export
 #' @examples
-#' data(protpepmeta)
+#' data(protpepmetashort)
 #' library(Matrix)
-#' colnames(protpepmeta)
-#' dim(protpepmeta)
-#' xx = prepareMatrix(protpepmeta, weight= "count")
-#' #xx = prepareMatrix(protpepmeta, weight = "AA")
-#' #xx = prepareMatrix(protpepmeta, weight = "coverage")
+#' colnames(protpepmetashort)
+#' dim(protpepmetashort)
+#' xx = prepareMatrix(protpepmetashort, weight= "count")
+#' #xx = prepareMatrix(protpepmetashort, weight = "AA")
+#' #xx = prepareMatrix(protpepmetashort, weight = "coverage")
 #' image(as.matrix(xx[1:300,1:300]))
 #' tmp = cor(as.matrix(xx))
 #' par(mfrow =c(2,1))

@@ -16,7 +16,7 @@
                                    digestPattern = "(([RK])|(^)|(^M))",mcCores=NULL
 ){
     timeStart <- Sys.time();
-    if( length(data) > 200 & parallel::detectCores(logical=FALSE) > 1){
+    if( length(data) > 100 & parallel::detectCores(logical=FALSE) > 1){
         if(is.null(mcCores)){
             mcCores <- min(6,parallel::detectCores(logical=FALSE))
         }
@@ -49,9 +49,10 @@
 #' head(pepdata)
 #' file = file.path(path.package("prozor"),"extdata/fgcz_10090_20140715.fasta" )
 #' fasta = read.fasta(file = file, as.string = TRUE, seqtype="AA")
+#' # we use a subset of the data to speedup the computation
+#' #res = annotatePeptides(pepdata, fasta)
 #' res = annotatePeptides(pepdata[1:200,], fasta,mcCores=1)
 #' head(res)
-#' write.table(res, file="data/protpepmeta.tab")
 #'
 annotatePeptides <- function(pepinfo,
                                 fasta,

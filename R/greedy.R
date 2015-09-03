@@ -10,8 +10,8 @@
 #' @examples
 #' library(prozor)
 #'
-#' data(protpepmeta)
-#' xx = prepareMatrix(protpepmeta, weight= "count")
+#' data(protpepmetashort)
+#' xx = prepareMatrix(protpepmetashort, weight= "count")
 #' dim(xx)
 #' es = occam(as.matrix(xx))
 occam <- function(pepprot ){
