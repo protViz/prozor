@@ -4,8 +4,9 @@
     y = x[tmp > 0,, drop=FALSE ]
     return(y)
 }
-#' given matrix
+#' given matrix (columns protein rows peptides), compute minimal protein set using greedy algorithm
 #' @param pepprot matrix as returned by prepareMatrix
+#' @return list of protein peptide assignemnts (where winner takes all)
 #' @export
 #' @examples
 #' library(prozor)
@@ -13,8 +14,8 @@
 #' data(protpepmetashort)
 #' xx = prepareMatrix(protpepmetashort, weight= "count")
 #' dim(xx)
-#' es = occam(as.matrix(xx))
-occam <- function(pepprot ){
+#' es = greedy(as.matrix(xx))
+greedy <- function( pepprot ){
     ncolX = ncol(pepprot)
     res<-vector(ncolX , mode="list")
     idxx <-NULL
@@ -51,5 +52,5 @@ occam <- function(pepprot ){
         message(paste("time ",newtime - oldtime))
 
     }
-    return(list(res = res))
+    return(res)
 }

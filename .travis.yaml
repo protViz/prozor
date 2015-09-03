@@ -1,0 +1,10 @@
+language: r
+sudo: required
+
+r_packages:
+  - seqinr
+  - Matrix
+  - doParallel
+  - foreach
+
+warnings_are_errors: true

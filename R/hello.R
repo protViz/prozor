@@ -15,5 +15,11 @@ NULL
 #' @docType data
 #' @keywords data
 NULL
+#' Small version of prot meta dataset to speed up computation
+#'
+#' @name protpepmetashort
+#' @docType data
+#' @keywords data
+NULL
 
 utils::globalVariables(c("i"), add = TRUE)
