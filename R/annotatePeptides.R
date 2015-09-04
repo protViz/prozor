@@ -13,13 +13,14 @@
 
 .getMatchingProteinIDX <- function(data,
                                    fasta,
-                                   digestPattern = "(([RK])|(^)|(^M))",mcCores=NULL
+                                   digestPattern = "(([RK])|(^)|(^M))",
+                                   mcCores=NULL
 ){
     timeStart <- Sys.time();
-    if( length(data) > 100 & parallel::detectCores(logical=FALSE) > 1){
-        if(is.null(mcCores)){
-            mcCores <- min(6,parallel::detectCores(logical=FALSE))
-        }
+    if(is.null(mcCores)){
+        mcCores <- min(6,parallel::detectCores(logical=FALSE))
+    }
+    if( length(data) > 100 & mcCores > 1){
         message(paste("going to use : " , mcCores ," cores."))
         registerDoParallel(mcCores)
         res <- foreach(i = data ) %dopar% .annotateProteinIDGrep(i, fasta, digestPattern)
