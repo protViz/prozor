@@ -14,6 +14,7 @@
 #' xx = prepareMatrix(protpepmetashort, weight= "count")
 #' dim(xx)
 #' es = greedy(as.matrix(xx))
+#'
 greedy <- function( pepprot ){
     ncolX = ncol(pepprot)
     res<-vector(ncolX , mode="list")
@@ -40,7 +41,7 @@ greedy <- function( pepprot ){
         }
         idxx <- c(idxx, idx )
         dele <- pepprot[,idx]
-        tmpRes = list(prot = colnames(pepprot)[idx], peps = rownames(pepprot)[dele>0])
+        tmpRes = list(prot = colnames(pepprot)[idx], peps = rownames(pepprot)[dele > 0])
         res[[i]] <- tmpRes
         message(paste(i, " ", idx, " ", sum(dele)))
         if(sum(dele) > 0){
