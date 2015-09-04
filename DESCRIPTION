@@ -1,7 +1,7 @@
 Package: prozor
 Type: Package
 Title: Minimal Protein Set Explaining Peptide Precursors
-Version: 0.1
+Version: 0.1.1
 Date: 2015-08-27
 Author: Witold Wolski
 Maintainer: Witold Wolski <wewolski@gmail.com>
