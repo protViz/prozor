@@ -53,13 +53,17 @@
 #' # we use a subset of the data to speedup the computation
 #' #res = annotatePeptides(pepdata, fasta)
 #' res = annotatePeptides(pepdata[1:20,], fasta,mcCores=1)
+#' res = annotatePeptides(pepdata[1:20,"peptideSequence"],fasta)
 #' head(res)
 #'
-
 annotatePeptides <- function(pepinfo,
                                 fasta,
                                 digestPattern = "(([RK])|(^)|(^M))",mcCores=NULL
 ){
+    if(is.null(dim(pepinfo))){
+        pepinfo = matrix(pepinfo,ncol=1)
+        colnames(pepinfo) = "peptideSequence"
+    }
     pepinfo = apply(pepinfo,2,as.character)
     lengthPeptide = sapply(pepinfo[,"peptideSequence"],nchar)
     pepinfo = cbind(pepinfo,"lengthPeptide"=lengthPeptide)
@@ -72,6 +76,10 @@ annotatePeptides <- function(pepinfo,
     for(i in 1:length(res)){
         protLength[[i]] =rbind("lengthProtein"=lengthFasta[res[[i]]],"proteinID"=namesFasta[res[[i]]],"peptideSequence"=names(res)[i])
     }
+    protLength <<- protLength
+    checkdim <- sapply(protLength, function(x){dim(x)[1]})
+    protLength <- protLength[-which(checkdim == 1)]
+
     restab = matrix(unlist(protLength),ncol=3,byrow=TRUE)
     colnames(restab) = c("lengthProtein","proteinID","peptideSequence")
     restab <<- restab
