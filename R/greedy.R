@@ -11,10 +11,16 @@
 #' library(prozor)
 #'
 #' data(protpepmetashort)
+#' head(protpepmetashort)
+#' dim(unique(protpepmetashort[,4:5]))
 #' xx = prepareMatrix(protpepmetashort, weight= "count")
 #' dim(xx)
+#' stopifnot(dim(xx)[1] == dim(unique(protpepmetashort[,4:5]))[1])
 #' es = greedy(as.matrix(xx))
+#' xx = lapply(es,function(x){x$peps})
+#' stopifnot(length(unlist(xx)) == dim(unique(protpepmetashort[,4:5]))[1])
 #'
+
 greedy <- function( pepprot ){
     ncolX = ncol(pepprot)
     res<-vector(ncolX , mode="list")
