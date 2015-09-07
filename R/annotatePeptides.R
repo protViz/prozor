@@ -36,6 +36,8 @@
 
 
 #' annotate peptides with protein ids
+#'
+#' peptides which do not have protein assignment drop out
 #' @param pepinfo - list of peptides - sequence, optional modified sequence, charge state.
 #' @param fasta - object as created by read.fasta in pacakge seqinr
 #' @param digestPattern - default "(([RK])|(^)|(^M))"
@@ -85,11 +87,16 @@ annotatePeptides <- function(pepinfo,
     if( length(which2remove) > 0 ){
         protLength <- protLength[-which2remove]
     }
+    #protLength <<- protLength
     restab = matrix(unlist(protLength),ncol=3,byrow=TRUE)
     colnames(restab) = c("lengthProtein","proteinID","peptideSequence")
+    #restab <<- restab
+    #pepinfo <<- pepinfo
     res = merge(restab,pepinfo,by.x="peptideSequence",by.y="peptideSequence")
     res[,"peptideSequence"] <- as.character( res[,"peptideSequence"])
     res[,"proteinID"]<- as.character(res[,"proteinID"])
+
+
     return(res)
 }
 

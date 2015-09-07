@@ -17,7 +17,7 @@ annotatePeptides(pepinfo, fasta, digestPattern = "(([RK])|(^)|(^M))",
 \item{mcCores}{number of cores to use}
 }
 \description{
-annotate peptides with protein ids
+peptides which do not have protein assignment drop out
 }
 \examples{
 library(prozor)
@@ -32,6 +32,8 @@ fasta = read.fasta(file = file, as.string = TRUE, seqtype="AA")
 # we use a subset of the data to speedup the computation
 #res = annotatePeptides(pepdata, fasta)
 res = annotatePeptides(pepdata[1:20,], fasta,mcCores=1)
-head(res)
+
+
+res = annotatePeptides(pepdata[1:20,"peptideSequence"],fasta)
 }
 

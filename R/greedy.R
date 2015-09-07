@@ -3,25 +3,7 @@
     y = x[tmp > 0,, drop=FALSE ]
     return(y)
 }
-#' given matrix (columns protein rows peptides), compute minimal protein set using greedy algorithm
-#' @param pepprot matrix as returned by prepareMatrix
-#' @return list of protein peptide assignemnts (where winner takes all)
-#' @export
-#' @examples
-#' library(prozor)
-#'
-#' data(protpepmetashort)
-#' head(protpepmetashort)
-#' dim(unique(protpepmetashort[,4:5]))
-#' xx = prepareMatrix(protpepmetashort, weight= "count")
-#' dim(xx)
-#' stopifnot(dim(xx)[1] == dim(unique(protpepmetashort[,4:5]))[1])
-#' es = greedy(as.matrix(xx))
-#' xx = lapply(es,function(x){x$peps})
-#' stopifnot(length(unlist(xx)) == dim(unique(protpepmetashort[,4:5]))[1])
-#'
-
-greedy <- function( pepprot ){
+.greedy <- function( pepprot ){
     ncolX = ncol(pepprot)
     res<-vector(ncolX , mode="list")
     idxx <-NULL
@@ -34,12 +16,12 @@ greedy <- function( pepprot ){
             message(paste("new dim" , dim(pepprot)))
         }
         if(nrow(pepprot) == 0){
-            return(res[1:i])
+            return(res[1:(i-1)])
         }
         oldtime <- Sys.time()
         pepsPerProt <- colSums(pepprot)
         if(max(pepsPerProt) == 0){
-            return(res[1:i])
+            return(res[1:(i-1)])
         }
         idx <- which.max(pepsPerProt)
         if(length(idx) > 1){
@@ -59,3 +41,29 @@ greedy <- function( pepprot ){
     }
     return(res)
 }
+#' given matrix (columns protein rows peptides), compute minimal protein set using greedy algorithm
+#' @param pepprot matrix as returned by prepareMatrix
+#' @return list of peptide protein assignment
+#' @export
+#' @examples
+#' library(prozor)
+#'
+#' data(protpepmetashort)
+#' head(protpepmetashort)
+#' dim(unique(protpepmetashort[,4:5]))
+#' xx = prepareMatrix(protpepmetashort, weight= "count")
+#' dim(xx)
+#' stopifnot(dim(xx)[1] == dim(unique(protpepmetashort[,4:5]))[1])
+#' es = greedy(as.matrix(xx))
+#' stopifnot(length(unique(names(es))) == dim(unique(protpepmetashort[,4:5]))[1])
+#'
+greedy <- function( pepprot ){
+    protPepAssingments <- .greedy(pepprot)
+    matrixlist <- lapply(protPepAssingments,function(x){ t(cbind(x$peps, rep(x$prot,length(x$peps)))) })
+    res = matrix(unlist(matrixlist), ncol=2, byrow = TRUE)
+    ltmp = as.list(res[,2])
+    names(ltmp) <- res[,1]
+    return(ltmp)
+}
+
+

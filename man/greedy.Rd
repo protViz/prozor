@@ -10,7 +10,7 @@ greedy(pepprot)
 \item{pepprot}{matrix as returned by prepareMatrix}
 }
 \value{
-list of protein peptide assignemnts (where winner takes all)
+list of peptide protein assignment
 }
 \description{
 given matrix (columns protein rows peptides), compute minimal protein set using greedy algorithm
@@ -19,8 +19,12 @@ given matrix (columns protein rows peptides), compute minimal protein set using 
 library(prozor)
 
 data(protpepmetashort)
+head(protpepmetashort)
+dim(unique(protpepmetashort[,4:5]))
 xx = prepareMatrix(protpepmetashort, weight= "count")
 dim(xx)
+stopifnot(dim(xx)[1] == dim(unique(protpepmetashort[,4:5]))[1])
 es = greedy(as.matrix(xx))
+stopifnot(length(unique(names(es))) == dim(unique(protpepmetashort[,4:5]))[1])
 }
 
