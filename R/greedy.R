@@ -3,6 +3,7 @@
     y = x[tmp > 0,, drop=FALSE ]
     return(y)
 }
+
 .greedy <- function( pepprot ){
     ncolX = ncol(pepprot)
     res<-vector(ncolX , mode="list")
@@ -31,7 +32,7 @@
         dele <- pepprot[,idx]
         tmpRes = list(prot = colnames(pepprot)[idx], peps = rownames(pepprot)[dele > 0])
         res[[i]] <- tmpRes
-        message(paste(i, " ", idx, " ", sum(dele)))
+        message(paste(i, " protein : ", colnames(pepprot)[idx], " matched by peptides: ", sum(dele)))
         if(sum(dele) > 0){
             set = cbind(rep(dele > 0, ncol(pepprot)))
             pepprot[set] <- 0
