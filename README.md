@@ -2,17 +2,16 @@
 [![Project Stats](https://www.ohloh.net/p/prozor/widgets/project_thin_badge.gif)](https://www.ohloh.net/p/prozor)
 
 # prozor
- Determine minimal Protein set given list of peptide protein mappings. Weights can be assigned to peptides or proteins 
- (inverse peptide frequencies) and various weighting functions can be assigned.
+ Determine minimal Protein set given list of peptide protein mappings. Various weights can be assigned to peptides (i.e. inverse peptide frequencies).
 
 ## How to install:
-for CRAN version
+For CRAN version (not the newest)
 
 ```r
 install.packages("prozor")
 ```
 
-for development version from github
+For development version from github
 
 ```r
 install.packages("devtools")
