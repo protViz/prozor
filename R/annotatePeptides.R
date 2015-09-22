@@ -76,22 +76,22 @@ annotatePeptides <- function(pepinfo,
 
     pepseq  = unique(as.character(pepinfo[,"peptideSequence"]))
     res = .getMatchingProteinIDX(pepseq, fasta,digestPattern,mcCores)
+
+
     lengthFasta  = sapply(fasta,nchar)
     namesFasta = names(fasta)
     protLength = vector(length(res),mode="list")
     for(i in 1:length(res)){
         protLength[[i]] =rbind("lengthProtein"=lengthFasta[res[[i]]],"proteinID"=namesFasta[res[[i]]],"peptideSequence"=names(res)[i])
     }
+
     checkdim <- sapply(protLength, function(x){dim(x)[1]})
     which2remove <- which(checkdim == 1)
     if( length(which2remove) > 0 ){
         protLength <- protLength[-which2remove]
     }
-    #protLength <<- protLength
     restab = matrix(unlist(protLength),ncol=3,byrow=TRUE)
     colnames(restab) = c("lengthProtein","proteinID","peptideSequence")
-    #restab <<- restab
-    #pepinfo <<- pepinfo
     res = merge(restab,pepinfo,by.x="peptideSequence",by.y="peptideSequence")
     res[,"peptideSequence"] <- as.character( res[,"peptideSequence"])
     res[,"proteinID"]<- as.character(res[,"proteinID"])
