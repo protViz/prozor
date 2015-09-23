@@ -1,4 +1,4 @@
-.makePeptideID <- function(peprot){
+.makePrecursorID <- function(peprot){
     tmp = peprot[,c("peptideModSequence","z")]
     tmp = apply(tmp,2,as.character)
     apply(tmp, 1, paste, collapse = '.')
@@ -17,7 +17,7 @@
 #' dim(protpepmetashort)
 #' count = prepareMatrix( protpepmetashort)
 #' inverse = prepareMatrix( protpepmetashort, weight = "inverse")
-#' #xx = prepareMatrix(protpepmetashort, weight = "AA")
+#' aa = prepareMatrix(protpepmetashort, weight = "AA")
 #' #xx = prepareMatrix(protpepmetashort, weight = "coverage")
 #' image( as.matrix(count) )
 #'
@@ -26,13 +26,13 @@
 #' image(corProt)
 #'
 #' #penalise peptides matching many proteins
-#' corProtn = cor( as.matrix(inverse) )
+#' corProtn = cor( as.matrix(aa) )
 #' image(corProtn)
 #'
-prepareMatrix <- function(data, weighting = "one" ){
-    fprots = as.factor(data[,"proteinID"])
-    prots = as.integer(fprots)
-    fpeps = as.factor(.makePeptideID(data))
+prepareMatrix <- function(data, weighting = "one" ) {
+    fprots = as.factor( data[,"proteinID"] )
+    prots = as.integer( fprots )
+    fpeps = as.factor( .makePrecursorID(data) )
     peps = as.integer(fpeps)
     if(weighting=="one"){
         pepProt =sparseMatrix(peps , prots, x = 1 )
