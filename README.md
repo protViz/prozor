@@ -16,7 +16,7 @@ For development version from github
 ```r
 install.packages("devtools")
 library(devtools)
-install_github("wolski/prozor")
+install_github("protviz/prozor")
 ```
 
 ### for developers
