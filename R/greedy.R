@@ -23,7 +23,6 @@
         }
         dele <- pepprot[,idx] > 0
         tmpRes = list(prot = colnames(pepprot)[idx], peps = rownames(pepprot)[dele])
-        #message(paste(i, " protein : ", colnames(pepprot)[idx], " matched by peptides: ", sum(dele)))
         pepprot <- pepprot[!dele,-idx,drop=FALSE]
         res[[i]] <- tmpRes
     }
@@ -61,7 +60,7 @@
         dele <- pepprot[,idx]
         tmpRes = list(prot = colnames(pepprot)[idx], peps = rownames(pepprot)[dele > 0])
         res[[i]] <- tmpRes
-        message(paste(i, " protein : ", colnames(pepprot)[idx], " matched by peptides: ", sum(dele)))
+        #message(paste(i, " protein : ", colnames(pepprot)[idx], " matched by peptides: ", sum(dele)))
         if(sum(dele) > 0){
             set = cbind(rep(dele > 0, ncol(pepprot)))
             pepprot[set] <- 0
