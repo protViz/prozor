@@ -95,4 +95,18 @@ greedy <- function( pepprot ){
     return(ltmp)
 }
 
+#' converts result of greedy function to a matrix with 3 columns - peptide - charge and protein
+#' @return matrix of peptide protein assignments
+#' @param res result of function prozor::greedy
+#' @export
+#'
+#'
+greedyRes2Matrix <- function(res){
+    res<-(cbind(names(res),unlist(res)))
+    res<-cbind(split2table(res[,1],split="\\."),res[,2])
+    colnames(res) <- c("Peptide", "z", "Protein")
+    res <- as.data.frame(res)
+    return(res)
+}
+
 
