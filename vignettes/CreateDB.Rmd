@@ -1,0 +1,106 @@
+---
+title: "Create Library Demo"
+author: "Witold Wolski"
+date: "29 September 2015"
+output: pdf_document
+---
+<!--
+%\VignetteEngine{knitr::rmarkdown}
+%\VignetteIndexEntry{Supplementary Materials}
+-->
+
+
+# Create decoy fasta
+
+Create fasta file with FGCZ contaminants and decoys.
+
+```{r}
+
+rm(list=ls())
+library(prozor)
+
+file = file.path(path.package("prozor"),"extdata/uniprot_taxonomy_Oryctolagus_cuniculus.fasta.gz")
+res <- createDecoyDB(c(file,file))
+
+```
+
+# Removing signal peptides
+
+
+## Homo sapiens
+
+```{r}
+
+library(prozor)
+hsfasta <- loadHomoSapiensFasta()
+hssignal <- loadHomoSapiensSignalPeptides()
+length(grep("SIGNAL",hssignal$Signal.peptide))/length(hssignal$Signal.peptide)*100
+
+
+noSigFasta <- removeSignalPeptide(hsfasta, hssignal)
+
+homoNoSigFile <-tempfile(pattern = "homo", tmpdir = tempdir(), fileext = "fasta")
+homoNoSigFile
+
+writeFasta(file = homoNoSigFile, noSigFasta)
+resDB <- createDecoyDB(homoNoSigFile)
+
+homoNoSigDecoyFile <-tempfile(pattern = "homo_d_", tmpdir = tempdir(), fileext = "fasta")
+
+writeFasta(file=homoNoSigDecoyFile,res )
+
+
+```
+
+
+## Mus Musculus
+
+```{r}
+library(prozor)
+library(seqinr)
+
+hsfasta <- loadMusMusculusFasta()
+
+annot <- "zz|uniprot_20160320|mus_musculus_10090_reviewed"
+dummy <-as.SeqFastaAA("CRAPCRAPCRAP", Annot=annot, name= annot)
+
+dbname <- tempfile(pattern = "mus_musculus", tmpdir = tempdir(), fileext = "fasta")
+
+writeFasta(file =dbname, c(dummy,hsfasta))
+resDB <- createDecoyDB(dbname)
+writeFasta(file= "p1687_withSignalPeptides_d_20160405.fasta" , resDB)
+
+```
+
+
+```{r}
+
+library(prozor)
+hsfasta <- loadMusMusculusFasta()
+hssignal <- loadMusMusculusSignalPeptides()
+
+
+head(hssignal)
+
+hssignal[grep("*GKN2_MOUSE*",hssignal$Entry.name),]
+
+length(grep("SIGNAL",hssignal$Signal.peptide))/length(hssignal$Signal.peptide)*100
+
+
+noSigFasta <- removeSignalPeptide(hsfasta, hssignal)
+
+hsfasta[5627]
+noSigFasta[5627]
+
+
+musNoSigFile <-tempfile(pattern = "mus_musculus_nosig", tmpdir = tempdir(), fileext = "fasta")
+
+
+writeFasta(file = musNoSigFile, noSigFasta)
+resDB <- createDecoyDB(musNoSigFile)
+
+writeFasta(file="p1687_noSignalPeptides_d_29032016.fasta",resDB )
+
+
+```
+
