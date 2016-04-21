@@ -104,3 +104,24 @@ writeFasta(file="p1687_noSignalPeptides_d_29032016.fasta",resDB )
 
 ```
 
+```{r}
+library(prozor)
+fasta <- readPeptideFasta("d:/projects/p2147/NCBI_txid3821_20160410.fasta")
+
+for(i in 1:length(fasta)){
+    attributes(fasta[[i]])$name <- gsub("gi\\|[0-9]*\\|gb","gb",attributes(fasta[[i]])$name)
+    attributes(fasta[[i]])$Annot <- gsub("gi\\|[0-9]*\\|gb","gb",attributes(fasta[[i]])$Annot)
+}
+
+writeFasta(file = "d:/projects/p2147/p2147_NCBI_txid3821_20160410.fasta", fasta )
+
+writeFasta(file="d:/projects/p2147/p2147_db1_20160421.fasta", fasta,loadContaminantsFasta())
+length(c(fasta,loadContaminantsFasta()))
+
+resDB <- createDecoyDB("d:/projects/p2147/p2147_NCBI_txid3821_20160410.fasta")
+length(resDB)
+
+writeFasta(resDB, file="d:/projects/p2147/p2147_db1_d_20160421.fasta")
+
+
+```
