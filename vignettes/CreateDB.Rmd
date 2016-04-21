@@ -92,7 +92,6 @@ noSigFasta <- removeSignalPeptide(hsfasta, hssignal)
 hsfasta[5627]
 noSigFasta[5627]
 
-
 musNoSigFile <-tempfile(pattern = "mus_musculus_nosig", tmpdir = tempdir(), fileext = "fasta")
 
 
@@ -103,6 +102,8 @@ writeFasta(file="p1687_noSignalPeptides_d_29032016.fasta",resDB )
 
 
 ```
+
+# Strange bean with id rename example
 
 ```{r}
 library(prozor)
