@@ -23,14 +23,17 @@ create db with decoys and contaminants
 file = file.path(path.package("prozor"),"extdata/uniprot_taxonomy_Oryctolagus_cuniculus.fasta.gz")
 cont <- loadContaminantsFasta()
 rabbit <-readPeptideFasta(file)
-tmp <- 2*(2*length(rabbit)+length(cont))
+tmp <- 2*(2*length(rabbit)+length(cont)) + 1
 
 res <- createDecoyDB(c(file,file))
+length(res)
+tmp
 stopifnot(length(res) == tmp)
+
 res <- createDecoyDB(c(file,file), revLab=NULL)
-stopifnot(length(res) == (2*length(rabbit)+length(cont)))
+stopifnot(length(res) == (2*length(rabbit)+length(cont) + 1))
 res <- createDecoyDB(c(file,file), revLab=NULL, useContaminants = FALSE)
-stopifnot(length(res) == 2*length(rabbit))
+stopifnot(length(res) == (2*length(rabbit) + 1) )
 
 }
 
