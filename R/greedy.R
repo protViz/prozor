@@ -65,7 +65,9 @@ greedy <- function( pepprot ){
 #'
 greedyRes2Matrix <- function(res){
     res<-(cbind(names(res),unlist(res)))
-    res<-cbind(split2table(res[,1],split="\\."),res[,2])
+    cnamessplit <- strsplit(as.character(res[,1]),split="\\.")
+    protnam<-do.call("rbind",cnamessplit)
+    res<-cbind(protnam,res[,2])
     colnames(res) <- c("Peptide", "z", "Protein")
     res <- as.data.frame(res)
     return(res)
