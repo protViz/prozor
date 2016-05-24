@@ -115,14 +115,27 @@ for(i in 1:length(fasta)){
 }
 
 writeFasta(file = "d:/projects/p2147/p2147_NCBI_txid3821_20160410.fasta", fasta )
-
 writeFasta(file="d:/projects/p2147/p2147_db1_20160421.fasta", fasta,loadContaminantsFasta())
 length(c(fasta,loadContaminantsFasta()))
-
 resDB <- createDecoyDB("d:/projects/p2147/p2147_NCBI_txid3821_20160410.fasta")
 length(resDB)
-
 writeFasta(resDB, file="d:/projects/p2147/p2147_db1_d_20160421.fasta")
 
+```
+
+
+# Read table
+
+
+```{r}
+library(prozor)
+
+resDB <- createDecoyDB("c:/temp/short_headers.all_concatenated.windows_linebreaks.fasta",annot = "zz|20160520PeterH|FromPeterHunziker")
+writeFasta(resDB, file="c:/temp/p65_8283_carniovorus_swiss_20160520.fasta")
+
+resDB <- createDecoyDB("c:/temp/Tryp_Leishmania_totalProt_nr_8521.fasta",annot = "zz|20160520PeterH|FromPeterHunziker")
+writeFasta(resDB, file="c:/temp/p65_8521_tryp_leish_totalprot_20160520.fasta")
 
 ```
+
+

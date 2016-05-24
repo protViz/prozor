@@ -3,6 +3,7 @@
 #' @param dbs a path to a fasta file or an array of files
 #' @param useContaminants add fgcz contaminants
 #' @param revLab label for reversed peptides (if NULL do not generate decoys)
+#' @param annot source of database
 #' @export
 #' @examples
 #' file = file.path(path.package("prozor"),"extdata/uniprot_taxonomy_Oryctolagus_cuniculus.fasta.gz")
@@ -18,17 +19,23 @@
 #' stopifnot(length(res) == 2*length(rabbit))
 #'
 
-createDecoyDB <- function(dbs , useContaminants = TRUE,  revLab= "REV_"){
-  dbsfasta <-NULL
-  if(useContaminants){
-    dbsfasta = loadContaminantsFasta()
-  }
-  for(db in dbs){
-    message( "reading db :" , db )
-    dbsfasta <- c(dbsfasta,readPeptideFasta(db) )
-  }
-  if(!is.null(revLab)){
-    dbsfasta <- c(dbsfasta,reverseSeq(dbsfasta ,revLab = revLab))
-  }
-  return(dbsfasta)
+createDecoyDB <- function(dbs ,
+                          useContaminants = TRUE,
+                          revLab= "REV_",
+                          annot="zz|sourceOf|database")
+{
+    dummy <-as.SeqFastaAA("CRAPCRAPCRAP", Annot=annot, name= annot)
+
+    dbsfasta <- dummy
+    if(useContaminants){
+        dbsfasta = c(dummy,loadContaminantsFasta())
+    }
+    for(db in dbs){
+        message( "reading db :" , db )
+        dbsfasta <- c(dbsfasta,readPeptideFasta(db) )
+    }
+    if(!is.null(revLab)){
+        dbsfasta <- c(dbsfasta,reverseSeq(dbsfasta ,revLab = revLab))
+    }
+    return(dbsfasta)
 }

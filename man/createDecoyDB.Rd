@@ -4,7 +4,8 @@
 \alias{createDecoyDB}
 \title{create db with decoys and contaminants}
 \usage{
-createDecoyDB(dbs, useContaminants = TRUE, revLab = "REV_")
+createDecoyDB(dbs, useContaminants = TRUE, revLab = "REV_",
+  annot = "zz|sourceOf|database")
 }
 \arguments{
 \item{dbs}{a path to a fasta file or an array of files}
@@ -12,6 +13,8 @@ createDecoyDB(dbs, useContaminants = TRUE, revLab = "REV_")
 \item{useContaminants}{add fgcz contaminants}
 
 \item{revLab}{label for reversed peptides (if NULL do not generate decoys)}
+
+\item{annot}{source of database}
 }
 \description{
 create db with decoys and contaminants
