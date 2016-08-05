@@ -21,7 +21,6 @@
 #' res <- createDecoyDB(c(file,file), revLab=NULL, useContaminants = FALSE)
 #' stopifnot(length(res) == (2*length(rabbit) + 1) )
 #'
-
 createDecoyDB <- function(dbs ,
                           useContaminants = TRUE,
                           revLab= "REV_",
@@ -40,5 +39,5 @@ createDecoyDB <- function(dbs ,
     if(!is.null(revLab)){
         dbsfasta <- c(dbsfasta,reverseSeq(dbsfasta ,revLab = revLab))
     }
-    return(c(dummy,dbsfasta))
+    return(c(list(dummy),dbsfasta))
 }

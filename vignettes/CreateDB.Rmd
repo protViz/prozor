@@ -136,6 +136,33 @@ writeFasta(resDB, file="c:/temp/p65_8283_carniovorus_swiss_20160520.fasta")
 resDB <- createDecoyDB("c:/temp/Tryp_Leishmania_totalProt_nr_8521.fasta",annot = "zz|20160520PeterH|FromPeterHunziker")
 writeFasta(resDB, file="c:/temp/p65_8521_tryp_leish_totalprot_20160520.fasta")
 
+resDB <- createDecoyDB("Z:/p0/PH/griseus_panproteom_nr.fasta", annot="zz|20160623PeterH|FromPeterHunziker")
+writeFasta(resDB, file="Z:/p0/PH/p65_griseus_panproteom_nr_d_20160623.fasta")
+
+library(seqinr)
+annot="zz|sourceOf|database"
+dummy <-as.SeqFastaAA("CRAPCRAPCRAP", Annot=annot, name= annot)
+dummy
 ```
+
+
+# SRM Service
+
+```{r}
+xx <- readPeptideFasta("d:/projects/SRMServiceDB/20160804_targets.fasta")
+xx_rev <- reverseSeq(xx)
+
+all <- readPeptideFasta("d:/projects/SRMServiceDB/fgcz_srmService_db1_20160606.fasta")
+sum(grepl("REV_",names(all)))
+sum(!grepl("REV_",names(all)))
+
+new <- c(all, xx, xx_rev)
+length(new)
+length(all)
+writeFasta(new, file="d:/projects/fgcz_srmService_d_db1_20160707.fasta")
+
+```
+
+
 
 
