@@ -26,7 +26,6 @@ res <- createDecoyDB(c(file,file))
 
 # Removing signal peptides
 
-
 ## Homo sapiens
 
 ```{r}
@@ -160,6 +159,17 @@ new <- c(all, xx, xx_rev)
 length(new)
 length(all)
 writeFasta(new, file="d:/projects/fgcz_srmService_d_db1_20160707.fasta")
+
+```
+
+# p2135
+
+```{r}
+library(prozor)
+resDB <- createDecoyDB("d:/projects/p2135_Hottiger/uniprot-all.fasta",annot = "zz|p2135_d_9606_20160928.fasta|Uniprot canonical 20,177 entries")
+resDB[1:10]
+writeFasta(resDB, file="d:/projects/p2135_Hottiger/p2135_d_9606_20160928.fasta")
+
 
 ```
 
