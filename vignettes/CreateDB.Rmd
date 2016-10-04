@@ -14,6 +14,7 @@ output: pdf_document
 
 Create fasta file with FGCZ contaminants and decoys.
 
+
 ```{r}
 
 rm(list=ls())
@@ -167,12 +168,26 @@ writeFasta(new, file="d:/projects/fgcz_srmService_d_db1_20160707.fasta")
 ```{r}
 library(prozor)
 resDB <- createDecoyDB("d:/projects/p2135_Hottiger/uniprot-all.fasta",annot = "zz|p2135_d_9606_20160928.fasta|Uniprot canonical 20,177 entries")
-resDB[1:10]
 writeFasta(resDB, file="d:/projects/p2135_Hottiger/p2135_d_9606_20160928.fasta")
-
 
 ```
 
 
 
+# p1551
+
+```{r}
+files<-dir("Z:/p1511/Proteomics/newFasta2016")
+annot <- "zz|p1551_d_2016104.fasta|VariousOrg"
+
+annot <- paste(c(annot, gsub(" ","_",files)),collapse = " ")
+annot
+files <- file.path("Z:/p1511/Proteomics/newFasta2016", files )
+resDB <- createDecoyDB(files, annot=paste("zz|p1551_d_NEW_2016104.fasta|VariousDatabasesfrom ",annot= annot ))
+
+resDB[[1]]
+writeFasta(resDB, file="Z:/p1511/Proteomics/newFasta2016/p1551_d_NEW_2016104.fasta")
+
+
+```
 
