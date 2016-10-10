@@ -179,16 +179,19 @@ writeFasta(resDB, file="d:/projects/p2135_Hottiger/p2135_d_9606_20160928.fasta")
 ```{r}
 library(prozor)
 dir<-"Z:/p1511/Proteomics/newFasta2016"
-outfile <- "p1551_d_NEW_2016104.fasta"
+outfile <- "p1511_d_NEW_2016104.fasta"
 file.remove(file.path(dir, outfile))
 
 files<-dir(dir)
-files
 annot <- "zz|p1551_d_2016104.fasta|VariousOrg"
 
 annot <- paste(c(annot, gsub(" ","_",files)),collapse = " ")
 files <- file.path("Z:/p1511/Proteomics/newFasta2016", files )
 resDB <- createDecoyDB(files, annot=paste("zz|p1551_d_NEW_2016104.fasta|VariousDatabasesfrom ",annot= annot ))
+
+sum(duplicated(names(resDB)))
+resDB <-resDB[!duplicated(names(resDB))]
+length(resDB)
 
 writeFasta(resDB, file=file.path(dir, outfile))
 
