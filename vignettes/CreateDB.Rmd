@@ -209,3 +209,32 @@ quantable::write.tab(tmp,file="newSuggestedContaminants.txt")
 
 
 ```
+
+
+# p1797
+
+```{r}
+library(prozor)
+dir<-"d:/projects/p1797/"
+#uniprot-proteomeAUP000008227.fasta"
+outfile <- "p1797_d_UP000008227_20161010.fasta"
+
+files<-dir(dir)
+files <- grep("*.fasta",files,value = T)
+files <- file.path(dir, files )
+annot <- "zz|p1797_d_AUP000008227_20161010|UP000008227 http://www.uniprot.org/proteomes/UP000008227"
+resDB <- createDecoyDB(files, annot= annot)
+
+outputdir <- file.path(dir,"output")
+dir.create(outputdir)
+
+writeFasta(resDB, file=file.path(outputdir, outfile))
+
+annot <- "zz|p1797_AUP000008227_20161010|UP000008227 http://www.uniprot.org/proteomes/UP000008227"
+outfile <- "p1797_UP000008227_20161010.fasta"
+
+resDB <- createDecoyDB(files, annot= annot, revLab=NULL)
+length(resDB)
+
+writeFasta(resDB, file=file.path(outputdir, outfile))
+```
