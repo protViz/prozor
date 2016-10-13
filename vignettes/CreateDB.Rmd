@@ -248,7 +248,7 @@ writeFasta(resDB, file=file.path(outputdir, outfile))
 library(prozor)
 dir<-"d:/projects/p1000/databases/"
 #uniprot-proteomeAUP000008227.fasta"
-outfile <- "p1000_d_tripleProteome_20161011.fasta"
+outfile <- "p1000_d_tripleProteomeHYE_20161011.fasta"
 
 files<-dir(dir)
 files <- grep("*.fasta",files,value = T)
@@ -266,12 +266,73 @@ dir.create(outputdir)
 writeFasta(resDB, file=file.path(outputdir, outfile))
 
 annot <- "zz|p1000_tripleProteome|UP000000625UP000002311up000005640" #http://www.uniprot.org/proteomes/UP000008227"
-outfile <- "p1000_tripleProteome_20161011.fasta"
+outfile <- "p1000_tripleProteomeHYE_20161011.fasta"
 
 resDB <- createDecoyDB(files, annot= annot, revLab=NULL)
 length(resDB)
 
 writeFasta(resDB, file=file.path(outputdir, outfile))
 
+```
+
+
+# make human only database
+
+```{r}
+library(prozor)
+#http://www.uniprot.org/uniprot/?query=proteome:up000005640
+
+dir<-"d:/projects/p1000/databases/"
+#uniprot-proteomeAUP000008227.fasta"
+
+files<-dir(dir)
+
+outfile <- "p1000_d_tripleP_HS_20161013.fasta"
+files <- file.path(dir, files )
+annot <- "zz|p1000_d_tripleProteome|up000005640 Homo Sapiens http://www.uniprot.org/uniprot/?query=proteome:UP000002311 http://www.uniprot.org/uniprot/?query=proteome:up000005640" 
+
+resDB <- createDecoyDB(files[1], annot= annot)
+outputdir <- file.path(dir,"output")
+writeFasta(resDB, file=file.path(outputdir, outfile))
 
 ```
+
+## make yeast only db
+
+```{r}
+
+#http://www.uniprot.org/uniprot/?query=proteome:UP000002311
+library(prozor)
+dir<-"d:/projects/p1000/databases/"
+#uniprot-proteomeAUP000008227.fasta"
+
+files<-dir(dir)
+
+outfile <- "p1000_d_tripleP_Yest_20161013.fasta"
+files <- file.path(dir, files )
+annot <- "zz|p1000_d_tripleProteome|UP000002311 Yeast http://www.uniprot.org/uniprot/?query=proteome:UP000002311" 
+
+resDB <- createDecoyDB(files[2], annot= annot)
+outputdir <- file.path(dir,"output")
+writeFasta(resDB, file=file.path(outputdir, outfile))
+
+```
+
+```{r}
+#http://www.uniprot.org/uniprot/?query=proteome:UP000000625
+
+library(prozor)
+dir<-"d:/projects/p1000/databases/"
+files<-dir(dir)
+
+outfile <- "p1000_d_tripleP_EColi_20161013.fasta"
+files <- file.path(dir, files )
+annot <- "zz|p1000_d_tripleProteome|UP000000625 EColi http://www.uniprot.org/uniprot/?query=proteome:UP000000625" 
+
+resDB <- createDecoyDB(files[3], annot= annot)
+outputdir <- file.path(dir,"output")
+writeFasta(resDB, file=file.path(outputdir, outfile))
+
+```
+
+
