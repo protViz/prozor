@@ -238,3 +238,40 @@ length(resDB)
 
 writeFasta(resDB, file=file.path(outputdir, outfile))
 ```
+
+
+# p1000 triple proteome
+
+
+```{r}
+
+library(prozor)
+dir<-"d:/projects/p1000/databases/"
+#uniprot-proteomeAUP000008227.fasta"
+outfile <- "p1000_d_tripleProteome_20161011.fasta"
+
+files<-dir(dir)
+files <- grep("*.fasta",files,value = T)
+files <- file.path(dir, files )
+annot <- "zz|p1000_d_tripleProteome|UP000000625UP000002311up000005640" 
+#http://www.uniprot.org/uniprot/?query=proteome:UP000002311
+#http://www.uniprot.org/uniprot/?query=proteome:up000005640
+#http://www.uniprot.org/uniprot/?query=proteome:UP000000625
+
+resDB <- createDecoyDB(files, annot= annot)
+
+outputdir <- file.path(dir,"output")
+dir.create(outputdir)
+
+writeFasta(resDB, file=file.path(outputdir, outfile))
+
+annot <- "zz|p1000_tripleProteome|UP000000625UP000002311up000005640" #http://www.uniprot.org/proteomes/UP000008227"
+outfile <- "p1000_tripleProteome_20161011.fasta"
+
+resDB <- createDecoyDB(files, annot= annot, revLab=NULL)
+length(resDB)
+
+writeFasta(resDB, file=file.path(outputdir, outfile))
+
+
+```
