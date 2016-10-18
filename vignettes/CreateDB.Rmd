@@ -26,7 +26,6 @@ res <- createDecoyDB(c(file,file))
 ```
 
 # Removing signal peptides
-
 ## Homo sapiens
 
 ```{r}
@@ -174,7 +173,7 @@ writeFasta(resDB, file="d:/projects/p2135_Hottiger/p2135_d_9606_20160928.fasta")
 
 
 
-# p1551
+# p1511
 
 ```{r}
 library(prozor)
@@ -197,6 +196,33 @@ writeFasta(resDB, file=file.path(dir, outfile))
 
 
 ```
+
+## big version
+
+```{r}
+library(prozor)
+dir<-"Z:/p1511/Proteomics/newFasta2016_Large/"
+outfile <- "p1511_d_LARGE_NOHUMAN_20161017.fasta"
+file.remove(file.path(dir, outfile))
+
+files <- list.files(dir)
+files <- grep("fasta",files,value=TRUE)
+
+annot <- "zz|p1511_d_LARGE_NOHUMAN_20161017.fasta|VariousOrg dbs from p1511/Proteomics/newFasta2016_Large"
+
+annot <- paste(c(annot, gsub(" ","_",files)),collapse = " ")
+files <- file.path(dir, files )
+
+files
+resDB <- createDecoyDB(files, annot=annot)
+length(resDB)
+writeFasta(resDB, file=file.path(dir, "output", outfile))
+
+```
+
+
+## contaminants
+
 
 ```{r}
 cont <- loadContaminantsFasta()
