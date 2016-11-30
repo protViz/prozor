@@ -1,0 +1,79 @@
+---
+title: "Untitled"
+author: "Witold Wolski"
+date: "20 October 2016"
+output: html_document
+---
+
+## Gazeta
+
+```{r setup, include=FALSE}
+rm(list=ls())
+library(prozor)
+library(quantable)
+
+prots <- readPeptideFasta("inst/extdata/fgcz_contaminants_20130115_patchedWithRespectiveUniprot2.fasta")
+length(prots)
+
+tmp <- lapply(prots, function(x){attributes(x)$Annot})
+tmp <- cbind( names =names(tmp), ids =unlist(tmp))
+
+xx<-split2table(tmp[,"ids"],split="\\| eValue")
+
+ids <- grep("sp\\|",xx[,2])
+length(ids)
+xxWithAnnot <- xx[ids,]
+blastpositive <- split2table(xxWithAnnot[,2],split="sp\\|")
+blastpositive
+
+blasthom <- gsub(": ","",blastpositive[,1])
+library(stringr)
+blasthom <- str_trim(blasthom)
+blasthom<-data.frame(split2table(blasthom, split=" "))
+head(blasthom)
+blasthom <-do.call(paste,c( blasthom[,2:1], sep="_"))
+conts <-xx[ids,1]
+conts <- gsub("ZZ_","",gsub(">","",conts))
+
+finids <- do.call(paste, c(data.frame(conts,blastpositive[,2]), sep="_" ))
+
+Annot <- do.call(paste,c(data.frame(finids, blasthom), sep=" "))
+length(Annot)
+
+
+noAnnot <- xx[-ids,]
+
+noAnnot <-gsub("ZZ_","",(noAnnot))
+
+noAnnot <-gsub("^>","",(noAnnot))
+noAnnot[31,1] <- gsub("\\| iRT protein with AAAA spacer","",noAnnot[31,1])
+noAnnot[31,2] <- gsub("zz\\|FGCZCont0260\\| ", "", noAnnot[31,2])
+
+noAnnot <- gsub(": 0.0 blastpHomologue ","ambigous_blastpHomologue", noAnnot)
+noAnnot
+tt <- gsub("zz\\|","",noAnnot[,1])
+xt <-do.call(paste,c(data.frame(noAnnot[,1],tt),sep="_"))
+noAnnot[,1] <- do.call(paste,c(data.frame(xt , tt),sep="|"))
+noAnnot <- do.call(paste,c(data.frame(noAnnot),sep=" "))
+length(ids)
+length(Annot)
+res <- rep(NA, nrow(xx))
+res[ids] <- Annot
+res[-ids] <- noAnnot
+
+ids <-split2table(res,split=" [a-z]")[,1]
+library(seqinr)
+
+aseq <-function(id, seq,annot){return(as.SeqFastaAA(seq, name=id, Annot= paste(">",annot,sep="")))}
+aseq(ids[1], as.character(prots[1]), res[1])
+tmp <-mapply(aseq,ids , as.character(prots) ,res  ,SIMPLIFY = F)
+
+writeFasta(tmp, file="inst/extdata/fgcz_ContaminantsWithAnnotation.fasta")
+
+
+dummy <-as.SeqFastaAA("CRAPCRAPCRAP",name= "sp|Q15323|K1H1_HUMAN", Annot=">zz|ZZ_FGCZCont0005| eValue: 1.0e-54 blastpHomologue sp|Q15323|K1H1_HUMAN")
+dummy
+
+">zz|FGCZCont0000_P61626|LYSC_HUMAN bestBlastpHomologue_0.0"
+
+```
