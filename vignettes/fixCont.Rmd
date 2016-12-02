@@ -77,3 +77,14 @@ dummy
 ">zz|FGCZCont0000_P61626|LYSC_HUMAN bestBlastpHomologue_0.0"
 
 ```
+
+
+```{r}
+
+prots <- readPeptideFasta("inst/extdata/fgcz_ContaminantsWithAnnotation.fasta")
+length(prots)
+
+nonhuman <- prots[!grepl("_HUMAN",names(prots))]
+writeFasta(nonhuman, file="inst/extdata/fgcz_ContaminantsWithAnnotationNoHuman.fasta")
+
+```
