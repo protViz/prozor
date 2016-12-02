@@ -1,5 +1,5 @@
 #R
-.annotateProteinIDGrep <- function(x , fasta, digestPattern="(([RK])|(^)|(^M))"){
+.annotateProteinIDGrep <- function(x , fasta, digestPattern="(([RK])|(^))"){
     sequence = x
     idx <- grep (sequence,  fasta, fixed = TRUE)
     if(length(idx) > 1){
@@ -53,13 +53,13 @@
 #'
 #' file = file.path(path.package("prozor"),"extdata/shortfasta.fasta" )
 #' fasta = read.fasta(file = file, as.string = TRUE, seqtype="AA")
-#' # we use a subset of the data to speedup the computation
-#' #res = annotatePeptides(pepdata, fasta)
 #' res = annotatePeptides(pepdata[1:20,], fasta,mcCores=1)
-#'
-#'
 #' res = annotatePeptides(pepdata[1:20,"peptideSequence"],fasta)
 #'
+#'
+
+
+
 annotatePeptides <- function(pepinfo,
                                 fasta,
                                 digestPattern = "(([RK])|(^)|(^M))",mcCores=NULL
