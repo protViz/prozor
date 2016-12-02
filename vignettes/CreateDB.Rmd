@@ -29,12 +29,10 @@ res <- createDecoyDB(c(file,file))
 ## Homo sapiens
 
 ```{r}
-
 library(prozor)
 hsfasta <- loadHomoSapiensFasta()
 hssignal <- loadHomoSapiensSignalPeptides()
 length(grep("SIGNAL",hssignal$Signal.peptide))/length(hssignal$Signal.peptide)*100
-
 
 noSigFasta <- removeSignalPeptide(hsfasta, hssignal)
 
