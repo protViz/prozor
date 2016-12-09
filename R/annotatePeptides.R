@@ -1,4 +1,3 @@
-#R
 .annotateProteinIDGrep <- function(x , fasta, digestPattern="(([RK])|(^))"){
     sequence = x
     idx <- grep (sequence,  fasta, fixed = TRUE)
@@ -35,7 +34,7 @@
 }
 
 
-#' annotate peptides with protein ids
+#' Annotate peptides with protein ids
 #'
 #' peptides which do not have protein assignment drop out
 #' @param pepinfo - list of peptides - sequence, optional modified sequence, charge state.
@@ -55,14 +54,11 @@
 #' fasta = read.fasta(file = file, as.string = TRUE, seqtype="AA")
 #' res = annotatePeptides(pepdata[1:20,], fasta,mcCores=1)
 #' res = annotatePeptides(pepdata[1:20,"peptideSequence"],fasta)
+#' head(res)
 #'
-#'
-
-
-
 annotatePeptides <- function(pepinfo,
-                                fasta,
-                                digestPattern = "(([RK])|(^)|(^M))",mcCores=NULL
+                             fasta,
+                             digestPattern = "(([RK])|(^)|(^M))",mcCores=NULL
 ){
     if(is.null(dim(pepinfo))){
         pepinfo = matrix(pepinfo,ncol=1)
@@ -73,11 +69,33 @@ annotatePeptides <- function(pepinfo,
     pepinfo = apply(pepinfo,2,as.character)
     lengthPeptide = sapply(pepinfo[,"peptideSequence"],nchar)
     pepinfo = cbind(pepinfo,"lengthPeptide"=lengthPeptide)
-
     pepseq  = unique(as.character(pepinfo[,"peptideSequence"]))
+    restab <- annotateVec(pepseq, fasta, digestPattern = digestPattern, mcCores = mcCores)
+
+
+    res = merge(restab,pepinfo,by.x="peptideSequence",by.y="peptideSequence")
+    res[,"peptideSequence"] <- as.character( res[,"peptideSequence"])
+    res[,"proteinID"]<- as.character(res[,"proteinID"])
+
+    return(res)
+}
+
+#' annotate vector of petpide sequences against fasta file
+#'
+#' @param pepseq peptide sequences
+#' @param fasta fasta file
+#'
+#' @examples
+#'
+#' library(prozor)
+#' file = file.path(path.package("prozor"),"extdata/shortfasta.fasta" )
+#' fasta = read.fasta(file = file, as.string = TRUE, seqtype="AA")
+#'
+#' res = annotateVec(pepdata[1:20,"peptideSequence"],fasta)
+#' head(res)
+#' @export
+annotateVec <- function(pepseq, fasta,digestPattern = "(([RK])|(^)|(^M))",mcCores=NULL ){
     res = .getMatchingProteinIDX(pepseq, fasta,digestPattern,mcCores)
-
-
     lengthFasta  = sapply(fasta,nchar)
     namesFasta = names(fasta)
     protLength = vector(length(res),mode="list")
@@ -92,12 +110,46 @@ annotatePeptides <- function(pepinfo,
     }
     restab = matrix(unlist(protLength),ncol=3,byrow=TRUE)
     colnames(restab) = c("lengthProtein","proteinID","peptideSequence")
-    res = merge(restab,pepinfo,by.x="peptideSequence",by.y="peptideSequence")
-    res[,"peptideSequence"] <- as.character( res[,"peptideSequence"])
-    res[,"proteinID"]<- as.character(res[,"proteinID"])
-
-
-    return(res)
+    return(restab)
 }
 
+#'
+#' annotate peptides using AhoCorasickTrie
+#'
+#' peptides which do not have protein assignment drop out
+#' @param pepinfo - list of peptides - sequence, optional modified sequence, charge state.
+#' @param fasta - object as created by read.fasta in pacakge seqinr
+#' @param digestPattern - default "(([RK])|(^)|(^M))"
+#' @param mcCores number of cores to use
+#' @import AhoCorasickTrie
+#' @export
+#' @examples
+#'
+#' library(AhoCorasickTrie)
+#'
+#' file = file.path(path.package("prozor"),"extdata/shortfasta.fasta" )
+#' fasta = read.fasta(file = file, as.string = TRUE, seqtype="AA")
+#' res = annotateVec(pepdata[1:20,"peptideSequence"],fasta)
+#' head(res)
+#' res2 = annotateVec2(pepdata[1:20,"peptideSequence"],fasta)
+#' head(res2)
+#' colnames(res2)
+annotateVec2 <- function(pepseq,
+                         fasta,
+                         digestPattern = c("","K","R")){
+    #100_000 peptides
+    #40_000 Proteine
 
+    system.time(res <- AhoCorasickSearch(unique(pepseq) , unlist(fasta), alphabet = "aminoacid"))
+
+    simplifyAhoCorasickResult <- function(x, name){t <- as.data.frame(do.call("rbind",(x))); t$proteinID <- name; return(t)}
+    tmp <- mapply(simplifyAhoCorasickResult, res, names(res), SIMPLIFY=FALSE)
+
+    xx <- plyr::rbind.fill(tmp)
+    colnames(xx)[colnames(xx)=="Keyword"]<-"peptideSequence"
+
+    dbframe <- data.frame(proteinID = names(fasta), proteinSequence = unlist(fasta))
+    matches <- merge(xx, dbframe )
+    matches$predcessor <- apply(matches, 1, function(x){substr(x$proteinSequence,x$Offset-1 , x$Offset-1 )})
+    finmat <- matches[matches$predcessor %in% c("","K","R"),]
+}

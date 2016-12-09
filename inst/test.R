@@ -1,6 +1,22 @@
 library(Biostrings)
+library(prozor)
+
+
+library(seqinr)
 file = file.path(path.package("prozor"),"extdata/shortfasta.fasta" )
 fasta = read.fasta(file = file, as.string = TRUE, seqtype="AA")
+
+class(fasta)
+names(fasta)
+as.character(fasta[[1]])
+attributes(fasta[[1]])
+x<-"blub"
+class(x)
+
+attributes(x)$newattrib <- "special"
+attributes(x)$class <- "numeric"
+class(x)
+
 data(pepdata)
 head(pepdata)
 
@@ -13,17 +29,14 @@ biofasta <- AAStringSet(biofasta)
 length(biofasta)
 length(peptides)
 
-Biostrings::matchPattern(Biostrings::AAString(pepdata[1,1]),biofasta)
+Biostrings::vmatchPattern(Biostrings::AAString(pepdata[1,1]),biofasta)
 
-library(Biostrings)
-biofasta <- lapply(fasta, function(x){Biostrings::AAString(as.character(x))})
-Biostrings::matchPattern(Biostrings::AAString(pepdata[1,1]),biofasta)
-tt <- AAStringSet(biofasta)
-Biostrings::matchPattern(Biostrings::AAString(pepdata[1,1]),tt)
-Biostrings::vmatchPattern(Biostrings::AAString(pepdata[1,1]),tt)
-Biostrings::vmatchPattern(Biostrings::AAString(pepdata[2,1]),tt)
-pepdata[2,1]
-pepdata[1,1]
-tmp <- Biostrings::vmatchPattern(Biostrings::AAString(pepdata[1,1]),tt)
-tmp[[1]]
-length(tmp)
+
+res <-  vector(lenght())
+
+length(peptides)
+tmp <-Biostrings::matchPDict(AAStringSet(peptides),biofasta[[1]])
+
+xx <- (lapply(tmp, function(x){x@start}))
+
+unlist(xx[1:10])
