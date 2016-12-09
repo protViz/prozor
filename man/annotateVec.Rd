@@ -4,12 +4,16 @@
 \alias{annotateVec}
 \title{annotate vector of petpide sequences against fasta file}
 \usage{
-annotateVec(pepseq, fasta)
+annotateVec(pepseq, fasta, digestPattern = "(([RK])|(^))", mcCores = NULL)
 }
 \arguments{
 \item{pepseq}{peptide sequences}
 
 \item{fasta}{fasta file}
+
+\item{digestPattern}{digest pattern as regex}
+
+\item{mcCores}{nr of cores to use}
 }
 \description{
 annotate vector of petpide sequences against fasta file
@@ -18,8 +22,9 @@ annotate vector of petpide sequences against fasta file
 
 library(prozor)
 file = file.path(path.package("prozor"),"extdata/shortfasta.fasta" )
-fasta = read.fasta(file = file, as.string = TRUE, seqtype="AA")
+fasta = readPeptideFasta(file = file)
 
 res = annotateVec(pepdata[1:20,"peptideSequence"],fasta)
+head(res)
 }
 

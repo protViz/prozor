@@ -14,6 +14,7 @@
 #' data(protpepmetashort)
 #' library(Matrix)
 #' colnames(protpepmetashort)
+#' head(protpepmetashort)
 #' dim(protpepmetashort)
 #' count = prepareMatrix( protpepmetashort)
 #' inverse = prepareMatrix( protpepmetashort, weight = "inverse")

@@ -4,30 +4,27 @@
 \alias{annotateVec2}
 \title{annotate peptides using AhoCorasickTrie}
 \usage{
-annotateVec2(pepinfo, fasta, digestPattern = c("", "K", "R"))
+annotateVec2(pepseq, fasta, digestPattern = c("", "K", "R"))
 }
 \arguments{
-\item{pepinfo}{- list of peptides - sequence, optional modified sequence, charge state.}
+\item{pepseq}{- list of peptides - sequence, optional modified sequence, charge state.}
 
-\item{fasta}{- object as created by read.fasta in pacakge seqinr}
+\item{fasta}{- object as created by readPeptideFasta}
 
-\item{digestPattern}{- default "(([RK])|(^)|(^M))"}
-
-\item{mcCores}{number of cores to use}
+\item{digestPattern}{- list of N terminal amino acids including empty string (protein start)}
 }
 \description{
 peptides which do not have protein assignment drop out
 }
 \examples{
 
-library(AhoCorasickTrie)
 
 file = file.path(path.package("prozor"),"extdata/shortfasta.fasta" )
-fasta = read.fasta(file = file, as.string = TRUE, seqtype="AA")
-res = annotatePeptides(pepdata[1:20,], fasta,mcCores=1)
-res = annotatePeptides2(pepdata[1:20,"peptideSequence"],fasta)
+fasta = readPeptideFasta(file = file)
+res = annotateVec(pepdata[1:20,"peptideSequence"],fasta)
 head(res)
-
-
+res2 = annotateVec2(pepdata[1:20,"peptideSequence"],fasta)
+head(res2)
+colnames(res2)
 }
 

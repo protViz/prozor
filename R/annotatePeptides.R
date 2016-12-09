@@ -12,7 +12,7 @@
 
 .getMatchingProteinIDX <- function(data,
                                    fasta,
-                                   digestPattern = "(([RK])|(^)|(^M))",
+                                   digestPattern = "(([RK])|(^))",
                                    mcCores=NULL
 ){
     timeStart <- Sys.time();
@@ -38,28 +38,28 @@
 #'
 #' peptides which do not have protein assignment drop out
 #' @param pepinfo - list of peptides - sequence, optional modified sequence, charge state.
-#' @param fasta - object as created by read.fasta in pacakge seqinr
-#' @param digestPattern - default "(([RK])|(^)|(^M))"
+#' @param fasta - object as created by readPeptideFasta
+#' @param digestPattern - default "(([RK])|(^))"
 #' @param mcCores number of cores to use
 #' @export
 #' @examples
 #' library(prozor)
 #' library(doParallel)
 #' library(foreach)
-#' library(seqinr)
 #' data(pepdata)
 #' head(pepdata)
 #'
 #' file = file.path(path.package("prozor"),"extdata/shortfasta.fasta" )
-#' fasta = read.fasta(file = file, as.string = TRUE, seqtype="AA")
+#' fasta = readPeptideFasta(file = file)
 #' res = annotatePeptides(pepdata[1:20,], fasta,mcCores=1)
 #' res = annotatePeptides(pepdata[1:20,"peptideSequence"],fasta)
 #' head(res)
 #'
 annotatePeptides <- function(pepinfo,
                              fasta,
-                             digestPattern = "(([RK])|(^)|(^M))",mcCores=NULL
+                             digestPattern = "(([RK])|(^))",mcCores=NULL
 ){
+
     if(is.null(dim(pepinfo))){
         pepinfo = matrix(pepinfo,ncol=1)
         colnames(pepinfo) = "peptideSequence"
@@ -84,17 +84,18 @@ annotatePeptides <- function(pepinfo,
 #'
 #' @param pepseq peptide sequences
 #' @param fasta fasta file
-#'
+#' @param digestPattern digest pattern as regex
+#' @param mcCores nr of cores to use
 #' @examples
 #'
 #' library(prozor)
 #' file = file.path(path.package("prozor"),"extdata/shortfasta.fasta" )
-#' fasta = read.fasta(file = file, as.string = TRUE, seqtype="AA")
+#' fasta = readPeptideFasta(file = file)
 #'
 #' res = annotateVec(pepdata[1:20,"peptideSequence"],fasta)
 #' head(res)
 #' @export
-annotateVec <- function(pepseq, fasta,digestPattern = "(([RK])|(^)|(^M))",mcCores=NULL ){
+annotateVec <- function(pepseq, fasta,digestPattern = "(([RK])|(^))",mcCores=NULL ){
     res = .getMatchingProteinIDX(pepseq, fasta,digestPattern,mcCores)
     lengthFasta  = sapply(fasta,nchar)
     namesFasta = names(fasta)
@@ -117,23 +118,21 @@ annotateVec <- function(pepseq, fasta,digestPattern = "(([RK])|(^)|(^M))",mcCore
 #' annotate peptides using AhoCorasickTrie
 #'
 #' peptides which do not have protein assignment drop out
-#' @param pepinfo - list of peptides - sequence, optional modified sequence, charge state.
-#' @param fasta - object as created by read.fasta in pacakge seqinr
-#' @param digestPattern - default "(([RK])|(^)|(^M))"
-#' @param mcCores number of cores to use
+#' @param pepseq - list of peptides - sequence, optional modified sequence, charge state.
+#' @param fasta - object as created by readPeptideFasta
+#' @param digestPattern - list of N terminal amino acids including empty string (protein start)
 #' @import AhoCorasickTrie
-#' @export
 #' @examples
 #'
-#' library(AhoCorasickTrie)
 #'
 #' file = file.path(path.package("prozor"),"extdata/shortfasta.fasta" )
-#' fasta = read.fasta(file = file, as.string = TRUE, seqtype="AA")
+#' fasta = readPeptideFasta(file = file)
 #' res = annotateVec(pepdata[1:20,"peptideSequence"],fasta)
 #' head(res)
 #' res2 = annotateVec2(pepdata[1:20,"peptideSequence"],fasta)
 #' head(res2)
 #' colnames(res2)
+#' @export
 annotateVec2 <- function(pepseq,
                          fasta,
                          digestPattern = c("","K","R")){
