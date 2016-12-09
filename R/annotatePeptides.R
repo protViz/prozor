@@ -40,24 +40,22 @@
 #' @param pepinfo - list of peptides - sequence, optional modified sequence, charge state.
 #' @param fasta - object as created by readPeptideFasta
 #' @param digestPattern - default "(([RK])|(^))"
-#' @param mcCores number of cores to use
 #' @export
 #' @examples
 #' library(prozor)
-#' library(doParallel)
-#' library(foreach)
 #' data(pepdata)
 #' head(pepdata)
 #'
 #' file = file.path(path.package("prozor"),"extdata/shortfasta.fasta" )
 #' fasta = readPeptideFasta(file = file)
-#' res = annotatePeptides(pepdata[1:20,], fasta,mcCores=1)
-#' res = annotatePeptides(pepdata[1:20,"peptideSequence"],fasta)
+#' res = annotatePeptides(pepdata[1:20,], fasta)
 #' head(res)
+#' res = annotatePeptides(pepdata[1:20,"peptideSequence"],fasta)
+#' length(res)
 #'
 annotatePeptides <- function(pepinfo,
                              fasta,
-                             digestPattern = "(([RK])|(^))",mcCores=NULL
+                             digestPattern = c("R","K","")
 ){
 
     if(is.null(dim(pepinfo))){
@@ -70,9 +68,8 @@ annotatePeptides <- function(pepinfo,
     lengthPeptide = sapply(pepinfo[,"peptideSequence"],nchar)
     pepinfo = cbind(pepinfo,"lengthPeptide"=lengthPeptide)
     pepseq  = unique(as.character(pepinfo[,"peptideSequence"]))
-    restab <- annotateVec(pepseq, fasta, digestPattern = digestPattern, mcCores = mcCores)
-
-
+    restab <- annotateVec2(pepseq, fasta)
+    restab <- filterSequences(restab, digestPattern = digestPattern)
     res = merge(restab,pepinfo,by.x="peptideSequence",by.y="peptideSequence")
     res[,"peptideSequence"] <- as.character( res[,"peptideSequence"])
     res[,"proteinID"]<- as.character(res[,"proteinID"])
@@ -124,18 +121,17 @@ annotateVec <- function(pepseq, fasta,digestPattern = "(([RK])|(^))",mcCores=NUL
 #' @import AhoCorasickTrie
 #' @examples
 #'
-#'
+#' library(prozor)
 #' file = file.path(path.package("prozor"),"extdata/shortfasta.fasta" )
 #' fasta = readPeptideFasta(file = file)
 #' res = annotateVec(pepdata[1:20,"peptideSequence"],fasta)
 #' head(res)
 #' res2 = annotateVec2(pepdata[1:20,"peptideSequence"],fasta)
-#' head(res2)
-#' colnames(res2)
+#'
 #' @export
+
 annotateVec2 <- function(pepseq,
-                         fasta,
-                         digestPattern = c("","K","R")){
+                         fasta){
     #100_000 peptides
     #40_000 Proteine
 
@@ -146,9 +142,24 @@ annotateVec2 <- function(pepseq,
 
     xx <- plyr::rbind.fill(tmp)
     colnames(xx)[colnames(xx)=="Keyword"]<-"peptideSequence"
-
-    dbframe <- data.frame(proteinID = names(fasta), proteinSequence = unlist(fasta))
+    xx$peptideSequence <- as.character(xx$peptideSequence)
+    xx$Offset <- as.numeric(xx$Offset)
+    dbframe <- data.frame(proteinID = names(fasta), proteinSequence = as.character(unlist(fasta)),stringsAsFactors = FALSE)
     matches <- merge(xx, dbframe )
-    matches$predcessor <- apply(matches, 1, function(x){substr(x$proteinSequence,x$Offset-1 , x$Offset-1 )})
+    return(matches)
+}
+
+
+#' Filter for specific residues
+#'
+#' Will check if AA at Offset is a valid cleavage site
+#'
+#' @param matches must have 2 columns proteinSequnce and Offset
+#' @param digestPattern default tryptic = c("","K","R")
+#' @export
+#'
+filterSequences <- function(matches,digestPattern = c("","K","R") ){
+    matches$predcessor <- substr(res2$proteinSequence,res2$Offset-1 , res2$Offset-1 )
     finmat <- matches[matches$predcessor %in% c("","K","R"),]
 }
+

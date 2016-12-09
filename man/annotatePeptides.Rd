@@ -4,8 +4,7 @@
 \alias{annotatePeptides}
 \title{Annotate peptides with protein ids}
 \usage{
-annotatePeptides(pepinfo, fasta, digestPattern = "(([RK])|(^))",
-  mcCores = NULL)
+annotatePeptides(pepinfo, fasta, digestPattern = c("R", "K", ""))
 }
 \arguments{
 \item{pepinfo}{- list of peptides - sequence, optional modified sequence, charge state.}
@@ -13,23 +12,29 @@ annotatePeptides(pepinfo, fasta, digestPattern = "(([RK])|(^))",
 \item{fasta}{- object as created by readPeptideFasta}
 
 \item{digestPattern}{- default "(([RK])|(^))"}
-
-\item{mcCores}{number of cores to use}
 }
 \description{
 peptides which do not have protein assignment drop out
 }
 \examples{
 library(prozor)
-library(doParallel)
-library(foreach)
 data(pepdata)
 head(pepdata)
 
 file = file.path(path.package("prozor"),"extdata/shortfasta.fasta" )
 fasta = readPeptideFasta(file = file)
-res = annotatePeptides(pepdata[1:20,], fasta,mcCores=1)
+res = annotatePeptides(pepdata[1:20,], fasta)
+head(res)
 res = annotatePeptides(pepdata[1:20,"peptideSequence"],fasta)
+length(res)
+names(res[[1]])
+names(res[[2]])
+head(res[[2]])
+class(res[[1]])
+class(res[[2]])
+head(res[[1]])
+x<-merge(res[[1]],data.frame(res[[2]]))
+res = merge(res[[1]],res[[2]],by.x="peptideSequence",by.y="peptideSequence")
 head(res)
 
 }

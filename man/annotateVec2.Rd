@@ -4,7 +4,7 @@
 \alias{annotateVec2}
 \title{annotate peptides using AhoCorasickTrie}
 \usage{
-annotateVec2(pepseq, fasta, digestPattern = c("", "K", "R"))
+annotateVec2(pepseq, fasta)
 }
 \arguments{
 \item{pepseq}{- list of peptides - sequence, optional modified sequence, charge state.}
@@ -18,13 +18,12 @@ peptides which do not have protein assignment drop out
 }
 \examples{
 
-
+library(prozor)
 file = file.path(path.package("prozor"),"extdata/shortfasta.fasta" )
 fasta = readPeptideFasta(file = file)
 res = annotateVec(pepdata[1:20,"peptideSequence"],fasta)
 head(res)
 res2 = annotateVec2(pepdata[1:20,"peptideSequence"],fasta)
-head(res2)
-colnames(res2)
+
 }
 
