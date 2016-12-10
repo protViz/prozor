@@ -44,7 +44,6 @@
 #' @examples
 #' library(prozor)
 #' data(pepdata)
-#' head(pepdata)
 #'
 #' file = file.path(path.package("prozor"),"extdata/shortfasta.fasta" )
 #' fasta = readPeptideFasta(file = file)
@@ -117,7 +116,6 @@ annotateVec <- function(pepseq, fasta,digestPattern = "(([RK])|(^))",mcCores=NUL
 #' peptides which do not have protein assignment drop out
 #' @param pepseq - list of peptides - sequence, optional modified sequence, charge state.
 #' @param fasta - object as created by readPeptideFasta
-#' @param digestPattern - list of N terminal amino acids including empty string (protein start)
 #' @import AhoCorasickTrie
 #' @examples
 #'
@@ -125,7 +123,6 @@ annotateVec <- function(pepseq, fasta,digestPattern = "(([RK])|(^))",mcCores=NUL
 #' file = file.path(path.package("prozor"),"extdata/shortfasta.fasta" )
 #' fasta = readPeptideFasta(file = file)
 #' res = annotateVec(pepdata[1:20,"peptideSequence"],fasta)
-#' head(res)
 #' res2 = annotateVec2(pepdata[1:20,"peptideSequence"],fasta)
 #'
 #' @export
@@ -155,11 +152,11 @@ annotateVec2 <- function(pepseq,
 #' Will check if AA at Offset is a valid cleavage site
 #'
 #' @param matches must have 2 columns proteinSequnce and Offset
-#' @param digestPattern default tryptic = c("","K","R")
+#' @param digestPattern - list of N terminal amino acids including empty string (protein start) default tryptic = c("","K","R")
 #' @export
 #'
 filterSequences <- function(matches,digestPattern = c("","K","R") ){
-    matches$predcessor <- substr(res2$proteinSequence,res2$Offset-1 , res2$Offset-1 )
+    matches$predcessor <- substr(matches$proteinSequence,matches$Offset-1 , matches$Offset-1 )
     finmat <- matches[matches$predcessor %in% c("","K","R"),]
 }
 

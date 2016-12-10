@@ -19,7 +19,6 @@ peptides which do not have protein assignment drop out
 \examples{
 library(prozor)
 data(pepdata)
-head(pepdata)
 
 file = file.path(path.package("prozor"),"extdata/shortfasta.fasta" )
 fasta = readPeptideFasta(file = file)
@@ -27,15 +26,6 @@ res = annotatePeptides(pepdata[1:20,], fasta)
 head(res)
 res = annotatePeptides(pepdata[1:20,"peptideSequence"],fasta)
 length(res)
-names(res[[1]])
-names(res[[2]])
-head(res[[2]])
-class(res[[1]])
-class(res[[2]])
-head(res[[1]])
-x<-merge(res[[1]],data.frame(res[[2]]))
-res = merge(res[[1]],res[[2]],by.x="peptideSequence",by.y="peptideSequence")
-head(res)
 
 }
 
