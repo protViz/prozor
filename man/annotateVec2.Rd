@@ -10,8 +10,6 @@ annotateVec2(pepseq, fasta)
 \item{pepseq}{- list of peptides - sequence, optional modified sequence, charge state.}
 
 \item{fasta}{- object as created by readPeptideFasta}
-
-\item{digestPattern}{- list of N terminal amino acids including empty string (protein start)}
 }
 \description{
 peptides which do not have protein assignment drop out

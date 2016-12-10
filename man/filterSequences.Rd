@@ -9,7 +9,7 @@ filterSequences(matches, digestPattern = c("", "K", "R"))
 \arguments{
 \item{matches}{must have 2 columns proteinSequnce and Offset}
 
-\item{digestPattern}{default tryptic = c("","K","R")}
+\item{digestPattern}{- list of N terminal amino acids including empty string (protein start) default tryptic = c("","K","R")}
 }
 \description{
 Will check if AA at Offset is a valid cleavage site
