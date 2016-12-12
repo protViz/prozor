@@ -360,3 +360,7 @@ writeFasta(resDB, file=file.path(outputdir, outfile))
 ```
 
 
+```{r}
+
+```
+

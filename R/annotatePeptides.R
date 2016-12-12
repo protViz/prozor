@@ -67,7 +67,7 @@ annotatePeptides <- function(pepinfo,
     lengthPeptide = sapply(pepinfo[,"peptideSequence"],nchar)
     pepinfo = cbind(pepinfo,"lengthPeptide"=lengthPeptide)
     pepseq  = unique(as.character(pepinfo[,"peptideSequence"]))
-    restab <- annotateVec2(pepseq, fasta)
+    restab <- annotateAHO(pepseq, fasta)
     restab <- filterSequences(restab, digestPattern = digestPattern)
     res = merge(restab,pepinfo,by.x="peptideSequence",by.y="peptideSequence")
     res[,"peptideSequence"] <- as.character( res[,"peptideSequence"])
@@ -122,12 +122,11 @@ annotateVec <- function(pepseq, fasta,digestPattern = "(([RK])|(^))",mcCores=NUL
 #' library(prozor)
 #' file = file.path(path.package("prozor"),"extdata/shortfasta.fasta" )
 #' fasta = readPeptideFasta(file = file)
-#' res = annotateVec(pepdata[1:20,"peptideSequence"],fasta)
-#' res2 = annotateVec2(pepdata[1:20,"peptideSequence"],fasta)
-#'
+#' #res = annotateVec(pepdata[1:20,"peptideSequence"],fasta)
+#' system.time(res2 <- annotateAHO(pepdata[1:20,"peptideSequence"],fasta))
+#' colnames(res2)
 #' @export
-
-annotateVec2 <- function(pepseq,
+annotateAHO <- function(pepseq,
                          fasta){
     #100_000 peptides
     #40_000 Proteine
@@ -145,8 +144,6 @@ annotateVec2 <- function(pepseq,
     matches <- merge(xx, dbframe )
     return(matches)
 }
-
-
 #' Filter for specific residues
 #'
 #' Will check if AA at Offset is a valid cleavage site
