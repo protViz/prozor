@@ -376,7 +376,6 @@ writeFasta(resDB, file="d:/projects/p2123/data/p2123_d_UP000001075_CNL_13122016.
 
 ```
 
-
 # p2095
 
 
@@ -385,13 +384,14 @@ library(prozor)
 files1 <- "z:/p2095/Proteomics/fasta_db/Mouse/uniprot-proteome_UP000000589_cnl.fasta"
 files2 <- "z:/p2095/Proteomics/fasta_db/Mouse/irtfusion.fasta"
 annot <- "zz|p2095_UP000000589_cnl|UP000000589_cnl irtfusion and contaminant 13122016"
-outfile <- "p2095_UP000000589_cnl_13122016.fasta"
-resDB<-createDecoyDB(c(files1,files2), revLab=NULL)
+outfile <- "p2095_UP000000589_cnl_20161213.fasta"
+resDB<-createDecoyDB(c(files1,files2), revLab=NULL, useContaminants = FALSE, annot=annot)
 writeFasta(resDB, file=file.path("z:/p2095/Proteomics/fasta_db/Mouse/",outfile))
 
 files1 <- "z:/p2095/Proteomics/fasta_db/Mouse/uniprot-mouse_sp_cnl.fasta"
 files2 <- "z:/p2095/Proteomics/fasta_db/Mouse/irtfusion.fasta"
 annot <- "zz|p2095_uniprot-mouse_sp_cnl|uniprot-mouse_sp_cnl irtfusion and contaminant 13122016"
-outfile <- "p2095_uniprot-mouse_sp_cnl_13122016.fasta"
-resDB<-createDecoyDB(c(files1,files2), revLab=NULL)
+outfile <- "p2095_uniprot-mouse_sp_cnl_20161213.fasta"
+resDB<-createDecoyDB(c(files1,files2), revLab=NULL, useContaminants = FALSE, annot=annot)
 writeFasta(resDB, file=file.path("z:/p2095/Proteomics/fasta_db/Mouse/",outfile))
+```
