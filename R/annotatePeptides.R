@@ -40,6 +40,7 @@
 #' @param pepinfo - list of peptides - sequence, optional modified sequence, charge state.
 #' @param fasta - object as created by readPeptideFasta
 #' @param digestPattern - default "(([RK])|(^))"
+#' @import stringr
 #' @export
 #' @examples
 #' library(prozor)
@@ -117,6 +118,7 @@ annotateVec <- function(pepseq, fasta,digestPattern = "(([RK])|(^))",mcCores=NUL
 #' @param pepseq - list of peptides - sequence, optional modified sequence, charge state.
 #' @param fasta - object as created by readPeptideFasta
 #' @import AhoCorasickTrie
+#' @import stringr
 #' @examples
 #'
 #' library(prozor)
@@ -126,10 +128,15 @@ annotateVec <- function(pepseq, fasta,digestPattern = "(([RK])|(^))",mcCores=NUL
 #' system.time(res2 <- annotateAHO(pepdata[1:20,"peptideSequence"],fasta))
 #' colnames(res2)
 #' @export
-annotateAHO <- function(pepseq,
-                         fasta){
+annotateAHO <- function(pepseq,fasta){
     #100_000 peptides
     #40_000 Proteine
+
+    pepseq <-stringr::str_trim(unique(pepseq))
+
+    proteinIDS <- names(unlist(fasta))
+    fasta <- stringr::str_trim(unlist(fasta))
+    names(fasta) <- proteinIDS
 
     system.time(res <- AhoCorasickSearch(unique(pepseq) , unlist(fasta), alphabet = "aminoacid"))
 
