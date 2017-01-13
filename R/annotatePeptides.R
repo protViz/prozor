@@ -161,6 +161,6 @@ annotateAHO <- function(pepseq,fasta){
 #'
 filterSequences <- function(matches,digestPattern = c("","K","R") ){
     matches$predcessor <- substr(matches$proteinSequence,matches$Offset-1 , matches$Offset-1 )
-    finmat <- matches[matches$predcessor %in% c("","K","R"),]
+    finmat <- matches[matches$predcessor %in% digestPattern,]
 }
 
