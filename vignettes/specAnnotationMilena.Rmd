@@ -1,0 +1,143 @@
+---
+title: "SpecAnnotationMilena"
+author: "Witold Wolski"
+date: "March 16, 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+
+specMeta <- read.table("c:/Users/wewol/Google Drive/Finnland/specMeta.txt", stringsAsFactors = FALSE)
+dim(specMeta)
+str(specMeta)
+
+
+```
+
+
+```{r}
+library(prozor)
+nrow(specMeta)
+hist(specMeta$score, breaks=100)
+
+library(reshape2)
+head <- acast(specMeta,specMeta$peptideSeq ~ specMeta$fileName)
+head[head == 0]<-NA
+image(t(head))
+dim(head)
+quantable::mypairs(head[,1:4], log="xy")
+
+
+length(unique(specMeta$peptideSeq))
+upeptide <-unique(specMeta$peptideSeq)
+
+resAll <- prozor::readPeptideFasta("c:/Users/wewol/Google Drive/Finnland/uniprot-taxonomy-Homo+sapiens+Human9606-UNREVIEWED.fasta.gz")
+length(resAll)
+resIso <- prozor::readPeptideFasta("c:/Users/wewol/Google Drive/Finnland/uniprot-taxonomy-Homo+sapiens+Human9606.fasta.gz")
+length(resIso)
+resRev <- prozor::readPeptideFasta("c:/Users/wewol/Google Drive/Finnland/uniprot-taxonomy-Homo+sapiens+Human9606-NOISO.fasta.gz")
+length(resRev)
+
+
+length(intersect(names(resIso), names(resRev)))
+intersect(names(resIso), names(resAll))
+names(resAll)[1:10]
+
+annotAll <- prozor::annotatePeptides(upeptide, c(resIso,resAll))
+length(unique(annotAll$peptideSequence))/ length(upeptide)
+
+annotIso <- prozor::annotatePeptides(upeptide, resIso)
+length(unique(annotIso$peptideSequence))/ length(upeptide)
+
+annotRev <- prozor::annotatePeptides(upeptide, resRev)
+length(unique(annotRev$peptideSequence))/ length(upeptide)
+
+
+plot(sort(table(annotAll$peptideSequence)),axes=F)
+axis(2)
+sum(table(annotAll$peptideSequence) == 1)/ length(table(annotAll$peptideSequence)) * 100
+head(annotAll)
+
+
+plot(sort(table(annotIso$peptideSequence)),axes=F)
+axis(2)
+
+sum(table(annotIso$peptideSequence) == 1)/ length(table(annotIso$peptideSequence)) * 100
+
+plot(sort(table(annotRev$peptideSequence)),axes=F)
+sum(table(annotRev$peptideSequence) == 1)/ length(table(annotRev$peptideSequence)) * 100
+
+
+```
+
+
+
+## do protein inference
+
+
+
+```{r}
+library(Matrix)
+precursors <- unique(subset(specMeta,select = c(peptideModSeq,precursorCharge,peptideSeq )))
+dim(precursors)
+
+```
+
+### For trembl and swissprot 
+
+Annotate the precursors with protein ID's
+
+```{r}
+
+annotatedPrecursors <-merge(precursors , subset(annotAll, select= c(peptideSequence,proteinID)), by.x="peptideSeq", 
+                            by.y="peptideSequence")
+
+annotatedPrecursors$z <- annotatedPrecursors$precursorCharge
+annotatedPrecursors$peptideModSequence <- annotatedPrecursors$peptideModSeq
+
+xx<-prepareMatrix(annotatedPrecursors)
+library(Matrix)
+image(xx)
+xx <- greedy(xx)
+length(unique(unlist(xx)))
+
+```
+
+### For Swissprot with isoforms
+
+```{r}
+
+annotatedPrecursors <-merge(precursors , subset(annotIso, select= c(peptideSequence,proteinID)), by.x="peptideSeq", 
+                            by.y="peptideSequence")
+
+annotatedPrecursors$z <- annotatedPrecursors$precursorCharge
+annotatedPrecursors$peptideModSequence <- annotatedPrecursors$peptideModSeq
+
+xx<-prepareMatrix(annotatedPrecursors)
+image(xx)
+xx <- greedy(xx)
+length(unique(unlist(xx)))
+
+```
+
+### For swissprot no isoforms
+
+```{r}
+
+annotatedPrecursors <-merge(precursors , subset(annotRev, select= c(peptideSequence,proteinID)), by.x="peptideSeq", 
+                            by.y="peptideSequence")
+
+annotatedPrecursors$z <- annotatedPrecursors$precursorCharge
+annotatedPrecursors$peptideModSequence <- annotatedPrecursors$peptideModSeq
+
+xx<-prepareMatrix(annotatedPrecursors)
+image(xx)
+xx <- greedy(xx)
+length(unique(unlist(xx)))
+
+```
