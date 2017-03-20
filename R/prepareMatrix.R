@@ -1,7 +1,7 @@
-.makePrecursorID <- function(peprot){
+.makePrecursorID <- function(peprot, sep="|"){
     tmp = peprot[,c("peptideModSequence","z")]
     tmp = apply(tmp,2,as.character)
-    apply(tmp, 1, paste, collapse = '.')
+    apply(tmp, 1, paste, collapse = sep)
 }
 #' given table of peptide protein assigments generate matrix
 #'
@@ -30,10 +30,10 @@
 #' corProtn = cor( as.matrix(aa) )
 #' image(corProtn)
 #'
-prepareMatrix <- function(data, weighting = "one" ) {
+prepareMatrix <- function(data, weighting = "one", sep="|" ) {
     fprots = as.factor( data[,"proteinID"] )
     prots = as.integer( fprots )
-    fpeps = as.factor( .makePrecursorID(data) )
+    fpeps = as.factor( .makePrecursorID(data, sep = sep) )
     peps = as.integer(fpeps)
     if(weighting=="one"){
         pepProt =sparseMatrix(peps , prots, x = 1 )
