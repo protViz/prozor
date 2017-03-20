@@ -1,7 +1,7 @@
 Package: prozor
 Type: Package
 Title: Minimal Protein Set Explaining Peptide Spectrum Matches
-Version: 0.2.1
+Version: 0.2.2
 Date: 2015-12-09
 Author: Witold Wolski
 Maintainer: Witold Wolski <wewolski@gmail.com>

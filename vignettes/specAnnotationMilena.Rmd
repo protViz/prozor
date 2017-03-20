@@ -100,8 +100,8 @@ Annotate the precursors with protein ID's
 annotatedPrecursors <-merge(precursors , subset(annotAll, select= c(peptideSeq,proteinID)), by.x="peptideSeq", 
                             by.y="peptideSeq")
 
-annotatedPrecursors$z <- annotatedPrecursors$precursorCharge
-annotatedPrecursors$peptideModSequence <- annotatedPrecursors$peptideModSeq
+annotatedPrecursors$precursorCharge <- annotatedPrecursors$precursorCharge
+annotatedPrecursors$peptideModSeq <- annotatedPrecursors$peptideModSeq
 
 xx<-prepareMatrix(annotatedPrecursors)
 library(Matrix)
@@ -118,8 +118,8 @@ length(unique(unlist(xx)))
 annotatedPrecursors <-merge(precursors , subset(annotIso, select= c(peptideSeq,proteinID)), by.x="peptideSeq", 
                             by.y="peptideSeq")
 
-annotatedPrecursors$z <- annotatedPrecursors$precursorCharge
-annotatedPrecursors$peptideModSequence <- annotatedPrecursors$peptideModSeq
+annotatedPrecursors$precursorCharge <- annotatedPrecursors$precursorCharge
+annotatedPrecursors$peptideModSeq <- annotatedPrecursors$peptideModSeq
 
 xx<-prepareMatrix(annotatedPrecursors)
 image(xx)
@@ -135,8 +135,8 @@ length(unique(unlist(xx)))
 annotatedPrecursors <-merge(precursors , subset(annotRev, select= c(peptideSeq,proteinID)), by.x="peptideSeq", 
                             by.y="peptideSeq")
 
-annotatedPrecursors$z <- annotatedPrecursors$precursorCharge
-annotatedPrecursors$peptideModSequence <- annotatedPrecursors$peptideModSeq
+annotatedPrecursors$precursorCharge <- annotatedPrecursors$precursorCharge
+annotatedPrecursors$peptideModSeq <- annotatedPrecursors$peptideModSeq
 
 xx<-prepareMatrix(annotatedPrecursors)
 image(xx)
