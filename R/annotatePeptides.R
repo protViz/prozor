@@ -44,14 +44,14 @@
 #' @export
 #' @examples
 #' library(prozor)
-#' data(pepdata)
+#' data(pepprot)
 #'
 #' file = file.path(path.package("prozor"),"extdata/shortfasta.fasta" )
 #'
 #' fasta = readPeptideFasta(file = file)
-#' res = annotatePeptides(pepdata[1:20,], fasta)
+#' res = annotatePeptides(pepprot[1:20,], fasta)
 #' head(res)
-#' res = annotatePeptides(pepdata[1:20,"peptideSequence"],fasta)
+#' res = annotatePeptides(pepprot[1:20,"peptideSeq"],fasta)
 #' length(res)
 annotatePeptides <- function(pepinfo,
                              fasta,
@@ -60,18 +60,18 @@ annotatePeptides <- function(pepinfo,
 
     if(is.null(dim(pepinfo))){
         pepinfo = matrix(pepinfo,ncol=1)
-        colnames(pepinfo) = "peptideSequence"
+        colnames(pepinfo) = "peptideSeq"
     }
     pepinfo = pepinfo[,"proteinID" != colnames(pepinfo),drop=FALSE]
 
     pepinfo = apply(pepinfo,2,as.character)
-    lengthPeptide = sapply(pepinfo[,"peptideSequence"],nchar)
+    lengthPeptide = sapply(pepinfo[,"peptideSeq"],nchar)
     pepinfo = cbind(pepinfo,"lengthPeptide"=lengthPeptide)
-    pepseq  = unique(as.character(pepinfo[,"peptideSequence"]))
+    pepseq  = unique(as.character(pepinfo[,"peptideSeq"]))
     restab <- annotateAHO(pepseq, fasta)
     restab <- filterSequences(restab, digestPattern = digestPattern)
-    res = merge(restab,pepinfo,by.x="peptideSequence",by.y="peptideSequence")
-    res[,"peptideSequence"] <- as.character( res[,"peptideSequence"])
+    res = merge(restab,pepinfo,by.x="peptideSeq",by.y="peptideSeq")
+    res[,"peptideSeq"] <- as.character( res[,"peptideSeq"])
     res[,"proteinID"]<- as.character(res[,"proteinID"])
 
     return(res)
@@ -89,7 +89,7 @@ annotatePeptides <- function(pepinfo,
 #' file = file.path(path.package("prozor"),"extdata/shortfasta.fasta" )
 #' fasta = readPeptideFasta(file = file)
 #'
-#' res = annotateVec(pepdata[1:20,"peptideSequence"],fasta)
+#' res = annotateVec(pepprot[1:20,"peptideSeq"],fasta)
 #' head(res)
 #' @export
 annotateVec <- function(pepseq, fasta,digestPattern = "(([RK])|(^))",mcCores=NULL ){
@@ -98,7 +98,7 @@ annotateVec <- function(pepseq, fasta,digestPattern = "(([RK])|(^))",mcCores=NUL
     namesFasta = names(fasta)
     protLength = vector(length(res),mode="list")
     for(i in 1:length(res)){
-        protLength[[i]] =rbind("lengthProtein"=lengthFasta[res[[i]]],"proteinID"=namesFasta[res[[i]]],"peptideSequence"=names(res)[i])
+        protLength[[i]] =rbind("lengthProtein"=lengthFasta[res[[i]]],"proteinID"=namesFasta[res[[i]]],"peptideSeq"=names(res)[i])
     }
 
     checkdim <- sapply(protLength, function(x){dim(x)[1]})
@@ -107,7 +107,7 @@ annotateVec <- function(pepseq, fasta,digestPattern = "(([RK])|(^))",mcCores=NUL
         protLength <- protLength[-which2remove]
     }
     restab = matrix(unlist(protLength),ncol=3,byrow=TRUE)
-    colnames(restab) = c("lengthProtein","proteinID","peptideSequence")
+    colnames(restab) = c("lengthProtein","proteinID","peptideSeq")
     return(restab)
 }
 
@@ -124,8 +124,8 @@ annotateVec <- function(pepseq, fasta,digestPattern = "(([RK])|(^))",mcCores=NUL
 #' library(prozor)
 #' file = file.path(path.package("prozor"),"extdata/shortfasta.fasta" )
 #' fasta = readPeptideFasta(file = file)
-#' #res = annotateVec(pepdata[1:20,"peptideSequence"],fasta)
-#' system.time(res2 <- annotateAHO(pepdata[1:20,"peptideSequence"],fasta))
+#' #res = annotateVec(pepprot[1:20,"peptideSeq"],fasta)
+#' system.time(res2 <- annotateAHO(pepprot[1:20,"peptideSeq"],fasta))
 #' colnames(res2)
 #' @export
 annotateAHO <- function(pepseq,fasta){
@@ -144,8 +144,8 @@ annotateAHO <- function(pepseq,fasta){
     tmp <- mapply(simplifyAhoCorasickResult, res, names(res), SIMPLIFY=FALSE)
 
     xx <- plyr::rbind.fill(tmp)
-    colnames(xx)[colnames(xx)=="Keyword"]<-"peptideSequence"
-    xx$peptideSequence <- as.character(xx$peptideSequence)
+    colnames(xx)[colnames(xx)=="Keyword"]<-"peptideSeq"
+    xx$peptideSeq <- as.character(xx$peptideSeq)
     xx$Offset <- as.numeric(xx$Offset)
     dbframe <- data.frame(proteinID = names(fasta), proteinSequence = as.character(unlist(fasta)),stringsAsFactors = FALSE)
     matches <- merge(xx, dbframe )

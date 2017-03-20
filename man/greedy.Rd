@@ -19,7 +19,7 @@ given matrix (columns protein rows peptides), compute minimal protein set using 
 library(prozor)
 
 data(protpepmetashort)
-head(protpepmetashort)
+colnames(protpepmetashort)
 dim(unique(protpepmetashort[,4:5]))
 xx = prepareMatrix(protpepmetashort, weight= "one")
 dim(xx)

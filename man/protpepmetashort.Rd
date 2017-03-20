@@ -3,9 +3,9 @@
 \docType{data}
 \name{protpepmetashort}
 \alias{protpepmetashort}
-\title{Small version of prot meta dataset to speed up computation}
+\title{Small version of pepprot dataset to speed up computation}
 \description{
-Small version of prot meta dataset to speed up computation
+Small version of pepprot dataset to speed up computation
 }
 \keyword{data}
 

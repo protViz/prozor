@@ -19,8 +19,8 @@ peptides which do not have protein assignment drop out
 library(prozor)
 file = file.path(path.package("prozor"),"extdata/shortfasta.fasta" )
 fasta = readPeptideFasta(file = file)
-#res = annotateVec(pepdata[1:20,"peptideSequence"],fasta)
-system.time(res2 <- annotateAHO(pepdata[1:20,"peptideSequence"],fasta))
+#res = annotateVec(pepprot[1:20,"peptideSeq"],fasta)
+system.time(res2 <- annotateAHO(pepprot[1:20,"peptideSeq"],fasta))
 colnames(res2)
 }
 

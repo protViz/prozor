@@ -18,14 +18,14 @@ peptides which do not have protein assignment drop out
 }
 \examples{
 library(prozor)
-data(pepdata)
+data(pepprot)
 
 file = file.path(path.package("prozor"),"extdata/shortfasta.fasta" )
 
 fasta = readPeptideFasta(file = file)
-res = annotatePeptides(pepdata[1:20,], fasta)
+res = annotatePeptides(pepprot[1:20,], fasta)
 head(res)
-res = annotatePeptides(pepdata[1:20,"peptideSequence"],fasta)
+res = annotatePeptides(pepprot[1:20,"peptideSeq"],fasta)
 length(res)
 }
 

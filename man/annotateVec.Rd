@@ -24,7 +24,7 @@ library(prozor)
 file = file.path(path.package("prozor"),"extdata/shortfasta.fasta" )
 fasta = readPeptideFasta(file = file)
 
-res = annotateVec(pepdata[1:20,"peptideSequence"],fasta)
+res = annotateVec(pepprot[1:20,"peptideSeq"],fasta)
 head(res)
 }
 

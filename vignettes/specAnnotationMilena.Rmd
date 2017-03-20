@@ -52,28 +52,28 @@ intersect(names(resIso), names(resAll))
 names(resAll)[1:10]
 
 annotAll <- prozor::annotatePeptides(upeptide, c(resIso,resAll))
-length(unique(annotAll$peptideSequence))/ length(upeptide)
+length(unique(annotAll$peptideSeq))/ length(upeptide)
 
 annotIso <- prozor::annotatePeptides(upeptide, resIso)
-length(unique(annotIso$peptideSequence))/ length(upeptide)
+length(unique(annotIso$peptideSeq))/ length(upeptide)
 
 annotRev <- prozor::annotatePeptides(upeptide, resRev)
-length(unique(annotRev$peptideSequence))/ length(upeptide)
+length(unique(annotRev$peptideSeq))/ length(upeptide)
 
 
-plot(sort(table(annotAll$peptideSequence)),axes=F)
+plot(sort(table(annotAll$peptideSeq)),axes=F)
 axis(2)
-sum(table(annotAll$peptideSequence) == 1)/ length(table(annotAll$peptideSequence)) * 100
+sum(table(annotAll$peptideSeq) == 1)/ length(table(annotAll$peptideSeq)) * 100
 head(annotAll)
 
 
-plot(sort(table(annotIso$peptideSequence)),axes=F)
+plot(sort(table(annotIso$peptideSeq)),axes=F)
 axis(2)
 
-sum(table(annotIso$peptideSequence) == 1)/ length(table(annotIso$peptideSequence)) * 100
+sum(table(annotIso$peptideSeq) == 1)/ length(table(annotIso$peptideSeq)) * 100
 
-plot(sort(table(annotRev$peptideSequence)),axes=F)
-sum(table(annotRev$peptideSequence) == 1)/ length(table(annotRev$peptideSequence)) * 100
+plot(sort(table(annotRev$peptideSeq)),axes=F)
+sum(table(annotRev$peptideSeq) == 1)/ length(table(annotRev$peptideSeq)) * 100
 
 
 ```
@@ -97,8 +97,8 @@ Annotate the precursors with protein ID's
 
 ```{r}
 
-annotatedPrecursors <-merge(precursors , subset(annotAll, select= c(peptideSequence,proteinID)), by.x="peptideSeq", 
-                            by.y="peptideSequence")
+annotatedPrecursors <-merge(precursors , subset(annotAll, select= c(peptideSeq,proteinID)), by.x="peptideSeq", 
+                            by.y="peptideSeq")
 
 annotatedPrecursors$z <- annotatedPrecursors$precursorCharge
 annotatedPrecursors$peptideModSequence <- annotatedPrecursors$peptideModSeq
@@ -115,8 +115,8 @@ length(unique(unlist(xx)))
 
 ```{r}
 
-annotatedPrecursors <-merge(precursors , subset(annotIso, select= c(peptideSequence,proteinID)), by.x="peptideSeq", 
-                            by.y="peptideSequence")
+annotatedPrecursors <-merge(precursors , subset(annotIso, select= c(peptideSeq,proteinID)), by.x="peptideSeq", 
+                            by.y="peptideSeq")
 
 annotatedPrecursors$z <- annotatedPrecursors$precursorCharge
 annotatedPrecursors$peptideModSequence <- annotatedPrecursors$peptideModSeq
@@ -132,8 +132,8 @@ length(unique(unlist(xx)))
 
 ```{r}
 
-annotatedPrecursors <-merge(precursors , subset(annotRev, select= c(peptideSequence,proteinID)), by.x="peptideSeq", 
-                            by.y="peptideSequence")
+annotatedPrecursors <-merge(precursors , subset(annotRev, select= c(peptideSeq,proteinID)), by.x="peptideSeq", 
+                            by.y="peptideSeq")
 
 annotatedPrecursors$z <- annotatedPrecursors$precursorCharge
 annotatedPrecursors$peptideModSequence <- annotatedPrecursors$peptideModSeq

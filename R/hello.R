@@ -5,17 +5,17 @@
 NULL
 #' Table containing peptide information
 #'
-#' @name pepdata
+#' @name pepprot
 #' @docType data
 #' @keywords data
 NULL
-#' Generated from pepdata using method annotatePeptides
+#' Generated from pepprot using method annotatePeptides
 #'
 #' @name protpepmeta
 #' @docType data
 #' @keywords data
 NULL
-#' Small version of prot meta dataset to speed up computation
+#' Small version of pepprot dataset to speed up computation
 #'
 #' @name protpepmetashort
 #' @docType data

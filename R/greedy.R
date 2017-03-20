@@ -40,7 +40,7 @@
 #' library(prozor)
 #'
 #' data(protpepmetashort)
-#' head(protpepmetashort)
+#' colnames(protpepmetashort)
 #' dim(unique(protpepmetashort[,4:5]))
 #' xx = prepareMatrix(protpepmetashort, weight= "one")
 #' dim(xx)
@@ -66,7 +66,7 @@ greedyRes2Matrix <- function(res){
     cnamessplit <- strsplit(as.character(res[,1]),split="\\.")
     protnam<-do.call("rbind",cnamessplit)
     res<-cbind(protnam,res[,2])
-    colnames(res) <- c("Peptide", "z", "Protein")
+    colnames(res) <- c("Peptide", "precursorCharge", "Protein")
     res <- as.data.frame(res)
     return(res)
 }

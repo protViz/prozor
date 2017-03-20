@@ -1,4 +1,4 @@
-"peptideSequence" "lengthProtein" "proteinID" "peptideModSequence" "z" "m" "lengthPeptide"
+"peptideSeq" "lengthProtein" "proteinID" "peptideModSeq" "precursorCharge" "m" "lengthPeptide"
 "1" "AAAITSDLLESLGR" "838" "sp|Q62009|POSTN_MOUSE" "AAAITSDLLESLGR" "2" " 708.8887" "14"
 "2" "AAAITSDLLESLGR" "811" "sp|Q62009-2|POSTN_MOUSE" "AAAITSDLLESLGR" "2" " 708.8887" "14"
 "3" "AAAITSDLLESLGR" "810" "sp|Q62009-3|POSTN_MOUSE" "AAAITSDLLESLGR" "2" " 708.8887" "14"

@@ -3,9 +3,9 @@
 \docType{data}
 \name{protpepmeta}
 \alias{protpepmeta}
-\title{Generated from pepdata using method annotatePeptides}
+\title{Generated from pepprot using method annotatePeptides}
 \description{
-Generated from pepdata using method annotatePeptides
+Generated from pepprot using method annotatePeptides
 }
 \keyword{data}
 
