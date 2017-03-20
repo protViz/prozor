@@ -17,6 +17,7 @@ Imports:
     foreach,
     seqinr,
     plyr,
+    stringr
 URL: https://github.com/protviz/prozor
 BugReports: https://github.com/protviz/prozor/issues
 Repository: CRAN
