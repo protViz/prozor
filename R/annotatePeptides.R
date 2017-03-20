@@ -47,12 +47,12 @@
 #' data(pepdata)
 #'
 #' file = file.path(path.package("prozor"),"extdata/shortfasta.fasta" )
+#'
 #' fasta = readPeptideFasta(file = file)
 #' res = annotatePeptides(pepdata[1:20,], fasta)
 #' head(res)
 #' res = annotatePeptides(pepdata[1:20,"peptideSequence"],fasta)
 #' length(res)
-#'
 annotatePeptides <- function(pepinfo,
                              fasta,
                              digestPattern = c("R","K","")
