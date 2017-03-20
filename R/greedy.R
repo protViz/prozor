@@ -49,9 +49,7 @@
 #' stopifnot(length(unique(names(es))) == dim(unique(protpepmetashort[,4:5]))[1])
 #'
 greedy <- function( pepprot ){
-    print("here")
     protPepAssingments <- .greedy2(pepprot)
-    print("passed")
     matrixlist <- lapply(protPepAssingments,function(x){ t(cbind(x$peps, rep(x$prot,length(x$peps)))) })
     res = matrix(unlist(matrixlist), ncol=2, byrow = TRUE)
     ltmp = as.list(res[,2])

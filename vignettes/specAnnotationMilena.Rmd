@@ -29,10 +29,13 @@ library(reshape2)
 head <- acast(specMeta,specMeta$peptideSeq ~ specMeta$fileName)
 head[head == 0]<-NA
 image(t(head))
+
 dim(head)
 quantable::mypairs(head[,1:4], log="xy")
 
+```
 
+```{r}
 length(unique(specMeta$peptideSeq))
 upeptide <-unique(specMeta$peptideSeq)
 
