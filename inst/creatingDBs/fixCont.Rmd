@@ -5,7 +5,7 @@ date: "20 October 2016"
 output: html_document
 ---
 
-## Gazeta
+## Look at Library
 
 ```{r setup, include=FALSE}
 rm(list=ls())

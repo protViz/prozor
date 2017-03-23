@@ -77,7 +77,7 @@ annotatePeptides <- function(pepinfo,
     return(res)
 }
 
-#' annotate vector of petpide sequences against fasta file
+#' annotate vector of petpide sequences against fasta file (Deprecated)
 #'
 #' @param pepseq peptide sequences
 #' @param fasta fasta file
@@ -98,7 +98,9 @@ annotateVec <- function(pepseq, fasta,digestPattern = "(([RK])|(^))",mcCores=NUL
     namesFasta = names(fasta)
     protLength = vector(length(res),mode="list")
     for(i in 1:length(res)){
-        protLength[[i]] =rbind("lengthProtein"=lengthFasta[res[[i]]],"proteinID"=namesFasta[res[[i]]],"peptideSeq"=names(res)[i])
+        protLength[[i]] =rbind("lengthProtein"=lengthFasta[res[[i]]],
+                               "proteinID"=namesFasta[res[[i]]],
+                               "peptideSeq"=names(res)[i])
     }
 
     checkdim <- sapply(protLength, function(x){dim(x)[1]})
