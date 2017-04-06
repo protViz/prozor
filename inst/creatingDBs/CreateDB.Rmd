@@ -395,3 +395,31 @@ outfile <- "p2095_uniprot-mouse_sp_cnl_20161213.fasta"
 resDB<-createDecoyDB(c(files1,files2), revLab=NULL, useContaminants = FALSE, annot=annot)
 writeFasta(resDB, file=file.path("z:/p2095/Proteomics/fasta_db/Mouse/",outfile))
 ```
+
+# p2242
+
+```{r}
+library(prozor)
+files1 <- "z:/p2242/Proteomics/fasta_db/p2242_dog/uniprot_proteome_UP000002254_cnl.fasta"
+annotation <- readLines("z:/p2242/Proteomics/fasta_db/p2242_dog/annotation.txt")
+resDB <- createDecoyDB(files1,useContaminants = TRUE, annot=annotation)
+outfile <- paste(dirname(files1),".fasta", sep="")
+writeFasta(resDB, file=outfile)
+
+```
+
+
+```{r}
+files1 <- "z:/p2242/Proteomics/fasta_db/p2242_dog_iso/uniprot_proteome_UP000002254_cnl_iso.fasta"
+annotation <- readLines("z:/p2242/Proteomics/fasta_db/p2242_dog_iso/annotation.txt")
+annotation[1]
+resDB <- createDecoyDB(files1,useContaminants = TRUE, annot=annotation)
+length(resDB)
+
+outfile <- paste(dirname(files1),".fasta", sep="")
+writeFasta(resDB, file=outfile)
+
+```
+
+
+
