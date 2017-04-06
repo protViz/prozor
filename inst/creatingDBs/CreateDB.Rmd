@@ -409,6 +409,7 @@ writeFasta(resDB, file=outfile)
 ```
 
 
+
 ```{r}
 files1 <- "z:/p2242/Proteomics/fasta_db/p2242_dog_iso/uniprot_proteome_UP000002254_cnl_iso.fasta"
 annotation <- readLines("z:/p2242/Proteomics/fasta_db/p2242_dog_iso/annotation.txt")
