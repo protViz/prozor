@@ -4,14 +4,16 @@
 \alias{annotatePeptides}
 \title{Annotate peptides with protein ids}
 \usage{
-annotatePeptides(pepinfo, fasta, digestPattern = c("R", "K", ""))
+annotatePeptides(pepinfo, fasta, prefix = "(([RK])|(^)|(^M))", suffix = "")
 }
 \arguments{
 \item{pepinfo}{- list of peptides - sequence, optional modified sequence, charge state.}
 
 \item{fasta}{- object as created by readPeptideFasta}
 
-\item{digestPattern}{- default "(([RK])|(^))"}
+\item{prefix}{- default "(([RK])|(^)|(^M))"}
+
+\item{suffix}{- default ""}
 }
 \description{
 peptides which do not have protein assignment drop out
@@ -28,4 +30,3 @@ head(res)
 res = annotatePeptides(pepprot[1:20,"peptideSeq"],fasta)
 length(res)
 }
-

@@ -8,4 +8,3 @@
 Table containing peptide information
 }
 \keyword{data}
-

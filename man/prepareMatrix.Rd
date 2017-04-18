@@ -41,4 +41,3 @@ corProtn = cor( as.matrix(aa) )
 image(corProtn)
 
 }
-

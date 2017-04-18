@@ -26,4 +26,3 @@ stopifnot(length(decoyDB) == 2 * length(fasta))
 writeFasta(decoyDB, file="test.fasta")
 
 }
-

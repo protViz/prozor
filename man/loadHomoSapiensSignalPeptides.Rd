@@ -14,4 +14,3 @@ library(prozor)
 signal <- loadHomoSapiensSignalPeptides()
 
 }
-

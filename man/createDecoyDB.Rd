@@ -36,4 +36,3 @@ res <- createDecoyDB(c(file,file), revLab=NULL, useContaminants = FALSE)
 stopifnot(length(res) == (2*length(rabbit) + 1) )
 
 }
-

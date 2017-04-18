@@ -23,4 +23,3 @@ fasta = readPeptideFasta(file = file)
 system.time(res2 <- annotateAHO(pepprot[1:20,"peptideSeq"],fasta))
 colnames(res2)
 }
-

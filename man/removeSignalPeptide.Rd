@@ -24,4 +24,3 @@ xx <- removeSignalPeptide(hsfasta, hssignal)
 db <- hsfasta
 signal <- hssignal
 }
-

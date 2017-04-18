@@ -4,14 +4,15 @@
 \alias{filterSequences}
 \title{Filter for specific residues}
 \usage{
-filterSequences(matches, digestPattern = c("", "K", "R"))
+filterSequences(matches, prefix = "(([RK])|(^)|(^M))", suffix = "")
 }
 \arguments{
 \item{matches}{must have 2 columns proteinSequnce and Offset}
 
-\item{digestPattern}{- list of N terminal amino acids including empty string (protein start) default tryptic = c("","K","R")}
+\item{prefix}{- regular expression describing the prefix of the peptide sequence e.g. (([RK])|(^)|(^M))}
+
+\item{suffix}{- regular expression describing the suffix of the peptide sequence}
 }
 \description{
 Will check if AA at Offset is a valid cleavage site
 }
-

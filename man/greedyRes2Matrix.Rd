@@ -15,4 +15,3 @@ matrix of peptide protein assignments
 \description{
 converts result of greedy function to a matrix with 3 columns - peptide - charge and protein
 }
-

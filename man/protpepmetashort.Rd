@@ -8,4 +8,3 @@
 Small version of pepprot dataset to speed up computation
 }
 \keyword{data}
-

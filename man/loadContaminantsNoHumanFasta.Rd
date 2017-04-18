@@ -15,4 +15,3 @@ cont <- loadContaminantsNoHumanFasta()
 cont[[1]]
 #example how to create a protein db with decoy sequences
 }
-

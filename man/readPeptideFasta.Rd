@@ -19,4 +19,3 @@ file = file.path(path.package("prozor"),"extdata/fgcz_contaminants_20150123.fast
 fasta = readPeptideFasta(file)
 
 }
-

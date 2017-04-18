@@ -33,4 +33,3 @@ tmp <- list(as.SeqFastaAA(("DYKDDDDK"),name="Flag|FLAG|p2079",Annot=""))
 reverseSeq(tmp)
 
 }
-

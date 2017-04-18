@@ -29,4 +29,3 @@ nam <-"sp|P30443|1A01_HUMAN"
 sp <- 24
 makeIDUnip(seq, nam, sp)
 }
-

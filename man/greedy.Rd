@@ -28,4 +28,3 @@ es = greedy(as.matrix(xx))
 stopifnot(length(unique(names(es))) == dim(unique(protpepmetashort[,4:5]))[1])
 
 }
-

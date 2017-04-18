@@ -8,4 +8,3 @@
 Generated from pepprot using method annotatePeptides
 }
 \keyword{data}
-
