@@ -86,11 +86,17 @@ annotateAHO <- function(pepseq,fasta){
 }
 
 .matchPepsequence <- function(matches, prefix= "(([RK])|(^)|(^M))", suffix =""){
+
     seqpattern <-paste(prefix, matches$peptideSeq[1], suffix, sep="")
     idx2 <- grep(seqpattern, matches$proteinSequence, fixed=FALSE)
-    matchesres <- matches[idx2,]
-    matchesres$pattern <- seqpattern
-    return(matchesres)
+    if(length(idx2) > 0){
+        matchesres <- matches[idx2,]
+        matchesres$pattern <- seqpattern
+        return(matchesres)
+    }else{
+        return(NULL)
+    }
+
 }
 
 #'
