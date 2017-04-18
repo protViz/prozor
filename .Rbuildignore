@@ -4,4 +4,4 @@
 ^\.gitignore$
 ^\.git$
 ^\.travis\.yml$
-
+^inst/dataignore/$
