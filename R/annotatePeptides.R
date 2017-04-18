@@ -153,16 +153,27 @@ annotateAHO <- function(pepseq,fasta){
     matches <- merge(xx, dbframe )
     return(matches)
 }
+
+.matchPepsequence <- function(matches, prefix= "(([RK])|(^)|(^M))", suffix =""){
+    seqpattern <-paste(prefix, matches$peptideSeq[1], suffix, sep="")
+    idx2 <- grep(seqpattern, matches$proteinSequence, fixed=FALSE)
+    matchesres <- matches[idx2,]
+    matchesres$pattern <- seqpattern
+    return(matchesres)
+}
+
+#'
 #' Filter for specific residues
 #'
 #' Will check if AA at Offset is a valid cleavage site
 #'
 #' @param matches must have 2 columns proteinSequnce and Offset
-#' @param digestPattern - list of N terminal amino acids including empty string (protein start) default tryptic = c("","K","R")
+#' @param prefix - regular expression describing the prefix of the peptide sequence
+#' @param suffix - regular expression describing the suffix of the peptide sequence
 #' @export
 #'
-filterSequences <- function(matches,digestPattern = c("","K","R") ){
-    matches$predcessor <- substr(matches$proteinSequence,matches$Offset-1 , matches$Offset-1 )
-    finmat <- matches[matches$predcessor %in% digestPattern,]
+filterSequences <- function(matches,prefix = "(([RK])|(^)|(^M))", suffix="" ){
+    x <- plyr::ddply(tmp, ~peptideSeq, .matchPepsequence, prefix = prefix, suffix = suffix)
 }
+
 
