@@ -1,7 +1,7 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^\.Rhistory$
-^\.gitignore$
+^.*gitignore$
 ^\.git$
 ^\.travis\.yml$
-^inst/dataignore/$
+^.*inst/dataignore/.*$

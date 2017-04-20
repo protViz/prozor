@@ -1,8 +1,7 @@
 Package: prozor
 Type: Package
 Title: Minimal Protein Set Explaining Peptide Spectrum Matches
-Version: 0.2.2
-Date: 2015-12-09
+Version: 0.2.3
 Author: Witold Wolski
 Maintainer: Witold Wolski <wewolski@gmail.com>
 Description: Determine minimal protein set explaining
@@ -15,13 +14,10 @@ Imports:
     Matrix,
     doParallel,
     foreach,
-    seqinr,
     plyr,
+    seqinr,
     stringr
 URL: https://github.com/protviz/prozor
 BugReports: https://github.com/protviz/prozor/issues
 Repository: CRAN
 RoxygenNote: 6.0.1
-Suggests: knitr,
-    rmarkdown
-VignetteBuilder: knitr
