@@ -452,7 +452,7 @@ writeFasta(resDB, file="d:/Dropbox/DataAnalysis/Tobi_Weiss_Lymphomproben/FASTA/3
 library(prozor)
 library("stringr")
 
-x <- 'Z:\\p2116\\Proteomics\\fasta_db\\P2116_db1_Focrace2_54008'
+x <- 'Z:/p2116/Proteomics/fasta_db/P2116_db1_Focrace2_54008/'
 x <- 'Z:/p2116/Proteomics/fasta_db/P2116_db2_Fo5176/'
 x <- 'Z:/p2116/Proteomics/fasta_db/P2116_db3_arabidopsis_Focrace2_54008_Fo5176/'
 
@@ -460,16 +460,14 @@ dbname <- basename(x)
 fasta<-grep("fasta", dir(x),value = T)
 files1 <- file.path(x,fasta)
 annot <- grep("annotation",dir(x), value=T)
-
-
 annotation <- readLines(file.path(x,annot))
 
 resDBDecoy <- createDecoyDB(files1,useContaminants = TRUE, annot=annotation,revLab = "DECOY_")
 resDB <- createDecoyDB(files1,useContaminants = TRUE, annot=annotation,revLab = NULL)
 
-xx <- file.path(x, paste(dbname,"_d_",format(Sys.time(), "%Y%M%d") ,sep=""))
+xx <- file.path(x, paste(dbname,"_d_",format(Sys.time(), "%Y%m%d"),".fasta" ,sep=""))
 writeFasta(resDBDecoy, file=xx)
-xx <- file.path(x, paste(dbname,"_",format(Sys.time(), "%Y%M%d") ,sep=""))
+xx <- file.path(x, paste(dbname,"_",format(Sys.time(), "%Y%m%d"),".fasta" ,sep=""))
 writeFasta(resDB, file=xx)
 
 
