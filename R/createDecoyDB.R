@@ -27,14 +27,13 @@ createDecoyDB <- function(dbs ,
                           annot="zz|sourceOf|database")
 {
     dummy <-as.SeqFastaAA("CRAPCRAPCRAP", Annot=annot, name= annot)
-
     dbsfasta <- NULL
-    if(useContaminants){
-        dbsfasta = loadContaminantsFasta()
-    }
     for(db in dbs){
         message( "reading db :" , db )
         dbsfasta <- c(dbsfasta,readPeptideFasta(db) )
+    }
+    if(useContaminants){
+        dbsfasta = c(dbsfasta,loadContaminantsFasta())
     }
     if(!is.null(revLab)){
         dbsfasta <- c(dbsfasta,reverseSeq(dbsfasta ,revLab = revLab))
