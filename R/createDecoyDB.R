@@ -6,7 +6,7 @@
 #' @param annot source of database
 #' @export
 #' @examples
-#' file = file.path(path.package("prozor"),"extdata/uniprot_taxonomy_Oryctolagus_cuniculus.fasta.gz")
+#' file = file.path(path.package("prozor"),"extdata/shortfasta.fasta.gz")
 #' cont <- loadContaminantsFasta()
 #' rabbit <-readPeptideFasta(file)
 #' tmp <- 2*(2*length(rabbit)+length(cont)) + 1

@@ -13,7 +13,7 @@
 #' #example how to create a protein db with decoy sequences
 #' library(seqinr)
 #' library(prozor)
-#' file = file.path(path.package("prozor"),"extdata/fgcz_contaminants_20150123.fasta")
+#' file = file.path(path.package("prozor"),"extdata/fgcz_contaminants_20150123.fasta.gz")
 #' fasta = readPeptideFasta(file = file)
 #' revfasta <- reverseSeq(fasta)
 #' decoyDB <- c(fasta,revfasta)

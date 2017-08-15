@@ -22,7 +22,7 @@ peptides which do not have protein assignment drop out
 library(prozor)
 data(pepprot)
 
-file = file.path(path.package("prozor"),"extdata/shortfasta.fasta" )
+file = file.path(path.package("prozor"),"extdata/shortfasta.fasta.gz" )
 
 fasta = readPeptideFasta(file = file)
 res = annotatePeptides(pepprot[1:20,], fasta)

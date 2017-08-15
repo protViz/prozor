@@ -42,7 +42,7 @@
 #' @examples
 #'
 #' library(prozor)
-#' file = file.path(path.package("prozor"),"extdata/shortfasta.fasta" )
+#' file = file.path(path.package("prozor"),"extdata/shortfasta.fasta.gz" )
 #' fasta = readPeptideFasta(file = file)
 #'
 #' res = annotateVec(pepprot[1:20,"peptideSeq"],fasta)

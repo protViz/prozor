@@ -7,7 +7,7 @@
 #' cont[[1]]
 #' #example how to create a protein db with decoy sequences
 loadContaminantsFasta <- function(){
-  file = file.path(path.package("prozor"),"extdata/fgcz_ContaminantsWithAnnotation.fasta")
+  file = file.path(path.package("prozor"),"extdata/fgcz_ContaminantsWithAnnotation.fasta.gz")
   contaminants <- readPeptideFasta(file)
 }
 #' load list of contaminant without human sequences
@@ -19,12 +19,11 @@ loadContaminantsFasta <- function(){
 #' cont[[1]]
 #' #example how to create a protein db with decoy sequences
 loadContaminantsNoHumanFasta <- function(){
-    file = file.path(path.package("prozor"),"extdata/fgcz_ContaminantsWithAnnotationNoHuman.fasta")
+    file = file.path(path.package("prozor"),"extdata/fgcz_ContaminantsWithAnnotationNoHuman.fasta.gz")
     contaminants <- readPeptideFasta(file)
 }
-
-#'
 #' load human signal peptides
+#'
 #' @export
 #' @examples
 #' library(prozor)

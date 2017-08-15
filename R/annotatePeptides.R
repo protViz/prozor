@@ -11,7 +11,7 @@
 #' library(prozor)
 #' data(pepprot)
 #'
-#' file = file.path(path.package("prozor"),"extdata/shortfasta.fasta" )
+#' file = file.path(path.package("prozor"),"extdata/shortfasta.fasta.gz" )
 #'
 #' fasta = readPeptideFasta(file = file)
 #' res = annotatePeptides(pepprot[1:20,], fasta)
@@ -55,7 +55,7 @@ annotatePeptides <- function(pepinfo,
 #' @examples
 #'
 #' library(prozor)
-#' file = file.path(path.package("prozor"),"extdata/shortfasta.fasta" )
+#' file = file.path(path.package("prozor"),"extdata/shortfasta.fasta.gz" )
 #' fasta = readPeptideFasta(file = file)
 #' #res = annotateVec(pepprot[1:20,"peptideSeq"],fasta)
 #' system.time(res2 <- annotateAHO(pepprot[1:20,"peptideSeq"],fasta))

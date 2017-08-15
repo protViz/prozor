@@ -18,7 +18,7 @@ peptides which do not have protein assignment drop out
 library(seqinr)
 library(prozor)
 
-file = file.path(path.package("prozor"),"extdata/fgcz_contaminants_20150123.fasta")
+file = file.path(path.package("prozor"),"extdata/fgcz_contaminants_20150123.fasta.gz")
 file
 fasta = readPeptideFasta(file = file)
 x <- reverseSeq(fasta)
