@@ -586,3 +586,30 @@ writeFasta(resDB, file=xx)
 
 ```
 
+
+# p1511
+
+```{r}
+
+databasedirectory <- ("Z:/p1511/Proteomics/fasta_db/p1511_db2_9species/")
+dbname <- basename(databasedirectory)
+fasta <- grep("fasta", dir(databasedirectory),value = T)
+files1 <- file.path(databasedirectory,fasta)
+annot <- grep("annotation",dir(databasedirectory), value=T)
+annotation <- readLines(file.path(databasedirectory,annot))
+annotation
+resDBDecoy <- createDecoyDB(files1,useContaminants = TRUE, annot=annotation)
+sum(duplicated(names(resDBDecoy)))
+sum(duplicated(resDBDecoy))
+
+dbname_decoy <- unlist(strsplit(dbname,"_"))
+dbname_decoy <- paste(c(dbname_decoy[1],"d",dbname_decoy[2:length(dbname_decoy)]),collapse="_")
+dbname_decoy
+
+dirname(databasedirectory)
+xx <- file.path(dirname(databasedirectory), paste(dbname_decoy,"_",format(Sys.time(), "%Y%m%d"),".fasta" ,sep=""))
+writeFasta(resDBDecoy, file=xx)
+
+
+
+```
