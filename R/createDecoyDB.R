@@ -1,7 +1,7 @@
 #' create db with decoys and contaminants
 #'
 #' @param dbs a path to a fasta file or an array of files
-#' @param useContaminants add fgcz contaminants
+#' @param useContaminants list with contaminant sequences
 #' @param revLab label for reversed peptides (if NULL do not generate decoys)
 #' @param annot source of database
 #' @export
@@ -18,11 +18,11 @@
 #'
 #' res <- createDecoyDB(c(file,file), revLab=NULL)
 #' stopifnot(length(res) == (2*length(rabbit)+length(cont) + 1))
-#' res <- createDecoyDB(c(file,file), revLab=NULL, useContaminants = FALSE)
+#' res <- createDecoyDB(c(file,file), revLab=NULL, useContaminants = NULL)
 #' stopifnot(length(res) == (2*length(rabbit) + 1) )
 #'
 createDecoyDB <- function(dbs ,
-                          useContaminants = TRUE,
+                          useContaminants = loadContaminantsFasta(),
                           revLab= "REV_",
                           annot="zz|sourceOf|database")
 {
@@ -32,8 +32,8 @@ createDecoyDB <- function(dbs ,
         message( "reading db :" , db )
         dbsfasta <- c(dbsfasta,readPeptideFasta(db) )
     }
-    if(useContaminants){
-        dbsfasta = c(dbsfasta,loadContaminantsFasta())
+    if(!is.null(useContaminants)){
+        dbsfasta = c(dbsfasta,useContaminants)
     }
     if(!is.null(revLab)){
         dbsfasta <- c(dbsfasta,reverseSeq(dbsfasta ,revLab = revLab))

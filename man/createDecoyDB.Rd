@@ -4,13 +4,13 @@
 \alias{createDecoyDB}
 \title{create db with decoys and contaminants}
 \usage{
-createDecoyDB(dbs, useContaminants = TRUE, revLab = "REV_",
-  annot = "zz|sourceOf|database")
+createDecoyDB(dbs, useContaminants = loadContaminantsFasta(),
+  revLab = "REV_", annot = "zz|sourceOf|database")
 }
 \arguments{
 \item{dbs}{a path to a fasta file or an array of files}
 
-\item{useContaminants}{add fgcz contaminants}
+\item{useContaminants}{list with contaminant sequences}
 
 \item{revLab}{label for reversed peptides (if NULL do not generate decoys)}
 
@@ -32,7 +32,7 @@ stopifnot(length(res) == tmp)
 
 res <- createDecoyDB(c(file,file), revLab=NULL)
 stopifnot(length(res) == (2*length(rabbit)+length(cont) + 1))
-res <- createDecoyDB(c(file,file), revLab=NULL, useContaminants = FALSE)
+res <- createDecoyDB(c(file,file), revLab=NULL, useContaminants = NULL)
 stopifnot(length(res) == (2*length(rabbit) + 1) )
 
 }
