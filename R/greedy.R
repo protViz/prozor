@@ -41,12 +41,12 @@
 #'
 #' data(protpepmetashort)
 #' colnames(protpepmetashort)
-#' dim(unique(protpepmetashort[,4:5]))
-#' xx = prepareMatrix(protpepmetashort, weight= "one")
+#' dim(unique(protpepmetashort[,4]))
+#' xx = prepareMatrix(protpepmetashort, peptideID = "peptideModSeq")
 #' dim(xx)
-#' stopifnot(dim(xx)[1] == dim(unique(protpepmetashort[,4:5]))[1])
+#' stopifnot(dim(xx)[1] == dim(unique(protpepmetashort[,4]))[1])
 #' es = greedy(as.matrix(xx))
-#' stopifnot(length(unique(names(es))) == dim(unique(protpepmetashort[,4:5]))[1])
+#' stopifnot(length(unique(names(es))) == dim(unique(protpepmetashort[,4]))[1])
 #'
 greedy <- function( pepprot ){
     protPepAssingments <- .greedy2(pepprot)
