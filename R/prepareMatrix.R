@@ -31,17 +31,16 @@
 #' corProtn = cor( as.matrix(aa) )
 #' image(corProtn)
 #'
-prepareMatrix <- function(data, weighting = "one", sep="|" ) {
-    fprots = as.factor( data[,"proteinID"] )
+prepareMatrix <- function(data, proteinID = "proteinID", peptideID = "strippedSequence", weighting = NULL, sep="|" ) {
+    fprots = as.factor( data[,proteinID] )
     prots = as.integer( fprots )
-    fpeps = as.factor( .makePrecursorID(data, sep = sep) )
+    fpeps = as.factor( data[,peptideID] )
     peps = as.integer(fpeps)
-    if(weighting=="one"){
+
+    if(is.null(weighting)){
         pepProt =sparseMatrix(peps , prots, x = 1 )
-    } else if(weighting == "AA") {
-        pepProt = sparseMatrix(peps, prots, x = data[,"lengthPeptide"] )
-    } else if(weighting == "coverage"){
-        pepProt = sparseMatrix(peps, prots, x = data[,"lengthPeptide"] / data[,"lengthProtein"] )
+    } else if(length(weighting) == nrow(data)) {
+        pepProt = sparseMatrix(peps, prots, x = weighting )
     } else if(weighting == "inverse"){
         pepProt = sparseMatrix(peps, prots, x = 1 )
         nrPeps = rowSums(pepProt)

@@ -21,7 +21,7 @@ Create fasta file with FGCZ contaminants and decoys.
 rm(list=ls())
 library(prozor)
 
-file = file.path(path.package("prozor"),"extdata/uniprot_taxonomy_Oryctolagus_cuniculus.fasta.gz")
+file = file.path(path.package("prozor"), "extdata/uniprot_taxonomy_Oryctolagus_cuniculus.fasta.gz")
 res <- createDecoyDB(c(file,file))
 
 ```
@@ -628,7 +628,18 @@ files1 <- file.path(databasedirectory,fasta)
 annot <- grep("annotation",dir(databasedirectory), value=T)
 annotation <- readLines(file.path(databasedirectory,annot))
 annotation
+resDB <- createDecoyDB(files1,useContaminants = loadContaminantsNoHumanFasta(), annot=annotation, revLab = NULL)
+sum(duplicated(names(resDB)))
+sum(duplicated(resDB))
+length(resDB)
+dirname(databasedirectory)
+xx <- file.path(dirname(databasedirectory), paste(dbname,"_",format(Sys.time(), "%Y%m%d"),".fasta" ,sep=""))
+writeFasta(resDB, file=xx)
+
+
 resDBDecoy <- createDecoyDB(files1,useContaminants = loadContaminantsNoHumanFasta(), annot=annotation)
+length(resDBDecoy)
+
 sum(duplicated(names(resDBDecoy)))
 sum(duplicated(resDBDecoy))
 
