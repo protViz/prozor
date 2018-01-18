@@ -15,6 +15,7 @@ Imports:
     doParallel,
     foreach,
     plyr,
+    readr,
     seqinr,
     stringr
 URL: https://github.com/protviz/prozor
