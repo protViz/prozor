@@ -1,0 +1,103 @@
+---
+title: "Creating Target Decoy databases"
+author: "Witek Wolski"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+Using the package prozor for creating standarized fasta.
+prozor can be used to: 
+     
+     * merge several fasta files into a single fasta file
+     * add reverse sequences to the fasta file.
+     * add contaminants to the fasta file
+
+
+# Contaminants
+
+Here at the FGCZ we have a set of contaminants, and they are also provided with this package.
+There are two versions of this contaminant set. One with and one without contaminants of human orgin.
+We usually are adding one of those two contaminant files to the database.
+The contaminants are easy to distinguish thanks to the `zz|FGCZCont` prefix.
+
+```{r}
+library(prozor)
+head(names(loadContaminantsFasta()))
+length(loadContaminantsFasta())
+length(loadContaminantsNoHumanFasta())
+
+```
+
+# Creating a fasta protein amino acid sequence database for searching.
+
+
+To merge several fasta databases into a single file place them into a single folder and give the folder the name of the database.
+The database name consists of the project number e.g. `p1000` a consecutive number e.g. `db1` and descriptive name `example` i.e. `p1000_db1_example`.
+
+Add to the folder also an annotation.txt file. The annotation file should contain a single line formatted like a fasta protein header with the following conent:
+`aa|p<project_number>_<database_name>|<YYYYMMDD> <detailed_description>`.
+
+Example : `AA|p1000_db1_example|20180119_Example https://github.com/protViz/prozor`
+
+
+In the package we provided such an example in the folder "p1000_db1_example"
+
+```{r}
+
+
+databasedirectory <- file.path(find.package("prozor"), "p1000_db1_example")
+dbname <- basename(databasedirectory)
+fasta <- grep("fasta", dir(databasedirectory),value = T)
+files1 <- file.path(databasedirectory,fasta)
+annot <- grep("annotation",dir(databasedirectory), value=T)
+annotation <- readLines(file.path(databasedirectory,annot))
+annotation
+```
+
+
+## Create non decoy database
+
+```{r}
+resDB <- createDecoyDB(files1, useContaminants = loadContaminantsFasta(), annot=annotation, revLab = NULL)
+length(resDB)
+```
+
+```{r}
+dirname(databasedirectory)
+xx <- file.path(dirname(databasedirectory), paste(dbname,"_",format(Sys.time(), "%Y%m%d"),".fasta" ,sep=""))
+```
+
+```{r eval=FALSE}
+writeFasta(resDB, file=xx)
+```
+
+
+## Create decoy database
+
+
+```{r}
+resDBDecoy <- createDecoyDB(files1,useContaminants = loadContaminantsFasta(), annot=annotation, revLab = "_REV")
+length(resDBDecoy)
+
+sum(duplicated(names(resDBDecoy)))
+sum(duplicated(resDBDecoy))
+
+dbname_decoy <- unlist(strsplit(dbname,"_"))
+dbname_decoy <- paste(c(dbname_decoy[1],"d",dbname_decoy[2:length(dbname_decoy)]),collapse="_")
+dbname_decoy
+
+xx <- file.path(dirname(databasedirectory), paste(dbname_decoy,"_",format(Sys.time(), "%Y%m%d"),".fasta" ,sep=""))
+print(xx)
+```
+
+
+```{r eval=FALSE}
+
+writeFasta(resDBDecoy, file=xx)
+
+```
