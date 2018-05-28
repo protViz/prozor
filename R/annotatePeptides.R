@@ -58,7 +58,8 @@ annotatePeptides <- function(pepinfo,
 #' file = file.path(path.package("prozor"),"extdata/shortfasta.fasta.gz" )
 #' fasta = readPeptideFasta(file = file)
 #' #res = annotateVec(pepprot[1:20,"peptideSeq"],fasta)
-#' system.time(res2 <- annotateAHO(pepprot[1:20,"peptideSeq"],fasta))
+#'
+#' system.time( res2 <- annotateAHO( pepprot[1:20,"peptideSeq"], fasta))
 #' colnames(res2)
 #' @export
 annotateAHO <- function(pepseq,fasta){
@@ -71,11 +72,14 @@ annotateAHO <- function(pepseq,fasta){
     fasta <- stringr::str_trim(unlist(fasta))
     names(fasta) <- proteinIDS
 
-    system.time(res <- AhoCorasickSearch(unique(pepseq) , unlist(fasta), alphabet = "aminoacid"))
-
+    res <- AhoCorasickSearch(unique(pepseq) , unlist(fasta), alphabet = "aminoacid")
+    if(length(res) == 0)
+    {
+        return(NULL)
+    }
     simplifyAhoCorasickResult <- function(x, name){t <- as.data.frame(do.call("rbind",(x))); t$proteinID <- name; return(t)}
     tmp <- mapply(simplifyAhoCorasickResult, res, names(res), SIMPLIFY=FALSE)
-
+    print(length(tmp))
     xx <- plyr::rbind.fill(tmp)
     colnames(xx)[colnames(xx)=="Keyword"]<-"peptideSeq"
     xx$peptideSeq <- as.character(xx$peptideSeq)

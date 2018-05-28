@@ -20,6 +20,7 @@ library(prozor)
 file = file.path(path.package("prozor"),"extdata/shortfasta.fasta.gz" )
 fasta = readPeptideFasta(file = file)
 #res = annotateVec(pepprot[1:20,"peptideSeq"],fasta)
-system.time(res2 <- annotateAHO(pepprot[1:20,"peptideSeq"],fasta))
+
+system.time( res2 <- annotateAHO( pepprot[1:20,"peptideSeq"], fasta))
 colnames(res2)
 }
