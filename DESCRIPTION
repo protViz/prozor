@@ -1,12 +1,13 @@
 Package: prozor
 Type: Package
 Title: Minimal Protein Set Explaining Peptide Spectrum Matches
-Version: 0.2.4
+Version: 0.2.6
 Author: Witold Wolski
 Maintainer: Witold Wolski <wewolski@gmail.com>
 Description: Determine minimal protein set explaining
     peptide spectrum matches. Utility functions for creating libraries with decoys.
-    Planned is peptide FDR estimation for search results.
+    Peptide FDR estimation for search results on psm, precursor, peptide and protein
+    level.
 License: GPL-3
 LazyData: TRUE
 Imports:
@@ -17,7 +18,8 @@ Imports:
     plyr,
     readr,
     seqinr,
-    stringr
+    stringr,
+    dplyr
 URL: https://github.com/protviz/prozor
 BugReports: https://github.com/protviz/prozor/issues
 Repository: CRAN

@@ -9,6 +9,11 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
+<!--
+%\VignetteEngine{knitr::rmarkdown}
+%\VignetteIndexEntry{Creating Target Decoy databases}
+-->
+
 
 Using the package prozor for creating standarized fasta.
 prozor can be used to: 

@@ -1,9 +1,19 @@
 ---
-title: "SpecAnnotationMilena"
+title: "Spectra Annotation and Protein Inference"
 author: "Witold Wolski"
 date: "March 16, 2017"
 output: html_document
+vignette: >
+  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
+<!--
+%\VignetteEngine{knitr::rmarkdown}
+%\VignetteIndexEntry{Spectra Annotation and Protein Inference}
+-->
+
+
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -80,7 +90,7 @@ barplot(c(All = PCProteotypic_all, can_and_iso = PCProteotypic_iso, canonical = 
 
 
 
-## do protein inference
+## Do protein inference
 
 
 
@@ -143,6 +153,12 @@ image(xx)
 xxCAN <- greedy(xx)
 ```
 
+
 ```{r fig.cap="Number of Proteins after protein inference."}
 barplot(c(All = length(unique(unlist(xxAll))) , can_and_iso =length(unique(unlist(xxISO))), canonical = length(unique(unlist(xxCAN)))    ))
 ```
+
+
+# TODO
+
+[Protein Grouping and Clustering in Scaffold](https://www.dropbox.com/s/a4kqyc4gxln8sfj/scaffold_protein_grouping_clustering.pdf?dl=1)
