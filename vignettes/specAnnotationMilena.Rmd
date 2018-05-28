@@ -22,7 +22,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r}
 library(prozor)
-library(reshape2)
+#library(reshape2)
 
 rm(list=ls())
 prozorLocation <- find.package("prozor")
