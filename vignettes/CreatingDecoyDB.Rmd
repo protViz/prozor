@@ -25,10 +25,9 @@ prozor can be used to:
 
 # Contaminants
 
-Here at the FGCZ we have a set of contaminants, and they are also provided with this package.
-There are two versions of this contaminant set. One with and one without contaminants of human orgin.
-We usually are adding one of those two contaminant files to the database.
-The contaminants are easy to distinguish thanks to the `zz|FGCZCont` prefix.
+This package provides two sets of typical contaminant proteins and peptides, one with and one without contaminants of human origin, which can be accessed by the functions `loadContaminantsFasta` and `loadContaminantsNoHumanFasta`.
+At the [FGCZ](www.fgcz.ch) we always are adding one of those two contaminant files to the database. To databases already containing human proteins, we will add the `ContaminantsNoHumanFasta`.
+The contaminants are easy to distinguish from other entries thanks to the `zz|FGCZCont` prefix.
 
 ```{r}
 library(prozor)
@@ -40,21 +39,18 @@ length(loadContaminantsNoHumanFasta())
 
 # Creating a fasta protein amino acid sequence database for searching.
 
+To merge several _fasta_ databases into a single file place them into a single folder and give the folder the name of the database.
+At the [FGCZ](www.fgcz.ch) the database name starts with the project number e.g. `p1000` a consecutive number e.g. `db1` and descriptive name `example` i.e. `p1000_db1_example`.
 
-To merge several fasta databases into a single file place them into a single folder and give the folder the name of the database.
-The database name consists of the project number e.g. `p1000` a consecutive number e.g. `db1` and descriptive name `example` i.e. `p1000_db1_example`.
-
-Add to the folder also an annotation.txt file. The annotation file should contain a single line formatted like a fasta protein header with the following conent:
+Add to the folder also an annotation.txt file. The annotation file should contain a single line formatted like a _fasta_ entry header with the following conent:
 `aa|p<project_number>_<database_name>|<YYYYMMDD> <detailed_description>`.
 
 Example : `AA|p1000_db1_example|20180119_Example https://github.com/protViz/prozor`
 
 
-In the package we provided such an example in the folder "p1000_db1_example"
+The package provides an example of such a folder with the fasta files. Based on this folder a database can be created.
 
 ```{r}
-
-
 databasedirectory <- file.path(find.package("prozor"), "p1000_db1_example")
 dbname <- basename(databasedirectory)
 fasta <- grep("fasta", dir(databasedirectory),value = T)
@@ -64,29 +60,40 @@ annotation <- readLines(file.path(databasedirectory,annot))
 annotation
 ```
 
-
 ## Create non decoy database
+
 
 ```{r}
 resDB <- createDecoyDB(files1, useContaminants = loadContaminantsFasta(), annot=annotation, revLab = NULL)
 length(resDB)
 ```
 
+Based on the directory name we build the name of the fasta file adding the current date.
+
 ```{r}
 dirname(databasedirectory)
 xx <- file.path(dirname(databasedirectory), paste(dbname,"_",format(Sys.time(), "%Y%m%d"),".fasta" ,sep=""))
+print(xx)
 ```
+
 
 ```{r eval=FALSE}
 writeFasta(resDB, file=xx)
 ```
 
-
 ## Create decoy database
+
+To add a decoy database, using reverse sequences specify the `revLab` parameter in the `createDecoyDB` function.
+The resulting database will be twice as long as the non-decoy database.
 
 
 ```{r}
-resDBDecoy <- createDecoyDB(files1,useContaminants = loadContaminantsFasta(), annot=annotation, revLab = "_REV")
+resDBDecoy <- createDecoyDB(files1,
+                            useContaminants = loadContaminantsFasta(),
+                            annot=annotation,
+                            revLab = "REV_")
+
+resDBDecoy[[length(resDBDecoy) - 1]]
 length(resDBDecoy)
 
 sum(duplicated(names(resDBDecoy)))
@@ -102,7 +109,5 @@ print(xx)
 
 
 ```{r eval=FALSE}
-
 writeFasta(resDBDecoy, file=xx)
-
 ```
