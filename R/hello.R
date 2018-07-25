@@ -9,17 +9,11 @@ NULL
 #' @docType data
 #' @keywords data
 NULL
-#' Generated from pepprot using method annotatePeptides
-#'
-#' @name protpepmeta
-#' @docType data
-#' @keywords data
-NULL
 #' Small version of pepprot dataset to speed up computation
 #'
 #' @name protpepmetashort
 #' @docType data
 #' @keywords data
 NULL
-
 utils::globalVariables(c("i"), add = TRUE)
+
