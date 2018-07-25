@@ -4,7 +4,7 @@ author: "Witek Wolski"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteIndexEntry{Creating Target Decoy databases}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -51,7 +51,8 @@ Example : `AA|p1000_db1_example|20180119_Example https://github.com/protViz/proz
 The package provides an example of such a folder with the fasta files. Based on this folder a database can be created.
 
 ```{r}
-databasedirectory <- file.path(find.package("prozor"), "p1000_db1_example")
+databasedirectory = system.file("p1000_db1_example",package = "prozor")
+#databasedirectory <- file.path(find.package("prozor"), "p1000_db1_example")
 dbname <- basename(databasedirectory)
 fasta <- grep("fasta", dir(databasedirectory),value = T)
 files1 <- file.path(databasedirectory,fasta)

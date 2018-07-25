@@ -25,8 +25,9 @@ library(prozor)
 #library(reshape2)
 
 rm(list=ls())
-prozorLocation <- find.package("prozor")
-specMeta <- readr::read_tsv(file.path(prozorLocation,"extdata/IDResults.txt.gz"))
+
+file = system.file("extdata/IDResults.txt.gz" , package = "prozor")
+specMeta <- readr::read_tsv(file)
 
 ```
 
@@ -44,10 +45,9 @@ Annotate peptide sequences with protein sequences
 length(unique(specMeta$peptideSeq))
 upeptide <-unique(specMeta$peptideSeq)
 
-
-resAll <- prozor::readPeptideFasta(file.path(prozorLocation,"extdata/Annotation_allSeq.fasta.gz"))
-resIso <- prozor::readPeptideFasta(file.path(prozorLocation,"extdata/Annotation_isoSeq.fasta.gz"))
-resRev <- prozor::readPeptideFasta(file.path(prozorLocation,"extdata/Annotation_canSeq.fasta.gz"))
+resAll <- prozor::readPeptideFasta(system.file("extdata/Annotation_allSeq.fasta.gz" , package = "prozor"))
+resIso <- prozor::readPeptideFasta(system.file("extdata/Annotation_isoSeq.fasta.gz" , package = "prozor"))
+resRev <- prozor::readPeptideFasta(system.file("extdata/Annotation_canSeq.fasta.gz" , package = "prozor"))
 
 annotAll <- prozor::annotatePeptides(upeptide,resAll)
 pcAll <- length(unique(annotAll$peptideSeq))/ length(upeptide)
