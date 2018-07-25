@@ -6,7 +6,7 @@
 #' @examples
 #' library(seqinr)
 #' library(prozor)
-#' file = file.path(path.package("prozor"),"extdata/fgcz_contaminants_20150123.fasta.gz")
+#' file = system.file("extdata/fgcz_contaminants_20150123.fasta.gz",package = "prozor")
 #' fasta = readPeptideFasta(file)
 #'
 readPeptideFasta <- function(file){

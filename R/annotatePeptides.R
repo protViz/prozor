@@ -1,6 +1,7 @@
 #' Annotate peptides with protein ids
 #'
 #' peptides which do not have protein assignment drop out
+#'
 #' @param pepinfo - list of peptides - sequence, optional modified sequence, charge state.
 #' @param fasta - object as created by readPeptideFasta
 #' @param prefix - default "(([RK])|(^)|(^M))"
@@ -10,8 +11,7 @@
 #' @examples
 #' library(prozor)
 #' data(pepprot)
-#'
-#' file = file.path(path.package("prozor"),"extdata/shortfasta.fasta.gz" )
+#' file = system.file("extdata/shortfasta.fasta.gz",package = "prozor")
 #'
 #' fasta = readPeptideFasta(file = file)
 #' res = annotatePeptides(pepprot[1:20,], fasta)
@@ -55,10 +55,9 @@ annotatePeptides <- function(pepinfo,
 #' @examples
 #'
 #' library(prozor)
-#' file = file.path(path.package("prozor"),"extdata/shortfasta.fasta.gz" )
+#' file = system.file("extdata/shortfasta.fasta.gz",package = "prozor")
 #' fasta = readPeptideFasta(file = file)
-#' #res = annotateVec(pepprot[1:20,"peptideSeq"],fasta)
-#'
+#' pepprot <- get(data("pepprot", package = "prozor"))
 #' system.time( res2 <- annotateAHO( pepprot[1:20,"peptideSeq"], fasta))
 #' colnames(res2)
 #' @export

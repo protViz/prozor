@@ -1,4 +1,7 @@
-#' create db with decoys and contaminants
+#' Create db with decoys and contaminants
+#'
+#' For more details and references see package vignette
+#' \code{vignette("CreateDecoyDB", package = "prozor")}
 #'
 #' @param dbs a path to a fasta file or an array of files
 #' @param useContaminants list with contaminant sequences
@@ -6,7 +9,8 @@
 #' @param annot source of database
 #' @export
 #' @examples
-#' file = file.path(path.package("prozor"),"extdata/shortfasta.fasta.gz")
+#' #file = file.path(path.package("prozor"),"extdata/shortfasta.fasta.gz")
+#' file = system.file("extdata/fgcz_contaminants_20150123.fasta.gz",package = "prozor")
 #' cont <- loadContaminantsFasta()
 #' rabbit <-readPeptideFasta(file)
 #' tmp <- 2*(2*length(rabbit)+length(cont)) + 1

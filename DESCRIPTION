@@ -1,12 +1,12 @@
 Package: prozor
 Type: Package
 Title: Minimal Protein Set Explaining Peptide Spectrum Matches
-Version: 0.2.7
+Version: 0.2.8
 Author: Witold Wolski
 Maintainer: Witold Wolski <wewolski@gmail.com>
 Description: Determine minimal protein set explaining
-    peptide spectrum matches. Utility functions for creating libraries with decoys.
-    Peptide FDR estimation for search results on psm, precursor, peptide and protein
+    peptide spectrum matches. Utility functions for creating fasta amino acid databases with decoys and contaminants.
+    Peptide false discovery rate estimation for search results on psm, precursor, peptide and protein
     level.
 License: GPL-3
 LazyData: TRUE

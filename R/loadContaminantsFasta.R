@@ -7,7 +7,8 @@
 #' cont[[1]]
 #' #example how to create a protein db with decoy sequences
 loadContaminantsFasta <- function(){
-  file = file.path(path.package("prozor"),"extdata/fgcz_ContaminantsWithAnnotation.fasta.gz")
+  file = system.file("extdata/fgcz_ContaminantsWithAnnotation.fasta.gz",package = "prozor")
+  #file = file.path(path.package("prozor"),"extdata/fgcz_ContaminantsWithAnnotation.fasta.gz")
   contaminants <- readPeptideFasta(file)
 }
 #' load list of contaminant without human sequences
@@ -19,7 +20,8 @@ loadContaminantsFasta <- function(){
 #' cont[[1]]
 #' #example how to create a protein db with decoy sequences
 loadContaminantsNoHumanFasta <- function(){
-    file = file.path(path.package("prozor"),"extdata/fgcz_ContaminantsWithAnnotationNoHuman.fasta.gz")
+    file = system.file("extdata/fgcz_ContaminantsWithAnnotationNoHuman.fasta.gz",package = "prozor")
+    #file = file.path(path.package("prozor"),"extdata/fgcz_ContaminantsWithAnnotationNoHuman.fasta.gz")
     contaminants <- readPeptideFasta(file)
 }
 #' load human signal peptides
@@ -30,7 +32,8 @@ loadContaminantsNoHumanFasta <- function(){
 #' signal <- loadHomoSapiensSignalPeptides()
 #'
 loadHomoSapiensSignalPeptides <- function(){
-  file = file.path(path.package("prozor"),"extdata/uniprot_signal_homo_sapiens_9606_23032016.tab.gz")
+  file = system.file("extdata/uniprot_signal_homo_sapiens_9606_23032016.tab.gz",package = "prozor")
+  #file = file.path(path.package("prozor"),"extdata/uniprot_signal_homo_sapiens_9606_23032016.tab.gz")
   fasta <- utils::read.csv(file,sep="\t", stringsAsFactors = FALSE)
 }
 
@@ -42,7 +45,8 @@ loadHomoSapiensSignalPeptides <- function(){
 #' signal <- loadMusMusculusSignalPeptides()
 #' head(signal)
 loadMusMusculusSignalPeptides <- function(){
-  file = file.path(path.package("prozor"),"extdata/uniprot_signal_mus_musculus_29032016.tab.gz")
+  file = system.file("extdata/uniprot_signal_mus_musculus_29032016.tab.gz",package = "prozor")
+  #file = file.path(path.package("prozor"),"extdata/uniprot_signal_mus_musculus_29032016.tab.gz")
   fasta <- utils::read.csv(file,sep="\t", stringsAsFactors = FALSE)
 }
 

@@ -14,7 +14,8 @@ predictScoreFDR(fdrObj, qValue = 1, method = "SimpleFDR")
 \item{method}{either FPR or SimpleFDR, default is SimpleFDR}
 }
 \description{
-Predict score given FDR
+For more details and references see package vignette
+\code{vignette("TargetDecoyFDR_Example", package = "prozor")}
 }
 \examples{
 data(fdrSample)

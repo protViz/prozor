@@ -10,7 +10,8 @@ plotFDR(data)
 \item{data}{data returned by computeFDR function}
 }
 \description{
-plot FDR
+For more details and references see package vignette
+\code{vignette("TargetDecoyFDR_Example", package = "prozor")}
 }
 \examples{
 library(prozor)

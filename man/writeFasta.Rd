@@ -18,11 +18,13 @@ peptides which do not have protein assignment drop out
 #example how to create a protein db with decoy sequences
 library(seqinr)
 library(prozor)
-file = file.path(path.package("prozor"),"extdata/fgcz_contaminants_20150123.fasta.gz")
+#file = file.path(path.package("prozor"),"extdata/fgcz_contaminants_20150123.fasta.gz")
+file = system.file("extdata/fgcz_contaminants_20150123.fasta.gz",package = "prozor")
 fasta = readPeptideFasta(file = file)
 revfasta <- reverseSeq(fasta)
 decoyDB <- c(fasta,revfasta)
 stopifnot(length(decoyDB) == 2 * length(fasta))
+\dontrun{
 writeFasta(decoyDB, file="test.fasta")
-
+}
 }

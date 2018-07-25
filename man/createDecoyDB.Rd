@@ -2,7 +2,7 @@
 % Please edit documentation in R/createDecoyDB.R
 \name{createDecoyDB}
 \alias{createDecoyDB}
-\title{create db with decoys and contaminants}
+\title{Create db with decoys and contaminants}
 \usage{
 createDecoyDB(dbs, useContaminants = loadContaminantsFasta(),
   revLab = "REV_", annot = "zz|sourceOf|database")
@@ -17,10 +17,12 @@ createDecoyDB(dbs, useContaminants = loadContaminantsFasta(),
 \item{annot}{source of database}
 }
 \description{
-create db with decoys and contaminants
+For more details and references see package vignette
+\code{vignette("CreateDecoyDB", package = "prozor")}
 }
 \examples{
-file = file.path(path.package("prozor"),"extdata/shortfasta.fasta.gz")
+#file = file.path(path.package("prozor"),"extdata/shortfasta.fasta.gz")
+file = system.file("extdata/fgcz_contaminants_20150123.fasta.gz",package = "prozor")
 cont <- loadContaminantsFasta()
 rabbit <-readPeptideFasta(file)
 tmp <- 2*(2*length(rabbit)+length(cont)) + 1

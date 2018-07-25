@@ -2,8 +2,7 @@
 % Please edit documentation in R/computeFDR.R
 \name{computeFDR}
 \alias{computeFDR}
-\title{Compute FDR given a score
-Same as computeFDRwithID but works with decoy_hit boolean vector}
+\title{Compute FDR given a score}
 \usage{
 computeFDR(score, decoy_hit, larger_better = TRUE)
 }
@@ -19,6 +18,7 @@ list with decoy_hit (indicates if decoy), score the search engine score,
 FDR1 false discovery rate estimated using the method of Gygi, SimpleFDR - estimated using the method of Kaell.
 }
 \description{
-Compute FDR given a score
-Same as computeFDRwithID but works with decoy_hit boolean vector
+Same as computeFDRwithID but works with decoy_hit boolean vector.
+For more details and references see package vignette
+\code{vignette("TargetDecoyFDR_Example", package = "prozor")}
 }

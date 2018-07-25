@@ -20,7 +20,8 @@ list with ID, decoy_hit (indicates if decoy), score the search engine score,
 FDR1 false discovery rate estimated using the method of Elias and Gygi; FDR2 - estimated using the method of Kell.
 }
 \description{
-Compute FDR given a score
+For more details and references see package vignette
+\code{vignette("TargetDecoyFDR_Example", package = "prozor")}
 }
 \examples{
 library(prozor)
