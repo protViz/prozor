@@ -1,3 +1,4 @@
 *.R
 *.html
 *.build.timestamp
+*_files/
