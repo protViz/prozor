@@ -59,16 +59,6 @@ makeID <- function(sequence, id, sp){
 #' @param db uniprot fasta database as list
 #' @param signal tab delimited file with signals
 #' @param idfun function to generate id's
-#' @examples
-#' \dontrun{
-#' library(prozor)
-#'
-#' hsfasta <- loadHomoSapiensFasta()
-#' hssignal <- loadHomoSapiensSignalPeptides()
-#' xx <- removeSignalPeptide(hsfasta, hssignal)
-#' db <- hsfasta
-#' signal <- hssignal
-#' }
 removeSignalPeptide <- function(db, signal, idfun=makeID){
   res <- db
   tmp2 <- as.numeric(gsub("^SIGNAL [0-9]+ ([0-9]+).*"  , "\\1", signal$Signal.peptide))

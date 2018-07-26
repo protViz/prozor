@@ -16,14 +16,3 @@ removeSignalPeptide(db, signal, idfun = makeID)
 \description{
 remove signal peptides from main chain
 }
-\examples{
-\dontrun{
-library(prozor)
-
-hsfasta <- loadHomoSapiensFasta()
-hssignal <- loadHomoSapiensSignalPeptides()
-xx <- removeSignalPeptide(hsfasta, hssignal)
-db <- hsfasta
-signal <- hssignal
-}
-}

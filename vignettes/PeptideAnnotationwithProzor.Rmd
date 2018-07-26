@@ -1,10 +1,10 @@
 ---
-title: "Spectra Annotation and Protein Inference"
+title: "Peptide Annotation and Protein Inference"
 author: "Witold Wolski"
 date: "March 16, 2017"
 output: html_document
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteIndexEntry{Peptide Annotation and Protein Inference}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -46,21 +46,15 @@ length(unique(specMeta$peptideSeq))
 upeptide <-unique(specMeta$peptideSeq)
 
 resAll <- prozor::readPeptideFasta(system.file("extdata/Annotation_allSeq.fasta.gz" , package = "prozor"))
-resIso <- prozor::readPeptideFasta(system.file("extdata/Annotation_isoSeq.fasta.gz" , package = "prozor"))
 resRev <- prozor::readPeptideFasta(system.file("extdata/Annotation_canSeq.fasta.gz" , package = "prozor"))
 
 annotAll <- prozor::annotatePeptides(upeptide,resAll)
 pcAll <- length(unique(annotAll$peptideSeq))/ length(upeptide)
 
-
-annotIso <- prozor::annotatePeptides(upeptide, resIso)
-pcIso <- length(unique(annotIso$peptideSeq))/ length(upeptide)
-
-
 annotRev <- prozor::annotatePeptides(upeptide, resRev)
 pcCan <-length(unique(annotRev$peptideSeq))/ length(upeptide)
 
-barplot(c(Canonical = pcCan, Isoform = pcIso, All = pcAll))
+barplot(c(Canonical = pcCan, All = pcAll))
 
 ```
 
@@ -72,9 +66,9 @@ plot(sort(table(annotAll$peptideSeq)),axes=F, ylab="Nr protein IDs")
 axis(2)
 PCProteotypic_all <- sum(table(annotAll$peptideSeq) == 1)/ length(table(annotAll$peptideSeq)) * 100
 
-plot(sort(table(annotIso$peptideSeq)),axes=F, ylab="Nr protein IDs")
-axis(2)
-PCProteotypic_iso <- sum(table(annotIso$peptideSeq) == 1)/ length(table(annotIso$peptideSeq)) * 100
+#plot(sort(table(annotIso$peptideSeq)),axes=F, ylab="Nr protein IDs")
+#axis(2)
+#PCProteotypic_iso <- sum(table(annotIso$peptideSeq) == 1)/ length(table(annotIso$peptideSeq)) * 100
 
 plot(sort(table(annotRev$peptideSeq)),axes=F, ylab="Nr protein IDs")
 axis(2)
@@ -84,7 +78,7 @@ PCProteotypic_canonical <- sum(table(annotRev$peptideSeq) == 1)/ length(table(an
 
 
 ```{r}
-barplot(c(All = PCProteotypic_all, can_and_iso = PCProteotypic_iso, canonical =  PCProteotypic_canonical),las=2, ylab="% proteotypic" )
+barplot(c(All = PCProteotypic_all, canonical =  PCProteotypic_canonical),las=2, ylab="% proteotypic" )
 
 ```
 
@@ -122,22 +116,6 @@ xxAll <- greedy(xx)
 
 ```
 
-### For Swissprot with isoforms
-
-```{r}
-
-annotatedPrecursors <-merge(precursors , subset(annotIso, select= c(peptideSeq,proteinID)), by.x="peptideSeq", 
-                            by.y="peptideSeq")
-
-annotatedPrecursors$precursorCharge <- annotatedPrecursors$precursorCharge
-annotatedPrecursors$peptideModSeq <- annotatedPrecursors$peptideModSeq
-
-xx<-prepareMatrix(annotatedPrecursors,proteinID = "proteinID", peptideID = "peptideSeq" )
-image(xx)
-xxISO <- greedy(xx)
-
-```
-
 ### For swissprot no isoforms
 
 ```{r}
@@ -155,7 +133,7 @@ xxCAN <- greedy(xx)
 
 
 ```{r fig.cap="Number of Proteins after protein inference."}
-barplot(c(All = length(unique(unlist(xxAll))) , can_and_iso =length(unique(unlist(xxISO))), canonical = length(unique(unlist(xxCAN)))    ))
+barplot(c(All = length(unique(unlist(xxAll))) , canonical = length(unique(unlist(xxCAN)))    ))
 ```
 
 

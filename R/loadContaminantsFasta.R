@@ -24,29 +24,4 @@ loadContaminantsNoHumanFasta <- function(){
     #file = file.path(path.package("prozor"),"extdata/fgcz_ContaminantsWithAnnotationNoHuman.fasta.gz")
     contaminants <- readPeptideFasta(file)
 }
-#' load human signal peptides
-#'
-#' @export
-#' @examples
-#' library(prozor)
-#' signal <- loadHomoSapiensSignalPeptides()
-#'
-loadHomoSapiensSignalPeptides <- function(){
-  file = system.file("extdata/uniprot_signal_homo_sapiens_9606_23032016.tab.gz",package = "prozor")
-  #file = file.path(path.package("prozor"),"extdata/uniprot_signal_homo_sapiens_9606_23032016.tab.gz")
-  fasta <- utils::read.csv(file,sep="\t", stringsAsFactors = FALSE)
-}
-
-#'
-#' load mus musculus signal peptides
-#' @export
-#' @examples
-#' library(prozor)
-#' signal <- loadMusMusculusSignalPeptides()
-#' head(signal)
-loadMusMusculusSignalPeptides <- function(){
-  file = system.file("extdata/uniprot_signal_mus_musculus_29032016.tab.gz",package = "prozor")
-  #file = file.path(path.package("prozor"),"extdata/uniprot_signal_mus_musculus_29032016.tab.gz")
-  fasta <- utils::read.csv(file,sep="\t", stringsAsFactors = FALSE)
-}
 
