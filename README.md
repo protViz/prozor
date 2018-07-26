@@ -30,6 +30,6 @@ install_github("protviz/prozor")
 downlod git repo. Use roxygenize2 to document new functions. Than run these 2 commands to update namespace and Rd files:
 
 ```r
-library(prozor)
+library(devtools)
 document()
 ```
