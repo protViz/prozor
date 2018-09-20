@@ -4,7 +4,8 @@
 \alias{annotatePeptides}
 \title{Annotate peptides with protein ids}
 \usage{
-annotatePeptides(pepinfo, fasta, prefix = "(([RK])|(^)|(^M))", suffix = "")
+annotatePeptides(pepinfo, fasta, peptide = "peptideSeq",
+  prefix = "(([RK])|(^)|(^M))", suffix = "")
 }
 \arguments{
 \item{pepinfo}{- list of peptides - sequence, optional modified sequence, charge state.}
@@ -20,12 +21,14 @@ peptides which do not have protein assignment drop out
 }
 \examples{
 library(prozor)
-data(pepprot)
 file = system.file("extdata/shortfasta.fasta.gz",package = "prozor")
 
 fasta = readPeptideFasta(file = file)
 res = annotatePeptides(pepprot[1:20,], fasta)
-head(res)
 res = annotatePeptides(pepprot[1:20,"peptideSeq"],fasta)
-length(res)
+dim(res)
+str(res)
+dim(res)
+res \%>\% mutate(proteinlength = nchar(proteinSequence)) -> res
+
 }

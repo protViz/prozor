@@ -1,3 +1,12 @@
+
+.matchPepsequence <- function(peptideSeq, proteinSeq , proteinID, prefix= "(([RK])|(^)|(^M))", suffix =""){
+    seqpattern <-paste(prefix, peptideSeq, suffix, sep="")
+    idx2 <- grepl(seqpattern, proteinSeq, fixed=FALSE)
+    return(idx2)
+}
+
+
+
 #' Annotate peptides with protein ids
 #'
 #' peptides which do not have protein assignment drop out
@@ -7,40 +16,42 @@
 #' @param prefix - default "(([RK])|(^)|(^M))"
 #' @param suffix - default ""
 #' @import stringr
+#' @importFrom tidyr nest
 #' @export
 #' @examples
 #' library(prozor)
-#' data(pepprot)
 #' file = system.file("extdata/shortfasta.fasta.gz",package = "prozor")
 #'
 #' fasta = readPeptideFasta(file = file)
 #' res = annotatePeptides(pepprot[1:20,], fasta)
-#' head(res)
 #' res = annotatePeptides(pepprot[1:20,"peptideSeq"],fasta)
-#' length(res)
+#' dim(res)
+#' str(res)
+#' dim(res)
+#' res %>% mutate(proteinlength = nchar(proteinSequence)) -> res
+#'
 annotatePeptides <- function(pepinfo,
                              fasta,
+                             peptide = "peptideSeq",
                              prefix = "(([RK])|(^)|(^M))",
                              suffix = ""
 
 ){
-
     if(is.null(dim(pepinfo))){
-        pepinfo = matrix(pepinfo,ncol=1)
-        colnames(pepinfo) = "peptideSeq"
+        pepinfo = data.frame(pepinfo, stringsAsFactors = FALSE)
+        colnames(pepinfo) = peptide
     }
-    pepinfo = pepinfo[,"proteinID" != colnames(pepinfo),drop=FALSE]
 
-    pepinfo = apply(pepinfo,2,as.character)
-    lengthPeptide = sapply(pepinfo[,"peptideSeq"],nchar)
-    pepinfo = cbind(pepinfo,"lengthPeptide"=lengthPeptide)
-    pepseq  = unique(as.character(pepinfo[,"peptideSeq"]))
+
+    pepinfo <- pepinfo %>% mutate_at(peptide, funs(as.character)) %>%
+        mutate_at(peptide, .funs=funs("lengthPeptide" := nchar))
+    pepseq  = unique(as.character(pepinfo[,peptide]))
     restab <- annotateAHO(pepseq, fasta)
-    restab <- filterSequences(restab, prefix = prefix, suffix = suffix)
-    res = merge(restab,pepinfo,by.x="peptideSeq",by.y="peptideSeq")
-    res[,"peptideSeq"] <- as.character( res[,"peptideSeq"])
-    res[,"proteinID"]<- as.character(res[,"proteinID"])
-
+    colnames(restab)
+    restab <- restab %>%
+        group_by_at(peptide) %>%
+        mutate(matched = .matchPepsequence(dplyr::first(peptideSeq), proteinSequence , proteinID, prefix = prefix, suffix = suffix))
+    res = merge(restab,pepinfo,by.x=peptide,by.y=peptide)
     return(res)
 }
 
@@ -52,6 +63,7 @@ annotatePeptides <- function(pepinfo,
 #' @param fasta - object as created by readPeptideFasta
 #' @import AhoCorasickTrie
 #' @import stringr
+#' @importFrom purrr map2_df map_df
 #' @examples
 #'
 #' library(prozor)
@@ -82,38 +94,11 @@ annotateAHO <- function(pepseq,fasta){
                                                          map_df(x,.f=function(x){x}), stringsAsFactors = FALSE)
                           })
     colnames(xx)[colnames(xx)=="Keyword"]<-"peptideSeq"
-    dbframe <- data.frame(proteinID = names(fasta), proteinSequence = as.character(unlist(fasta)),stringsAsFactors = FALSE)
+    dbframe <- data.frame(proteinID = names(fasta),
+                          proteinSequence = as.character(unlist(fasta)),
+                          stringsAsFactors = FALSE)
     matches <- dplyr::inner_join(xx, dbframe )
-
     return(matches)
-}
-
-.matchPepsequence <- function(matches, prefix= "(([RK])|(^)|(^M))", suffix =""){
-
-    seqpattern <-paste(prefix, matches$peptideSeq[1], suffix, sep="")
-    idx2 <- grep(seqpattern, matches$proteinSequence, fixed=FALSE)
-    if(length(idx2) > 0){
-        matchesres <- matches[idx2,]
-        matchesres$pattern <- seqpattern
-        return(matchesres)
-    }else{
-        return(NULL)
-    }
-
-}
-
-#'
-#' Filter for specific residues
-#'
-#' Will check if AA at Offset is a valid cleavage site
-#'
-#' @param matches must have 2 columns proteinSequnce and Offset
-#' @param prefix - regular expression describing the prefix of the peptide sequence e.g. (([RK])|(^)|(^M))
-#' @param suffix - regular expression describing the suffix of the peptide sequence
-#' @export
-#'
-filterSequences <- function(matches,prefix = "(([RK])|(^)|(^M))", suffix="" ){
-    x <- plyr::ddply(matches, ~peptideSeq, .matchPepsequence, prefix = prefix, suffix = suffix)
 }
 
 
