@@ -25,11 +25,9 @@
 #' fasta = readPeptideFasta(file = file)
 #' res = annotatePeptides(pepprot[1:20,], fasta)
 #' res = annotatePeptides(pepprot[1:20,"peptideSeq"],fasta)
-#' dim(res)
 #' str(res)
-#' dim(res)
 #' res %>% mutate(proteinlength = nchar(proteinSequence)) -> res
-#'
+#' res %>% select(proteinID, proteinlength, Offset, lengthPeptide)
 annotatePeptides <- function(pepinfo,
                              fasta,
                              peptide = "peptideSeq",
@@ -41,8 +39,6 @@ annotatePeptides <- function(pepinfo,
         pepinfo = data.frame(pepinfo, stringsAsFactors = FALSE)
         colnames(pepinfo) = peptide
     }
-
-
     pepinfo <- pepinfo %>% mutate_at(peptide, funs(as.character)) %>%
         mutate_at(peptide, .funs=funs("lengthPeptide" := nchar))
     pepseq  = unique(as.character(pepinfo[,peptide]))
