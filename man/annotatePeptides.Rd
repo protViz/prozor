@@ -26,9 +26,7 @@ file = system.file("extdata/shortfasta.fasta.gz",package = "prozor")
 fasta = readPeptideFasta(file = file)
 res = annotatePeptides(pepprot[1:20,], fasta)
 res = annotatePeptides(pepprot[1:20,"peptideSeq"],fasta)
-dim(res)
 str(res)
-dim(res)
 res \%>\% mutate(proteinlength = nchar(proteinSequence)) -> res
-
+res \%>\% select(proteinID, proteinlength, Offset, lengthPeptide)
 }
