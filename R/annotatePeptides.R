@@ -55,18 +55,19 @@ annotatePeptides <- function(pepinfo,
 #' @examples
 #'
 #' library(prozor)
+#' library(AhoCorasickTrie)
 #' file = system.file("extdata/shortfasta.fasta.gz",package = "prozor")
 #' fasta = readPeptideFasta(file = file)
 #' pepprot <- get(data("pepprot", package = "prozor"))
 #' system.time( res2 <- annotateAHO( pepprot[1:20,"peptideSeq"], fasta))
 #' colnames(res2)
+#'
 #' @export
 annotateAHO <- function(pepseq,fasta){
     #100_000 peptides
     #40_000 Proteine
 
     pepseq <-stringr::str_trim(unique(pepseq))
-
     proteinIDS <- names(unlist(fasta))
     fasta <- stringr::str_trim(unlist(fasta))
     names(fasta) <- proteinIDS
@@ -76,15 +77,14 @@ annotateAHO <- function(pepseq,fasta){
     {
         return(NULL)
     }
-    simplifyAhoCorasickResult <- function(x, name){t <- as.data.frame(do.call("rbind",(x))); t$proteinID <- name; return(t)}
-    tmp <- mapply(simplifyAhoCorasickResult, res, names(res), SIMPLIFY=FALSE)
-    print(length(tmp))
-    xx <- plyr::rbind.fill(tmp)
+    xx <- purrr::map2_df(names(res),res,
+                          .f=function(name,x){data.frame(proteinID=name,
+                                                         map_df(x,.f=function(x){x}), stringsAsFactors = FALSE)
+                          })
     colnames(xx)[colnames(xx)=="Keyword"]<-"peptideSeq"
-    xx$peptideSeq <- as.character(xx$peptideSeq)
-    xx$Offset <- as.numeric(xx$Offset)
     dbframe <- data.frame(proteinID = names(fasta), proteinSequence = as.character(unlist(fasta)),stringsAsFactors = FALSE)
-    matches <- merge(xx, dbframe )
+    matches <- dplyr::inner_join(xx, dbframe )
+
     return(matches)
 }
 
