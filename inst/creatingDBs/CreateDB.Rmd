@@ -976,3 +976,267 @@ writeFasta(resDBDecoy, file=xx)
 ```
 
 
+## p2971_db1_Wheat_Zymoseptoria
+
+### Create forward db
+
+```{r}
+library(prozor)
+databasedirectory <- ("Z:/p2971/Proteomics/fasta_db/p2971_db1_Wheat_Zymoseptoria")
+
+dbname <- basename(databasedirectory)
+
+fasta <- grep("fasta", dir(databasedirectory),value = T)
+files1 <- file.path(databasedirectory,fasta)
+files1
+
+annot <- grep("annotation",dir(databasedirectory), value=T)
+annot
+annotation <- readLines(file.path(databasedirectory,annot))
+annotation
+
+resDB <- createDecoyDB(files1,useContaminants = loadContaminantsFasta(), annot=annotation, revLab = NULL)
+sum(duplicated(names(resDB)))
+sum(duplicated(resDB))
+
+dirname(databasedirectory)
+xx <- file.path(dirname(databasedirectory), paste(dbname,"_",format(Sys.time(), "%Y%m%d"),".fasta" ,sep=""))
+writeFasta(resDB, file=xx)
+```
+
+
+### CREATING DECOY DB
+
+```{r}
+resDBDecoy <- createDecoyDB(files1,useContaminants = loadContaminantsFasta(), annot=annotation)
+sum(duplicated(names(resDBDecoy)))
+sum(duplicated(resDBDecoy))
+length(resDBDecoy)
+
+dbname_decoy <- unlist(strsplit(dbname,"_"))
+dbname_decoy <- paste(c(dbname_decoy[1],"d",dbname_decoy[2:length(dbname_decoy)]),collapse="_")
+dbname_decoy
+
+dirname(databasedirectory)
+xx <- file.path(dirname(databasedirectory), paste(dbname_decoy,"_",format(Sys.time(), "%Y%m%d"),".fasta" ,sep=""))
+
+writeFasta(resDBDecoy, file=xx)
+
+```
+
+
+## p2558_db2_rat
+
+### Create forward db
+
+```{r}
+library(prozor)
+databasedirectory <- ("Z:/p2558/Proteomics/fasta_db/p2558_db2_rat/")
+
+dbname <- basename(databasedirectory)
+
+fasta <- grep("fasta", dir(databasedirectory),value = T)
+files1 <- file.path(databasedirectory,fasta)
+files1
+
+annot <- grep("annotation",dir(databasedirectory), value=T)
+annot
+annotation <- readLines(file.path(databasedirectory,annot))
+annotation
+
+resDB <- createDecoyDB(files1,useContaminants = loadContaminantsFasta(), annot=annotation, revLab = NULL)
+sum(duplicated(names(resDB)))
+sum(duplicated(resDB))
+
+dirname(databasedirectory)
+xx <- file.path(dirname(databasedirectory), paste(dbname,"_",format(Sys.time(), "%Y%m%d"),".fasta" ,sep=""))
+writeFasta(resDB, file=xx)
+
+```
+
+
+### CREATING DECOY DB
+
+```{r}
+
+resDBDecoy <- createDecoyDB(files1,useContaminants = loadContaminantsFasta(), annot=annotation)
+sum(duplicated(names(resDBDecoy)))
+sum(duplicated(resDBDecoy))
+length(resDBDecoy)
+
+dbname_decoy <- unlist(strsplit(dbname,"_"))
+dbname_decoy <- paste(c(dbname_decoy[1],"d",dbname_decoy[2:length(dbname_decoy)]),collapse="_")
+dbname_decoy
+
+dirname(databasedirectory)
+xx <- file.path(dirname(databasedirectory), paste(dbname_decoy,"_",format(Sys.time(), "%Y%m%d"),".fasta" ,sep=""))
+
+writeFasta(resDBDecoy, file=xx)
+
+```
+
+
+
+## p2558_db1_mouse
+
+### Create forward db
+
+```{r}
+library(prozor)
+databasedirectory <- ("Z:/p2558/Proteomics/fasta_db/p2558_db1_mouse/")
+
+dbname <- basename(databasedirectory)
+
+fasta <- grep("fasta", dir(databasedirectory),value = T)
+files1 <- file.path(databasedirectory,fasta)
+files1
+
+annot <- grep("annotation",dir(databasedirectory), value=T)
+annot
+annotation <- readLines(file.path(databasedirectory,annot))
+annotation
+
+resDB <- createDecoyDB(files1,useContaminants = loadContaminantsFasta(), annot=annotation, revLab = NULL)
+sum(duplicated(names(resDB)))
+sum(duplicated(resDB))
+
+dirname(databasedirectory)
+xx <- file.path(dirname(databasedirectory), paste(dbname,"_",format(Sys.time(), "%Y%m%d"),".fasta" ,sep=""))
+writeFasta(resDB, file=xx)
+
+```
+
+
+### CREATING DECOY DB
+
+```{r}
+
+resDBDecoy <- createDecoyDB(files1,useContaminants = loadContaminantsFasta(), annot=annotation)
+sum(duplicated(names(resDBDecoy)))
+sum(duplicated(resDBDecoy))
+length(resDBDecoy)
+
+dbname_decoy <- unlist(strsplit(dbname,"_"))
+dbname_decoy <- paste(c(dbname_decoy[1],"d",dbname_decoy[2:length(dbname_decoy)]),collapse="_")
+dbname_decoy
+
+dirname(databasedirectory)
+xx <- file.path(dirname(databasedirectory), paste(dbname_decoy,"_",format(Sys.time(), "%Y%m%d"),".fasta" ,sep=""))
+
+writeFasta(resDBDecoy, file=xx)
+
+```
+
+
+
+
+## p1511_db11_d_co_culture
+
+
+
+### Create forward db
+
+```{r}
+library(prozor)
+databasedirectory <- ("Z:/p1511/Proteomics/fasta_db/p1511_db11_d_co_culture")
+dir.exists(databasedirectory)
+
+dbname <- basename(databasedirectory)
+
+fasta <- grep("fasta", dir(databasedirectory),value = T)
+files1 <- file.path(databasedirectory,fasta)
+files1
+
+annot <- grep("annotation",dir(databasedirectory), value=T)
+annot
+annotation <- readLines(file.path(databasedirectory,annot))
+annotation
+
+resDB <- createDecoyDB(files1,useContaminants = loadContaminantsFasta(), annot=annotation, revLab = NULL)
+length(resDB)
+resDB <- resDB[!duplicated(names(resDB))]
+length(resDB)
+
+dirname(databasedirectory)
+xx <- file.path(dirname(databasedirectory), paste(dbname,"_",format(Sys.time(), "%Y%m%d"),".fasta" ,sep=""))
+writeFasta(resDB, file=xx)
+
+```
+
+### CREATING DECOY DB
+
+
+```{r}
+
+resDBDecoy <- createDecoyDB(files1,useContaminants = loadContaminantsFasta(), annot=annotation)
+resDBDecoy <- resDBDecoy[!duplicated(names(resDBDecoy))]
+sum(duplicated(names(resDBDecoy)))
+sum(duplicated(resDBDecoy))
+length(resDBDecoy)
+
+dbname_decoy <- unlist(strsplit(dbname,"_"))
+dbname_decoy <- paste(c(dbname_decoy[1],"d",dbname_decoy[2:length(dbname_decoy)]),collapse="_")
+
+dirname(databasedirectory)
+xx <- file.path(dirname(databasedirectory), paste(dbname_decoy,"_",format(Sys.time(), "%Y%m%d"),".fasta" ,sep=""))
+xx
+writeFasta(resDBDecoy, file=xx)
+
+```
+
+## p2953_db1_d_drosophila_2species
+
+
+
+Y:\p2953\Proteomics\fasta_db\p2953_db1_d_drosophila_2species
+
+
+### Create forward db
+
+```{r}
+library(prozor)
+databasedirectory <- ("Z:/p2953/Proteomics/fasta_db/p2953_db1_d_drosophila_2species")
+dir.exists(databasedirectory)
+
+dbname <- basename(databasedirectory)
+
+fasta <- grep("fasta", dir(databasedirectory),value = T)
+files1 <- file.path(databasedirectory,fasta)
+files1
+
+annot <- grep("annotation",dir(databasedirectory), value=T)
+annot
+annotation <- readLines(file.path(databasedirectory,annot))
+annotation
+
+resDB <- createDecoyDB(files1,useContaminants = loadContaminantsFasta(), annot=annotation, revLab = NULL)
+length(resDB)
+resDB <- resDB[!duplicated(names(resDB))]
+length(resDB)
+
+dirname(databasedirectory)
+xx <- file.path(dirname(databasedirectory), paste(dbname,"_",format(Sys.time(), "%Y%m%d"),".fasta" ,sep=""))
+writeFasta(resDB, file=xx)
+
+```
+
+### CREATING DECOY DB
+
+
+```{r}
+
+resDBDecoy <- createDecoyDB(files1,useContaminants = loadContaminantsFasta(), annot=annotation)
+resDBDecoy <- resDBDecoy[!duplicated(names(resDBDecoy))]
+sum(duplicated(names(resDBDecoy)))
+sum(duplicated(resDBDecoy))
+length(resDBDecoy)
+
+dbname_decoy <- unlist(strsplit(dbname,"_"))
+dbname_decoy <- paste(c(dbname_decoy[1],"d",dbname_decoy[2:length(dbname_decoy)]),collapse="_")
+
+dirname(databasedirectory)
+xx <- file.path(dirname(databasedirectory), paste(dbname_decoy,"_",format(Sys.time(), "%Y%m%d"),".fasta" ,sep=""))
+xx
+writeFasta(resDBDecoy, file=xx)
+
+```
