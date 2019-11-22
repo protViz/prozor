@@ -19,6 +19,7 @@
 #' @importFrom tidyr nest
 #' @export
 #' @examples
+#' library(tidyverse)
 #' library(prozor)
 #' file = system.file("extdata/shortfasta.fasta.gz",package = "prozor")
 #'
@@ -39,14 +40,17 @@ annotatePeptides <- function(pepinfo,
         pepinfo = data.frame(pepinfo, stringsAsFactors = FALSE)
         colnames(pepinfo) = peptide
     }
-    pepinfo <- pepinfo %>% mutate_at(peptide, funs(as.character)) %>%
-        mutate_at(peptide, .funs=funs("lengthPeptide" := nchar))
+    pepinfo <- pepinfo %>% dplyr::mutate_at(peptide, dplyr::funs(as.character)) %>%
+        dplyr::mutate_at(peptide, .funs=dplyr::funs("lengthPeptide" := nchar))
     pepseq  = unique(as.character(pepinfo[,peptide]))
     restab <- annotateAHO(pepseq, fasta)
     colnames(restab)
     restab <- restab %>%
-        group_by_at(peptide) %>%
-        mutate(matched = .matchPepsequence(dplyr::first(peptideSeq), proteinSequence , proteinID, prefix = prefix, suffix = suffix))
+        dplyr::group_by_at(peptide) %>%
+        dplyr::mutate(matched = .matchPepsequence(dplyr::first(peptideSeq),
+                                           proteinSequence , proteinID,
+                                           prefix = prefix, suffix = suffix))
+
     res = merge(restab,pepinfo,by.x=peptide,by.y=peptide)
     return(res)
 }

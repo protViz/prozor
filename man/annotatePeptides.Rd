@@ -20,6 +20,7 @@ annotatePeptides(pepinfo, fasta, peptide = "peptideSeq",
 peptides which do not have protein assignment drop out
 }
 \examples{
+library(tidyverse)
 library(prozor)
 file = system.file("extdata/shortfasta.fasta.gz",package = "prozor")
 
