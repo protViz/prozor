@@ -5,3 +5,5 @@
 ^\.git$
 ^\.travis\.yml$
 ^.*inst/dataignore/.*$
+^doc$
+^Meta$

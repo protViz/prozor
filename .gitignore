@@ -5,3 +5,5 @@
 *.timings
 ~*
 inst/doc
+doc
+Meta
