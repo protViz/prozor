@@ -1,7 +1,14 @@
 
-.matchPepsequence <- function(peptideSeq, proteinSeq , proteinID, prefix= "(([RK])|(^)|(^M))", suffix =""){
-    seqpattern <-paste(prefix, peptideSeq, suffix, sep="")
-    idx2 <- grepl(seqpattern, proteinSeq, fixed=FALSE)
+
+.matchPepsequence <- function(
+    peptideSeq,
+    proteinSeq ,
+    proteinID,
+    prefix = "(([RK])|(^)|(^M))",
+    suffix = "")
+{
+    seqpattern <- paste(prefix, peptideSeq, suffix, sep = "")
+    idx2 <- grepl(seqpattern, proteinSeq, fixed = FALSE)
     return(idx2)
 }
 
@@ -33,25 +40,30 @@ annotatePeptides <- function(pepinfo,
                              fasta,
                              peptide = "peptideSeq",
                              prefix = "(([RK])|(^)|(^M))",
-                             suffix = ""
-
-){
-    if(is.null(dim(pepinfo))){
+                             suffix = "") {
+    if (is.null(dim(pepinfo))) {
         pepinfo = data.frame(pepinfo, stringsAsFactors = FALSE)
         colnames(pepinfo) = peptide
     }
-    pepinfo <- pepinfo %>% dplyr::mutate_at(peptide, dplyr::funs(as.character)) %>%
-        dplyr::mutate_at(peptide, .funs=dplyr::funs("lengthPeptide" := nchar))
-    pepseq  = unique(as.character(pepinfo[,peptide]))
+    pepinfo <-
+        pepinfo %>% dplyr::mutate_at(peptide, dplyr::funs(as.character)) %>%
+        dplyr::mutate_at(peptide, .funs = dplyr::funs("lengthPeptide" := nchar))
+    pepseq  = unique(as.character(pepinfo[, peptide]))
     restab <- annotateAHO(pepseq, fasta)
     colnames(restab)
     restab <- restab %>%
         dplyr::group_by_at(peptide) %>%
-        dplyr::mutate(matched = .matchPepsequence(dplyr::first(peptideSeq),
-                                           proteinSequence , proteinID,
-                                           prefix = prefix, suffix = suffix))
+        dplyr::mutate(
+            matched = .matchPepsequence(
+                dplyr::first(peptideSeq),
+                proteinSequence ,
+                proteinID,
+                prefix = prefix,
+                suffix = suffix
+            )
+        )
 
-    res = merge(restab,pepinfo,by.x=peptide,by.y=peptide)
+    res = merge(restab, pepinfo, by.x = peptide, by.y = peptide)
     return(res)
 }
 
@@ -75,30 +87,43 @@ annotatePeptides <- function(pepinfo,
 #' colnames(res2)
 #'
 #' @export
-annotateAHO <- function(pepseq,fasta){
+annotateAHO <- function(pepseq, fasta) {
     #100_000 peptides
     #40_000 Proteine
 
-    pepseq <-stringr::str_trim(unique(pepseq))
+    pepseq <- stringr::str_trim(unique(pepseq))
     proteinIDS <- names(unlist(fasta))
     fasta <- stringr::str_trim(unlist(fasta))
     names(fasta) <- proteinIDS
 
-    res <- AhoCorasickSearch(unique(pepseq) , unlist(fasta), alphabet = "aminoacid")
-    if(length(res) == 0)
+    res <-
+        AhoCorasickSearch(unique(pepseq) , unlist(fasta), alphabet = "aminoacid")
+    if (length(res) == 0)
     {
         return(NULL)
     }
-    xx <- purrr::map2_df(names(res),res,
-                          .f=function(name,x){data.frame(proteinID=name,
-                                                         map_df(x,.f=function(x){x}), stringsAsFactors = FALSE)
-                          })
-    colnames(xx)[colnames(xx)=="Keyword"]<-"peptideSeq"
-    dbframe <- data.frame(proteinID = names(fasta),
-                          proteinSequence = as.character(unlist(fasta)),
-                          stringsAsFactors = FALSE)
-    matches <- dplyr::inner_join(xx, dbframe )
+    xx <- purrr::map2_df(
+        names(res),
+        res,
+        .f = function(name, x) {
+            data.frame(
+                proteinID = name,
+                map_df(
+                    x,
+                    .f = function(x) {
+                        x
+                    }
+                ),
+                stringsAsFactors = FALSE
+            )
+        }
+    )
+    colnames(xx)[colnames(xx) == "Keyword"] <- "peptideSeq"
+    dbframe <- data.frame(
+        proteinID = names(fasta),
+        proteinSequence = as.character(unlist(fasta)),
+        stringsAsFactors = FALSE
+    )
+    matches <- dplyr::inner_join(xx, dbframe)
     return(matches)
 }
-
-
