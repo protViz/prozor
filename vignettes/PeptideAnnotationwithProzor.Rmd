@@ -93,9 +93,7 @@ barplot(
 ```
 
 
-
 ## Do protein inference
-
 
 
 ```{r}
