@@ -59,7 +59,7 @@ computeFDRwithID <-function(score, ID, decoy = "REV_", larger_better = TRUE){
 #' FDR1 false discovery rate estimated using the method of Gygi, SimpleFDR - estimated using the method of Kaell.
 #'
 computeFDR <- function(score, decoy_hit , larger_better = TRUE){
-  ord <- order(score, decreasing=larger_better)
+  ord <- order(score, decreasing = larger_better)
   score <- score[ord]
   decoy_hit <- decoy_hit[ord]
 

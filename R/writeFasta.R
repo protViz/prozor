@@ -1,6 +1,6 @@
 .writeFasta <- function(fasta , file=NULL  ) {
   namesres <- sapply(fasta, function(x) attributes(x)$Annot)
-  namesres <- gsub(">","",namesres)
+  namesres <- gsub(">", "", namesres)
   write.fasta(fasta, namesres , file.out = file, nbchar = 60, as.string =TRUE)
 }
 #' write fasta lists into file
@@ -22,7 +22,7 @@
 #' \dontrun{
 #' writeFasta(decoyDB, file="test.fasta")
 #' }
-writeFasta <- function( file, ...  ) {
+writeFasta <- function(file, ...  ) {
    fasta <- c(...)
-  .writeFasta(fasta,file=file)
+  .writeFasta(fasta,file = file)
 }

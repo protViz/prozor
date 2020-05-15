@@ -1553,12 +1553,11 @@ annot
 annotation <- readLines(file.path(databasedirectory,annot))
 annotation
 
-resDB <- createDecoyDB(files1,useContaminants = loadContaminantsFasta(), annot=annotation, revLab = NULL)
+resDB <- createDecoyDB(files1, useContaminants = loadContaminantsFasta(), annot = annotation, revLab = NULL)
 resDB <- resDB[!duplicated(names(resDB))]
 
 dirname(databasedirectory)
-xx <- file.path(dirname(databasedirectory), paste(dbname,"_",format(Sys.time(), "%Y%m%d"),".fasta" ,sep=""))
-print(xx)
+xx <- file.path(dirname(databasedirectory), paste(dbname,"_",format(Sys.time(), "%Y%m%d"),".fasta" ,sep = ""))
 writeFasta(resDB, file=xx)
 
 ```

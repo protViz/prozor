@@ -30,16 +30,16 @@ createDecoyDB <- function(dbs ,
                           revLab= "REV_",
                           annot="zz|sourceOf|database")
 {
-    dummy <-as.SeqFastaAA("CRAPCRAPCRAP", Annot=annot, name= annot)
+    dummy <- as.SeqFastaAA("CRAPCRAPCRAP", Annot = annot, name = annot)
     dbsfasta <- NULL
-    for(db in dbs){
+    for (db in dbs) {
         message( "reading db :" , db )
         dbsfasta <- c(dbsfasta,readPeptideFasta(db) )
     }
-    if(!is.null(useContaminants)){
+    if (!is.null(useContaminants)) {
         dbsfasta = c(dbsfasta,useContaminants)
     }
-    if(!is.null(revLab)){
+    if (!is.null(revLab)) {
         dbsfasta <- c(dbsfasta,reverseSeq(dbsfasta ,revLab = revLab))
     }
     return(c(list(dummy),dbsfasta))

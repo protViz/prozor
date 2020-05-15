@@ -10,5 +10,5 @@
 #' fasta = readPeptideFasta(file)
 #'
 readPeptideFasta <- function(file){
-  read.fasta(file = file, as.string = TRUE, seqtype="AA")
+  read.fasta(file = file, as.string = TRUE, seqtype = "AA")
 }
