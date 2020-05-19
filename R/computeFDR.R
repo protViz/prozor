@@ -37,7 +37,7 @@ NULL
 #' lines(fdr1$score, fdr1$SimpleFDR,type="l",col=4)
 #' lines(fdr1$score, fdr1$qValue_SimpleFDR, col=5)
 #'
-computeFDRwithID <-function(score, ID, decoy = "REV_", larger_better = TRUE){
+computeFDRwithID <- function(score, ID, decoy = "REV_", larger_better = TRUE){
   decoy_hit <- grepl(decoy, ID)
   res <- computeFDR(score, decoy_hit, larger_better = larger_better)
   ID <- ID[res$order]
@@ -96,15 +96,16 @@ computeFDR <- function(score, decoy_hit , larger_better = TRUE){
 #' plotFDR(fdr1)
 #' plotFDR(fdr2)
 #' data<-fdr1
+#'
 plotFDR <- function(data){
-  graphics::par(mar=c(4,4,2,4))
-  tx <- with(data,graphics::hist(score,plot = FALSE, breaks=100))
-  t1 <- with(data,graphics::hist(score[!decoy_hit],breaks=tx$breaks,xlab="score",col=1, border=1,
-                                 main= ifelse(data$larger_better,"larger score better","smaller score better")))
-  with(data,graphics::hist(score[decoy_hit],add=T,breaks = t1$breaks, col=2,border=2))
-  graphics::par(new=T)
-  with(data,graphics::plot(score,qValue_FPR *100, type="l",col=4,lwd=2,xlab=NA,ylab=NA,axes=FALSE))
-  with(data,graphics::lines(score,qValue_SimpleFDR *100, type="l",col=3,lwd=2,xlab=NA,ylab=NA))
+  graphics::par(mar = c(4,4,2,4))
+  tx <- with(data,graphics::hist(score,plot = FALSE, breaks = 100))
+  t1 <- with(data,graphics::hist(score[!decoy_hit],breaks = tx$breaks, xlab = "score",col = 1, border = 1,
+                                 main = ifelse(data$larger_better,"larger score better","smaller score better")))
+  with(data,graphics::hist(score[decoy_hit],add = T,breaks = t1$breaks, col = 2, border = 2))
+  graphics::par(new = T)
+  with(data,graphics::plot(score,qValue_FPR * 100, type = "l",col = 4,lwd = 2,xlab = NA, ylab = NA , axes = FALSE))
+  with(data,graphics::lines(score,qValue_SimpleFDR  * 100, type = "l", col = 3,lwd = 2, xlab = NA, ylab = NA))
 
   graphics::axis(side = 4)
   graphics::mtext(side = 4, line = 3, 'FDR %')
@@ -131,7 +132,7 @@ plotFDR <- function(data){
 predictScoreFDR <- function(fdrObj,
                             qValue=1,
                             method="SimpleFDR"){
-  if(method=="FPR"){
+  if (method == "FPR") {
     validFDR <- fdrObj$qValue_FPR < qValue/100
   } else if (method == "SimpleFDR") {
     validFDR <- fdrObj$qValue_SimpleFDR < qValue/100
@@ -140,9 +141,9 @@ predictScoreFDR <- function(fdrObj,
   }
 
   validScores <- fdrObj$score[validFDR]
-  if(!fdrObj$larger_better){
+  if (!fdrObj$larger_better) {
     max(validScores)
-  }else{
+  } else {
     min(validScores)
   }
 }

@@ -1607,13 +1607,13 @@ annot <- grep("annotation",dir(databasedirectory), value = T)
 annotation <- readLines(file.path(databasedirectory,annot))
 
 
-resDB <- createDecoyDB(files1,useContaminants = loadContaminantsFasta(), annot=annotation, revLab = NULL)
+resDB <- createDecoyDB(files1,useContaminants = loadContaminantsFasta(), annot = annotation, revLab = NULL)
 resDB <- resDB[!duplicated(names(resDB))]
 
 dirname(databasedirectory)
-xx <- file.path(dirname(databasedirectory), paste(dbname,"_",format(Sys.time(), "%Y%m%d"),".fasta" ,sep=""))
+xx <- file.path(dirname(databasedirectory), paste(dbname,"_",format(Sys.time(), "%Y%m%d"),".fasta" ,sep = ""))
 print(xx)
-writeFasta(resDB, file=xx)
+writeFasta(resDB, file = xx)
 
 ```
 
@@ -1652,24 +1652,22 @@ writeFasta(resDBDecoy, file = xx)
 library(prozor)
 
 databasedirectory <- "C:/Users/wewol/Dropbox/DataAnalysis/p65/fgcz_9606_SARS_CoV_2_reviewed_cnl"
-dir.exists(databasedirectory)
 
+dir.exists(databasedirectory)
 dbname <- basename(databasedirectory)
 
 fasta <- grep("fasta", dir(databasedirectory),value = T)
 files1 <- file.path(databasedirectory, fasta)
-
 annot <- grep("annotation",dir(databasedirectory), value = T)
+
 annotation <- readLines(file.path(databasedirectory,annot))
 
 
-resDB <- createDecoyDB(files1,useContaminants = loadContaminantsFasta(), annot=annotation, revLab = NULL)
+resDB <- createDecoyDB(files1,useContaminants = loadContaminantsFasta(), annot = annotation, revLab = NULL)
 resDB <- resDB[!duplicated(names(resDB))]
-
 dirname(databasedirectory)
-xx <- file.path(dirname(databasedirectory), paste(dbname,"_",format(Sys.time(), "%Y%m%d"),".fasta" ,sep=""))
-print(xx)
-writeFasta(resDB, file=xx)
+xx <- file.path(dirname(databasedirectory), paste(dbname,"_",format(Sys.time(), "%Y%m%d"),".fasta" ,sep = ""))
+writeFasta(resDB, file = xx)
 
 ```
 

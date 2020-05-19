@@ -15,7 +15,7 @@ vignette: >
 -->
 
 
-Using the package prozor for creating standarized fasta.
+Using the package prozor for creating standardized fasta.
 prozor can be used to: 
      
      * merge several fasta files into a single fasta file
@@ -56,30 +56,34 @@ databasedirectory = system.file("p1000_db1_example",package = "prozor")
 dbname <- basename(databasedirectory)
 fasta <- grep("fasta", dir(databasedirectory),value = T)
 files1 <- file.path(databasedirectory,fasta)
-annot <- grep("annotation",dir(databasedirectory), value=T)
+annot <- grep("annotation",dir(databasedirectory), value = T)
 annotation <- readLines(file.path(databasedirectory,annot))
 annotation
+
 ```
 
 ## Create non decoy database
 
 
 ```{r}
-resDB <- createDecoyDB(files1, useContaminants = loadContaminantsFasta(), annot=annotation, revLab = NULL)
+resDB <- createDecoyDB(files1, useContaminants = loadContaminantsFasta(), annot = annotation, revLab = NULL)
 length(resDB)
+
 ```
 
 Based on the directory name we build the name of the fasta file adding the current date.
 
 ```{r}
 dirname(databasedirectory)
-xx <- file.path(dirname(databasedirectory), paste(dbname,"_",format(Sys.time(), "%Y%m%d"),".fasta" ,sep=""))
+xx <- file.path(dirname(databasedirectory), paste(dbname,"_",format(Sys.time(), "%Y%m%d"),".fasta" ,sep = ""))
 print(xx)
+
 ```
 
 
 ```{r eval=FALSE}
 writeFasta(resDB, file=xx)
+
 ```
 
 ## Create decoy database
@@ -91,7 +95,7 @@ The resulting database will be twice as long as the non-decoy database.
 ```{r}
 resDBDecoy <- createDecoyDB(files1,
                             useContaminants = loadContaminantsFasta(),
-                            annot=annotation,
+                            annot = annotation,
                             revLab = "REV_")
 
 resDBDecoy[[length(resDBDecoy) - 1]]
@@ -101,14 +105,15 @@ sum(duplicated(names(resDBDecoy)))
 sum(duplicated(resDBDecoy))
 
 dbname_decoy <- unlist(strsplit(dbname,"_"))
-dbname_decoy <- paste(c(dbname_decoy[1],"d",dbname_decoy[2:length(dbname_decoy)]),collapse="_")
+dbname_decoy <- paste(c(dbname_decoy[1],"d",dbname_decoy[2:length(dbname_decoy)]),collapse = "_")
 dbname_decoy
 
-xx <- file.path(dirname(databasedirectory), paste(dbname_decoy,"_",format(Sys.time(), "%Y%m%d"),".fasta" ,sep=""))
+xx <- file.path(dirname(databasedirectory), paste(dbname_decoy,"_",format(Sys.time(), "%Y%m%d"),".fasta" ,sep = ""))
 print(xx)
+
 ```
 
 
 ```{r eval=FALSE}
-writeFasta(resDBDecoy, file=xx)
+writeFasta(resDBDecoy, file = xx)
 ```
