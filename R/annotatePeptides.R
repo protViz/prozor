@@ -23,7 +23,6 @@
 #' @param prefix - default "(([RK])|(^)|(^M))"
 #' @param suffix - default ""
 #' @import stringr
-#' @importFrom tidyr nest
 #' @export
 #' @examples
 #' library(tidyverse)

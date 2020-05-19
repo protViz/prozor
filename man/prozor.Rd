@@ -3,8 +3,4 @@
 \docType{package}
 \name{prozor}
 \alias{prozor}
-\alias{prozor-package}
 \title{Minimal Protein set Explaining Peptides}
-\description{
-Minimal Protein set Explaining Peptides
-}

@@ -13,6 +13,7 @@ LazyData: TRUE
 Imports:
     AhoCorasickTrie,
     Matrix,
+    methods,
     purrr,
     readr,
     seqinr,

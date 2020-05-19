@@ -1,7 +1,7 @@
 #'Minimal Protein set Explaining Peptides
 #'@name prozor
 #'@docType package
-#'@import Matrix doParallel foreach seqinr
+#'@import Matrix seqinr
 NULL
 #' Table containing peptide information
 #'

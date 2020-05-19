@@ -21,4 +21,5 @@ fdr2 <- computeFDRwithID(fdrSample$score2, fdrSample$proteinID, larger_better = 
 plotFDR(fdr1)
 plotFDR(fdr2)
 data<-fdr1
+
 }

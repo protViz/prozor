@@ -4,8 +4,12 @@
 \alias{createDecoyDB}
 \title{Create db with decoys and contaminants}
 \usage{
-createDecoyDB(dbs, useContaminants = loadContaminantsFasta(),
-  revLab = "REV_", annot = "zz|sourceOf|database")
+createDecoyDB(
+  dbs,
+  useContaminants = loadContaminantsFasta(),
+  revLab = "REV_",
+  annot = "zz|sourceOf|database"
+)
 }
 \arguments{
 \item{dbs}{a path to a fasta file or an array of files}
