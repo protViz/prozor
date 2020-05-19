@@ -4,8 +4,13 @@
 \alias{annotatePeptides}
 \title{Annotate peptides with protein ids}
 \usage{
-annotatePeptides(pepinfo, fasta, peptide = "peptideSeq",
-  prefix = "(([RK])|(^)|(^M))", suffix = "")
+annotatePeptides(
+  pepinfo,
+  fasta,
+  peptide = "peptideSeq",
+  prefix = "(([RK])|(^)|(^M))",
+  suffix = ""
+)
 }
 \arguments{
 \item{pepinfo}{- list of peptides - sequence, optional modified sequence, charge state.}
