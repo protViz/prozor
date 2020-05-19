@@ -13,9 +13,6 @@ LazyData: TRUE
 Imports:
     AhoCorasickTrie,
     Matrix,
-    doParallel,
-    foreach,
-    plyr,
     purrr,
     readr,
     seqinr,
@@ -24,7 +21,22 @@ Imports:
 URL: https://github.com/protviz/prozor
 BugReports: https://github.com/protviz/prozor/issues
 Repository: CRAN
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.0
 Suggests: knitr,
     rmarkdown
 VignetteBuilder: knitr
+Collate: 
+    'annotatePeptides.R'
+    'readjustWindow.R'
+    'cdsw.R'
+    'computeFDR.R'
+    'createDecoyDB.R'
+    'greedy.R'
+    'hello.R'
+    'loadContaminantsFasta.R'
+    'prepareMatrix.R'
+    'readFasta.R'
+    'removeSignalPeptides.R'
+    'reverseSeq.R'
+    'writeFasta.R'
+    'zzz.R'

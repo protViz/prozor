@@ -1,0 +1,126 @@
+---
+title: "On Computing Dynamic SWATH Windows"
+author: "Witold E. Wolski, Bernd Roschitzki, Christian Trachsel, and Christian Panse"
+date: "`r Sys.Date()`"
+package: "`r packageVersion('cdsw')`"
+vignette: >
+  %\VignetteIndexEntry{Computing Dynamic SWATH Windows}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+output: 
+  html_document
+---
+
+__!!!Caution work in progress!!!__
+
+# Introduction
+
+Function optimizes Extraction windows so we have the same number of precursor per window. To do it uses spectral library or non redundant blib.
+
+# Prerequisites
+
+```{r echo=FALSE}
+library(cdsw)
+
+```
+
+# Constant with method
+
+
+```{r fig.retina=3}
+cdsw <- Cdsw(masses)
+cdsw$plot()
+
+```
+
+```{r, results='markup'}
+knitr::kable(cdsw$asTable())
+```
+
+## Error
+
+```{r}
+constError <-cdsw$error()
+```
+
+# Classical Method based on `quantile`
+
+Same number of MS1 precursors in each window
+
+```{r}
+cdsw$quantile_breaks()
+```
+
+```{r fig.retina=3, warning=FALSE}
+cdsw$plot()
+```
+
+```{r, results='markup'}
+knitr::kable(cdsw$asTable())
+```
+
+## Error
+
+```{r}
+quantileError <- cdsw$error()
+```
+
+## Adjust windows
+
+Shifts window start and an to a mass range with few MS1 peaks.
+
+```{r, }
+knitr::kable(cdsw$optimizeWindows(maxbin=10,plot=TRUE))
+```
+
+# Iterative Distribution Mixing based cdsw
+
+## Requirements
+
+- Mass range can be specified (*mass\_range*)
+- Maximal window size can be specified (*max\_window\_size*). This is because windows should not be to large because of optimal collision energy (personal communication by Bernd R.).
+- Minimal window size can be specified (*min\_window\_size*).
+- target number of windows can be specified (*nr\_windows*).
+- boundaries between windows are placed in regions were no precursors are observed.
+
+
+```{r fig.retina=3}
+cdsw$sampling_breaks(maxwindow = 100,plot = TRUE)
+```
+
+```{r fig.retina=3}
+cdsw$plot()
+```
+
+```{r, results='markup'}
+knitr::kable(cdsw$asTable())
+```
+
+## Error
+
+```{r}
+mixedError <-cdsw$error()
+```
+
+
+# Errors
+
+```{r fig.retina=3}
+barplot(c(const = constError$score1, quantile = quantileError$score1, mixed = mixedError$score1),ylab="Manhattan distance")
+barplot(c(const = constError$score2, quantile = quantileError$score2, mixed = mixedError$score2),ylab="Euclidean distance")
+
+```
+
+# Session info
+
+Here is the output of `sessionInfo()` on the system on which this
+document was compiled:
+
+```{r sessionInfo, echo=FALSE}
+sessionInfo()
+```
+
+
+
+
+
