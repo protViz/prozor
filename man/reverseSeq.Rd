@@ -21,8 +21,8 @@ library(prozor)
 #file = file.path(path.package("prozor"),"extdata/fgcz_contaminants_20150123.fasta.gz")
 file = system.file("extdata/fgcz_contaminants_20150123.fasta.gz",package = "prozor")
 fasta = readPeptideFasta(file = file)
+getAnnot(fasta[[1]])
 x <- reverseSeq(fasta)
-
 
 revseq <- reverseSeq(fasta ,revLab = "REV_")
 stopifnot(length(revseq) == length(fasta))

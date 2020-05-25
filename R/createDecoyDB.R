@@ -17,7 +17,6 @@
 #'
 #' res <- createDecoyDB(c(file,file))
 #' length(res)
-#' tmp
 #' stopifnot(length(res) == tmp)
 #'
 #' res <- createDecoyDB(c(file,file), revLab=NULL)

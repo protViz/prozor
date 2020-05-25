@@ -1643,56 +1643,38 @@ writeFasta(resDBDecoy, file = xx)
 
 
 
-## p65_Human_Covid_2 
+## p3562_Anabaena_PCC_7120 
 
 
 ### Create forward db
 
 ```{r}
 library(prozor)
-
-databasedirectory <- "C:/Users/wewol/Dropbox/DataAnalysis/p65/fgcz_9606_SARS_CoV_2_reviewed_cnl"
-
-dir.exists(databasedirectory)
-dbname <- basename(databasedirectory)
-
-fasta <- grep("fasta", dir(databasedirectory),value = T)
-files1 <- file.path(databasedirectory, fasta)
-annot <- grep("annotation",dir(databasedirectory), value = T)
-
-annotation <- readLines(file.path(databasedirectory,annot))
-
-
-resDB <- createDecoyDB(files1,useContaminants = loadContaminantsFasta(), annot = annotation, revLab = NULL)
-resDB <- resDB[!duplicated(names(resDB))]
-dirname(databasedirectory)
-xx <- file.path(dirname(databasedirectory), paste(dbname,"_",format(Sys.time(), "%Y%m%d"),".fasta" ,sep = ""))
-writeFasta(resDB, file = xx)
+library(seqinr)
+databasedirectory <- "C:/Users/wewol/Dropbox/DataAnalysis/p3562/fasta_db/p3562_Anabaena_PCC_7120/"
+source("R/create_fgcz_fasta_db.R")
+resDB <- create_fgcz_fasta_db(databasedirectory, revLab = NULL)
+cat(resDB$summary)
 
 ```
 
 ### CREATING DECOY DB
 
 ```{r}
-
-resDBDecoy <- createDecoyDB(files1,useContaminants = loadContaminantsFasta(),
-                            annot = annotation)
-resDBDecoy <- resDBDecoy[!duplicated(names(resDBDecoy))]
-sum(duplicated(names(resDBDecoy)))
-sum(duplicated(resDBDecoy))
-length(resDBDecoy)
-
-#dbname_decoy <- unlist(strsplit(dbname,"_"))
-#dbname_decoy <- paste(c(dbname_decoy[1],"d",dbname_decoy[2:length(dbname_decoy)]),collapse="_")
-dbname_decoy <- paste0(dbname,"_d")
-
-dirname(databasedirectory)
-xx <- file.path(dirname(databasedirectory), paste(dbname_decoy,"_",format(Sys.time(), "%Y%m%d"),".fasta" ,sep = ""))
-
-writeFasta(resDBDecoy, file = xx)
-
+resDB <- create_fgcz_fasta_db(databasedirectory)
+cat(resDB$summary)
 ```
 
+## fgcz_83332_MYCTU 
+
+
+```{r}
+databasedirectory <- "C:/Users/wewol/Dropbox/DataAnalysis/p65/fgcz_83332_MYCTU/"
+
+resDB <- create_fgcz_fasta_db(databasedirectory)
+cat(resDB$summary)
+
+```
 
 
 

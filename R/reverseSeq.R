@@ -2,10 +2,10 @@
   sapply(lapply(strsplit(x, NULL), rev), paste, collapse = "")
 }
 .reverseSingleSeq <- function(fasta, revLab = "REV_"){
-  name <- attributes(fasta)$name
-  Annot <- attributes(fasta)$Annot
+  name <- getName(fasta)
+  Annot <- getAnnot(fasta)
   revseq <- .strReverse(fasta)
-  return(as.SeqFastaAA(revseq, Annot = paste(revLab, Annot, sep = ""),
+  return(as.SeqFastaAA(revseq, Annot = paste(">", revLab, gsub("^>","",Annot), sep = ""),
                        name = paste(revLab, name, sep = "")))
 
 }
@@ -22,8 +22,8 @@
 #' #file = file.path(path.package("prozor"),"extdata/fgcz_contaminants_20150123.fasta.gz")
 #' file = system.file("extdata/fgcz_contaminants_20150123.fasta.gz",package = "prozor")
 #' fasta = readPeptideFasta(file = file)
+#' getAnnot(fasta[[1]])
 #' x <- reverseSeq(fasta)
-#'
 #'
 #' revseq <- reverseSeq(fasta ,revLab = "REV_")
 #' stopifnot(length(revseq) == length(fasta))

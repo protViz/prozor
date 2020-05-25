@@ -33,7 +33,6 @@ tmp <- 2*(2*length(rabbit)+length(cont)) + 1
 
 res <- createDecoyDB(c(file,file))
 length(res)
-tmp
 stopifnot(length(res) == tmp)
 
 res <- createDecoyDB(c(file,file), revLab=NULL)
