@@ -3,4 +3,10 @@
 \docType{package}
 \name{prozor}
 \alias{prozor}
-\title{Minimal Protein set Explaining Peptides}
+\title{Minimal Protein Set Explaining Peptides}
+\description{
+Determine minimal protein set explaining
+ peptide spectrum matches. Utility functions for creating fasta amino acid databases with decoys and contaminants.
+ Peptide false discovery rate estimation for target decoy search results on psm, precursor, peptide and protein
+ level. Computing dynamic swath window sizes based on MS1 and MS2 signal distributions.
+}

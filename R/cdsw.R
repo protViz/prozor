@@ -56,7 +56,7 @@ hardconstrain <- function(splits,
 #' @export Cdsw
 #' @exportClass Cdsw
 #' @examples
-#' library(cdsw)
+#' library(prozor)
 #' cdsw <- Cdsw(masses)
 #' cdsw$sampling_breaks(maxwindow=100,plot=TRUE)
 #' cdsw$plot()

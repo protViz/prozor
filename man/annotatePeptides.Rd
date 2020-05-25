@@ -17,6 +17,8 @@ annotatePeptides(
 
 \item{fasta}{- object as created by readPeptideFasta}
 
+\item{peptide}{- name of column containing peptide sequences default "peptideSeq"}
+
 \item{prefix}{- default "(([RK])|(^)|(^M))"}
 
 \item{suffix}{- default ""}
@@ -25,8 +27,9 @@ annotatePeptides(
 peptides which do not have protein assignment drop out
 }
 \examples{
-library(tidyverse)
+
 library(prozor)
+library(dplyr)
 file = system.file("extdata/shortfasta.fasta.gz",package = "prozor")
 
 fasta = readPeptideFasta(file = file)
@@ -34,5 +37,6 @@ res = annotatePeptides(pepprot[1:20,], fasta)
 res = annotatePeptides(pepprot[1:20,"peptideSeq"],fasta)
 str(res)
 res \%>\% mutate(proteinlength = nchar(proteinSequence)) -> res
-res \%>\% select(proteinID, proteinlength, Offset, lengthPeptide)
+res \%>\% select(proteinID, peptideSeq, proteinlength, Offset, lengthPeptide)
+
 }

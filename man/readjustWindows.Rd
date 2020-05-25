@@ -22,7 +22,7 @@ Readjust windows so that boundaries in regions of few peaks.
 }
 \examples{
 
-library(cdsw)
+library(prozor)
 cdsw <- Cdsw(masses)
 breaks <- cdsw$sampling_breaks(maxwindow=100,plot=TRUE)
 table <- cdsw$asTable()

@@ -37,7 +37,7 @@ Compute dynamic swath windows
 }}
 
 \examples{
-library(cdsw)
+library(prozor)
 cdsw <- Cdsw(masses)
 cdsw$sampling_breaks(maxwindow=100,plot=TRUE)
 cdsw$plot()

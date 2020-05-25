@@ -2,7 +2,7 @@
 title: "On Computing Dynamic SWATH Windows"
 author: "Witold E. Wolski, Bernd Roschitzki, Christian Trachsel, and Christian Panse"
 date: "`r Sys.Date()`"
-package: "`r packageVersion('cdsw')`"
+package: "`r packageVersion('prozor')`"
 vignette: >
   %\VignetteIndexEntry{Computing Dynamic SWATH Windows}
   %\VignetteEngine{knitr::rmarkdown}
@@ -20,7 +20,7 @@ Function optimizes Extraction windows so we have the same number of precursor pe
 # Prerequisites
 
 ```{r echo=FALSE}
-library(cdsw)
+library(prozor)
 
 ```
 

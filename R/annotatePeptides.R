@@ -20,13 +20,15 @@
 #'
 #' @param pepinfo - list of peptides - sequence, optional modified sequence, charge state.
 #' @param fasta - object as created by readPeptideFasta
+#' @param peptide - name of column containing peptide sequences default "peptideSeq"
 #' @param prefix - default "(([RK])|(^)|(^M))"
 #' @param suffix - default ""
 #' @import stringr
 #' @export
 #' @examples
-#' library(tidyverse)
+#'
 #' library(prozor)
+#' library(dplyr)
 #' file = system.file("extdata/shortfasta.fasta.gz",package = "prozor")
 #'
 #' fasta = readPeptideFasta(file = file)
@@ -34,7 +36,8 @@
 #' res = annotatePeptides(pepprot[1:20,"peptideSeq"],fasta)
 #' str(res)
 #' res %>% mutate(proteinlength = nchar(proteinSequence)) -> res
-#' res %>% select(proteinID, proteinlength, Offset, lengthPeptide)
+#' res %>% select(proteinID, peptideSeq, proteinlength, Offset, lengthPeptide)
+#'
 annotatePeptides <- function(pepinfo,
                              fasta,
                              peptide = "peptideSeq",
@@ -49,14 +52,14 @@ annotatePeptides <- function(pepinfo,
         dplyr::mutate_at(peptide, .funs = dplyr::funs("lengthPeptide" := nchar))
     pepseq  = unique(as.character(pepinfo[, peptide]))
     restab <- annotateAHO(pepseq, fasta)
-    colnames(restab)
+
     restab <- restab %>%
         dplyr::group_by_at(peptide) %>%
         dplyr::mutate(
-            matched = .matchPepsequence(
-                dplyr::first(peptideSeq),
-                proteinSequence ,
-                proteinID,
+            matched = prozor:::.matchPepsequence(
+                dplyr::first(!!dplyr::sym(peptide)),
+                !!dplyr::sym("proteinSequence") ,
+                !!dplyr::sym("proteinID"),
                 prefix = prefix,
                 suffix = suffix
             )

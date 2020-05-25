@@ -1695,3 +1695,5 @@ writeFasta(resDBDecoy, file = xx)
 
 
 
+
+
