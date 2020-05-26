@@ -1450,7 +1450,7 @@ resDB <- resDB[!duplicated(names(resDB))]
 length(resDB)
 
 dirname(databasedirectory)
-xx <- file.path(dirname(databasedirectory), paste(dbname,"_",format(Sys.time(), "%Y%m%d"),".fasta" ,sep=""))
+xx <- file.path(dirname(databasedirectory), paste(dbname,"_",format(Sys.time(), "%Y%m%d"),".fasta" ,sep = ""))
 writeFasta(resDB, file=xx)
 
 ```
@@ -1669,10 +1669,29 @@ cat(resDB$summary)
 
 
 ```{r}
+library(prozor)
+
 databasedirectory <- "C:/Users/wewol/Dropbox/DataAnalysis/p65/fgcz_83332_MYCTU/"
 
 resDB <- create_fgcz_fasta_db(databasedirectory)
 cat(resDB$summary)
+print(resDB$mcall)
+
+resDB <- create_fgcz_fasta_db(databasedirectory, revLab = NULL)
+resDB$filepath
+library(ssh)
+
+session <- ssh_connect("wolski@fgcz-r-021.uzh.ch")
+file.exists(resDB$filepath)
+scp_upload(session, resDB$filepath, to = "/srv/www/htdocs/FASTA")
+ssh_disconnect(session)
+
+install.packages("reticulate")
+library(reticulate)
+use_python("c:/Program Files/Python38")
+
+bfabricpy <- import("bfabric.utilities.utilities")
+bfabricpy$save_fasta
 
 ```
 

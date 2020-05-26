@@ -4,7 +4,11 @@
 \alias{create_fgcz_fasta_db}
 \title{create fasta db from one or more fasta files}
 \usage{
-create_fgcz_fasta_db(databasedirectory, revLab = "REV_")
+create_fgcz_fasta_db(
+  databasedirectory,
+  useContaminants = loadContaminantsFasta(),
+  revLab = "REV_"
+)
 }
 \description{
 create fasta db from one or more fasta files
