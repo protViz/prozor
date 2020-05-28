@@ -1686,11 +1686,12 @@ file.exists(resDB$filepath)
 scp_upload(session, resDB$filepath, to = "/srv/www/htdocs/FASTA")
 ssh_disconnect(session)
 
-install.packages("reticulate")
+#install.packages("reticulate")
+
+
 library(reticulate)
 use_python("c:/Program Files/Python38")
-
-bfabricpy <- import("bfabric.utilities.utilities")
+bfabricpy <- import("bfabric.scripts.bfabric_save_fasta")
 bfabricpy$save_fasta
 
 ```
