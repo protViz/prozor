@@ -1,7 +1,7 @@
 #' create fasta db from one or more fasta files
 #' @export
 #'
-create_fgcz_fasta_db <- function(databasedirectory , useContaminants = loadContaminantsFasta(), revLab = "REV_"){
+create_fgcz_fasta_db <- function(databasedirectory , useContaminants = loadContaminantsFasta2019(), revLab = "REV_"){
     mcall <- match.call()
 
     dir.exists(databasedirectory)
@@ -13,7 +13,7 @@ create_fgcz_fasta_db <- function(databasedirectory , useContaminants = loadConta
 
     annotation <- readLines(file.path(databasedirectory,annot))
 
-    resDB <- createDecoyDB(files1,useContaminants = loadContaminantsFasta(), annot = annotation, revLab = revLab)
+    resDB <- createDecoyDB(files1,useContaminants = useContaminants, annot = annotation, revLab = revLab)
     resDB <- resDB[!duplicated(names(resDB))]
 
     if (is.null(revLab)) {
@@ -35,7 +35,7 @@ create_fgcz_fasta_db <- function(databasedirectory , useContaminants = loadConta
 
 
         summary <- paste0(
-            "Database created with prozor: ", capture.output(resDB$mcall), "\n",
+            "Database created with prozor: ", capture.output(mcall), "\n",
             "where databasedirectory was prepared according to https://fgcz-intranet.uzh.ch/tiki-index.php?page=SOPrequestFASTA \n\n",
             "FASTA name: ",basename(filepath),
             "\nannotation:\n",
@@ -44,5 +44,5 @@ create_fgcz_fasta_db <- function(databasedirectory , useContaminants = loadConta
         summary <- c(summary, "length summary:\n", length_s, "AA frequencies:\n", aafreq)
 
     }
-    return( list(resDB = resDB, filepath = filepath, summary = summary))
+    return( list(resDB = resDB, filepath = filepath, summary = summary,mcall = mcall))
 }

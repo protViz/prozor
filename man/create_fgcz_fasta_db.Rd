@@ -6,7 +6,7 @@
 \usage{
 create_fgcz_fasta_db(
   databasedirectory,
-  useContaminants = loadContaminantsFasta(),
+  useContaminants = loadContaminantsFasta2019(),
   revLab = "REV_"
 )
 }
