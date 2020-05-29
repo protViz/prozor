@@ -1703,20 +1703,30 @@ bfabricpy$save_fasta
 
 ```{r}
 library(prozor)
-databasedirectory <- "C:/Users/wewol/Dropbox/DataAnalysis/p65/p65_3071_Chlorella/"
+databasedirectory <- "C:/Users/wewol/Dropbox/DataAnalysis/p65/fgcz_3071_Chlorella/"
 resDB <- create_fgcz_fasta_db(databasedirectory)
+
 cat(resDB$summary)
 resDB$filepath
 
+
 library(ssh)
+session <- ssh_connect("wolski@fgcz-r-021.uzh.ch")
+file.exists(resDB$filepath)
+scp_upload(session, resDB$filepath, to = "/srv/www/htdocs/FASTA")
+#ssh_disconnect(session)
+
+
+resDB <- create_fgcz_fasta_db(databasedirectory, revLab = NULL)
 session <- ssh_connect("wolski@fgcz-r-021.uzh.ch")
 file.exists(resDB$filepath)
 scp_upload(session, resDB$filepath, to = "/srv/www/htdocs/FASTA")
 ssh_disconnect(session)
 
 
-summary <- paste( resDB$summary , collapse = "" )
+# TBD.
 
+summary <- paste( resDB$summary , collapse = "" )
 library(reticulate)
 use_python("c:/Program Files/Python38")
 bfabricpy <- import("bfabric.scripts.bfabric_save_fasta")
