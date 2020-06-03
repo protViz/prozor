@@ -1745,6 +1745,81 @@ resDB <- create_fgcz_fasta_db(databasedirectory, revLab = NULL)
 
 
 
+## fgcz_Chlorella
+
+```{r}
+scp_copy <- function(
+    filepath,
+    to = "/srv/www/htdocs/FASTA",
+    username = "wolski",
+    host="fgcz-r-021.uzh.ch")
+{
+    session <- ssh::ssh_connect(paste0(username, "@", host ))
+    if (file.exists(filepath)) {
+        ssh::scp_upload(session, filepath, to = to)
+    }else{
+        warning("file :" , file , " does not exist!")
+    }
+    ssh::ssh_disconnect(session)
+    
+}
+
+bfabric_save_fasta <- function(project_id, resDB, python_path = "c:/Program Files/Python38"){
+    library(reticulate)
+    reticulate::use_python(python_path)
+    bfabricpy <- reticulate::import("bfabric.scripts.bfabric_save_fasta")
+    bfabricpy$save_fasta(projectid = project_id,
+                         fasta_file = resDB$filepath,
+                         description_resource =  paste(resDB$summary, collapse = ""),
+                         description_workunit = paste(resDB$summary, collapse = "")
+    )
+    
+}
+
+```
+
+
+```{r}
+
+library(prozor)
+databasedirectory <- "C:/Users/wewol/Dropbox/DataAnalysis/p65/p3553_935293_Yersinia_entomophaga/"
+resDBRev <- create_fgcz_fasta_db(databasedirectory,useContaminants = loadContaminantsFasta2019())
+cat(resDBRev$summary)
+scp_copy(resDBRev$filepath)
+bfabric_save_fasta(project_id = 3553, resDBRev)
+
+
+
+
+resDB <- create_fgcz_fasta_db(databasedirectory, revLab = NULL)
+cat(resDB$summary)
+
+
+
+
+
+library(ssh)
+
+file.exists(resDB$filepath)
+scp_upload(session, resDB$filepath, to = "/srv/www/htdocs/FASTA")
+ssh_disconnect(session)
+
+
+
+# TBD.
+
+summary <- paste( resDB$summary , collapse = "" )
+cat(summary)
+
+
+
+resDB <- create_fgcz_fasta_db(databasedirectory, revLab = NULL)
+
+```
+
+
+
+
 
 
 
