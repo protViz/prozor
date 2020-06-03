@@ -1796,14 +1796,11 @@ cat(resDB$summary)
 
 
 
-
-
 library(ssh)
 
 file.exists(resDB$filepath)
 scp_upload(session, resDB$filepath, to = "/srv/www/htdocs/FASTA")
 ssh_disconnect(session)
-
 
 
 # TBD.
