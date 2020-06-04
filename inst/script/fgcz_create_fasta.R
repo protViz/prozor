@@ -1,9 +1,9 @@
 #!/usr/bin/Rscript
 
-library(docopt)
-library(prozor)
+suppressMessages(library(docopt))
+suppressMessages(library(prozor))
 
-doc <- "Sample Size Report from MQ file
+doc <- "Create fasta file with prozor
 
 Usage:
   fgcz_create_fasta.R <fasta_dir> [--contamin=<contamin>] [--revLab=<revLab>] [--output_dir=<output_dir>]
@@ -21,8 +21,8 @@ Arguments:
 "
 
 print(commandArgs(TRUE))
-if (FALSE) {
-    args <- c("C:\\Users\\wewol\\Dropbox\\DataAnalysis\\p65\\fgcz_9606_SARS_CoV_2_reviewed_cnl")
+if (TRUE) {
+    args <- c("C:\\Users\\wewol\\Dropbox\\DataAnalysis\\p65\\fgcz_9606_SARS_CoV_2_reviewed_cnl", "-o" ,"c:/users/wewol")
     #args <- c("C:\\Users\\wewol\\Dropbox\\DataAnalysis\\p65\\fgcz_10116_RattusNor_reviewed_cnl")
     opt <- docopt(doc,args = args)
 }else{
@@ -53,8 +53,9 @@ if (nodecoy) {
     revLab <- NULL
 }
 
-#source("c:/Users/wewol/prog/prozor/R/create_fgcz_fasta_db.R")
+source("c:/Users/wewol/prog/prozor/R/create_fgcz_fasta_db.R")
 
+# undebug(create_fgcz_fasta_db)
 resDB <-  create_fgcz_fasta_db(fasta_dir,
                                useContaminants = contamin,
                                revLab = revLab,

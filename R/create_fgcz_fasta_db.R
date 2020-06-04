@@ -20,17 +20,17 @@ create_fgcz_fasta_db <- function(databasedirectory ,
     resDB <- resDB[!duplicated(names(resDB))]
 
     if (is.null(outputdir)) {
-        outputdir <- databasedirectory
+        outputdir <- dirname(databasedirectory)
     }
 
     if (is.null(revLab)) {
-        filepath <- file.path(dirname(outputdir), paste(dbname,"_",format(Sys.time(), "%Y%m%d"),".fasta" ,sep = ""))
+        filepath <- file.path(outputdir, paste(dbname,"_",format(Sys.time(), "%Y%m%d"),".fasta" ,sep = ""))
     } else {
         dbname <- paste0(dbname,"_d")
-        filepath <- file.path(dirname(outputdir), paste(dbname,"_",format(Sys.time(), "%Y%m%d"),".fasta" ,sep = ""))
+        filepath <- file.path(outputdir, paste(dbname,"_",format(Sys.time(), "%Y%m%d"),".fasta" ,sep = ""))
     }
 
-
+    message("wriging db to : ", filepath)
     writeFasta(resDB, file = filepath)
 
     {
