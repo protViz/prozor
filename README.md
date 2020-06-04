@@ -35,7 +35,7 @@ document()
 ```
 
 
-Exmaple fo creating a fasta file with the fgcz_create_fasta.R script
+Example fo creating a fasta file with the `fgcz_create_fasta.R` script
 
 ```bash
 ls ./fasta_db/fgcz_3071_Chlorella
