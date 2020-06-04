@@ -7,7 +7,8 @@
 create_fgcz_fasta_db(
   databasedirectory,
   useContaminants = loadContaminantsFasta2019(),
-  revLab = "REV_"
+  revLab = "REV_",
+  outputdir = NULL
 )
 }
 \description{
