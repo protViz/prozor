@@ -20,8 +20,8 @@ Arguments:
   fasta_dir input file
 "
 
-print(commandArgs(TRUE))
-if (TRUE) {
+#print(commandArgs(TRUE))
+if (FALSE) {
     args <- c("C:\\Users\\wewol\\Dropbox\\DataAnalysis\\p65\\fgcz_9606_SARS_CoV_2_reviewed_cnl", "-o" ,"c:/users/wewol")
     #args <- c("C:\\Users\\wewol\\Dropbox\\DataAnalysis\\p65\\fgcz_10116_RattusNor_reviewed_cnl")
     opt <- docopt(doc,args = args)
@@ -64,5 +64,5 @@ resDB <-  create_fgcz_fasta_db(fasta_dir,
 cat(resDB$summary)
 
 res <- paste(c("fgcz_create_fasta.R run with params\n",params),collapse = "")
-writeLines(c(res, paste(resDB$summary, collapse="")), con = paste0(resDB$dbname,".txt"))
+writeLines( c(res, paste(resDB$summary, collapse = "")), con = paste0(resDB$dbname,".txt"))
 
