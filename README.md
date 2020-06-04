@@ -1,5 +1,4 @@
 [![Build Status](https://travis-ci.org/protViz/prozor.svg?branch=master)](https://travis-ci.org/protViz/prozor)
-[![Project Stats](https://www.ohloh.net/p/prozor/widgets/project_thin_badge.gif)](https://www.ohloh.net/p/prozor)
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/prozor)](https://cran.r-project.org/package=prozor)
 [![](http://cranlogs.r-pkg.org/badges/prozor)](https://cran.r-project.org/package=prozor)
 [![](http://cranlogs.r-pkg.org/badges/grand-total/prozor)](https://cran.r-project.org/package=prozor)
@@ -35,7 +34,7 @@ document()
 ```
 
 
-Exmaple fo creating a fasta file with the fgcz_create_fasta.R script
+Example fo creating a fasta file with the `fgcz_create_fasta.R` script
 
 ```bash
 ls ./fasta_db/fgcz_3071_Chlorella
