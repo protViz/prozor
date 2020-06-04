@@ -33,3 +33,18 @@ downlod git repo. Use roxygenize2 to document new functions. Than run these 2 co
 library(devtools)
 document()
 ```
+
+
+Exmaple fo creating a fasta file with the fgcz_create_fasta.R script
+
+```bash
+ls ./fasta_db/fgcz_3071_Chlorella
+more ./fasta_db/fgcz_3071_Chlorella/annotation.txt
+more ./fasta_db/fgcz_3071_Chlorella/uniprot-taxonomy_3071.fasta
+clear
+/home/wolski/R/x86_64-pc-linux-gnu-library/3.5/prozor/script/fgcz_create_fasta.R -h
+/home/wolski/R/x86_64-pc-linux-gnu-library/3.5/prozor/script/fgcz_create_fasta.R ./fasta_db/fgcz_3071_Chlorella -o /srv/www/htdocs/FASTA/
+
+cat fgcz_3071_Chlorella_d.txt
+cat fgcz_3071_Chlorella_d.txt | bfabric_save_fasta.py 3071  /srv/www/htdocs/FASTA/fgcz_3071_Chlorella_d_20200604.fasta
+```
