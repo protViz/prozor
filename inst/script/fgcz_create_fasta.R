@@ -53,7 +53,6 @@ if (nodecoy) {
     revLab <- NULL
 }
 
-source("c:/Users/wewol/prog/prozor/R/create_fgcz_fasta_db.R")
 
 # undebug(create_fgcz_fasta_db)
 resDB <-  create_fgcz_fasta_db(fasta_dir,
