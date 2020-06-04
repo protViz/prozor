@@ -64,5 +64,5 @@ resDB <-  create_fgcz_fasta_db(fasta_dir,
 cat(resDB$summary)
 
 res <- paste(c("fgcz_create_fasta.R run with params\n",params),collapse = "")
-writeLines(c(res, paste(resDB$summary, collapse="")), con = paste0(resDB$dbname,".txt"))
+writeLines( c(res, paste(resDB$summary, collapse = "")), con = paste0(resDB$dbname,".txt"))
 
