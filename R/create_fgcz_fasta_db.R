@@ -30,7 +30,7 @@ create_fgcz_fasta_db <- function(databasedirectory ,
         filepath <- file.path(outputdir, paste(dbname,"_",format(Sys.time(), "%Y%m%d"),".fasta" ,sep = ""))
     }
 
-    message("wriging db to : ", filepath)
+    message("writing db to : ", filepath)
     writeFasta(resDB, file = filepath)
 
     {
