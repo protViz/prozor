@@ -34,7 +34,7 @@ document()
 ```
 
 
-Example fo creating a fasta file with the `fgcz_create_fasta.R` script
+Example for creating a fasta file with the `fgcz_create_fasta.R` script
 
 ```bash
 ls ./fasta_db/fgcz_3071_Chlorella
@@ -46,4 +46,5 @@ clear
 
 cat fgcz_3071_Chlorella_d.txt
 cat fgcz_3071_Chlorella_d.txt | bfabric_save_fasta.py 3071  /srv/www/htdocs/FASTA/fgcz_3071_Chlorella_d_20200604.fasta
+
 ```
