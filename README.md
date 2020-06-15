@@ -19,9 +19,8 @@ install.packages("prozor")
 This is how you install the github version.
 
 ```r
-install.packages("devtools")
-library(devtools)
-install_github("protviz/prozor")
+install.packages("remotes")
+remotes::install_github("protviz/prozor")
 ```
 
 ### for Developers
