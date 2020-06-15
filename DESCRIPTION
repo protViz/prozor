@@ -33,6 +33,7 @@ Collate:
     'computeFDR.R'
     'createDecoyDB.R'
     'create_fgcz_fasta_db.R'
+    'fgcz_helper.R'
     'greedy.R'
     'hello.R'
     'loadContaminantsFasta.R'
