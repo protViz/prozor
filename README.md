@@ -35,6 +35,9 @@ document()
 
 Example for creating a fasta file with the `fgcz_create_fasta.R` script
 
+Go to fgcz-r-035.uzh.ch
+
+
 ```bash
 ls ./fasta_db/p3071_Chlorella
 more ./fasta_db/p3071_Chlorella/annotation.txt
