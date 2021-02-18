@@ -1,10 +1,10 @@
 ---
-title: "Creating Target Decoy databases"
+title: "Creating Target Decoy Databases"
 author: "Witek Wolski"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Creating Target Decoy databases}
+  %\VignetteIndexEntry{Creating Target Decoy Databases}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

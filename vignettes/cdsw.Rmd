@@ -1,6 +1,6 @@
 ---
-title: "On Computing Dynamic SWATH Windows"
-author: "Witold E. Wolski, Bernd Roschitzki, Christian Trachsel, and Christian Panse"
+title: "Computing Dynamic SWATH Windows"
+author: "Witold E. Wolski, Bernd Roschitzki"
 date: "`r Sys.Date()`"
 package: "`r packageVersion('prozor')`"
 vignette: >
