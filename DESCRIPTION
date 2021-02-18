@@ -12,6 +12,7 @@ License: GPL-3
 LazyData: TRUE
 Imports:
     AhoCorasickTrie,
+    docopt,
     Matrix,
     methods,
     purrr,
