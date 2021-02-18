@@ -23,18 +23,27 @@ loadContaminantsNoHumanFasta <- function(){
     file = system.file("extdata/fgcz_ContaminantsWithAnnotationNoHuman.fasta.gz",package = "prozor")
     #file = file.path(path.package("prozor"),"extdata/fgcz_ContaminantsWithAnnotationNoHuman.fasta.gz")
     contaminants <- readPeptideFasta(file)
+    invisible(contaminants)
 }
 
 #' load list of contaminant sequences FGCZ 2019
 #'
 #' @export
+#' @param noHuman should human contaminants be excluded? default FALSE
 #' @examples
 #' library(prozor)
 #' cont <- loadContaminantsFasta2019()
-#' cont[[1]]
+#' length(cont)
+#' contNH <- loadContaminantsFasta2019()
+#' length(contNH)
 #' #example how to create a protein db with decoy sequences
-loadContaminantsFasta2019 <- function(){
+loadContaminantsFasta2019 <- function(noHuman = FALSE){
   file = system.file("extdata/fgcz_contaminants2019_20190708.fasta.gz",package = "prozor")
   #file = file.path(path.package("prozor"),"extdata/fgcz_ContaminantsWithAnnotation.fasta.gz")
   contaminants <- readPeptideFasta(file)
+  if (noHuman) {
+    annot <- sapply(contaminants, seqinr::getAnnot)
+    contaminants <- contaminants[!grepl("HUMAN",annot)]
+  }
+  invisible(contaminants)
 }

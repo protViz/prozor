@@ -4,7 +4,10 @@
 \alias{loadContaminantsFasta2019}
 \title{load list of contaminant sequences FGCZ 2019}
 \usage{
-loadContaminantsFasta2019()
+loadContaminantsFasta2019(noHuman = FALSE)
+}
+\arguments{
+\item{noHuman}{should human contaminants be excluded? default FALSE}
 }
 \description{
 load list of contaminant sequences FGCZ 2019
@@ -12,6 +15,8 @@ load list of contaminant sequences FGCZ 2019
 \examples{
 library(prozor)
 cont <- loadContaminantsFasta2019()
-cont[[1]]
+length(cont)
+contNH <- loadContaminantsFasta2019()
+length(contNH)
 #example how to create a protein db with decoy sequences
 }
