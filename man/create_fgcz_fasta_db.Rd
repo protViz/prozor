@@ -11,6 +11,15 @@ create_fgcz_fasta_db(
   outputdir = NULL
 )
 }
+\arguments{
+\item{databasedirectory}{directory with fasta files}
+
+\item{useContaminants}{contaminants to add}
+
+\item{revLab}{reverse label}
+
+\item{outputdir}{output directory}
+}
 \description{
 create fasta db from one or more fasta files
 }

@@ -1,7 +1,7 @@
 Package: prozor
 Type: Package
 Title: Minimal Protein Set Explaining Peptide Spectrum Matches
-Version: 0.2.12
+Version: 0.2.14
 Author: Witold Wolski
 Maintainer: Witold Wolski <wewolski@gmail.com>
 Description: Determine minimal protein set explaining
@@ -20,12 +20,14 @@ Imports:
     seqinr,
     stringr,
     dplyr
+Suggests: knitr,
+    rmarkdown,
+    reticulate,
+    ssh
 URL: https://github.com/protviz/prozor
 BugReports: https://github.com/protviz/prozor/issues
 Repository: CRAN
 RoxygenNote: 7.1.1
-Suggests: knitr,
-    rmarkdown
 VignetteBuilder: knitr
 Collate: 
     'annotatePeptides.R'

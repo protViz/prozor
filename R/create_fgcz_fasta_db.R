@@ -1,5 +1,9 @@
 #' create fasta db from one or more fasta files
 #' @export
+#' @param databasedirectory directory with fasta files
+#' @param useContaminants contaminants to add
+#' @param revLab reverse label
+#' @param outputdir output directory
 #'
 create_fgcz_fasta_db <- function(databasedirectory ,
                                  useContaminants = loadContaminantsFasta2019(),
@@ -38,13 +42,13 @@ create_fgcz_fasta_db <- function(databasedirectory ,
         vec <- strsplit(bigstr,split = "")[[1]]
 
         aafreq <- table(vec)
-        aafreq <- paste(capture.output(as.matrix(aafreq)),"\n", sep = "")
+        aafreq <- paste(utils::capture.output(as.matrix(aafreq)),"\n", sep = "")
         length_s <- summary(sapply(resDB, seqinr::getLength))
-        length_s <- paste(capture.output(length_s),"\n", sep = "")
+        length_s <- paste(utils::capture.output(length_s),"\n", sep = "")
 
 
         summary <- paste0(
-            "Database created with prozor: ", paste(capture.output(mcall), collapse = "\n"), "\n",
+            "Database created with prozor: ", paste(utils::capture.output(mcall), collapse = "\n"), "\n",
             "where databasedirectory was prepared according to https://fgcz-intranet.uzh.ch/tiki-index.php?page=SOPrequestFASTA \n\n",
             "\n      FASTA name : ", dbname,
             "\n FASTA file name : ", basename(filepath),
