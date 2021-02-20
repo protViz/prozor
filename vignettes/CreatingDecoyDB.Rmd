@@ -16,7 +16,7 @@ vignette: >
 
 
 Using the package prozor for creating standardized fasta.
-prozor can be used to: 
+The package can be used to: 
      
      * merge several fasta files into a single fasta file
      * add reverse sequences to the fasta file.

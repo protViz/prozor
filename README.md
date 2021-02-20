@@ -5,10 +5,16 @@
 
 
 # prozor
-Determine minimal Protein set given list of peptide protein mappings. Various weights can be assigned to peptides (i.e. inverse peptide frequencies).
-Generate reverse decoy sequences
 
+- Determine minimal protein set explaining peptide spectrum matches. 
+- Utility functions for creating fasta amino acid databases with decoys and contaminants.
+- Peptide false discovery rate estimation for target decoy search results on psm, precursor, peptide and protein level. 
+- Computing dynamic swath window sizes based on MS1 or MS2 signal distributions.
  
+An HTML version of the package documentation can be found here:
+
+https://protviz.github.io/prozor
+
 ## How to install:
 For CRAN version (not the newest). Please use the github version.
 
