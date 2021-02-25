@@ -26,6 +26,7 @@ knitr::opts_chunk$set(
 )
 ```
 
+Here we describe how you can estimate the false discovery rate (FDR) when matching your spectra against a FASTA sequence database using spectra search engines such as Mascot or Comet. The sequence database contains forward sequences and the same number of reverse sequences.
 
 ## The data
 
