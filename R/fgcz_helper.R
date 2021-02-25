@@ -32,7 +32,6 @@ bfabric_save_fasta <- function(project_id,
                                filepath,
                                summary,
                                python_path = "c:/Program Files/Python38"){
-    library(reticulate)
     reticulate::use_python(python_path)
     bfabricpy <- reticulate::import("bfabric.scripts.bfabric_save_fasta")
     bfabricpy$save_fasta(projectid = project_id,
