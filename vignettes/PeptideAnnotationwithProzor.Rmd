@@ -35,7 +35,7 @@ head(specMeta)
 
 Annotate peptide sequences with protein sequences from two fasta files on with reviewed entries only (sp) and the other with reviewed and Trembl entries (sp/tr).
 
-```{r fig.cap = "Number of proteins in each the All and Canonical database."}
+```{r fig.cap = "Number of proteins in the All and Canonical database."}
 length(unique(specMeta$peptideSeq))
 upeptide <- unique(specMeta$peptideSeq)
 
@@ -133,7 +133,7 @@ xxCAN <- greedy(xx)
 
 We see that the number of proteins needed to explain all the peptides is practically identical for both databases. Also in practice using a database with more entries does not lead to more identified proteins. On the contrary, it might even reduce the number of porteins identified.
 
-```{r fig.cap="Number of Proteins before and after protein inference."}
+```{r fig.cap="Number of proteins before and after protein inference."}
 barplot(c(All_before = length(unique(annotAll$proteinID)), All_after = length(unique(unlist(
     xxAll
 ))) , Canonical_before =  length(unique(annotCan$proteinID)), Canonical_after = length(unique(unlist(
