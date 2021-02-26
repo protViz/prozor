@@ -91,7 +91,7 @@
       <h1 data-toc-skip>Target Decoy FDR</h1>
                         <h4 class="author">Witold Wolski</h4>
             
-            <h4 class="date">2021-02-20</h4>
+            <h4 class="date">2021-02-26</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/protviz/prozor/blob/master/vignettes/TargetDecoyFDR_Example.Rmd"><code>vignettes/TargetDecoyFDR_Example.Rmd</code></a></small>
       <div class="hidden name"><code>TargetDecoyFDR_Example.Rmd</code></div>
@@ -104,16 +104,22 @@
 %\VignetteEngine{knitr::rmarkdown}
 %\VignetteIndexEntry{Target Decoy FDR}
 -->
+<p>Here we describe how you can estimate the false discovery rate (FDR) when matching your spectra against a FASTA sequence database using spectra search engines such as Mascot or Comet. The sequence database contains forward sequences and the same number of reverse sequences.</p>
 <div id="the-data" class="section level2">
 <h2 class="hasAnchor">
 <a href="#the-data" class="anchor"></a>The data</h2>
-<p>The package provides sample data. The data needs to have two columns, one with a label, to distinguish targets and decoys, the other with a score. Then you also need to know if a larger score or a smaller score is better. In our example data, we have two scores: <code>score</code> and <code>score2</code>. While the <code>score</code> is better if it smaller, <code>score2</code> is better if it is larger.</p>
+<p>The data needs to have two columns, one with a label, to distinguish targets and decoys, the other with a score. Then you also need to know if a larger score or a smaller score is better. In our example data, we have two scores: <code>score</code> and <code>score2</code>. While the <code>score</code> is better if it smaller (e.g, posterior erro probability), <code>score2</code> is better if it is larger.</p>
+<div class="figure">
+<img src="TargetDecoyFDR_Example_files/figure-html/targetdecoy-1.png" alt="Black line - Score distribution of decoy hits. Green line - Score distribution of vorward hits. TN - true netagive, FN - false negative, FP - false postitive, TP - true positive" width="700"><p class="caption">
+Black line - Score distribution of decoy hits. Green line - Score distribution of vorward hits. TN - true netagive, FN - false negative, FP - false postitive, TP - true positive
+</p>
+</div>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/rm.html">rm</a></span><span class="op">(</span>list<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/ls.html">ls</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/rm.html">rm</a></span><span class="op">(</span>list <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ls.html">ls</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org">dplyr</a></span><span class="op">)</span>
 <span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/protviz/prozor">prozor</a></span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="va">fdrSample</span><span class="op">)</span>
-<span class="va">x</span> <span class="op">&lt;-</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">fdrSample</span>, <span class="va">score2</span><span class="op">)</span>
+<span class="va">x</span> <span class="op">&lt;-</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="va">fdrSample</span>, <span class="va">score2</span><span class="op">)</span>
 <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">fdrSample</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <table class="table">
 <thead><tr class="header">
@@ -154,18 +160,19 @@
 </tr>
 </tbody>
 </table>
-<p>What is also required is that the number of Targets and Decoys are the same. This is usually given for mass spectrometry database searches. Our dataset here is truncated already at a 5% FDR. Therefore the number of decoys is much smaller.</p>
+<p>What is also required is that the number of Targets and Decoys are the same. This is given for mass spectrometry database searches. Our dataset here is already truncated at a 5% FDR. Therefore the number of decoys is much smaller.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html">grepl</a></span><span class="op">(</span><span class="st">"REV_"</span>,<span class="va">fdrSample</span><span class="op">$</span><span class="va">proteinID</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <pre><code>## 
 ## FALSE  TRUE 
 ## 88782  1933</code></pre>
 <p>In our example, we will use the package to filter the data further for a 1% FDR.</p>
-<p>Computing the FDR can be done by calling the function <code>computeFDR</code>. <code>plotFDR</code> than shows the score distribution for the targets (black) and decoys (red) as well as the FDR for each score (x axis).</p>
+<p>Computing the FDR can be done by calling the function <code>computeFDR</code>. <code>plotFDR</code> than shows the score distribution for the targets (black) and decoys (red) as well as the FDR for the two scores implemented (x axis).</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">fdr1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/computeFDR.html">computeFDR</a></span><span class="op">(</span><span class="va">fdrSample</span><span class="op">$</span><span class="va">score</span>, <span class="fu"><a href="https://rdrr.io/r/base/grep.html">grepl</a></span><span class="op">(</span><span class="st">"REV_"</span>,<span class="va">fdrSample</span><span class="op">$</span><span class="va">proteinID</span><span class="op">)</span>,larger_better <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-<span class="fu"><a href="../reference/plotFDR.html">plotFDR</a></span><span class="op">(</span><span class="va">fdr1</span><span class="op">)</span></code></pre></div>
-<p><img src="TargetDecoyFDR_Example_files/figure-html/unnamed-chunk-3-1.png" width="700"></p>
+<span class="fu"><a href="../reference/plotFDR.html">plotFDR</a></span><span class="op">(</span><span class="va">fdr1</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/graphics/legend.html">legend</a></span><span class="op">(</span><span class="st">"topright"</span>, legend <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"FPR"</span>, <span class="st">"qValue/FDR"</span><span class="op">)</span>, lty <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">4</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<p><img src="TargetDecoyFDR_Example_files/figure-html/unnamed-chunk-3-1.png" width="672"></p>
 <p>The output is a named list which can be easily converted into a data frame. We next will briefly discuss the elements of the output.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="va">fdr1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
@@ -244,11 +251,66 @@
 </tbody>
 </table>
 </div>
+<div id="types-of-fdr" class="section level2">
+<h2 class="hasAnchor">
+<a href="#types-of-fdr" class="anchor"></a>Types of FDR</h2>
+<p>We define</p>
+<pre><code> * false postivies (FP) as the number of passing decoy assignments
+ * true positives (TP) as the number of passing forward hits.</code></pre>
+<div id="false-postive-rate" class="section level3">
+<h3 class="hasAnchor">
+<a href="#false-postive-rate" class="anchor"></a>False postive rate</h3>
+<p>Which is the “Fraction of incorrect assignments above score threshold.” The multiplier 2 is needed here since we assume that also the forward sequences have false assignments.</p>
+<p><span class="math display">\[
+FPR = \frac{2 \cdot FP}{TP + FP}
+\]</span></p>
+<p>This is taken from the reference by <span class="citation">(Elias and Gygi 2007)</span>. <span class="citation">(Storey and Tibshirani 2003)</span> defines FPR differently. Kaell points out that the FPR here actually should be named FDR and that “Many proteomics papers incorrectly refer to this quantity as the <em>false positive rate</em>.”</p>
+</div>
+<div id="simple-fdr" class="section level3">
+<h3 class="hasAnchor">
+<a href="#simple-fdr" class="anchor"></a>Simple FDR</h3>
+<p>“The FDR associated with a particular score threshold is defined as the expected percentage of accepted PSMs that are incorrect, where an <em>accepted PSM</em> is one that scores above the threshold (Many proteomics papers incorrectly refer to this quantity as the <em>false positive rate</em>).” (<span class="citation">(Käll et al. 2007)</span>)</p>
+<p>The Simple FDR intrudced by (<span class="citation">(Käll et al. 2007)</span>) is defined by :</p>
+<p><span class="math display">\[
+SimpleFDR =  \frac{FP}{TP}
+\]</span></p>
+<p>“For a given score threshold, we count the number of decoy PSMs above the threshold and the number of target PSMs above the threshold. We can now estimate the FDR by simply computing the ratio of these two values (SimpleFDR).”<span class="citation">(Käll et al. 2007)</span></p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">fdr1</span><span class="op">$</span><span class="va">score</span>, <span class="va">fdr1</span><span class="op">$</span><span class="va">SimpleFDR</span>, type <span class="op">=</span> <span class="st">"l"</span>, xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">0.002</span><span class="op">)</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">0.0005</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="va">fdr1</span><span class="op">$</span><span class="va">score</span>, <span class="va">fdr1</span><span class="op">$</span><span class="va">qValue_SimpleFDR</span>, col <span class="op">=</span> <span class="fl">3</span>, type <span class="op">=</span> <span class="st">"l"</span>, xlim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">0.002</span><span class="op">)</span>, ylim <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.002</span>,<span class="fl">0</span><span class="op">)</span><span class="op">)</span>
+<span class="fu"><a href="https://rdrr.io/r/graphics/legend.html">legend</a></span><span class="op">(</span><span class="st">"topleft"</span>, legend <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"FDR"</span>, <span class="st">"qValue"</span><span class="op">)</span>, lty <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">1</span><span class="op">)</span>, col <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">3</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<p><img src="TargetDecoyFDR_Example_files/figure-html/unnamed-chunk-5-1.png" width="672"></p>
+<p>Although the score is getting better (smaller) the FDR may increase since the number of TP in the denominator decreases while the number of FP stays the same. Therefore Storey and Tibshirani proposed the <em>q-value</em>, “which in our case is defined as the minimal FDR threshold at which a given PSM is accepted”<span class="citation">(Käll et al. 2007)</span>.</p>
+</div>
+</div>
+<div id="getting-the-score-for-an-fdr-" class="section level2">
+<h2 class="hasAnchor">
+<a href="#getting-the-score-for-an-fdr-" class="anchor"></a>Getting the score for an FDR.</h2>
+<p>Most frequently you will need to get the score for an FDR in order to filter your data. To report your data with an FDR of 1% instead of 5% you can execute this code:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="op">(</span><span class="va">score01G</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/predictScoreFDR.html">predictScoreFDR</a></span><span class="op">(</span><span class="va">fdr1</span>,qValue <span class="op">=</span> <span class="fl">5</span>,method <span class="op">=</span> <span class="st">"FPR"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<pre><code>## [1] 0.09996855</code></pre>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">fdrSample</span>, <span class="va">score</span> <span class="op">&lt;</span> <span class="va">score01G</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<pre><code>## [1] 90714     3</code></pre>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="op">(</span><span class="va">score01G</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/predictScoreFDR.html">predictScoreFDR</a></span><span class="op">(</span><span class="va">fdr1</span>,qValue <span class="op">=</span> <span class="fl">1</span>,method <span class="op">=</span> <span class="st">"FPR"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<pre><code>## [1] 0.007166919</code></pre>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">fdrSample</span>, <span class="va">score</span> <span class="op">&lt;</span> <span class="va">score01G</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<pre><code>## [1] 64469     3</code></pre>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="op">(</span><span class="va">score01K</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/predictScoreFDR.html">predictScoreFDR</a></span><span class="op">(</span><span class="va">fdr1</span>,qValue <span class="op">=</span> <span class="fl">1</span>,method <span class="op">=</span> <span class="st">"SimpleFDR"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<pre><code>## [1] 0.02797633</code></pre>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">fdrSample</span>, <span class="va">score</span> <span class="op">&lt;</span> <span class="va">score01K</span><span class="op">)</span><span class="op">)</span></code></pre></div>
+<pre><code>## [1] 77266     3</code></pre>
+</div>
 <div id="the-order-column" class="section level2">
 <h2 class="hasAnchor">
 <a href="#the-order-column" class="anchor"></a>The order column</h2>
 <p>Since the scores are sorted to compute the FDR, we return also the <em>order</em> column. This column can be used to align the ID’s with the scores.</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span>ID <span class="op">=</span> <span class="va">fdrSample</span><span class="op">$</span><span class="va">proteinID</span><span class="op">[</span><span class="va">fdr1</span><span class="op">$</span><span class="va">order</span><span class="op">]</span>, <span class="va">fdr1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <table class="table">
 <thead><tr class="header">
@@ -331,8 +393,8 @@
 </tr>
 </tbody>
 </table>
-<p>For convinience we provide the function <code>computeFDRwithID</code> which integrates the reordering of the ID’s.</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<p>For convenience we provide the function <code>computeFDRwithID</code> which integrates the reordering of the ID’s.</p>
+<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">fdr1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/computeFDRwithID.html">computeFDRwithID</a></span><span class="op">(</span><span class="va">fdrSample</span><span class="op">$</span><span class="va">score</span>,<span class="va">fdrSample</span><span class="op">$</span><span class="va">proteinID</span>, decoy <span class="op">=</span> <span class="st">"REV_"</span>,larger_better <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
 <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op">(</span><span class="va">fdr1</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <table class="table">
@@ -416,66 +478,6 @@
 </tr>
 </tbody>
 </table>
-</div>
-<div id="types-of-fdr" class="section level2">
-<h2 class="hasAnchor">
-<a href="#types-of-fdr" class="anchor"></a>Types of FDR</h2>
-<p>There are various types of measures in result dataframe.</p>
-<p>We define here</p>
-<pre><code> * FP as the number of passing decoy assignments
- * TP as the number of passing forward hits.</code></pre>
-<div id="false-postive-rate" class="section level3">
-<h3 class="hasAnchor">
-<a href="#false-postive-rate" class="anchor"></a>False postive rate</h3>
-<p>Which is the “Fraction of incorrect assignments above score threshold.” The multiplier 2 is needed here since we assume that also the forward sequences have false assignments.</p>
-<p><span class="math display">\[
-FPR = \frac{2 \cdot FP}{TP + FP}
-\]</span></p>
-<p>This is taken from the reference by <span class="citation">(Elias and Gygi 2007)</span>. <span class="citation">(Storey and Tibshirani 2003)</span> defines FPR differently. Kaell points out that the FPR here actually should be named FDR and that “Many proteomics papers incorrectly refer to this quantity as the <em>false positive rate</em>.” .</p>
-</div>
-<div id="simple-fdr" class="section level3">
-<h3 class="hasAnchor">
-<a href="#simple-fdr" class="anchor"></a>Simple FDR</h3>
-<p>“The FDR associated with a particular score threshold is defined as the expected percentage of accepted PSMs that are incorrect, where an <em>accepted PSM</em> is one that scores above the threshold (Many proteomics papers incorrectly refer to this quantity as the <em>false positive rate</em>).” (<span class="citation">(Käll et al. 2007)</span>)</p>
-<p>The Simple FDR intrudced by (<span class="citation">(Käll et al. 2007)</span>) is defined by :</p>
-<p><span class="math display">\[
-SimpleFDR =  \frac{FP}{TP}
-\]</span></p>
-<p>“For a given score threshold, we count the number of decoy PSMs above the threshold and the number of target PSMs above the threshold. We can now estimate the FDR by simply computing the ratio of these two values (SimpleFDR).”<span class="citation">(Käll et al. 2007)</span></p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html">plot</a></span><span class="op">(</span><span class="va">fdr1</span><span class="op">$</span><span class="va">score</span>, <span class="va">fdr1</span><span class="op">$</span><span class="va">SimpleFDR</span>, type<span class="op">=</span><span class="st">"l"</span>, xlim<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">0.002</span><span class="op">)</span>, ylim<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">0.0005</span><span class="op">)</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/graphics/lines.html">lines</a></span><span class="op">(</span><span class="va">fdr1</span><span class="op">$</span><span class="va">score</span>, <span class="va">fdr1</span><span class="op">$</span><span class="va">qValue_SimpleFDR</span>, col<span class="op">=</span><span class="fl">3</span>, type<span class="op">=</span><span class="st">"l"</span>, xlim<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">0</span>,<span class="fl">0.002</span><span class="op">)</span>, ylim<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">0.002</span>,<span class="fl">0</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<p><img src="TargetDecoyFDR_Example_files/figure-html/unnamed-chunk-7-1.png" width="700"></p>
-<p>However, although the score is getting better (smaller) the FDR may increase since the number of TP in the denominator decreases while the number of FP stays the same. Therefore Storey and Tibshirani proposed the <em>q-value</em>, “which in our case is defined as the minimal FDR threshold at which a given PSM is accepted”<span class="citation">(Käll et al. 2007)</span>.</p>
-</div>
-</div>
-<div id="getting-the-score-for-an-fdr-" class="section level2">
-<h2 class="hasAnchor">
-<a href="#getting-the-score-for-an-fdr-" class="anchor"></a>Getting the score for an FDR.</h2>
-<p>Most frequently you will need to get the score for an FDR in order to filter your data. To report your data with an FDR of 1% instead of 5% you can execute this code:</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/names.html">names</a></span><span class="op">(</span><span class="va">fdr1</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] "larger_better"    "order"            "decoy_hit"        "score"           
-## [5] "FPR"              "SimpleFDR"        "qValue_FPR"       "qValue_SimpleFDR"
-## [9] "ID"</code></pre>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="op">(</span><span class="va">score01G</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/predictScoreFDR.html">predictScoreFDR</a></span><span class="op">(</span><span class="va">fdr1</span>,qValue <span class="op">=</span> <span class="fl">5</span>,method <span class="op">=</span> <span class="st">"FPR"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] 0.09996855</code></pre>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">fdrSample</span>, <span class="va">score</span> <span class="op">&lt;</span> <span class="va">score01G</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] 90714     3</code></pre>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="op">(</span><span class="va">score01G</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/predictScoreFDR.html">predictScoreFDR</a></span><span class="op">(</span><span class="va">fdr1</span>,qValue <span class="op">=</span> <span class="fl">1</span>,method <span class="op">=</span> <span class="st">"FPR"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] 0.007166919</code></pre>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">fdrSample</span>, <span class="va">score</span> <span class="op">&lt;</span> <span class="va">score01G</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] 64469     3</code></pre>
-<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="op">(</span><span class="va">score01K</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/predictScoreFDR.html">predictScoreFDR</a></span><span class="op">(</span><span class="va">fdr1</span>,qValue <span class="op">=</span> <span class="fl">1</span>,method <span class="op">=</span> <span class="st">"SimpleFDR"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] 0.02797633</code></pre>
-<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">fdrSample</span>, <span class="va">score</span> <span class="op">&lt;</span> <span class="va">score01K</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] 77266     3</code></pre>
 </div>
 <div id="references" class="section level1 unnumbered">
 <h1 class="hasAnchor">
