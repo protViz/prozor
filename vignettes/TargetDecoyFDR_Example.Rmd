@@ -30,9 +30,22 @@ Here we describe how you can estimate the false discovery rate (FDR) when matchi
 
 ## The data
 
-The package provides sample data. The data needs to have two columns, one with a label, to distinguish targets and decoys, the other with a score. Then you also need to know if a larger score or a smaller score is better.
+The data needs to have two columns, one with a label, to distinguish targets and decoys, the other with a score. Then you also need to know if a larger score or a smaller score is better.
 In our example data, we have two scores: `score` and `score2`. While the `score` is better if it smaller (e.g, posterior erro probability), `score2` is better if it is larger.
 
+
+```{r  targetdecoy, fig.cap = "Black line - Score distribution of decoy hits. Green line - Score distribution of vorward hits. TN - true netagive, FN - false negative, FP - false postitive, TP - true positive", echo = FALSE}
+x <- seq(0,10,by = 0.1)
+y1 <- dnorm(x,mean = 3, sd = 1)
+y2 <- dnorm(x,mean = 5, sd = 1)
+plot(x, y1, type = "l", xlab = 'score')
+lines(x, y2, col = 3)
+abline(v = 3.5, col = 2)
+text(c(2,4.2) , y = c(.2,.2), labels = c("TN","FP"))
+text(c(3,7) , y = c(.1,.1), labels = c("FN","TP"), col = 3)
+legend("topright", legend = c("Forward", "Decoys"), lty = c(1,1), col = c(3,1))
+
+```
 
 
 ```{r}
@@ -46,7 +59,7 @@ knitr::kable(head(fdrSample))
 ```
 
 
-What is also required is that the number of Targets and Decoys are the same. This is given for mass spectrometry database searches. Our dataset here is truncated already at a 5% FDR. Therefore the number of decoys is much smaller.
+What is also required is that the number of Targets and Decoys are the same. This is given for mass spectrometry database searches. Our dataset here is already truncated at a 5% FDR. Therefore the number of decoys is much smaller.
 
 
 ```{r}
