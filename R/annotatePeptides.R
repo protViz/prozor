@@ -56,7 +56,7 @@ annotatePeptides <- function(pepinfo,
     restab <- restab %>%
         dplyr::group_by_at(peptide) %>%
         dplyr::mutate(
-            matched = prozor:::.matchPepsequence(
+            matched = .matchPepsequence(
                 dplyr::first(!!dplyr::sym(peptide)),
                 !!dplyr::sym("proteinSequence") ,
                 !!dplyr::sym("proteinID"),
