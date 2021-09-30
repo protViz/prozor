@@ -21,10 +21,12 @@ Arguments:
 "
 
 #print(commandArgs(TRUE))
-if (FALSE) {
+if (TRUE) {
     args <- c("C:\\Users\\wewol\\Dropbox\\DataAnalysis\\p65\\fgcz_9606_SARS_CoV_2_reviewed_cnl", "-o" ,"c:/users/wewol")
     #args <- c("C:\\Users\\wewol\\Dropbox\\DataAnalysis\\p65\\fgcz_10116_RattusNor_reviewed_cnl")
     args <- c("Z:/p65/Proteomics/fasta_db/o24206_db1_Synechococcus_sp_PCC7336", "nodecoy", "-o", "c:/users/wewol")
+    args <- c("c:/Users/wolski/prog/prozor/inst/p24073_db3_OSSD_Jan2021", "nodecoy", "-o", "c:/users/wewol")
+
     opt <- docopt(doc,args = args)
 }else{
     opt <- docopt(doc)
@@ -55,7 +57,7 @@ if (nodecoy) {
 }
 
 
-# undebug(create_fgcz_fasta_db)
+debug(create_fgcz_fasta_db)
 resDB <-  create_fgcz_fasta_db(fasta_dir,
                                useContaminants = contamin,
                                revLab = revLab,
