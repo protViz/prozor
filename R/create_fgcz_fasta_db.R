@@ -6,7 +6,7 @@
 #' @param outputdir output directory
 #'
 create_fgcz_fasta_db <- function(databasedirectory ,
-                                 useContaminants = loadContaminantsFasta2019(),
+                                 useContaminants = loadContaminantsFasta2021(),
                                  revLab = "REV_",
                                  outputdir = NULL){
     mcall <- match.call()

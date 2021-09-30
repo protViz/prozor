@@ -22,38 +22,40 @@ Arguments:
 
 #print(commandArgs(TRUE))
 if (TRUE) {
-    args <- c("C:\\Users\\wewol\\Dropbox\\DataAnalysis\\p65\\fgcz_9606_SARS_CoV_2_reviewed_cnl", "-o" ,"c:/users/wewol")
-    #args <- c("C:\\Users\\wewol\\Dropbox\\DataAnalysis\\p65\\fgcz_10116_RattusNor_reviewed_cnl")
-    args <- c("Z:/p65/Proteomics/fasta_db/o24206_db1_Synechococcus_sp_PCC7336", "nodecoy", "-o", "c:/users/wewol")
-    args <- c("c:/Users/wolski/prog/prozor/inst/p24073_db3_OSSD_Jan2021", "nodecoy", "-o", "c:/users/wewol")
+  args <- c("C:\\Users\\wewol\\Dropbox\\DataAnalysis\\p65\\fgcz_9606_SARS_CoV_2_reviewed_cnl", "-o" ,"c:/users/wewol")
+  #args <- c("C:\\Users\\wewol\\Dropbox\\DataAnalysis\\p65\\fgcz_10116_RattusNor_reviewed_cnl")
+  args <- c("Z:/p65/Proteomics/fasta_db/o24206_db1_Synechococcus_sp_PCC7336", "nodecoy", "-o", "c:/users/wewol")
+  args <- c("c:/Users/wolski/prog/prozor/inst/p24073_db3_OSSD_Jan2021", "nodecoy", "-o", "c:/users/wewol")
 
-    opt <- docopt(doc,args = args)
+  opt <- docopt(doc,args = args)
 }else{
-    opt <- docopt(doc)
+  opt <- docopt(doc)
 }
 
 
 params <- c("\nParameters used:\n\t",
-    " fasta_dir: ", fasta_dir <- opt$fasta_dir, "\n\t",
-    "   nodecoy: ",   nodecoy <- opt$nodecoy, "\n\t",
-    "  contamin: ", contamin <- opt[["--contamin"]], "\n\t",
-    "    revLab: ", revLab <- opt[["--revLab"]], "\n\t",
-    "output_dir: ", output_dir <- opt[["--output_dir"]], "\n\n\n\t")
+            " fasta_dir: ", fasta_dir <- opt$fasta_dir, "\n\t",
+            "   nodecoy: ",   nodecoy <- opt$nodecoy, "\n\t",
+            "  contamin: ", contamin <- opt[["--contamin"]], "\n\t",
+            "    revLab: ", revLab <- opt[["--revLab"]], "\n\t",
+            "output_dir: ", output_dir <- opt[["--output_dir"]], "\n\n\n\t")
 
 cat(paste(params, collapse = ""))
 
-if (contamin == "fgcz2019") {
-    contamin <- loadContaminantsFasta2019()
+if (contamin == "fgcz2021") {
+  contamin <- loadContaminantsFasta2021()
+} else if (contamin == "fgcz2019") {
+  contamin <- loadContaminantsFasta2019()
 }else if (contamin == "none") {
-    contamin <- NULL
+  contamin <- NULL
 }else{
-    if (file.exists(contamin)) {
-        contamin <- prozor::readPeptideFasta(contamin)
-    }
+  if (file.exists(contamin)) {
+    contamin <- prozor::readPeptideFasta(contamin)
+  }
 }
 
 if (nodecoy) {
-    revLab <- NULL
+  revLab <- NULL
 }
 
 
