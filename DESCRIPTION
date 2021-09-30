@@ -19,6 +19,7 @@ Imports:
     readr,
     seqinr,
     stringr,
+    knitr,
     dplyr
 Suggests: knitr,
     rmarkdown,
