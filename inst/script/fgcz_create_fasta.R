@@ -12,7 +12,7 @@ Usage:
 
 Options:
   -o --output_dir=<output_dir> output directory, default next to fasta_dir
-  -c --contamin=<contamin> add contaminants [default: fgcz2019] or `none`, or path to fasta file with contaminants
+  -c --contamin=<contamin> add contaminants [default: fgcz2021] or `none`, or path to fasta file with contaminants
   -r --revLab=<revLab> create reverse sequences with prefix [default: REV_].
 
 
