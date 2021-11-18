@@ -17,6 +17,7 @@ Imports:
     methods,
     purrr,
     readr,
+    rlang,
     seqinr,
     stringr,
     dplyr
