@@ -19,11 +19,11 @@ Imports:
     readr,
     seqinr,
     stringr,
-    knitr,
     dplyr
 Suggests: knitr,
     rmarkdown,
-    reticulate
+    reticulate,
+    ssh
 URL: https://github.com/protviz/prozor
 BugReports: https://github.com/protviz/prozor/issues
 Repository: CRAN

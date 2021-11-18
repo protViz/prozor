@@ -70,6 +70,9 @@ annotatePeptides <- function(pepinfo,
 }
 
 #'
+#' @importFrom rlang :=
+NULL
+
 #' annotate peptides using AhoCorasickTrie
 #'
 #' peptides which do not have protein assignment drop out
