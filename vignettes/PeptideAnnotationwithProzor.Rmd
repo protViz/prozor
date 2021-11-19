@@ -2,7 +2,7 @@
 title: "Peptide Annotation and Protein Inference"
 author: "Witold Wolski"
 date: "March 16, 2017"
-output: pdf_document
+output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Peptide Annotation and Protein Inference}
   %\VignetteEngine{knitr::rmarkdown}
