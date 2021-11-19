@@ -29,7 +29,8 @@ library(prozor)
 
 
 ```{r fig.retina=3}
-cdsw <- prozor::Cdsw(prozor::masses, nbins = 25, digits = 1)
+data("masses")
+cdsw <- Cdsw(masses , nbins = 25, digits = 1)
 cdsw$plot()
 
 ```
