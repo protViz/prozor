@@ -9,7 +9,6 @@ Description: Determine minimal protein set explaining
     Peptide false discovery rate estimation for target decoy search results on psm, precursor, peptide and protein
     level. Computing dynamic swath window sizes based on MS1 or MS2 signal distributions.
 License: GPL-3
-LazyData: TRUE
 Imports:
     AhoCorasickTrie,
     docopt,
