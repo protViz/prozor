@@ -39,8 +39,7 @@
 #' @param plot diagnostic plots (default FALSE)
 #' @export
 #' @examples
-#'
-#' library(prozor)
+#' data(masses)
 #' cdsw <- Cdsw(masses)
 #' breaks <- cdsw$sampling_breaks(maxwindow=100,plot=TRUE)
 #' table <- cdsw$asTable()

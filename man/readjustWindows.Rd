@@ -21,8 +21,7 @@ readjustWindows(wind, ms1data, digits = 1, maxbin = 15, plot = FALSE)
 Readjust windows so that boundaries in regions of few peaks.
 }
 \examples{
-
-library(prozor)
+data(masses)
 cdsw <- Cdsw(masses)
 breaks <- cdsw$sampling_breaks(maxwindow=100,plot=TRUE)
 table <- cdsw$asTable()
