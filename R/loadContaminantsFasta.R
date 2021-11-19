@@ -42,7 +42,7 @@ loadContaminantsFasta2019 <- function(noHuman = FALSE){
   #file = file.path(path.package("prozor"),"extdata/fgcz_ContaminantsWithAnnotation.fasta.gz")
   contaminants <- readPeptideFasta(file)
   if (noHuman) {
-    annot <- vapply(contaminants, seqinr::getAnnot)
+    annot <- vapply(contaminants, seqinr::getAnnot, character(1))
     contaminants <- contaminants[!grepl("HUMAN",annot)]
   }
   invisible(contaminants)
@@ -64,7 +64,7 @@ loadContaminantsFasta2021 <- function(noHuman = FALSE){
   file = system.file("extdata/fgcz_contaminants2021_20210929.fasta.gz",package = "prozor")
   contaminants <- readPeptideFasta(file)
   if (noHuman) {
-    annot <- vapply(contaminants, seqinr::getAnnot)
+    annot <- vapply(contaminants, seqinr::getAnnot,character(1))
     contaminants <- contaminants[!grepl("HUMAN",annot)]
   }
   invisible(contaminants)

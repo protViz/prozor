@@ -1,7 +1,7 @@
 .writeFasta <- function(fasta , file=NULL  ) {
-  namesres <- vapply(fasta, function(x) attributes(x)$Annot)
+  namesres <- vapply(fasta, function(x) {attributes(x)$Annot}, character(1))
   namesres <- gsub(">", "", namesres)
-  write.fasta(fasta, namesres , file.out = file, nbchar = 60, as.string =TRUE)
+  write.fasta(fasta, namesres , file.out = file, nbchar = 60, as.string = TRUE)
 }
 #' write fasta lists into file
 #'

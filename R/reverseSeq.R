@@ -1,6 +1,8 @@
 .strReverse <- function(x) {
-  vapply(lapply(strsplit(x, NULL), rev), paste, collapse = "")
+  bb <- lapply(strsplit(x, NULL), rev)
+  vapply(bb,  paste, character(1), collapse = "")
 }
+
 .reverseSingleSeq <- function(fasta, revLab = "REV_"){
   name <- getName(fasta)
   Annot <- getAnnot(fasta)
@@ -35,7 +37,7 @@
 #'
 reverseSeq <- function(fasta, revLab = "REV_"){
   res <- lapply(fasta, .reverseSingleSeq ,revLab = revLab )
-  revnames <- vapply(res ,  function(x){attributes(x)$name})
+  revnames <- vapply(res ,  function(x){attributes(x)$name}, character(1))
   names(res) <- revnames
   return(res)
 }
