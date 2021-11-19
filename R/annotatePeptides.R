@@ -27,7 +27,7 @@
 #' @export
 #' @examples
 #'
-#' library(prozor)
+#' #library(prozor)
 #' library(dplyr)
 #' file = system.file("extdata/shortfasta.fasta.gz",package = "prozor")
 #' data("pepprot")
@@ -85,7 +85,7 @@ NULL
 #' @importFrom purrr map2_df map_df
 #' @examples
 #'
-#' library(prozor)
+#' #library(prozor)
 #' library(AhoCorasickTrie)
 #' file = system.file("extdata/shortfasta.fasta.gz",package = "prozor")
 #' fasta = readPeptideFasta(file = file)

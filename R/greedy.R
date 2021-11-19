@@ -37,7 +37,7 @@
 #' @return list of peptide protein assignment
 #' @export
 #' @examples
-#' library(prozor)
+#' #library(prozor)
 #'
 #' data(protpepmetashort)
 #' colnames(protpepmetashort)

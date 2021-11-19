@@ -13,7 +13,7 @@ loadContaminantsFasta2021(noHuman = FALSE)
 load list of contaminant sequences FGCZ 2021
 }
 \examples{
-library(prozor)
+#library(prozor)
 cont <- loadContaminantsFasta2021()
 length(cont)
 contNH <- loadContaminantsFasta2021()

@@ -16,7 +16,7 @@ peptides which do not have protein assignment drop out
 }
 \examples{
 
-library(prozor)
+#library(prozor)
 library(AhoCorasickTrie)
 file = system.file("extdata/shortfasta.fasta.gz",package = "prozor")
 fasta = readPeptideFasta(file = file)

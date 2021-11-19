@@ -1,5 +1,5 @@
 .strReverse <- function(x) {
-  sapply(lapply(strsplit(x, NULL), rev), paste, collapse = "")
+  vapply(lapply(strsplit(x, NULL), rev), paste, collapse = "")
 }
 .reverseSingleSeq <- function(fasta, revLab = "REV_"){
   name <- getName(fasta)
@@ -17,7 +17,7 @@
 #' @export
 #' @examples
 #' library(seqinr)
-#' library(prozor)
+#' #library(prozor)
 #'
 #' #file = file.path(path.package("prozor"),"extdata/fgcz_contaminants_20150123.fasta.gz")
 #' file = system.file("extdata/fgcz_contaminants_20150123.fasta.gz",package = "prozor")
@@ -35,7 +35,7 @@
 #'
 reverseSeq <- function(fasta, revLab = "REV_"){
   res <- lapply(fasta, .reverseSingleSeq ,revLab = revLab )
-  revnames <- sapply(res ,  function(x){attributes(x)$name})
+  revnames <- vapply(res ,  function(x){attributes(x)$name})
   names(res) <- revnames
   return(res)
 }

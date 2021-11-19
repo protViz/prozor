@@ -5,7 +5,7 @@
 #' @export
 #' @examples
 #' library(seqinr)
-#' library(prozor)
+#' #library(prozor)
 #' file = system.file("extdata/fgcz_contaminants_20150123.fasta.gz",package = "prozor")
 #' fasta = readPeptideFasta(file)
 #'

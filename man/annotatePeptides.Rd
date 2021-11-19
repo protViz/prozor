@@ -28,7 +28,7 @@ peptides which do not have protein assignment drop out
 }
 \examples{
 
-library(prozor)
+#library(prozor)
 library(dplyr)
 file = system.file("extdata/shortfasta.fasta.gz",package = "prozor")
 data("pepprot")

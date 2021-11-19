@@ -1,5 +1,5 @@
 .writeFasta <- function(fasta , file=NULL  ) {
-  namesres <- sapply(fasta, function(x) attributes(x)$Annot)
+  namesres <- vapply(fasta, function(x) attributes(x)$Annot)
   namesres <- gsub(">", "", namesres)
   write.fasta(fasta, namesres , file.out = file, nbchar = 60, as.string =TRUE)
 }
@@ -12,7 +12,7 @@
 #' @examples
 #' #example how to create a protein db with decoy sequences
 #' library(seqinr)
-#' library(prozor)
+#' #library(prozor)
 #' #file = file.path(path.package("prozor"),"extdata/fgcz_contaminants_20150123.fasta.gz")
 #' file = system.file("extdata/fgcz_contaminants_20150123.fasta.gz",package = "prozor")
 #' fasta = readPeptideFasta(file = file)

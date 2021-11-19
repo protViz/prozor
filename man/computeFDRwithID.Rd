@@ -24,7 +24,7 @@ For more details and references see package vignette
 \code{vignette("TargetDecoyFDR_Example", package = "prozor")}
 }
 \examples{
-library(prozor)
+#library(prozor)
 data(fdrSample)
 # call constructor
 

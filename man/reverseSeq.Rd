@@ -16,7 +16,7 @@ peptides which do not have protein assignment drop out
 }
 \examples{
 library(seqinr)
-library(prozor)
+#library(prozor)
 
 #file = file.path(path.package("prozor"),"extdata/fgcz_contaminants_20150123.fasta.gz")
 file = system.file("extdata/fgcz_contaminants_20150123.fasta.gz",package = "prozor")

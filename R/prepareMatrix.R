@@ -13,7 +13,7 @@
 #' @return sparse matrix
 #' @export
 #' @examples
-#' library(prozor)
+#' #library(prozor)
 #' data(protpepmetashort)
 #' library(Matrix)
 #' colnames(protpepmetashort)

@@ -18,7 +18,7 @@ NULL
 #' FDR1 false discovery rate estimated using the method of Elias and Gygi; FDR2 - estimated using the method of Kell.
 #' @export
 #' @examples
-#' library(prozor)
+#' #library(prozor)
 #' data(fdrSample)
 #' # call constructor
 #'
@@ -89,7 +89,7 @@ computeFDR <- function(score, decoy_hit , larger_better = TRUE){
 #' @param data data returned by computeFDR function
 #' @export
 #' @examples
-#' library(prozor)
+#' #library(prozor)
 #' data(fdrSample)
 #' fdr1 <- computeFDRwithID(fdrSample$score, fdrSample$proteinID, larger_better = FALSE)
 #' fdr2 <- computeFDRwithID(fdrSample$score2, fdrSample$proteinID, larger_better = TRUE)

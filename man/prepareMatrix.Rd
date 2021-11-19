@@ -30,7 +30,7 @@ sparse matrix
 given table of peptide protein assigments generate matrix
 }
 \examples{
-library(prozor)
+#library(prozor)
 data(protpepmetashort)
 library(Matrix)
 colnames(protpepmetashort)

@@ -16,7 +16,7 @@ list of peptide protein assignment
 given matrix (columns protein rows peptides), compute minimal protein set using greedy algorithm
 }
 \examples{
-library(prozor)
+#library(prozor)
 
 data(protpepmetashort)
 colnames(protpepmetashort)

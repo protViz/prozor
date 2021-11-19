@@ -10,7 +10,7 @@ loadContaminantsNoHumanFasta()
 load list of contaminant without human sequences
 }
 \examples{
-library(prozor)
+#library(prozor)
 cont <- loadContaminantsNoHumanFasta()
 cont[[1]]
 #example how to create a protein db with decoy sequences

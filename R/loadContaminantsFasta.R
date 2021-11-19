@@ -2,7 +2,7 @@
 #'
 #' @export
 #' @examples
-#' library(prozor)
+#' #library(prozor)
 #' cont <- loadContaminantsFasta()
 #' cont[[1]]
 #' #example how to create a protein db with decoy sequences
@@ -15,7 +15,7 @@ loadContaminantsFasta <- function(){
 #'
 #' @export
 #' @examples
-#' library(prozor)
+#' #library(prozor)
 #' cont <- loadContaminantsNoHumanFasta()
 #' cont[[1]]
 #' #example how to create a protein db with decoy sequences
@@ -31,7 +31,7 @@ loadContaminantsNoHumanFasta <- function(){
 #' @export
 #' @param noHuman should human contaminants be excluded? default FALSE
 #' @examples
-#' library(prozor)
+#' #library(prozor)
 #' cont <- loadContaminantsFasta2019()
 #' length(cont)
 #' contNH <- loadContaminantsFasta2019()
@@ -42,7 +42,7 @@ loadContaminantsFasta2019 <- function(noHuman = FALSE){
   #file = file.path(path.package("prozor"),"extdata/fgcz_ContaminantsWithAnnotation.fasta.gz")
   contaminants <- readPeptideFasta(file)
   if (noHuman) {
-    annot <- sapply(contaminants, seqinr::getAnnot)
+    annot <- vapply(contaminants, seqinr::getAnnot)
     contaminants <- contaminants[!grepl("HUMAN",annot)]
   }
   invisible(contaminants)
@@ -54,7 +54,7 @@ loadContaminantsFasta2019 <- function(noHuman = FALSE){
 #' @export
 #' @param noHuman should human contaminants be excluded? default FALSE
 #' @examples
-#' library(prozor)
+#' #library(prozor)
 #' cont <- loadContaminantsFasta2021()
 #' length(cont)
 #' contNH <- loadContaminantsFasta2021()
@@ -64,7 +64,7 @@ loadContaminantsFasta2021 <- function(noHuman = FALSE){
   file = system.file("extdata/fgcz_contaminants2021_20210929.fasta.gz",package = "prozor")
   contaminants <- readPeptideFasta(file)
   if (noHuman) {
-    annot <- sapply(contaminants, seqinr::getAnnot)
+    annot <- vapply(contaminants, seqinr::getAnnot)
     contaminants <- contaminants[!grepl("HUMAN",annot)]
   }
   invisible(contaminants)

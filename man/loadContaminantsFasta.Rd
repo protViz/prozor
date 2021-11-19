@@ -10,7 +10,7 @@ loadContaminantsFasta()
 load list of contaminant sequences
 }
 \examples{
-library(prozor)
+#library(prozor)
 cont <- loadContaminantsFasta()
 cont[[1]]
 #example how to create a protein db with decoy sequences
