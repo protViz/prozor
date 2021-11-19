@@ -47,3 +47,4 @@ Collate:
     'reverseSeq.R'
     'writeFasta.R'
     'zzz.R'
+biocViews: MassSpectrometry, Proteomics, ExperimentHubSoftware, 
