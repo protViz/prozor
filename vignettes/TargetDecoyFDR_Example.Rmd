@@ -12,11 +12,6 @@ editor_options:
   chunk_output_type: console
 ---
 
-<!--
-%\VignetteEngine{knitr::rmarkdown}
-%\VignetteIndexEntry{Target Decoy FDR}
--->
-
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
