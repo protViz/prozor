@@ -71,6 +71,8 @@ annotatePeptides <- function(pepinfo,
 
 #'
 #' @importFrom rlang :=
+#' @importFrom readr read_tsv
+#' @importFrom docopt docopt
 NULL
 
 #' annotate peptides using AhoCorasickTrie
