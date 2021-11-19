@@ -11,11 +11,11 @@
     for (i in seq_len(ncolX))
     {
         if (nrow(pepprot) == 0) {
-            return(res[1:(i - 1)])
+            return(res[seq_len(i - 1)])
         }
         pepsPerProt <- colSums(pepprot)
         if (max(pepsPerProt) == 0) {
-            return(res[1:(i - 1)])
+            return(res[seq_len(i - 1)])
         }
         idx <- which.max(pepsPerProt)
         if (length(idx) > 1) {
