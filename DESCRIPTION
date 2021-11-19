@@ -5,7 +5,7 @@ Version: 0.2.14
 Authors@R: c(person("Witold", "Wolski",
         email = "wew@fgcz.ethz.ch",
         role = c("aut", "cre"),
-        comment = c(ORCID = "0000-0002-6468-120X"))
+        comment = c(ORCID = "0000-0002-6468-120X")))
 Description: Determine minimal protein set explaining
     peptide spectrum matches. Utility functions for creating fasta amino acid databases with decoys and contaminants.
     Peptide false discovery rate estimation for target decoy search results on psm, precursor, peptide and protein
