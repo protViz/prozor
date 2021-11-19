@@ -54,9 +54,9 @@ The package provides an example of such a folder with the fasta files. Based on 
 databasedirectory = system.file("p1000_db1_example",package = "prozor")
 #databasedirectory <- file.path(find.package("prozor"), "p1000_db1_example")
 dbname <- basename(databasedirectory)
-fasta <- grep("fasta", dir(databasedirectory),value = T)
+fasta <- grep("fasta", dir(databasedirectory),value = TRUE)
 files1 <- file.path(databasedirectory,fasta)
-annot <- grep("annotation",dir(databasedirectory), value = T)
+annot <- grep("annotation",dir(databasedirectory), value = TRUE)
 annotation <- readLines(file.path(databasedirectory,annot))
 annotation
 

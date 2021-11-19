@@ -527,7 +527,7 @@ View  	773		maleimide	maleimide	97.016378	97.0721	H(3) C(4) N O(2)
 View  	774		Biotin-phenacyl	Alkylation by biotinylated form of phenacyl bromide	626.263502	626.7270	H(38) C(29) N(8) O(6) S
 View  	775		Carboxymethyl:13C(2)	Iodoacetic acid derivative w/ 13C label	60.012189	60.0214	H(2) 13C(2) O(2)
 View  	776		NEM:2H(5)	D5 N-ethylmaleimide on cysteines	130.079062	130.1561	H(2) 2H(5) C(6) N O(2)
-View  	792		AEC-MAEC:2H(4)	deuterium cysteamine modification to S or T	63.044462	63.1580	H 2H(4) C(2) N O(-1) S
+View  	792		AEC-MAEC:2H(4)	deuterium cysteamine modification to S or TRUE	63.044462	63.1580	H 2H(4) C(2) N O(-1) S
 View  	793		Hex(1)HexNAc(1)	Hex1HexNAc1	365.132196	365.3331	Hex HexNAc
 View  	799		Label:13C(6)+GG	13C6 labeled ubiquitinylation residue	120.063056	120.0586	H(6) C(-2) 13C(6) N(2) O(2)
 View  	800		Biotin:Thermo-21345	was PentylamineBiotin	311.166748	311.4429	H(25) C(15) N(3) O(2) S

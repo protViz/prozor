@@ -14,9 +14,9 @@ create_fgcz_fasta_db <- function(databasedirectory ,
     dir.exists(databasedirectory)
     dbname <- basename(databasedirectory)
 
-    fasta <- grep("fasta", dir(databasedirectory), value = T)
+    fasta <- grep("fasta", dir(databasedirectory), value = TRUE)
     files1 <- file.path(databasedirectory, fasta)
-    annot <- grep("annotation.txt",dir(databasedirectory), value = T)
+    annot <- grep("annotation.txt",dir(databasedirectory), value = TRUE)
     if (length(annot) == 0) { stop("NO annotation file found.") }
     annotation <- readLines(file.path(databasedirectory, annot))[1]
 

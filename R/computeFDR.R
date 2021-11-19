@@ -102,8 +102,8 @@ plotFDR <- function(data){
   tx <- with(data,graphics::hist(score,plot = FALSE, breaks = 100))
   t1 <- with(data,graphics::hist(score[!decoy_hit],breaks = tx$breaks, xlab = "score",col = 1, border = 1,
                                  main = ifelse(data$larger_better,"larger score better","smaller score better")))
-  with(data,graphics::hist(score[decoy_hit],add = T,breaks = t1$breaks, col = 2, border = 2))
-  graphics::par(new = T)
+  with(data,graphics::hist(score[decoy_hit],add = TRUE,breaks = t1$breaks, col = 2, border = 2))
+  graphics::par(new = TRUE)
   with(data,graphics::plot(score,qValue_FPR * 100, type = "l",col = 4,lwd = 2,xlab = NA, ylab = NA , axes = FALSE))
   with(data,graphics::lines(score,qValue_SimpleFDR  * 100, type = "l", col = 3,lwd = 2, xlab = NA, ylab = NA))
 

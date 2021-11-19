@@ -247,7 +247,7 @@ dir<-"d:/projects/p1797/"
 outfile <- "p1797_d_UP000008227_20161010.fasta"
 
 files<-dir(dir)
-files <- grep("*.fasta",files,value = T)
+files <- grep("*.fasta",files,value = TRUE)
 files <- file.path(dir, files )
 annot <- "zz|p1797_d_AUP000008227_20161010|UP000008227 http://www.uniprot.org/proteomes/UP000008227"
 resDB <- createDecoyDB(files, annot= annot)
@@ -278,7 +278,7 @@ dir<-"d:/projects/p1000/databases/"
 outfile <- "p1000_d_tripleProteomeHYE_20161011.fasta"
 
 files<-dir(dir)
-files <- grep("*.fasta",files,value = T)
+files <- grep("*.fasta",files,value = TRUE)
 files <- file.path(dir, files )
 annot <- "zz|p1000_d_tripleProteome|UP000000625UP000002311up000005640" 
 #http://www.uniprot.org/uniprot/?query=proteome:UP000002311
@@ -460,9 +460,9 @@ x <- 'Z:/p2116/Proteomics/fasta_db/P2116_db2_Fo5176/'
 x <- 'Z:/p2116/Proteomics/fasta_db/P2116_db3_arabidopsis_Focrace2_54008_Fo5176/'
 
 dbname <- basename(x)
-fasta<-grep("fasta", dir(x),value = T)
+fasta<-grep("fasta", dir(x),value = TRUE)
 files1 <- file.path(x,fasta)
-annot <- grep("annotation",dir(x), value=T)
+annot <- grep("annotation",dir(x), value=TRUE)
 annotation <- readLines(file.path(x,annot))
 
 resDBDecoy <- createDecoyDB(files1,useContaminants = TRUE, annot=annotation,revLab = "REV_")
@@ -489,9 +489,9 @@ databasedirectory <- 'Z:/p2501/Proteomics/fasta_db/p2501_db1_Acostaricensis'
 databasedirectory <- 'Z:/p2501/Proteomics/fasta_db/p2501_db2_Acantonensis/'
 
 dbname <- basename(databasedirectory)
-fasta <- grep("fasta", dir(databasedirectory),value = T)
+fasta <- grep("fasta", dir(databasedirectory),value = TRUE)
 files1 <- file.path(databasedirectory,fasta)
-annot <- grep("annotation",dir(databasedirectory), value=T)
+annot <- grep("annotation",dir(databasedirectory), value=TRUE)
 annotation <- readLines(file.path(databasedirectory,annot))
 
 resDBDecoy <- createDecoyDB(files1,useContaminants = TRUE, annot=annotation,revLab = "REV_")
@@ -523,9 +523,9 @@ library("stringr")
 databasedirectory <- 'Z:/p2507/Proteomics/fasta_db/p2507_db2_28285/'
 
 dbname <- basename(databasedirectory)
-fasta <- grep("fasta", dir(databasedirectory),value = T)
+fasta <- grep("fasta", dir(databasedirectory),value = TRUE)
 files1 <- file.path(databasedirectory,fasta)
-annot <- grep("annotation",dir(databasedirectory), value=T)
+annot <- grep("annotation",dir(databasedirectory), value=TRUE)
 annotation <- readLines(file.path(databasedirectory,annot))
 
 resDBDecoy <- createDecoyDB(files1,useContaminants = TRUE, annot=annotation,revLab = "REV_")
@@ -562,9 +562,9 @@ library("stringr")
 databasedirectory <- 'Z:/p2122/Proteomics/fasta_db/p2122_db1_RatProteome_BioID/'
 
 dbname <- basename(databasedirectory)
-fasta <- grep("fasta", dir(databasedirectory),value = T)
+fasta <- grep("fasta", dir(databasedirectory),value = TRUE)
 files1 <- file.path(databasedirectory,fasta)
-annot <- grep("annotation",dir(databasedirectory), value=T)
+annot <- grep("annotation",dir(databasedirectory), value=TRUE)
 annotation <- readLines(file.path(databasedirectory,annot))
 
 resDBDecoy <- createDecoyDB(files1,useContaminants = TRUE, annot=annotation,revLab = "REV_")
@@ -595,9 +595,9 @@ writeFasta(resDB, file=xx)
 
 databasedirectory <- ("Z:/p1511/Proteomics/fasta_db/p1511_db2_9species/")
 dbname <- basename(databasedirectory)
-fasta <- grep("fasta", dir(databasedirectory),value = T)
+fasta <- grep("fasta", dir(databasedirectory),value = TRUE)
 files1 <- file.path(databasedirectory,fasta)
-annot <- grep("annotation",dir(databasedirectory), value=T)
+annot <- grep("annotation",dir(databasedirectory), value=TRUE)
 annotation <- readLines(file.path(databasedirectory,annot))
 annotation
 resDBDecoy <- createDecoyDB(files1,useContaminants = TRUE, annot=annotation)
@@ -623,9 +623,9 @@ databasedirectory <- ("Z:/p2244/Proteomics/fasta_db/p2244_db1_HS/")
 databasedirectory <- ("Z:/p2244/Proteomics/fasta_db/p2244_db1_HSIsoforms/")
 
 dbname <- basename(databasedirectory)
-fasta <- grep("fasta", dir(databasedirectory),value = T)
+fasta <- grep("fasta", dir(databasedirectory),value = TRUE)
 files1 <- file.path(databasedirectory,fasta)
-annot <- grep("annotation",dir(databasedirectory), value=T)
+annot <- grep("annotation",dir(databasedirectory), value=TRUE)
 annotation <- readLines(file.path(databasedirectory,annot))
 annotation
 resDB <- createDecoyDB(files1,useContaminants = loadContaminantsNoHumanFasta(), annot=annotation, revLab = NULL)
@@ -663,9 +663,9 @@ databasedirectory <- ("Z:/p2569/Proteomics/fasta_db/p2569_db1_mouse_Generic_PXS/
 #databasedirectory <- ("Z:/p2244/Proteomics/fasta_db/p2244_db1_HSIsoforms/")
 dbname <- basename(databasedirectory)
 
-fasta <- grep("fasta", dir(databasedirectory),value = T)
+fasta <- grep("fasta", dir(databasedirectory),value = TRUE)
 files1 <- file.path(databasedirectory,fasta)
-annot <- grep("annotation",dir(databasedirectory), value=T)
+annot <- grep("annotation",dir(databasedirectory), value=TRUE)
 annotation <- readLines(file.path(databasedirectory,annot))
 annotation
 
@@ -710,10 +710,10 @@ databasedirectory <- ("Z:/p2626/Proteomics/fasta_db/p2626_db2_TgondiiME49/")
 
 dbname <- basename(databasedirectory)
 
-fasta <- grep("fasta", dir(databasedirectory),value = T)
+fasta <- grep("fasta", dir(databasedirectory),value = TRUE)
 files1 <- file.path(databasedirectory,fasta)
 
-annot <- grep("annotation",dir(databasedirectory), value=T)
+annot <- grep("annotation",dir(databasedirectory), value=TRUE)
 annot
 annotation <- readLines(file.path(databasedirectory,annot))
 annotation
@@ -756,10 +756,10 @@ databasedirectory <- ("Z:/p2651/Proteomics/fasta_db/p2651_db1_BurkholdE264/")
 
 dbname <- basename(databasedirectory)
 
-fasta <- grep("fasta", dir(databasedirectory),value = T)
+fasta <- grep("fasta", dir(databasedirectory),value = TRUE)
 files1 <- file.path(databasedirectory,fasta)
 
-annot <- grep("annotation",dir(databasedirectory), value=T)
+annot <- grep("annotation",dir(databasedirectory), value=TRUE)
 annot
 annotation <- readLines(file.path(databasedirectory,annot))
 annotation
@@ -801,10 +801,10 @@ databasedirectory <- ("Z:/p1000/fasta_db/p1000_db01_HLAproject_Human/")
 
 dbname <- basename(databasedirectory)
 
-fasta <- grep("fasta", dir(databasedirectory),value = T)
+fasta <- grep("fasta", dir(databasedirectory),value = TRUE)
 files1 <- file.path(databasedirectory,fasta)
 
-annot <- grep("annotation",dir(databasedirectory), value=T)
+annot <- grep("annotation",dir(databasedirectory), value=TRUE)
 annot
 annotation <- readLines(file.path(databasedirectory,annot))
 annotation
@@ -845,10 +845,10 @@ databasedirectory <- ("Z:/p2447/Proteomics/fasta_db/p2447_db1_mus_uniprot_201805
 
 dbname <- basename(databasedirectory)
 
-fasta <- grep("fasta", dir(databasedirectory),value = T)
+fasta <- grep("fasta", dir(databasedirectory),value = TRUE)
 files1 <- file.path(databasedirectory,fasta)
 
-annot <- grep("annotation",dir(databasedirectory), value=T)
+annot <- grep("annotation",dir(databasedirectory), value=TRUE)
 annot
 annotation <- readLines(file.path(databasedirectory,annot))
 annotation
@@ -893,10 +893,10 @@ databasedirectory <- ("Z:/p2799/Proteomics/fasta_db/p2799_db1_PAO1/")
 
 dbname <- basename(databasedirectory)
 
-fasta <- grep("fasta", dir(databasedirectory),value = T)
+fasta <- grep("fasta", dir(databasedirectory),value = TRUE)
 files1 <- file.path(databasedirectory,fasta)
 
-annot <- grep("annotation",dir(databasedirectory), value=T)
+annot <- grep("annotation",dir(databasedirectory), value=TRUE)
 annot
 annotation <- readLines(file.path(databasedirectory,annot))
 annotation
@@ -940,10 +940,10 @@ databasedirectory <- ("Z:/p2799/Proteomics/fasta_db/p2799_db4_KT2440_Piso")
 
 dbname <- basename(databasedirectory)
 
-fasta <- grep("fasta", dir(databasedirectory),value = T)
+fasta <- grep("fasta", dir(databasedirectory),value = TRUE)
 files1 <- file.path(databasedirectory,fasta)
 
-annot <- grep("annotation",dir(databasedirectory), value=T)
+annot <- grep("annotation",dir(databasedirectory), value=TRUE)
 annot
 annotation <- readLines(file.path(databasedirectory,annot))
 annotation
@@ -988,11 +988,11 @@ databasedirectory <- ("Z:/p2971/Proteomics/fasta_db/p2971_db1_Wheat_Zymoseptoria
 
 dbname <- basename(databasedirectory)
 
-fasta <- grep("fasta", dir(databasedirectory),value = T)
+fasta <- grep("fasta", dir(databasedirectory),value = TRUE)
 files1 <- file.path(databasedirectory,fasta)
 files1
 
-annot <- grep("annotation",dir(databasedirectory), value=T)
+annot <- grep("annotation",dir(databasedirectory), value=TRUE)
 annot
 annotation <- readLines(file.path(databasedirectory,annot))
 annotation
@@ -1037,11 +1037,11 @@ databasedirectory <- ("Z:/p2558/Proteomics/fasta_db/p2558_db2_rat/")
 
 dbname <- basename(databasedirectory)
 
-fasta <- grep("fasta", dir(databasedirectory),value = T)
+fasta <- grep("fasta", dir(databasedirectory),value = TRUE)
 files1 <- file.path(databasedirectory,fasta)
 files1
 
-annot <- grep("annotation",dir(databasedirectory), value=T)
+annot <- grep("annotation",dir(databasedirectory), value=TRUE)
 annot
 annotation <- readLines(file.path(databasedirectory,annot))
 annotation
@@ -1089,11 +1089,11 @@ databasedirectory <- ("Z:/p2558/Proteomics/fasta_db/p2558_db1_mouse/")
 
 dbname <- basename(databasedirectory)
 
-fasta <- grep("fasta", dir(databasedirectory),value = T)
+fasta <- grep("fasta", dir(databasedirectory),value = TRUE)
 files1 <- file.path(databasedirectory,fasta)
 files1
 
-annot <- grep("annotation",dir(databasedirectory), value=T)
+annot <- grep("annotation",dir(databasedirectory), value=TRUE)
 annot
 annotation <- readLines(file.path(databasedirectory,annot))
 annotation
@@ -1145,11 +1145,11 @@ dir.exists(databasedirectory)
 
 dbname <- basename(databasedirectory)
 
-fasta <- grep("fasta", dir(databasedirectory),value = T)
+fasta <- grep("fasta", dir(databasedirectory),value = TRUE)
 files1 <- file.path(databasedirectory,fasta)
 files1
 
-annot <- grep("annotation",dir(databasedirectory), value=T)
+annot <- grep("annotation",dir(databasedirectory), value=TRUE)
 annot
 annotation <- readLines(file.path(databasedirectory,annot))
 annotation
@@ -1202,11 +1202,11 @@ dir.exists(databasedirectory)
 
 dbname <- basename(databasedirectory)
 
-fasta <- grep("fasta", dir(databasedirectory),value = T)
+fasta <- grep("fasta", dir(databasedirectory),value = TRUE)
 files1 <- file.path(databasedirectory,fasta)
 files1
 
-annot <- grep("annotation",dir(databasedirectory), value=T)
+annot <- grep("annotation",dir(databasedirectory), value=TRUE)
 annot
 annotation <- readLines(file.path(databasedirectory,annot))
 annotation
@@ -1262,11 +1262,11 @@ dir.exists(databasedirectory)
 
 dbname <- basename(databasedirectory)
 
-fasta <- grep("fasta", dir(databasedirectory),value = T)
+fasta <- grep("fasta", dir(databasedirectory),value = TRUE)
 files1 <- file.path(databasedirectory,fasta)
 files1
 
-annot <- grep("annotation",dir(databasedirectory), value=T)
+annot <- grep("annotation",dir(databasedirectory), value=TRUE)
 annot
 annotation <- readLines(file.path(databasedirectory,annot))
 annotation
@@ -1316,11 +1316,11 @@ dir.exists(databasedirectory)
 
 dbname <- basename(databasedirectory)
 
-fasta <- grep("fasta", dir(databasedirectory),value = T)
+fasta <- grep("fasta", dir(databasedirectory),value = TRUE)
 files1 <- file.path(databasedirectory,fasta)
 files1
 
-annot <- grep("annotation",dir(databasedirectory), value=T)
+annot <- grep("annotation",dir(databasedirectory), value=TRUE)
 annot
 annotation <- readLines(file.path(databasedirectory,annot))
 annotation
@@ -1345,11 +1345,11 @@ dir.exists(databasedirectory)
 
 dbname <- basename(databasedirectory)
 
-fasta <- grep("fasta", dir(databasedirectory),value = T)
+fasta <- grep("fasta", dir(databasedirectory),value = TRUE)
 files1 <- file.path(databasedirectory,fasta)
 files1
 
-annot <- grep("annotation",dir(databasedirectory), value=T)
+annot <- grep("annotation",dir(databasedirectory), value=TRUE)
 annot
 annotation <- readLines(file.path(databasedirectory,annot))
 annotation
@@ -1373,11 +1373,11 @@ dir.exists(databasedirectory)
 
 dbname <- basename(databasedirectory)
 
-fasta <- grep("fasta", dir(databasedirectory),value = T)
+fasta <- grep("fasta", dir(databasedirectory),value = TRUE)
 files1 <- file.path(databasedirectory,fasta)
 files1
 
-annot <- grep("annotation",dir(databasedirectory), value=T)
+annot <- grep("annotation",dir(databasedirectory), value=TRUE)
 annot
 annotation <- readLines(file.path(databasedirectory,annot))
 annotation
@@ -1400,11 +1400,11 @@ dir.exists(databasedirectory)
 
 dbname <- basename(databasedirectory)
 
-fasta <- grep("fasta", dir(databasedirectory),value = T)
+fasta <- grep("fasta", dir(databasedirectory),value = TRUE)
 files1 <- file.path(databasedirectory,fasta)
 files1
 
-annot <- grep("annotation",dir(databasedirectory), value=T)
+annot <- grep("annotation",dir(databasedirectory), value=TRUE)
 annot
 annotation <- readLines(file.path(databasedirectory,annot))
 annotation
@@ -1437,11 +1437,11 @@ dir.exists(databasedirectory)
 
 dbname <- basename(databasedirectory)
 
-fasta <- grep("fasta", dir(databasedirectory),value = T)
+fasta <- grep("fasta", dir(databasedirectory),value = TRUE)
 files1 <- file.path(databasedirectory,fasta)
 files1
 
-annot <- grep("annotation",dir(databasedirectory), value=T)
+annot <- grep("annotation",dir(databasedirectory), value=TRUE)
 annotation <- readLines(file.path(databasedirectory,annot))
 
 resDB <- createDecoyDB(files1,useContaminants = loadContaminantsFasta(), annot=annotation, revLab = NULL)
@@ -1491,11 +1491,11 @@ dir.exists(databasedirectory)
 
 dbname <- basename(databasedirectory)
 
-fasta <- grep("fasta", dir(databasedirectory),value = T)
+fasta <- grep("fasta", dir(databasedirectory),value = TRUE)
 files1 <- file.path(databasedirectory,fasta)
 files1
 
-annot <- grep("annotation",dir(databasedirectory), value=T)
+annot <- grep("annotation",dir(databasedirectory), value=TRUE)
 annotation <- readLines(file.path(databasedirectory,annot))
 
 resDB <- createDecoyDB(files1,useContaminants = loadContaminantsFasta2019(), annot=annotation, revLab = NULL)
@@ -1544,11 +1544,11 @@ dir.exists(databasedirectory)
 
 dbname <- basename(databasedirectory)
 
-fasta <- grep("fasta", dir(databasedirectory),value = T)
+fasta <- grep("fasta", dir(databasedirectory),value = TRUE)
 files1 <- file.path(databasedirectory,fasta)
 files1
 
-annot <- grep("annotation",dir(databasedirectory), value=T)
+annot <- grep("annotation",dir(databasedirectory), value=TRUE)
 annot
 annotation <- readLines(file.path(databasedirectory,annot))
 annotation
@@ -1600,10 +1600,10 @@ dir.exists(databasedirectory)
 
 dbname <- basename(databasedirectory)
 
-fasta <- grep("fasta", dir(databasedirectory),value = T)
+fasta <- grep("fasta", dir(databasedirectory),value = TRUE)
 files1 <- file.path(databasedirectory, fasta)
 
-annot <- grep("annotation",dir(databasedirectory), value = T)
+annot <- grep("annotation",dir(databasedirectory), value = TRUE)
 annotation <- readLines(file.path(databasedirectory,annot))
 
 
