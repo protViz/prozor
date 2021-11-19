@@ -1,5 +1,5 @@
-.makePrecursorID <- function(peprot, sep="|"){
-    tmp = peprot[,c("peptideModSeq","precursorCharge")]
+.makePrecursorID <- function(pepprot, sep="|"){
+    tmp = pepprot[,c("peptideModSeq","precursorCharge")]
     tmp = apply(tmp,2,as.character)
     apply(tmp, 1, paste, collapse = sep)
 }
@@ -40,12 +40,12 @@ prepareMatrix <- function(data, proteinID = "proteinID", peptideID = "strippedSe
     fpeps = as.factor( data[,peptideID] )
     peps = as.integer(fpeps)
 
-    if(is.null(weighting)){
-        pepProt =sparseMatrix(peps , prots, x = 1 )
-    } else if(length(weighting) == nrow(data)) {
-        pepProt = sparseMatrix(peps, prots, x = weighting )
-    } else if(weighting == "inverse"){
-        pepProt = sparseMatrix(peps, prots, x = 1 )
+    if (is.null(weighting)) {
+        pepProt = Matrix::sparseMatrix(peps , prots, x = 1 )
+    } else if (length(weighting) == nrow(data)) {
+        pepProt = Matrix::sparseMatrix(peps, prots, x = weighting )
+    } else if (weighting == "inverse") {
+        pepProt = Matrix::sparseMatrix(peps, prots, x = 1 )
         nrPeps = rowSums(pepProt)
         pepProt <- sweep(pepProt, 1 , nrPeps, "/" )
     } else {

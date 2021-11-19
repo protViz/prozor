@@ -30,7 +30,7 @@
 #' library(prozor)
 #' library(dplyr)
 #' file = system.file("extdata/shortfasta.fasta.gz",package = "prozor")
-#'
+#' data("pepprot")
 #' fasta = readPeptideFasta(file = file)
 #' res = annotatePeptides(pepprot[1:20,], fasta)
 #' res = annotatePeptides(pepprot[1:20,"peptideSeq"],fasta)
