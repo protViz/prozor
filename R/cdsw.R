@@ -110,11 +110,11 @@ Cdsw <- setRefClass(
         seq(min(masses), max(masses), length = (nrbreaks))
 
       if (plot) {
-        graphics::plot(qqs, 1:nrbreaks, type = "b")
+        graphics::plot(qqs, seq_len(nrbreaks), type = "b")
         graphics::legend("topleft", legend = c(paste("maxwindow = ", maxwindow),
                                                paste("nbins = ", nrbreaks)))
         # equidistant spaced bins
-        graphics::lines(unif, 1:nrbreaks, col = 2, type =
+        graphics::lines(unif, seq_len(nrbreaks), col = 2, type =
                           "b")
 
       }
@@ -142,7 +142,7 @@ Cdsw <- setRefClass(
         qqs <-
           quantile(mixeddata, probs = seq(0, 1, by = 1 / (nbins)))
         if (plot) {
-          graphics::lines(qqs, 1:nrbreaks, type = "b", col = "#00DD00AA")
+          graphics::lines(qqs, seq_len(nrbreaks), type = "b", col = "#00DD00AA")
         }
       }
       .self$breaks <-
@@ -162,7 +162,7 @@ Cdsw <- setRefClass(
       "make windows"
       q <- .self$breaks
       n <- length(q) - 1
-      idx <- 1:n
+      idx <- seq_len(n)
       from <- q[idx] - overlap * 0.5
       to <- q[idx + 1] + overlap * 0.5
       width <-  (to - from)
@@ -170,7 +170,7 @@ Cdsw <- setRefClass(
 
       tmp <- data.frame(from, to, mid, width)
       counts <- vector("integer")
-      for (i in 1:nrow(tmp)) {
+      for (i in seq_len(nrow(tmp))) {
         counts[i] <-
           sum(.self$masses > tmp$from[i] & .self$masses < tmp$to[i])
       }
@@ -209,7 +209,7 @@ Cdsw <- setRefClass(
         ylab = "mz",
         main = "DIA Cycle"
       )
-      rect(1:nrow(tmp), tmp$from, 1:nrow(tmp) + 1, tmp$to)
+      rect(seq_len(nrow(tmp)), tmp$from, seq_len(nrow(tmp)) + 1, tmp$to)
     }
   )
 )

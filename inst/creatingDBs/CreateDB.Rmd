@@ -109,7 +109,7 @@ writeFasta(file="p1687_noSignalPeptides_d_29032016.fasta",resDB )
 library(prozor)
 fasta <- readPeptideFasta("d:/projects/p2147/NCBI_txid3821_20160410.fasta")
 
-for(i in 1:length(fasta)){
+for(i in seq_along(fasta)){
     attributes(fasta[[i]])$name <- gsub("gi\\|[0-9]*\\|gb","gb",attributes(fasta[[i]])$name)
     attributes(fasta[[i]])$Annot <- gsub("gi\\|[0-9]*\\|gb","gb",attributes(fasta[[i]])$Annot)
 }

@@ -32,8 +32,8 @@
 #' file = system.file("extdata/shortfasta.fasta.gz",package = "prozor")
 #' data("pepprot")
 #' fasta = readPeptideFasta(file = file)
-#' res = annotatePeptides(pepprot[1:20,], fasta)
-#' res = annotatePeptides(pepprot[1:20,"peptideSeq"],fasta)
+#' res = annotatePeptides(pepprot[seq_len(20),], fasta)
+#' res = annotatePeptides(pepprot[seq_len(20),"peptideSeq"],fasta)
 #' str(res)
 #' res %>% mutate(proteinlength = nchar(proteinSequence)) -> res
 #' res %>% select(proteinID, peptideSeq, proteinlength, Offset, lengthPeptide)
@@ -90,7 +90,7 @@ NULL
 #' file = system.file("extdata/shortfasta.fasta.gz",package = "prozor")
 #' fasta = readPeptideFasta(file = file)
 #' pepprot <- get(data("pepprot", package = "prozor"))
-#' system.time( res2 <- annotateAHO( pepprot[1:20,"peptideSeq"], fasta))
+#' system.time( res2 <- annotateAHO( pepprot[seq_len(20),"peptideSeq"], fasta))
 #' colnames(res2)
 #'
 #' @export

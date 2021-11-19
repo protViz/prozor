@@ -16,10 +16,10 @@
 #' sp <- 24
 #' makeIDUnip(seq, nam, sp)
 makeIDUnip <- function(sequence, id, sp){
-  tpos <- unlist(strsplit(id, split="\\|")) [1:2]
-  tpos <- paste(tpos, "|", collapse="", sep="")
-  sp <- paste( (sp) , "-", nchar(sequence), sep="")
-  res <- paste(tpos,  sp, sep="")
+  tpos <- unlist(strsplit(id, split = "\\|")) [1:2]
+  tpos <- paste(tpos, "|", collapse = "", sep = "")
+  sp <- paste( (sp) , "-", nchar(sequence), sep = "")
+  res <- paste(tpos,  sp, sep = "")
   return(res)
 }
 #' make id for chain in format sp|P30443|1A01_HUMANs25
@@ -64,12 +64,12 @@ removeSignalPeptide <- function(db, signal, idfun=makeID){
   tmp2 <- as.numeric(gsub("^SIGNAL [0-9]+ ([0-9]+).*"  , "\\1", signal$Signal.peptide))
 
   cnamessplit <- strsplit(as.character(names(db)),split="\\|")
-  protnam <-do.call("rbind",cnamessplit)
+  protnam <- Reduce(rbind,cnamessplit)
 
   stopifnot(sum(protnam[,2] == signal$Entry) == length(signal$Entry))
 
-  for( i in 1:length(tmp2)){
-    if(!is.na(tmp2[i])){
+  for (i in seq_len(length(tmp2)) ) {
+    if (!is.na(tmp2[i])) {
       res[[i]] <- .makesig(db[[i]], tmp2[i] + 1,idfun=idfun  )
     }
   }

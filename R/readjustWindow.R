@@ -90,7 +90,7 @@ readjustWindows <-
     mid <- (newfrom + newto) * 0.5
     newCounts <- NULL
 
-    for (i in 1:length(newfrom))
+    for (i in seq_len(length(newfrom)))
     {
       newCounts <-
         c(newCounts, sum(ms1data >= newfrom[i] & ms1data <= newto[i]))

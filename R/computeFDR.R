@@ -64,7 +64,7 @@ computeFDR <- function(score, decoy_hit , larger_better = TRUE){
   decoy_hit <- decoy_hit[ord]
 
   FP <- cumsum(decoy_hit)
-  TP <- 1:length(ord) - FP
+  TP <- seq_len(length(ord)) - FP
 
   FPR <- (2 * FP) / (TP + FP)
   SimpleFDR <- FP / TP

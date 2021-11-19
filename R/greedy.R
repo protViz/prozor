@@ -8,7 +8,7 @@
     ncolX = ncol(pepprot)
     res <- vector(ncolX , mode = "list")
     oldtime <- Sys.time()
-    for (i in 1:ncolX)
+    for (i in seq_len(ncolX))
     {
         if (nrow(pepprot) == 0) {
             return(res[1:(i - 1)])
