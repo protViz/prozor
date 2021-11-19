@@ -117,3 +117,10 @@ print(xx)
 ```{r eval=FALSE}
 writeFasta(resDBDecoy, file = xx)
 ```
+
+
+# Session Info
+
+```{r}
+sessionInfo()
+```

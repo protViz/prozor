@@ -146,3 +146,10 @@ barplot(c(All_before = length(unique(annotAll$proteinID)), All_after = length(un
 # TODO
 
 [Protein Grouping and Clustering in Scaffold](https://www.dropbox.com/s/a4kqyc4gxln8sfj/scaffold_protein_grouping_clustering.pdf?dl=1)
+
+
+# Session Info
+
+```{r}
+sessionInfo()
+```

@@ -166,6 +166,11 @@ fdr1 <- computeFDRwithID(fdrSample$score,fdrSample$proteinID, decoy = "REV_",lar
 knitr::kable(head(data.frame(fdr1)))
 ```
 
+# Session Info
+
+```{r}
+sessionInfo()
+```
 
 # References
 
