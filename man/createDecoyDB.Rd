@@ -20,6 +20,9 @@ createDecoyDB(
 
 \item{annot}{source of database}
 }
+\value{
+list of SeqFastaAA entries
+}
 \description{
 For more details and references see package vignette
 \code{vignette("CreateDecoyDB", package = "prozor")}

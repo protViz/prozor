@@ -11,6 +11,9 @@ annotateAHO(pepseq, fasta)
 
 \item{fasta}{- object as created by readPeptideFasta}
 }
+\value{
+A data.frame with proteinID, peptideSeq, Offset and proteinSequence
+}
 \description{
 peptides which do not have protein assignment drop out
 }
@@ -23,5 +26,5 @@ fasta = readPeptideFasta(file = file)
 pepprot <- get(data("pepprot", package = "prozor"))
 system.time( res2 <- annotateAHO( pepprot[seq_len(20),"peptideSeq"], fasta))
 colnames(res2)
-
+class(res2)
 }

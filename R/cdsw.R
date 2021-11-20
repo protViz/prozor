@@ -46,6 +46,8 @@ hardconstrain <- function(splits,
     return(sum(difsp >= minwindow) == length(difsp) &
                sum(difsp <= maxwindow) == length(difsp))
 }
+
+# Cdsw ----
 #' Compute dynamic swath windows
 #' @field masses MS1 masses
 #' @field breaks the breaks
@@ -59,10 +61,11 @@ hardconstrain <- function(splits,
 #' @examples
 #' data(masses)
 #' cdsw <- Cdsw(masses)
-#' cdsw$sampling_breaks(maxwindow=100,plot=TRUE)
+#' tmp <- cdsw$sampling_breaks(maxwindow=100,plot=TRUE)
 #' cdsw$plot()
 #' cdsw$asTable()
 #' cdsw$breaks
+#' cdsw$optimizeWindows()
 Cdsw <- setRefClass(
     "Cdsw",
     fields = list(
@@ -87,7 +90,7 @@ Cdsw <- setRefClass(
         },
         #' @description create equidistant breaks
         #' @param digits
-        #' @return data.frame
+        #' @return array of masses
         constant_breaks = function(digits = 2) {
             minmass <- round(min(.self$masses) - 1 / 10 ^ digits, digits = 2)
             maxmass <-
@@ -99,8 +102,8 @@ Cdsw <- setRefClass(
         ,
         #' @description
         #' quantile breaks
-        #' @param digits
-        #' @return data.frame
+        #' @param digits mass precision
+        #' @return array with masses
         quantile_breaks = function(digits = 2) {
             "same number of MS1 in each window but might violate hard constraints"
             qqs <-
@@ -115,6 +118,7 @@ Cdsw <- setRefClass(
         #' @param minwindow
         #' @param digits
         #' @param plot
+        #' @return array with masses
         sampling_breaks = function(maxwindow = 150,
                                    minwindow = 5,
                                    digits = 2,
@@ -168,6 +172,9 @@ Cdsw <- setRefClass(
             invisible(.self$breaks)
 
         },
+        #' @description
+        #' barplot showing the number of precursors per window
+        #' @return NULL
         plot = function() {
             tmp <- graphics::hist(x = .self$masses,
                                   breaks = .self$breaks,
@@ -176,6 +183,14 @@ Cdsw <- setRefClass(
                 round(tmp$mids, digits = 2)
             barplot(tmp$counts, las = 2)
         },
+        #' @description
+        #' Table whith window boundaries and statistics
+        #' @return data.frame with columns:
+        #' - from (window start)
+        #' - to (window end)
+        #' - mid (window centre), width (window width)
+        #' - counts expected number of precursors
+        #'
         asTable = function(overlap = 1) {
             "make windows"
             q <- .self$breaks
@@ -195,14 +210,20 @@ Cdsw <- setRefClass(
             tmp$counts <- counts
             return(tmp)
         },
-        show = function() {
-            "get a table with windows start and end"
-            print(asTable())
-        },
+        #' @description
+        #' summary of the binning process (see objectiveMS1Function for more details)
+        #' @return list with optimization scores
         error = function() {
             "show error"
             objectiveMS1Function(.self$breaks, .self$masses)
         },
+        #' @description
+        #' moves window start and end to region with as few as possible precursor masses
+        #' @param digigits mass precision
+        #' @param max number of bins
+        #' @param plot default TRUE
+        #' @param overlap between windows
+        #' @return data.frame with optimized windows
         optimizeWindows = function(digits = 1,
                                    maxbin = 15,
                                    plot = FALSE,
@@ -216,8 +237,10 @@ Cdsw <- setRefClass(
                 plot = plot
             ))
         },
+        #' @description
+        #' shows the generated DIA cycle
+        #' @param overlap
         showCycle = function(overlap = 1) {
-            "shows the generated DIA cycle"
             tmp <- .self$asTable(overlap = overlap)
             graphics::plot(
                 c(1, nrow(tmp) + 1),

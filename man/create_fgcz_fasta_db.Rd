@@ -20,6 +20,13 @@ create_fgcz_fasta_db(
 
 \item{outputdir}{output directory}
 }
+\value{
+list list(resDB, filepath , summary, mcall, dbname)
+}
 \description{
 create fasta db from one or more fasta files
+}
+\examples{
+print("NO exmple since function also writes the fasta files")
+
 }

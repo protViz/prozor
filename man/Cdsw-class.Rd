@@ -5,8 +5,56 @@
 \alias{Cdsw-class}
 \alias{Cdsw}
 \title{Compute dynamic swath windows}
+\arguments{
+\item{list}{of masses}
+
+\item{nbins}{number of bins default 25}
+
+\item{digits}{mass precision}
+
+\item{digigits}{mass precision}
+
+\item{max}{number of bins}
+
+\item{plot}{default TRUE}
+
+\item{overlap}{between windows}
+}
+\value{
+array of masses
+
+array with masses
+
+array with masses
+
+data.frame with columns:
+- from (window start)
+- to (window end)
+- mid (window centre), width (window width)
+- counts expected number of precursors
+
+list with optimization scores
+
+data.frame with optimized windows
+}
 \description{
-Compute dynamic swath windows
+initialize
+
+create equidistant breaks
+
+quantile breaks
+
+sampling breaks
+
+barplot showing the number of precursors per window
+
+Table whith window boundaries and statistics
+
+summary of the binning process (see objectiveMS1Function for more details)
+
+moves window start and end to region with as few as possible precursor masses
+
+shows the generated DIA cycle
 }
 \section{Fields}{
 
@@ -32,15 +80,14 @@ Compute dynamic swath windows
 \item{\code{quantile_breaks(digits = 2)}}{same number of MS1 in each window but might violate hard constraints}
 
 \item{\code{sampling_breaks(maxwindow = 150, minwindow = 5, digits = 2, plot = FALSE)}}{starts with quantile breaks but mixes with uniform data to satisfy had constraints}
-
-\item{\code{showCycle(overlap = 1)}}{shows the generated DIA cycle}
 }}
 
 \examples{
 data(masses)
 cdsw <- Cdsw(masses)
-cdsw$sampling_breaks(maxwindow=100,plot=TRUE)
+tmp <- cdsw$sampling_breaks(maxwindow=100,plot=TRUE)
 cdsw$plot()
 cdsw$asTable()
 cdsw$breaks
+cdsw$optimizeWindows()
 }

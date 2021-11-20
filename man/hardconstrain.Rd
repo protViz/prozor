@@ -13,6 +13,10 @@ hardconstrain(splits, minwindow = 5, maxwindow = 50)
 
 \item{maxwindow}{max window size}
 }
+\value{
+logical
+}
 \description{
 tests hard constraints
 }
+\keyword{internal}

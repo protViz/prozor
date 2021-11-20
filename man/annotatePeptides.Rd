@@ -23,6 +23,9 @@ annotatePeptides(
 
 \item{suffix}{- default ""}
 }
+\value{
+data.frame with columns "peptideSeq", "proteinID","Offset","proteinSequence","matched", "lengthPeptide","proteinlength"
+}
 \description{
 peptides which do not have protein assignment drop out
 }
@@ -35,6 +38,7 @@ data("pepprot")
 fasta = readPeptideFasta(file = file)
 res = annotatePeptides(pepprot[seq_len(20),], fasta)
 res = annotatePeptides(pepprot[seq_len(20),"peptideSeq"],fasta)
+colnames(res)
 str(res)
 res \%>\% mutate(proteinlength = nchar(proteinSequence)) -> res
 res \%>\% select(proteinID, peptideSeq, proteinlength, Offset, lengthPeptide)
