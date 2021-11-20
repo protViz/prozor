@@ -4,6 +4,9 @@
 #' @param useContaminants contaminants to add
 #' @param revLab reverse label
 #' @param outputdir output directory
+#' @return list list(resDB, filepath , summary, mcall, dbname)
+#' @examples
+#' print("NO exmple since function also writes the fasta files")
 #'
 create_fgcz_fasta_db <- function(databasedirectory ,
                                  useContaminants = loadContaminantsFasta2021(),

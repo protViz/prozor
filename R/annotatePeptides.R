@@ -24,6 +24,7 @@
 #' @param prefix - default "(([RK])|(^)|(^M))"
 #' @param suffix - default ""
 #' @import stringr
+#' @return data.frame with columns "peptideSeq", "proteinID","Offset","proteinSequence","matched", "lengthPeptide","proteinlength"
 #' @export
 #' @examples
 #'
@@ -34,6 +35,7 @@
 #' fasta = readPeptideFasta(file = file)
 #' res = annotatePeptides(pepprot[seq_len(20),], fasta)
 #' res = annotatePeptides(pepprot[seq_len(20),"peptideSeq"],fasta)
+#' colnames(res)
 #' str(res)
 #' res %>% mutate(proteinlength = nchar(proteinSequence)) -> res
 #' res %>% select(proteinID, peptideSeq, proteinlength, Offset, lengthPeptide)
@@ -83,6 +85,7 @@ NULL
 #' @import AhoCorasickTrie
 #' @import stringr
 #' @importFrom purrr map2_df map_df
+#' @return A data.frame with proteinID, peptideSeq, Offset and proteinSequence
 #' @examples
 #'
 #' #library(prozor)
@@ -92,7 +95,7 @@ NULL
 #' pepprot <- get(data("pepprot", package = "prozor"))
 #' system.time( res2 <- annotateAHO( pepprot[seq_len(20),"peptideSeq"], fasta))
 #' colnames(res2)
-#'
+#' class(res2)
 #' @export
 annotateAHO <- function(pepseq, fasta) {
     #100_000 peptides

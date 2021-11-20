@@ -1761,9 +1761,6 @@ cat(resDBRev$summary)
 scp_copy(resDBRev$filepath)
 bfabric_save_fasta(project_id = 3553, resDBRev)
 
-
-
-
 resDB <- create_fgcz_fasta_db(databasedirectory, revLab = NULL)
 cat(resDB$summary)
 

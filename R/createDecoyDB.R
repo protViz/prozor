@@ -8,6 +8,7 @@
 #' @param revLab label for reversed peptides (if NULL do not generate decoys)
 #' @param annot source of database
 #' @export
+#' @return list of SeqFastaAA entries
 #' @examples
 #' #file = file.path(path.package("prozor"),"extdata/shortfasta.fasta.gz")
 #' file = system.file("extdata/fgcz_contaminants_20150123.fasta.gz",package = "prozor")

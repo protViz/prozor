@@ -1,10 +1,11 @@
 #' copy to server
 #' @keywords internal
-#' @export
 #' @param filepath path of file
 #' @param to destination folder
 #' @param username username
 #' @param host host
+#' @return NULL
+#'
 scp_copy <- function(
     filepath,
     to = "/srv/www/htdocs/FASTA",
@@ -23,11 +24,11 @@ scp_copy <- function(
 
 #' copy to server
 #' @keywords internal
-#' @export
 #' @param project_id project_id
 #' @param filepath filepath
 #' @param summary summary (string with info about DB)
 #' @param python_path python_path
+#' @return NULL
 bfabric_save_fasta <- function(project_id,
                                filepath,
                                summary,
