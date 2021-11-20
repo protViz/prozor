@@ -6,6 +6,9 @@
 \usage{
 loadContaminantsFasta()
 }
+\value{
+list with contaminant sequences
+}
 \description{
 load list of contaminant sequences
 }

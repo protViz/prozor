@@ -2,19 +2,23 @@
 % Please edit documentation in R/readFasta.R
 \name{readPeptideFasta}
 \alias{readPeptideFasta}
-\title{wrapper setting the correct parameters}
+\title{wrapper setting the correct parameters
+seqinr::read.fasta for reading peptide sequences}
 \usage{
 readPeptideFasta(file)
 }
 \arguments{
 \item{file}{- fasta file}
 }
+\value{
+list with sequences
+}
 \description{
 peptides which do not have protein assignment drop out
 }
 \examples{
 library(seqinr)
-#library(prozor)
+
 file = system.file("extdata/fgcz_contaminants_20150123.fasta.gz",package = "prozor")
 fasta = readPeptideFasta(file)
 

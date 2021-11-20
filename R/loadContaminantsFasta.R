@@ -1,6 +1,7 @@
 #' load list of contaminant sequences
 #'
 #' @export
+#' @return list with contaminant sequences
 #' @examples
 #' #library(prozor)
 #' cont <- loadContaminantsFasta()
@@ -14,6 +15,7 @@ loadContaminantsFasta <- function(){
 #' load list of contaminant without human sequences
 #'
 #' @export
+#' @return list with contaminant sequences
 #' @examples
 #' #library(prozor)
 #' cont <- loadContaminantsNoHumanFasta()
@@ -30,6 +32,7 @@ loadContaminantsNoHumanFasta <- function(){
 #'
 #' @export
 #' @param noHuman should human contaminants be excluded? default FALSE
+#' @return list with contaminant sequences
 #' @examples
 #' #library(prozor)
 #' cont <- loadContaminantsFasta2019()
@@ -53,6 +56,7 @@ loadContaminantsFasta2019 <- function(noHuman = FALSE){
 #'
 #' @export
 #' @param noHuman should human contaminants be excluded? default FALSE
+#' @return list with contaminant sequences
 #' @examples
 #' #library(prozor)
 #' cont <- loadContaminantsFasta2021()

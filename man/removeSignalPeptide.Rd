@@ -13,6 +13,9 @@ removeSignalPeptide(db, signal, idfun = makeID)
 
 \item{idfun}{function to generate id's}
 }
+\value{
+list with sequences with signal peptide removed
+}
 \description{
 remove signal peptides from main chain
 }

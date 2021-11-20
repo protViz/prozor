@@ -17,6 +17,9 @@ readjustWindows(wind, ms1data, digits = 1, maxbin = 15, plot = FALSE)
 
 \item{plot}{diagnostic plots (default FALSE)}
 }
+\value{
+data.frame of same format as \code{wind} but with improved start and end masses.
+}
 \description{
 Readjust windows so that boundaries in regions of few peaks.
 }

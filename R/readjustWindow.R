@@ -37,6 +37,7 @@
 #' @param digits mass accuracy
 #' @param maxbin maximum number of bins
 #' @param plot diagnostic plots (default FALSE)
+#' @return data.frame of same format as \code{wind} but with improved start and end masses.
 #' @export
 #' @examples
 #' data(masses)

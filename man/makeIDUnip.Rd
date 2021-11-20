@@ -13,6 +13,9 @@ makeIDUnip(sequence, id, sp)
 
 \item{sp}{start position of chain numeric}
 }
+\value{
+string consisting of sp,"-", length of sequnce
+}
 \description{
 make id for chain compatible with uniprot
 }

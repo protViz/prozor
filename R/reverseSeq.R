@@ -17,6 +17,7 @@
 #' @param fasta - an r list with SeqFastaAA
 #' @param revLab - how to label reverse sequences, default = REV_
 #' @export
+#' @return string with reversed sequence
 #' @examples
 #' library(seqinr)
 #' #library(prozor)

@@ -4,7 +4,7 @@
 #' @param to destination folder
 #' @param username username
 #' @param host host
-#' @return NULL
+#' @return no return value
 #'
 scp_copy <- function(
     filepath,

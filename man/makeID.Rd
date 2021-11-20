@@ -13,6 +13,9 @@ makeID(sequence, id, sp)
 
 \item{sp}{start position of chain numeric}
 }
+\value{
+string consisting of id,"s",sp
+}
 \description{
 make id for chain in format sp|P30443|1A01_HUMANs25
 }

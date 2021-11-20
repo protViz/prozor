@@ -20,6 +20,9 @@ scp_copy(
 
 \item{host}{host}
 }
+\value{
+no return value
+}
 \description{
 copy to server
 }

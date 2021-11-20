@@ -13,13 +13,16 @@ predictScoreFDR(fdrObj, qValue = 1, method = "SimpleFDR")
 
 \item{method}{either FPR or SimpleFDR, default is SimpleFDR}
 }
+\value{
+score for a given FDR
+}
 \description{
 For more details and references see package vignette
 \code{vignette("TargetDecoyFDR_Example", package = "prozor")}
 }
 \examples{
 data(fdrSample)
-fdr1<-computeFDRwithID(fdrSample$score, fdrSample$proteinID, larger_better = FALSE)
+fdr1 <- computeFDRwithID(fdrSample$score, fdrSample$proteinID, larger_better = FALSE)
 
 predictScoreFDR(fdr1,qValue=5)
 fdr2<-computeFDRwithID(fdrSample$score2, fdrSample$proteinID, larger_better = TRUE)

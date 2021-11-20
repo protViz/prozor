@@ -9,6 +9,9 @@ loadContaminantsFasta2021(noHuman = FALSE)
 \arguments{
 \item{noHuman}{should human contaminants be excluded? default FALSE}
 }
+\value{
+list with contaminant sequences
+}
 \description{
 load list of contaminant sequences FGCZ 2021
 }

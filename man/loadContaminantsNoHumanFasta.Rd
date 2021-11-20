@@ -6,6 +6,9 @@
 \usage{
 loadContaminantsNoHumanFasta()
 }
+\value{
+list with contaminant sequences
+}
 \description{
 load list of contaminant without human sequences
 }

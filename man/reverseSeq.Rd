@@ -11,6 +11,9 @@ reverseSeq(fasta, revLab = "REV_")
 
 \item{revLab}{- how to label reverse sequences, default = REV_}
 }
+\value{
+string with reversed sequence
+}
 \description{
 peptides which do not have protein assignment drop out
 }
