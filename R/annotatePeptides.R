@@ -81,7 +81,7 @@ NULL
 #'
 #' peptides which do not have protein assignment drop out
 #' @param pepseq - list of peptides - sequence, optional modified sequence, charge state.
-#' @param fasta - object as created by readPeptideFasta
+#' @param fasta - object as created by \code{readPeptideFasta}
 #' @import AhoCorasickTrie
 #' @import stringr
 #' @importFrom purrr map2_df map_df

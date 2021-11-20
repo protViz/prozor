@@ -9,7 +9,7 @@ annotateAHO(pepseq, fasta)
 \arguments{
 \item{pepseq}{- list of peptides - sequence, optional modified sequence, charge state.}
 
-\item{fasta}{- object as created by readPeptideFasta}
+\item{fasta}{- object as created by \code{readPeptideFasta}}
 }
 \value{
 A data.frame with proteinID, peptideSeq, Offset and proteinSequence
