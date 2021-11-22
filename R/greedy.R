@@ -27,7 +27,7 @@
         res[[i]] <- tmpRes
     }
     newtime <- Sys.time()
-    message(paste("time ",newtime - oldtime))
+    message("time : ", newtime - oldtime)
     return(res)
 }
 

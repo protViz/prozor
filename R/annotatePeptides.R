@@ -1,11 +1,11 @@
 
 
-.matchPepsequence <- function(
-    peptideSeq,
-    proteinSeq ,
-    proteinID,
-    prefix = "(([RK])|(^)|(^M))",
-    suffix = "")
+
+.matchPepsequence <- function(peptideSeq,
+                              proteinSeq ,
+                              proteinID,
+                              prefix = "(([RK])|(^)|(^M))",
+                              suffix = "")
 {
     seqpattern <- paste(prefix, peptideSeq, suffix, sep = "")
     idx2 <- grepl(seqpattern, proteinSeq, fixed = FALSE)

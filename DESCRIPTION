@@ -1,7 +1,7 @@
 Package: prozor
 Type: Package
 Title: Minimal Protein Set Explaining Peptide Spectrum Matches
-Version: 0.2.14
+Version: 0.2.15
 Authors@R: c(person("Witold", "Wolski",
         email = "wew@fgcz.ethz.ch",
         role = c("aut", "cre"),
@@ -49,4 +49,4 @@ Collate:
     'reverseSeq.R'
     'writeFasta.R'
     'zzz.R'
-biocViews: MassSpectrometry, Proteomics, ExperimentHubSoftware, 
+biocViews: Software, MassSpectrometry, Proteomics, ExperimentHubSoftware, 
