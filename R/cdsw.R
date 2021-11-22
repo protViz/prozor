@@ -66,6 +66,7 @@ hardconstrain <- function(splits,
 #' cdsw$asTable()
 #' cdsw$breaks
 #' cdsw$optimizeWindows()
+#' cdsw$showCycle()
 Cdsw <- setRefClass(
     "Cdsw",
     fields = list(
@@ -89,7 +90,7 @@ Cdsw <- setRefClass(
             constant_breaks()
         },
         #' @description create equidistant breaks
-        #' @param digits
+        #' @param digits mass precision default 2
         #' @return array of masses
         constant_breaks = function(digits = 2) {
             minmass <- round(min(.self$masses) - 1 / 10 ^ digits, digits = 2)
@@ -114,10 +115,10 @@ Cdsw <- setRefClass(
         },
         #' @description
         #' sampling breaks
-        #' @param maxwindow
-        #' @param minwindow
-        #' @param digits
-        #' @param plot
+        #' @param maxwindow largest window size
+        #' @param minwindow smallest window size
+        #' @param digits mass precision default 2
+        #' @param plot logical default FALSE
         #' @return array with masses
         sampling_breaks = function(maxwindow = 150,
                                    minwindow = 5,
@@ -184,7 +185,8 @@ Cdsw <- setRefClass(
             barplot(tmp$counts, las = 2)
         },
         #' @description
-        #' Table whith window boundaries and statistics
+        #' Table with window boundaries and statistics
+        #' @param overlap size of window overlap default 1 m/z
         #' @return data.frame with columns:
         #' - from (window start)
         #' - to (window end)
@@ -239,7 +241,7 @@ Cdsw <- setRefClass(
         },
         #' @description
         #' shows the generated DIA cycle
-        #' @param overlap
+        #' @param overlap size of window overlap default 1 m/z
         showCycle = function(overlap = 1) {
             tmp <- .self$asTable(overlap = overlap)
             graphics::plot(

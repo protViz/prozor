@@ -10,7 +10,11 @@
 
 \item{nbins}{number of bins default 25}
 
-\item{digits}{mass precision}
+\item{maxwindow}{largest window size}
+
+\item{minwindow}{smallest window size}
+
+\item{digits}{mass precision default 2}
 
 \item{digigits}{mass precision}
 
