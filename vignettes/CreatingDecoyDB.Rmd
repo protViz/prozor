@@ -62,7 +62,7 @@ annotation
 
 
 ```{r}
-resDB <- createDecoyDB(files1, useContaminants = loadContaminantsFasta(), annot = annotation, revLab = NULL)
+resDB <- createDecoyDB(files1, useContaminants = loadContaminantsFasta2021(), annot = annotation, revLab = NULL)
 length(resDB)
 
 ```
@@ -90,7 +90,7 @@ The resulting database will be twice as long as the non-decoy database.
 
 ```{r}
 resDBDecoy <- createDecoyDB(files1,
-                            useContaminants = loadContaminantsFasta(),
+                            useContaminants = loadContaminantsFasta2021(),
                             annot = annotation,
                             revLab = "REV_")
 
