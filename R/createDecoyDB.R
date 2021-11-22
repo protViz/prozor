@@ -11,7 +11,6 @@
 #' @return list of SeqFastaAA entries
 #' @examples
 #' file = file.path(path.package("prozor"),"extdata/shortfasta.fasta.gz")
-#' file = system.file("extdata/fgcz_contaminants_20150123.fasta.gz",package = "prozor")
 #' cont <- loadContaminantsFasta()
 #' rabbit <-readPeptideFasta(file)
 #' tmp <- 2*(2*length(rabbit)+length(cont)) + 1
