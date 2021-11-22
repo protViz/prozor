@@ -50,4 +50,3 @@ Collate:
     'writeFasta.R'
     'zzz.R'
 biocViews: Software, MassSpectrometry, Proteomics, ExperimentHubSoftware, 
-LazyData: true
