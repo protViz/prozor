@@ -23,7 +23,7 @@ Create fasta file with FGCZ contaminants and decoys.
 rm(list = ls())
 library(prozor)
 
-file = file.path(path.package("prozor"), "extdata/uniprot_taxonomy_Oryctolagus_cuniculus.fasta.gz")
+file = file.path(system.file("extdata/uniprot_taxonomy_Oryctolagus_cuniculus.fasta.gz", package = "prozor")
 res <- createDecoyDB(c(file,file))
 
 ```
