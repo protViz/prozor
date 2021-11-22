@@ -18,11 +18,10 @@ NULL
 #' FDR1 false discovery rate estimated using the method of Elias and Gygi; FDR2 - estimated using the method of Kell.
 #' @export
 #' @examples
-#' #library(prozor)
 #' data(fdrSample)
 #' # call constructor
 #'
-#' fdr1<-computeFDRwithID(fdrSample$score, fdrSample$proteinID, larger_better = FALSE)
+#' fdr1 <- computeFDRwithID(fdrSample$score, fdrSample$proteinID, larger_better = FALSE)
 #' names(fdr1)
 #' plot(fdr1$score, fdr1$FPR,type="l",xlim=c(0,0.001), ylim=c(0,0.0002))
 #' lines(fdr1$score, fdr1$qValue_FPR, col=2)
@@ -30,7 +29,7 @@ NULL
 #' lines(fdr1$score, fdr1$qValue_SimpleFDR, col=5)
 #'
 #'
-#' fdr1<-computeFDRwithID(fdrSample$score2, fdrSample$proteinID, larger_better = TRUE)
+#' fdr1 <- computeFDRwithID(fdrSample$score2, fdrSample$proteinID, larger_better = TRUE)
 #' names(fdr1)
 #' plot(fdr1$score, fdr1$FPR,type="l", xlim=c(2.5,5),ylim=c(0,0.001))
 #' lines(fdr1$score, fdr1$qValue_FPR, col=2)
@@ -57,6 +56,12 @@ computeFDRwithID <- function(score, ID, decoy = "REV_", larger_better = TRUE){
 #' @export
 #' @return list with decoy_hit (indicates if decoy), score the search engine score,
 #' FDR1 false discovery rate estimated using the method of Gygi, SimpleFDR - estimated using the method of Kaell.
+#'
+#' @examples
+#' data(fdrSample)
+#'
+#' fdr1 <- computeFDR(fdrSample$score, grepl("REV_",fdrSample$proteinID), larger_better = FALSE)
+#' head(as.data.frame(fdr1))
 #'
 computeFDR <- function(score, decoy_hit , larger_better = TRUE){
     ord <- order(score, decreasing = larger_better)

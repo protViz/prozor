@@ -37,8 +37,8 @@
 #' res = annotatePeptides(pepprot[seq_len(20),"peptideSeq"],fasta)
 #' colnames(res)
 #' str(res)
-#' res %>% mutate(proteinlength = nchar(proteinSequence)) -> res
-#' res %>% select(proteinID, peptideSeq, proteinlength, Offset, lengthPeptide)
+#' res <- res |> mutate(proteinlength = nchar(proteinSequence))
+#' res |> select(proteinID, peptideSeq, proteinlength, Offset, lengthPeptide)
 #'
 annotatePeptides <- function(pepinfo,
                              fasta,
@@ -50,13 +50,13 @@ annotatePeptides <- function(pepinfo,
         colnames(pepinfo) = peptide
     }
     pepinfo <-
-        pepinfo %>% dplyr::mutate_at(peptide, dplyr::funs(as.character)) %>%
+        pepinfo |> dplyr::mutate_at(peptide, dplyr::funs(as.character)) |>
         dplyr::mutate_at(peptide, .funs = dplyr::funs("lengthPeptide" := nchar))
     pepseq  = unique(as.character(pepinfo[, peptide]))
     restab <- annotateAHO(pepseq, fasta)
 
-    restab <- restab %>%
-        dplyr::group_by_at(peptide) %>%
+    restab <- restab |>
+        dplyr::group_by_at(peptide) |>
         dplyr::mutate(
             matched = .matchPepsequence(
                 dplyr::first(!!dplyr::sym(peptide)),
