@@ -22,7 +22,7 @@
 
 \item{plot}{default TRUE}
 
-\item{overlap}{between windows}
+\item{overlap}{size of window overlap default 1 m/z}
 }
 \value{
 array of masses
@@ -52,7 +52,7 @@ sampling breaks
 
 barplot showing the number of precursors per window
 
-Table whith window boundaries and statistics
+Table with window boundaries and statistics
 
 summary of the binning process (see objectiveMS1Function for more details)
 
@@ -94,4 +94,5 @@ cdsw$plot()
 cdsw$asTable()
 cdsw$breaks
 cdsw$optimizeWindows()
+cdsw$showCycle()
 }

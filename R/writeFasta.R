@@ -9,6 +9,7 @@
 #' @param ... fasta list or single file
 #' @param file where to write
 #' @export
+#' @return writes a file.
 #' @examples
 #' #example how to create a protein db with decoy sequences
 #' library(seqinr)

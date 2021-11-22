@@ -20,6 +20,9 @@ bfabric_save_fasta(
 
 \item{python_path}{python_path}
 }
+\value{
+writes to b-fabric using bfabricpy
+}
 \description{
 copy to server
 }

@@ -4,7 +4,7 @@
 #' @param to destination folder
 #' @param username username
 #' @param host host
-#' @return no return value
+#' @return copies file using scp
 #'
 scp_copy <- function(
     filepath,
@@ -28,7 +28,7 @@ scp_copy <- function(
 #' @param filepath filepath
 #' @param summary summary (string with info about DB)
 #' @param python_path python_path
-#' @return NULL
+#' @return writes to b-fabric using bfabricpy
 bfabric_save_fasta <- function(project_id,
                                filepath,
                                summary,

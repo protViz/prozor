@@ -23,7 +23,10 @@ create_fgcz_fasta_db <- function(databasedirectory ,
     if (length(annot) == 0) { stop("NO annotation file found.") }
     annotation <- readLines(file.path(databasedirectory, annot))[1]
 
-    resDB <- createDecoyDB(files1,useContaminants = useContaminants, annot = annotation, revLab = revLab)
+    resDB <- createDecoyDB(files1,
+                           useContaminants = useContaminants,
+                           annot = annotation,
+                           revLab = revLab)
     resDB <- resDB[!duplicated(names(resDB))]
 
     if (is.null(outputdir)) {

@@ -11,6 +11,9 @@ writeFasta(file, ...)
 
 \item{...}{fasta list or single file}
 }
+\value{
+writes a file.
+}
 \description{
 peptides which do not have protein assignment drop out
 }

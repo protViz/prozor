@@ -9,6 +9,9 @@ plotFDR(data)
 \arguments{
 \item{data}{data returned by computeFDR function}
 }
+\value{
+creates a plot
+}
 \description{
 For more details and references see package vignette
 \code{vignette("TargetDecoyFDR_Example", package = "prozor")}

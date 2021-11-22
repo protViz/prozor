@@ -21,7 +21,7 @@ scp_copy(
 \item{host}{host}
 }
 \value{
-no return value
+copies file using scp
 }
 \description{
 copy to server
