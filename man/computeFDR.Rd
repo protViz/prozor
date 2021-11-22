@@ -22,3 +22,10 @@ Same as computeFDRwithID but works with decoy_hit boolean vector.
 For more details and references see package vignette
 \code{vignette("TargetDecoyFDR_Example", package = "prozor")}
 }
+\examples{
+data(fdrSample)
+
+fdr1 <- computeFDR(fdrSample$score, grepl("REV_",fdrSample$proteinID), larger_better = FALSE)
+head(as.data.frame(fdr1))
+
+}

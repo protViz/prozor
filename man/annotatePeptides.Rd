@@ -40,7 +40,7 @@ res = annotatePeptides(pepprot[seq_len(20),], fasta)
 res = annotatePeptides(pepprot[seq_len(20),"peptideSeq"],fasta)
 colnames(res)
 str(res)
-res \%>\% mutate(proteinlength = nchar(proteinSequence)) -> res
-res \%>\% select(proteinID, peptideSeq, proteinlength, Offset, lengthPeptide)
+res <- res |> mutate(proteinlength = nchar(proteinSequence))
+res |> select(proteinID, peptideSeq, proteinlength, Offset, lengthPeptide)
 
 }

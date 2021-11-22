@@ -28,7 +28,7 @@ For more details and references see package vignette
 \code{vignette("CreateDecoyDB", package = "prozor")}
 }
 \examples{
-#file = file.path(path.package("prozor"),"extdata/shortfasta.fasta.gz")
+file = file.path(path.package("prozor"),"extdata/shortfasta.fasta.gz")
 file = system.file("extdata/fgcz_contaminants_20150123.fasta.gz",package = "prozor")
 cont <- loadContaminantsFasta()
 rabbit <-readPeptideFasta(file)
