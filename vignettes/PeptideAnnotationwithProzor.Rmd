@@ -26,6 +26,7 @@ rm(list = ls())
 file = system.file("extdata/IDResults.txt.gz" , package = "prozor")
 specMeta <- readr::read_tsv(file)
 head(specMeta)
+
 ```
 
 
@@ -45,9 +46,7 @@ resCan <-
 
 annotAll <- prozor::annotatePeptides(upeptide, resAll)
 head(subset(annotAll,select =  -proteinSequence))
-
 annotCan <- prozor::annotatePeptides(upeptide, resCan)
-
 barplot(c(All = length(resAll),Canonical = length(resCan)))
 ```
 

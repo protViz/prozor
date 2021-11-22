@@ -6,7 +6,7 @@
 \usage{
 createDecoyDB(
   dbs,
-  useContaminants = loadContaminantsFasta(),
+  useContaminants = loadContaminantsFasta2021(),
   revLab = "REV_",
   annot = "zz|sourceOf|database"
 )
@@ -28,8 +28,8 @@ For more details and references see package vignette
 \code{vignette("CreateDecoyDB", package = "prozor")}
 }
 \examples{
-file = file.path(path.package("prozor"),"extdata/shortfasta.fasta.gz")
-cont <- loadContaminantsFasta()
+file = file.path(path.package("prozor"),"extdata/fgcz_contaminants2021_20210929.fasta.gz")
+cont <- loadContaminantsFasta2021()
 rabbit <-readPeptideFasta(file)
 tmp <- 2*(2*length(rabbit)+length(cont)) + 1
 

@@ -26,7 +26,10 @@ For more details and references see package vignette
 \examples{
 data(fdrSample)
 # call constructor
+#nrow(fdrSample)
+#fdrSample <- dplyr::slice_sample(fdrSample, n = 40000)
 
+#usethis::use_data(fdrSample, overwrite = TRUE)
 fdr1 <- computeFDRwithID(fdrSample$score, fdrSample$proteinID, larger_better = FALSE)
 names(fdr1)
 plot(fdr1$score, fdr1$FPR,type="l",xlim=c(0,0.001), ylim=c(0,0.0002))

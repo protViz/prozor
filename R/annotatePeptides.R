@@ -30,7 +30,7 @@
 #'
 #' #library(prozor)
 #' library(dplyr)
-#' file = system.file("extdata/shortfasta.fasta.gz",package = "prozor")
+#' file = system.file("p1000_db1_example/shortfasta.fasta.gz",package = "prozor")
 #' data("pepprot")
 #' fasta = readPeptideFasta(file = file)
 #' res = annotatePeptides(pepprot[seq_len(20),], fasta)
@@ -90,7 +90,7 @@ NULL
 #'
 #' #library(prozor)
 #' library(AhoCorasickTrie)
-#' file = system.file("extdata/shortfasta.fasta.gz",package = "prozor")
+#' file = system.file("p1000_db1_example/shortfasta.fasta.gz",package = "prozor")
 #' fasta = readPeptideFasta(file = file)
 #' pepprot <- get(data("pepprot", package = "prozor"))
 #' system.time( res2 <- annotateAHO( pepprot[seq_len(20),"peptideSeq"], fasta))

@@ -10,8 +10,8 @@
 #' @export
 #' @return list of SeqFastaAA entries
 #' @examples
-#' file = file.path(path.package("prozor"),"extdata/shortfasta.fasta.gz")
-#' cont <- loadContaminantsFasta()
+#' file = file.path(path.package("prozor"),"extdata/fgcz_contaminants2021_20210929.fasta.gz")
+#' cont <- loadContaminantsFasta2021()
 #' rabbit <-readPeptideFasta(file)
 #' tmp <- 2*(2*length(rabbit)+length(cont)) + 1
 #'
@@ -25,7 +25,7 @@
 #' stopifnot(length(res) == (2*length(rabbit) + 1) )
 #'
 createDecoyDB <- function(dbs ,
-                          useContaminants = loadContaminantsFasta(),
+                          useContaminants = loadContaminantsFasta2021(),
                           revLab= "REV_",
                           annot="zz|sourceOf|database")
 {

@@ -21,7 +21,7 @@ peptides which do not have protein assignment drop out
 
 #library(prozor)
 library(AhoCorasickTrie)
-file = system.file("extdata/shortfasta.fasta.gz",package = "prozor")
+file = system.file("p1000_db1_example/shortfasta.fasta.gz",package = "prozor")
 fasta = readPeptideFasta(file = file)
 pepprot <- get(data("pepprot", package = "prozor"))
 system.time( res2 <- annotateAHO( pepprot[seq_len(20),"peptideSeq"], fasta))

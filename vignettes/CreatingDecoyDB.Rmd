@@ -27,9 +27,9 @@ The contaminants are easy to distinguish from other entries thanks to the `zz|FG
 
 ```{r}
 library(prozor)
-head(names(loadContaminantsFasta()))
-length(loadContaminantsFasta())
-length(loadContaminantsNoHumanFasta())
+head(names(loadContaminantsFasta2021()))
+length(loadContaminantsFasta2021())
+length(loadContaminantsFasta2021(noHuman = TRUE))
 
 ```
 

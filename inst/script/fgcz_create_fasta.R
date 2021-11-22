@@ -20,7 +20,6 @@ Arguments:
   fasta_dir input file
 "
 
-#print(commandArgs(TRUE))
 if (FALSE) {
   args <- c("C:\\Users\\wewol\\Dropbox\\DataAnalysis\\p65\\fgcz_9606_SARS_CoV_2_reviewed_cnl", "-o" ,"c:/users/wewol")
   #args <- c("C:\\Users\\wewol\\Dropbox\\DataAnalysis\\p65\\fgcz_10116_RattusNor_reviewed_cnl")
