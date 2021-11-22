@@ -1,4 +1,3 @@
-[![Build Status](https://travis-ci.org/protViz/prozor.svg?branch=master)](https://travis-ci.org/protViz/prozor)
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/prozor)](https://cran.r-project.org/package=prozor)
 [![](http://cranlogs.r-pkg.org/badges/prozor)](https://cran.r-project.org/package=prozor)
 [![](http://cranlogs.r-pkg.org/badges/grand-total/prozor)](https://cran.r-project.org/package=prozor)
