@@ -24,8 +24,6 @@ Imports:
     dplyr
 Suggests: knitr,
     rmarkdown,
-    reticulate,
-    ssh
 URL: https://github.com/protviz/prozor
 BugReports: https://github.com/protviz/prozor/issues
 Repository: CRAN
