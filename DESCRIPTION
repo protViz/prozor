@@ -3,7 +3,7 @@ Type: Package
 Title: Minimal Protein Set Explaining Peptide Spectrum Matches
 Version: 0.99.3
 Authors@R: c(person("Witold", "Wolski",
-        email = c("wew@fgcz.ethz.ch", "wewolski@gmail.com"),
+        email = c("wewolski@gmail.com"),
         role = c("aut", "cre"),
         comment = c(ORCID = "0000-0002-6468-120X")))
 Description: Determine minimal protein set explaining
