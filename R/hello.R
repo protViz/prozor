@@ -23,3 +23,17 @@ NULL
 NULL
 #utils::globalVariables(c("i"), add = TRUE)
 
+#' MS masses
+#' A dataset containing approx 150000 MS1 precursor masses
+#' @name masses
+#'
+#' @docType data
+#' @keywords data
+NULL
+
+#' Data frame score and proteinID
+#'
+#' @name fdrSample
+#' @docType data
+#' @keywords data
+NULL

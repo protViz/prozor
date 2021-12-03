@@ -1,9 +1,4 @@
-#' Data frame score and proteinID
-#'
-#' @name fdrSample
-#' @docType data
-#' @keywords data
-NULL
+
 
 #' Compute FDR given a score
 #'
