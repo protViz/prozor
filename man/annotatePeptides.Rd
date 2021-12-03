@@ -33,14 +33,15 @@ peptides which do not have protein assignment drop out
 
 #library(prozor)
 library(dplyr)
-file = system.file("p1000_db1_example/shortfasta.fasta.gz",package = "prozor")
-data("pepprot")
-fasta = readPeptideFasta(file = file)
-res = annotatePeptides(pepprot[seq_len(20),], fasta)
-res = annotatePeptides(pepprot[seq_len(20),"peptideSeq"],fasta)
-colnames(res)
-str(res)
+
+file = system.file("extdata/IDResults.txt.gz" , package = "prozor")
+specMeta <- readr::read_tsv(file)
+upeptide <- unique(specMeta$peptideSeq)
+resCan <-
+   prozor::readPeptideFasta(
+       system.file("extdata/Annotation_canSeq.fasta.gz" , package = "prozor"))
+annotAll <- prozor::annotatePeptides(upeptide[seq_len(20)], resCan)
+res = annotatePeptides(pepprot[seq_len(20),], resCan)
 res <- res |> mutate(proteinlength = nchar(proteinSequence))
 res |> select(proteinID, peptideSeq, proteinlength, Offset, lengthPeptide)
-
 }

@@ -26,7 +26,7 @@ fasta = readPeptideFasta(file = file)
 revfasta <- reverseSeq(fasta)
 decoyDB <- c(fasta,revfasta)
 stopifnot(length(decoyDB) == 2 * length(fasta))
-\donttest{
+\dontrun{
 writeFasta(decoyDB, file="test.fasta")
 }
 }

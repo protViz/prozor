@@ -37,3 +37,10 @@ NULL
 #' @docType data
 #' @keywords data
 NULL
+
+
+#'
+#' @importFrom rlang :=
+#' @importFrom readr read_tsv
+#' @importFrom docopt docopt
+NULL

@@ -28,17 +28,19 @@
 #' @export
 #' @examples
 #'
-#' #library(prozor)
 #' library(dplyr)
-#' file = system.file("p1000_db1_example/shortfasta.fasta.gz",package = "prozor")
-#' data("pepprot")
-#' fasta = readPeptideFasta(file = file)
-#' res = annotatePeptides(pepprot[seq_len(20),], fasta)
-#' res = annotatePeptides(pepprot[seq_len(20),"peptideSeq"],fasta)
-#' colnames(res)
-#' str(res)
-#' res <- res |> mutate(proteinlength = nchar(proteinSequence))
-#' res |> select(proteinID, peptideSeq, proteinlength, Offset, lengthPeptide)
+#'
+#' file = system.file("extdata/IDResults.txt.gz" , package = "prozor")
+#' specMeta <- readr::read_tsv(file)
+#' upeptide <- unique(specMeta$peptideSeq)
+#' resCan <-
+#'    prozor::readPeptideFasta(
+#'        system.file("extdata/Annotation_canSeq.fasta.gz" , package = "prozor"))
+#' annotAll = prozor::annotatePeptides(upeptide[seq_len(20)], resCan)
+#'
+#'
+#' res <- annotAll |> mutate(proteinlength = nchar(proteinSequence))
+#' res <- res |> select(proteinID, peptideSeq, proteinlength, Offset, lengthPeptide)
 #'
 annotatePeptides <- function(pepinfo,
                              fasta,
@@ -54,28 +56,29 @@ annotatePeptides <- function(pepinfo,
         dplyr::mutate_at(peptide, .funs = dplyr::funs("lengthPeptide" := nchar))
     pepseq  = unique(as.character(pepinfo[, peptide]))
     restab <- annotateAHO(pepseq, fasta)
+    if (!is.null(restab)) {
 
-    restab <- restab |>
-        dplyr::group_by_at(peptide) |>
-        dplyr::mutate(
-            matched = .matchPepsequence(
-                dplyr::first(!!dplyr::sym(peptide)),
-                !!dplyr::sym("proteinSequence") ,
-                !!dplyr::sym("proteinID"),
-                prefix = prefix,
-                suffix = suffix
+        restab <- restab |>
+            dplyr::group_by_at(peptide) |>
+            dplyr::mutate(
+                matched = .matchPepsequence(
+                    dplyr::first(!!dplyr::sym(peptide)),
+                    !!dplyr::sym("proteinSequence") ,
+                    !!dplyr::sym("proteinID"),
+                    prefix = prefix,
+                    suffix = suffix
+                )
             )
-        )
+        res = merge(restab, pepinfo, by.x = peptide, by.y = peptide)
+        return(res)
 
-    res = merge(restab, pepinfo, by.x = peptide, by.y = peptide)
-    return(res)
+    } else {
+        warning("no matches found")
+        return(NULL)
+    }
+
 }
 
-#'
-#' @importFrom rlang :=
-#' @importFrom readr read_tsv
-#' @importFrom docopt docopt
-NULL
 
 #' annotate peptides using AhoCorasickTrie
 #'
@@ -94,8 +97,22 @@ NULL
 #' fasta = readPeptideFasta(file = file)
 #' pepprot <- get(data("pepprot", package = "prozor"))
 #' system.time( res2 <- annotateAHO( pepprot[seq_len(20),"peptideSeq"], fasta))
-#' colnames(res2)
+#' dim(res2)
 #' class(res2)
+#'
+#' library(dplyr)
+#'
+#' file = system.file("extdata/IDResults.txt.gz" , package = "prozor")
+#' specMeta <- readr::read_tsv(file)
+#' upeptide <- unique(specMeta$peptideSeq)
+#' resCan <-
+#'    prozor::readPeptideFasta(
+#'        system.file("extdata/Annotation_canSeq.fasta.gz" , package = "prozor"))
+#' resCan <- unique(resCan)
+#'
+#' #prozor::writeFasta(unique(resAll),file = "inst/extdata/Annotation_allSeq.fasta")
+#' annotAll = annotateAHO(upeptide[seq_len(20)], resCan)
+#' dim(distinct(annotAll))
 #' @export
 annotateAHO <- function(pepseq, fasta) {
     #100_000 peptides
