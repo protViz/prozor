@@ -21,5 +21,5 @@ NULL
 #' @docType data
 #' @keywords data
 NULL
-utils::globalVariables(c("i"), add = TRUE)
+#utils::globalVariables(c("i"), add = TRUE)
 

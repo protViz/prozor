@@ -7,7 +7,7 @@
 
 #' MS masses
 #' A dataset containing approx 150000 MS1 precursor masses
-#'
+#' @docType data
 "masses"
 
 #' compute the deviation from optimum: equal number of MS1 per bin
