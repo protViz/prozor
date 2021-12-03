@@ -62,7 +62,8 @@ annotation
 
 
 ```{r}
-resDB <- createDecoyDB(files1, useContaminants = loadContaminantsFasta2021(), annot = annotation, revLab = NULL)
+resDB <- createDecoyDB(files1, useContaminants = loadContaminantsFasta2021(),
+                       annot = annotation, revLab = NULL)
 length(resDB)
 
 ```
