@@ -35,13 +35,14 @@
 #' upeptide <- unique(specMeta$peptideSeq)
 #' resCan <-
 #'    prozor::readPeptideFasta(
-#'        system.file("extdata/Annotation_canSeq.fasta.gz" , package = "prozor"))
-#' annotAll = prozor::annotatePeptides(upeptide[seq_len(20)], resCan)
+#'        system.file("p1000_db1_example/Annotation_canSeq.fasta.gz" , package = "prozor"))
 #'
+#' annotAll = prozor::annotatePeptides(upeptide[seq_len(20)], resCan)
+#' dim(annotAll)
 #'
 #' res <- annotAll |> mutate(proteinlength = nchar(proteinSequence))
 #' res <- res |> select(proteinID, peptideSeq, proteinlength, Offset, lengthPeptide)
-#'
+#' head(res)
 annotatePeptides <- function(pepinfo,
                              fasta,
                              peptide = "peptideSeq",
@@ -91,15 +92,6 @@ annotatePeptides <- function(pepinfo,
 #' @return A data.frame with proteinID, peptideSeq, Offset and proteinSequence
 #' @examples
 #'
-#' #library(prozor)
-#' library(AhoCorasickTrie)
-#' file = system.file("p1000_db1_example/shortfasta.fasta.gz",package = "prozor")
-#' fasta = readPeptideFasta(file = file)
-#' pepprot <- get(data("pepprot", package = "prozor"))
-#' system.time( res2 <- annotateAHO( pepprot[seq_len(20),"peptideSeq"], fasta))
-#' dim(res2)
-#' class(res2)
-#'
 #' library(dplyr)
 #'
 #' file = system.file("extdata/IDResults.txt.gz" , package = "prozor")
@@ -107,12 +99,11 @@ annotatePeptides <- function(pepinfo,
 #' upeptide <- unique(specMeta$peptideSeq)
 #' resCan <-
 #'    prozor::readPeptideFasta(
-#'        system.file("extdata/Annotation_canSeq.fasta.gz" , package = "prozor"))
-#' resCan <- unique(resCan)
+#'        system.file("p1000_db1_example/Annotation_canSeq.fasta.gz" , package = "prozor"))
+#' resCanU <- resCan[!duplicated(unlist(resCan))]
+#' annotAll = annotateAHO(upeptide[seq_len(20)], resCanU)
+#' dim(annotAll)
 #'
-#' #prozor::writeFasta(unique(resAll),file = "inst/extdata/Annotation_allSeq.fasta")
-#' annotAll = annotateAHO(upeptide[seq_len(20)], resCan)
-#' dim(distinct(annotAll))
 #' @export
 annotateAHO <- function(pepseq, fasta) {
     #100_000 peptides

@@ -38,17 +38,19 @@ upeptide <- unique(specMeta$peptideSeq)
 
 resAll <-
     prozor::readPeptideFasta(
-        system.file("extdata/Annotation_allSeq.fasta.gz" , package = "prozor"))
+        system.file("p1000_db1_example/Annotation_allSeq.fasta.gz" , package = "prozor"))
 
 resCan <-
     prozor::readPeptideFasta(
-        system.file("extdata/Annotation_canSeq.fasta.gz" , package = "prozor"))
+        system.file("p1000_db1_example/Annotation_canSeq.fasta.gz" , package = "prozor"))
 
 annotAll <- prozor::annotatePeptides(upeptide, resAll)
 head(subset(annotAll,select =  -proteinSequence))
 annotCan <- prozor::annotatePeptides(upeptide, resCan)
 barplot(c(All = length(resAll),Canonical = length(resCan)))
 ```
+
+
 
 ```{r fig.cap="Number of unique peptide protein pairs  for the All and Canonical database."}
 barplot(c(All = nrow(annotAll), Canonical = nrow(annotCan)), ylab = "# peptide protein matches.")
