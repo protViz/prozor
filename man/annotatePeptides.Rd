@@ -43,7 +43,7 @@ resCan <-
 annotAll = prozor::annotatePeptides(upeptide[seq_len(20)], resCan)
 dim(annotAll)
 
-res <- annotAll |> mutate(proteinlength = nchar(proteinSequence))
-res <- res |> select(proteinID, peptideSeq, proteinlength, Offset, lengthPeptide)
+res <-  mutate(annotAll, proteinlength = nchar(proteinSequence))
+res <-  select(res, proteinID, peptideSeq, proteinlength, Offset, lengthPeptide)
 head(res)
 }
