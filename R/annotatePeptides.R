@@ -52,15 +52,17 @@ annotatePeptides <- function(pepinfo,
         pepinfo = data.frame(pepinfo, stringsAsFactors = FALSE)
         colnames(pepinfo) = peptide
     }
-    pepinfo <-
-        dplyr::mutate_at(pepinfo, peptide, dplyr::funs(as.character)) %>%
-        dplyr::mutate_at(peptide, .funs = dplyr::funs("lengthPeptide" := nchar))
+    pepinfo <- dplyr::mutate_at(pepinfo, peptide,
+                                dplyr::funs(as.character))
+    pepinfo <- dplyr::mutate_at(pepinfo, peptide,
+                                .funs = dplyr::funs("lengthPeptide" := nchar))
+
     pepseq  = unique(as.character(pepinfo[, peptide]))
     restab <- annotateAHO(pepseq, fasta)
     if (!is.null(restab)) {
 
         restab <-
-            dplyr::group_by_at(restab, peptide) %>%
+            dplyr::group_by_at(restab, peptide)
         restab <-
             dplyr::mutate(restab,
                 matched = .matchPepsequence(
