@@ -76,7 +76,7 @@ aseq <-
         return(as.SeqFastaAA(seq, name = id, Annot = paste(">", annot, sep = "")))
     }
 aseq(ids[1], as.character(prots[1]), res[1])
-tmp <- mapply(aseq, ids , as.character(prots) , res  , SIMPLIFY = F)
+tmp <- mapply(aseq, ids , as.character(prots) , res  , SIMPLIFY = FALSE)
 
 writeFasta(tmp, file = "inst/extdata/fgcz_ContaminantsWithAnnotation.fasta")
 

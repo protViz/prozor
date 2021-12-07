@@ -61,18 +61,18 @@ annotRev <- prozor::annotatePeptides(upeptide, resRev)
 length(unique(annotRev$peptideSeq))/ length(upeptide)
 
 
-plot(sort(table(annotAll$peptideSeq)),axes=F)
+plot(sort(table(annotAll$peptideSeq)),axes=FALSE)
 axis(2)
 sum(table(annotAll$peptideSeq) == 1)/ length(table(annotAll$peptideSeq)) * 100
 head(annotAll)
 
 
-plot(sort(table(annotIso$peptideSeq)),axes=F)
+plot(sort(table(annotIso$peptideSeq)),axes=FALSE)
 axis(2)
 
 sum(table(annotIso$peptideSeq) == 1)/ length(table(annotIso$peptideSeq)) * 100
 
-plot(sort(table(annotRev$peptideSeq)),axes=F)
+plot(sort(table(annotRev$peptideSeq)),axes=FALSE)
 sum(table(annotRev$peptideSeq) == 1)/ length(table(annotRev$peptideSeq)) * 100
 
 
