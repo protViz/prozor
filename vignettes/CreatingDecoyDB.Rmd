@@ -22,7 +22,7 @@ The package can be used to:
 # Contaminants
 
 This package provides two sets of typical contaminant proteins and peptides, one with and one without contaminants of human origin, which can be accessed by the functions `loadContaminantsFasta` and `loadContaminantsNoHumanFasta`.
-At the [FGCZ](www.fgcz.ch) we always are adding one of those two contaminant files to the database. To databases already containing human proteins, we will add the `ContaminantsNoHumanFasta`.
+At the [FGCZ](https://fgcz.ch/) we always are adding one of those two contaminant files to the database. To databases already containing human proteins, we will add the `ContaminantsNoHumanFasta`.
 The contaminants are easy to distinguish from other entries thanks to the `zz|FGCZCont` prefix.
 
 ```{r}
@@ -36,7 +36,7 @@ length(loadContaminantsFasta2021(noHuman = TRUE))
 # Creating a fasta protein amino acid sequence database for searching.
 
 To merge several _fasta_ databases into a single file place them into a single folder and give the folder the name of the database.
-At the [FGCZ](www.fgcz.ch) the database name starts with the project number e.g. `p1000` a consecutive number e.g. `db1` and descriptive name `example` i.e. `p1000_db1_example`.
+At the [FGCZ](https://fgcz.ch/) the database name starts with the project number e.g. `p1000` a consecutive number e.g. `db1` and descriptive name `example,i.e. `p1000_db1_example`.
 
 Add to the folder also an annotation.txt file. The annotation file should contain a single line formatted like a _fasta_ entry header with the following conent:
 `aa|p<project_number>_<database_name>|<YYYYMMDD> <detailed_description>`.
