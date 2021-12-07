@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">prozor</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.14</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
       </span>
     </div>
 
@@ -107,6 +107,9 @@
       <a href="../articles/TargetDecoyFDR_Example.html">Target Decoy FDR</a>
     </li>
   </ul>
+</li>
+<li>
+  <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -165,51 +168,57 @@
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>data.frame of same format as <code>wind</code> but with improved start and end masses.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
-<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/protviz/prozor'>prozor</a></span><span class='op'>)</span>
-<span class='va'>cdsw</span> <span class='op'>&lt;-</span> <span class='fu'><a href='Cdsw-class.html'>Cdsw</a></span><span class='op'>(</span><span class='va'>masses</span><span class='op'>)</span>
-<span class='va'>breaks</span> <span class='op'>&lt;-</span> <span class='va'>cdsw</span><span class='op'>$</span><span class='fu'>sampling_breaks</span><span class='op'>(</span>maxwindow<span class='op'>=</span><span class='fl'>100</span>,plot<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span>
-</div><div class='img'><img src='readjustWindows-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='va'>table</span> <span class='op'>&lt;-</span> <span class='va'>cdsw</span><span class='op'>$</span><span class='fu'>asTable</span><span class='op'>(</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span><span class='op'>(</span><span class='va'>table</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] 25  5</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>table</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;       from     to     mid width counts
-#&gt; 0%  349.63 381.72 365.675 32.09   6123
-#&gt; 4%  380.72 408.72 394.720 28.00   6415
-#&gt; 8%  407.72 432.27 419.995 24.55   6530
-#&gt; 12% 431.27 454.73 443.000 23.46   6529
-#&gt; 16% 453.73 476.25 464.990 22.52   6657
-#&gt; 20% 475.25 497.07 486.160 21.82   6752</div><div class='input'>
-<span class='va'>tmp</span> <span class='op'>&lt;-</span> <span class='fu'>readjustWindows</span><span class='op'>(</span><span class='va'>table</span>, <span class='va'>masses</span>,maxbin<span class='op'>=</span><span class='fl'>10</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span><span class='va'>tmp</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;       from      to      mid  width counts
-#&gt; 1   349.63  381.95  365.790  32.32   6177
-#&gt; 2   380.45  409.05  394.750  28.60   6576
-#&gt; 3   407.65  432.35  420.000  24.70   6557
-#&gt; 4   431.15  455.05  443.100  23.90   6722
-#&gt; 5   453.65  476.35  465.000  22.70   6746
-#&gt; 6   475.15  497.15  486.150  22.00   6828
-#&gt; 7   496.05  518.15  507.100  22.10   6763
-#&gt; 8   516.45  539.05  527.750  22.60   7017
-#&gt; 9   537.45  560.05  548.750  22.60   6863
-#&gt; 10  558.55  581.45  570.000  22.90   6916
-#&gt; 11  580.15  603.45  591.800  23.30   6800
-#&gt; 12  602.15  626.15  614.150  24.00   6607
-#&gt; 13  624.55  650.15  637.350  25.60   6776
-#&gt; 14  648.55  675.25  661.900  26.70   6531
-#&gt; 15  674.15  701.45  687.800  27.30   6496
-#&gt; 16  700.25  729.15  714.700  28.90   6372
-#&gt; 17  727.65  759.15  743.400  31.50   6344
-#&gt; 18  757.65  791.55  774.600  33.90   6200
-#&gt; 19  790.25  827.55  808.900  37.30   6035
-#&gt; 20  826.25  867.15  846.700  40.90   5693
-#&gt; 21  866.05  912.75  889.400  46.70   5495
-#&gt; 22  911.65  964.75  938.200  53.10   5183
-#&gt; 23  963.65 1027.65  995.650  64.00   4641
-#&gt; 24 1026.35 1101.15 1063.750  74.80   4122
-#&gt; 25 1099.95 1200.48 1150.215 100.53   3120</div><div class='input'>
-</div></pre>
+    <pre class="examples"><span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>masses</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>cdsw</span> <span class='op'>&lt;-</span> <span class='fu'><a href='Cdsw-class.html'>Cdsw</a></span><span class='op'>(</span><span class='va'>masses</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>breaks</span> <span class='op'>&lt;-</span> <span class='va'>cdsw</span><span class='op'>$</span><span class='fu'>sampling_breaks</span><span class='op'>(</span>maxwindow<span class='op'>=</span><span class='fl'>100</span>,plot<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span></span>
+<span class='r-plt img'><img src='readjustWindows-1.png' alt='' width='700' height='433' /></span>
+<span class='r-in'><span class='va'>table</span> <span class='op'>&lt;-</span> <span class='va'>cdsw</span><span class='op'>$</span><span class='fu'>asTable</span><span class='op'>(</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span><span class='op'>(</span><span class='va'>table</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 25  5</span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>table</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>       from     to     mid width counts</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 0%  349.63 381.72 365.675 32.09   6123</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 4%  380.72 408.72 394.720 28.00   6415</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 8%  407.72 432.27 419.995 24.55   6530</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 12% 431.27 454.73 443.000 23.46   6529</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 16% 453.73 476.25 464.990 22.52   6657</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 20% 475.25 497.07 486.160 21.82   6752</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>tmp</span> <span class='op'>&lt;-</span> <span class='fu'>readjustWindows</span><span class='op'>(</span><span class='va'>table</span>, <span class='va'>masses</span>,maxbin<span class='op'>=</span><span class='fl'>10</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span><span class='va'>tmp</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>       from      to      mid  width counts</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 1   349.63  381.95  365.790  32.32   6177</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 2   380.45  409.05  394.750  28.60   6576</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 3   407.65  432.35  420.000  24.70   6557</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 4   431.15  455.05  443.100  23.90   6722</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 5   453.65  476.35  465.000  22.70   6746</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 6   475.15  497.15  486.150  22.00   6828</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 7   496.05  518.15  507.100  22.10   6763</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 8   516.45  539.05  527.750  22.60   7017</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 9   537.45  560.05  548.750  22.60   6863</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 10  558.55  581.45  570.000  22.90   6916</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 11  580.15  603.45  591.800  23.30   6800</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 12  602.15  626.15  614.150  24.00   6607</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 13  624.55  650.15  637.350  25.60   6776</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 14  648.55  675.25  661.900  26.70   6531</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 15  674.15  701.45  687.800  27.30   6496</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 16  700.25  729.15  714.700  28.90   6372</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 17  727.65  759.15  743.400  31.50   6344</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 18  757.65  791.55  774.600  33.90   6200</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 19  790.25  827.55  808.900  37.30   6035</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 20  826.25  867.15  846.700  40.90   5693</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 21  866.05  912.75  889.400  46.70   5495</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 22  911.65  964.75  938.200  53.10   5183</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 23  963.65 1027.65  995.650  64.00   4641</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 24 1026.35 1101.15 1063.750  74.80   4122</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 25 1099.95 1200.48 1150.215 100.53   3120</span>
+<span class='r-in'></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

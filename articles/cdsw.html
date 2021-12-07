@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">prozor</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.14</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
       </span>
     </div>
 
@@ -67,6 +67,9 @@
     </li>
   </ul>
 </li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
@@ -85,15 +88,15 @@
 
       
 
-      </header><script src="cdsw_files/header-attrs-2.6/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Computing Dynamic SWATH Windows</h1>
                         <h4 class="author">Witold E. Wolski, Bernd Roschitzki</h4>
             
-            <h4 class="date">2021-02-26</h4>
+            <h4 class="date">2021-12-07</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/protviz/prozor/blob/master/vignettes/cdsw.Rmd"><code>vignettes/cdsw.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/protviz/prozor/blob/master/../vignettes/cdsw.Rmd"><code>../vignettes/cdsw.Rmd</code></a></small>
       <div class="hidden name"><code>cdsw.Rmd</code></div>
 
     </div>
@@ -113,7 +116,8 @@
 <h1 class="hasAnchor">
 <a href="#constant-with-method" class="anchor"></a>Constant with method</h1>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">cdsw</span> <span class="op">&lt;-</span> <span class="fu">prozor</span><span class="fu">::</span><span class="fu"><a href="../reference/Cdsw-class.html">Cdsw</a></span><span class="op">(</span><span class="fu">prozor</span><span class="fu">::</span><span class="va"><a href="../reference/masses.html">masses</a></span>, nbins <span class="op">=</span> <span class="fl">25</span>, digits <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/data.html">data</a></span><span class="op">(</span><span class="st">"masses"</span><span class="op">)</span>
+<span class="va">cdsw</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/Cdsw-class.html">Cdsw</a></span><span class="op">(</span><span class="va">masses</span> , nbins <span class="op">=</span> <span class="fl">25</span>, digits <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>
 <span class="va">cdsw</span><span class="op">$</span><span class="fu">plot</span><span class="op">(</span><span class="op">)</span></code></pre></div>
 <p><img src="cdsw_files/figure-html/unnamed-chunk-2-1.png" width="700"></p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
@@ -759,202 +763,202 @@
 <tr class="odd">
 <td align="left">0%</td>
 <td align="right">349.63</td>
-<td align="right">381.58</td>
-<td align="right">365.605</td>
-<td align="right">31.95</td>
-<td align="right">6095</td>
+<td align="right">381.70</td>
+<td align="right">365.665</td>
+<td align="right">32.07</td>
+<td align="right">6104</td>
 </tr>
 <tr class="even">
 <td align="left">4%</td>
-<td align="right">380.58</td>
-<td align="right">408.26</td>
-<td align="right">394.420</td>
-<td align="right">27.68</td>
-<td align="right">6385</td>
+<td align="right">380.70</td>
+<td align="right">408.41</td>
+<td align="right">394.555</td>
+<td align="right">27.71</td>
+<td align="right">6382</td>
 </tr>
 <tr class="odd">
 <td align="left">8%</td>
-<td align="right">407.26</td>
-<td align="right">432.23</td>
-<td align="right">419.745</td>
-<td align="right">24.97</td>
-<td align="right">6543</td>
+<td align="right">407.41</td>
+<td align="right">432.24</td>
+<td align="right">419.825</td>
+<td align="right">24.83</td>
+<td align="right">6546</td>
 </tr>
 <tr class="even">
 <td align="left">12%</td>
-<td align="right">431.23</td>
-<td align="right">454.75</td>
-<td align="right">442.990</td>
-<td align="right">23.52</td>
-<td align="right">6612</td>
+<td align="right">431.24</td>
+<td align="right">454.72</td>
+<td align="right">442.980</td>
+<td align="right">23.48</td>
+<td align="right">6553</td>
 </tr>
 <tr class="odd">
 <td align="left">16%</td>
-<td align="right">453.75</td>
-<td align="right">476.26</td>
-<td align="right">465.005</td>
-<td align="right">22.51</td>
-<td align="right">6650</td>
+<td align="right">453.72</td>
+<td align="right">476.11</td>
+<td align="right">464.915</td>
+<td align="right">22.39</td>
+<td align="right">6603</td>
 </tr>
 <tr class="even">
 <td align="left">20%</td>
-<td align="right">475.26</td>
-<td align="right">496.80</td>
-<td align="right">486.030</td>
-<td align="right">21.54</td>
-<td align="right">6697</td>
+<td align="right">475.11</td>
+<td align="right">496.77</td>
+<td align="right">485.940</td>
+<td align="right">21.66</td>
+<td align="right">6758</td>
 </tr>
 <tr class="odd">
 <td align="left">24%</td>
-<td align="right">495.80</td>
+<td align="right">495.77</td>
 <td align="right">517.78</td>
-<td align="right">506.790</td>
-<td align="right">21.98</td>
-<td align="right">6725</td>
+<td align="right">506.775</td>
+<td align="right">22.01</td>
+<td align="right">6755</td>
 </tr>
 <tr class="even">
 <td align="left">28%</td>
 <td align="right">516.78</td>
-<td align="right">538.56</td>
-<td align="right">527.670</td>
-<td align="right">21.78</td>
-<td align="right">6714</td>
+<td align="right">538.48</td>
+<td align="right">527.630</td>
+<td align="right">21.70</td>
+<td align="right">6710</td>
 </tr>
 <tr class="odd">
 <td align="left">32%</td>
-<td align="right">537.56</td>
-<td align="right">559.78</td>
-<td align="right">548.670</td>
-<td align="right">22.22</td>
-<td align="right">6737</td>
+<td align="right">537.48</td>
+<td align="right">559.76</td>
+<td align="right">548.620</td>
+<td align="right">22.28</td>
+<td align="right">6726</td>
 </tr>
 <tr class="even">
 <td align="left">36%</td>
-<td align="right">558.78</td>
-<td align="right">580.83</td>
-<td align="right">569.805</td>
-<td align="right">22.05</td>
-<td align="right">6678</td>
+<td align="right">558.76</td>
+<td align="right">580.82</td>
+<td align="right">569.790</td>
+<td align="right">22.06</td>
+<td align="right">6676</td>
 </tr>
 <tr class="odd">
 <td align="left">40%</td>
-<td align="right">579.83</td>
-<td align="right">602.85</td>
-<td align="right">591.340</td>
-<td align="right">23.02</td>
-<td align="right">6699</td>
+<td align="right">579.82</td>
+<td align="right">602.80</td>
+<td align="right">591.310</td>
+<td align="right">22.98</td>
+<td align="right">6660</td>
 </tr>
 <tr class="even">
 <td align="left">44%</td>
-<td align="right">601.85</td>
-<td align="right">626.04</td>
-<td align="right">613.945</td>
-<td align="right">24.19</td>
-<td align="right">6643</td>
+<td align="right">601.80</td>
+<td align="right">625.81</td>
+<td align="right">613.805</td>
+<td align="right">24.01</td>
+<td align="right">6642</td>
 </tr>
 <tr class="odd">
 <td align="left">48%</td>
-<td align="right">625.04</td>
-<td align="right">649.82</td>
-<td align="right">637.430</td>
-<td align="right">24.78</td>
-<td align="right">6535</td>
+<td align="right">624.81</td>
+<td align="right">649.35</td>
+<td align="right">637.080</td>
+<td align="right">24.54</td>
+<td align="right">6519</td>
 </tr>
 <tr class="even">
 <td align="left">52%</td>
-<td align="right">648.82</td>
-<td align="right">675.19</td>
-<td align="right">662.005</td>
-<td align="right">26.37</td>
-<td align="right">6468</td>
+<td align="right">648.35</td>
+<td align="right">674.86</td>
+<td align="right">661.605</td>
+<td align="right">26.51</td>
+<td align="right">6500</td>
 </tr>
 <tr class="odd">
 <td align="left">56%</td>
-<td align="right">674.19</td>
-<td align="right">701.22</td>
-<td align="right">687.705</td>
-<td align="right">27.03</td>
-<td align="right">6402</td>
+<td align="right">673.86</td>
+<td align="right">700.88</td>
+<td align="right">687.370</td>
+<td align="right">27.02</td>
+<td align="right">6413</td>
 </tr>
 <tr class="even">
 <td align="left">60%</td>
-<td align="right">700.22</td>
-<td align="right">728.90</td>
-<td align="right">714.560</td>
-<td align="right">28.68</td>
-<td align="right">6322</td>
+<td align="right">699.88</td>
+<td align="right">728.86</td>
+<td align="right">714.370</td>
+<td align="right">28.98</td>
+<td align="right">6341</td>
 </tr>
 <tr class="odd">
 <td align="left">64%</td>
-<td align="right">727.90</td>
-<td align="right">758.87</td>
-<td align="right">743.385</td>
-<td align="right">30.97</td>
-<td align="right">6207</td>
+<td align="right">727.86</td>
+<td align="right">758.89</td>
+<td align="right">743.375</td>
+<td align="right">31.03</td>
+<td align="right">6256</td>
 </tr>
 <tr class="even">
 <td align="left">68%</td>
-<td align="right">757.87</td>
-<td align="right">790.89</td>
-<td align="right">774.380</td>
-<td align="right">33.02</td>
-<td align="right">6054</td>
+<td align="right">757.89</td>
+<td align="right">791.14</td>
+<td align="right">774.515</td>
+<td align="right">33.25</td>
+<td align="right">6092</td>
 </tr>
 <tr class="odd">
 <td align="left">72%</td>
-<td align="right">789.89</td>
-<td align="right">826.39</td>
-<td align="right">808.140</td>
-<td align="right">36.50</td>
+<td align="right">790.14</td>
+<td align="right">826.77</td>
+<td align="right">808.455</td>
+<td align="right">36.63</td>
 <td align="right">5896</td>
 </tr>
 <tr class="even">
 <td align="left">76%</td>
-<td align="right">825.39</td>
-<td align="right">866.22</td>
-<td align="right">845.805</td>
-<td align="right">40.83</td>
-<td align="right">5717</td>
+<td align="right">825.77</td>
+<td align="right">866.91</td>
+<td align="right">846.340</td>
+<td align="right">41.14</td>
+<td align="right">5738</td>
 </tr>
 <tr class="odd">
 <td align="left">80%</td>
-<td align="right">865.22</td>
-<td align="right">911.49</td>
-<td align="right">888.355</td>
-<td align="right">46.27</td>
-<td align="right">5499</td>
+<td align="right">865.91</td>
+<td align="right">912.22</td>
+<td align="right">889.065</td>
+<td align="right">46.31</td>
+<td align="right">5476</td>
 </tr>
 <tr class="even">
 <td align="left">84%</td>
-<td align="right">910.49</td>
-<td align="right">964.03</td>
-<td align="right">937.260</td>
-<td align="right">53.54</td>
-<td align="right">5239</td>
+<td align="right">911.22</td>
+<td align="right">964.31</td>
+<td align="right">937.765</td>
+<td align="right">53.09</td>
+<td align="right">5184</td>
 </tr>
 <tr class="odd">
 <td align="left">88%</td>
-<td align="right">963.03</td>
-<td align="right">1027.47</td>
-<td align="right">995.250</td>
-<td align="right">64.44</td>
-<td align="right">4662</td>
+<td align="right">963.31</td>
+<td align="right">1027.33</td>
+<td align="right">995.320</td>
+<td align="right">64.02</td>
+<td align="right">4643</td>
 </tr>
 <tr class="even">
 <td align="left">92%</td>
-<td align="right">1026.47</td>
-<td align="right">1101.91</td>
-<td align="right">1064.190</td>
-<td align="right">75.44</td>
-<td align="right">4157</td>
+<td align="right">1026.33</td>
+<td align="right">1102.84</td>
+<td align="right">1064.585</td>
+<td align="right">76.51</td>
+<td align="right">4195</td>
 </tr>
 <tr class="odd">
 <td align="left">96%</td>
-<td align="right">1100.91</td>
+<td align="right">1101.84</td>
 <td align="right">1200.48</td>
-<td align="right">1150.695</td>
-<td align="right">99.57</td>
-<td align="right">3065</td>
+<td align="right">1151.160</td>
+<td align="right">98.64</td>
+<td align="right">3019</td>
 </tr>
 </tbody>
 </table>
@@ -1000,17 +1004,17 @@
 </tr>
 <tr class="odd">
 <td align="right">454.15</td>
-<td align="right">475.85</td>
-<td align="right">465.00</td>
-<td align="right">21.70</td>
-<td align="right">6474</td>
+<td align="right">475.65</td>
+<td align="right">464.90</td>
+<td align="right">21.50</td>
+<td align="right">6387</td>
 </tr>
 <tr class="even">
-<td align="right">475.65</td>
+<td align="right">475.45</td>
 <td align="right">496.35</td>
-<td align="right">486.00</td>
-<td align="right">20.70</td>
-<td align="right">6467</td>
+<td align="right">485.90</td>
+<td align="right">20.90</td>
+<td align="right">6504</td>
 </tr>
 <tr class="odd">
 <td align="right">496.15</td>
@@ -1021,17 +1025,17 @@
 </tr>
 <tr class="even">
 <td align="right">517.15</td>
-<td align="right">538.15</td>
-<td align="right">527.65</td>
-<td align="right">21.00</td>
-<td align="right">6473</td>
+<td align="right">538.05</td>
+<td align="right">527.60</td>
+<td align="right">20.90</td>
+<td align="right">6472</td>
 </tr>
 <tr class="odd">
-<td align="right">538.05</td>
+<td align="right">537.45</td>
 <td align="right">559.45</td>
-<td align="right">548.75</td>
-<td align="right">21.40</td>
-<td align="right">6509</td>
+<td align="right">548.45</td>
+<td align="right">22.00</td>
+<td align="right">6683</td>
 </tr>
 <tr class="even">
 <td align="right">559.15</td>
@@ -1049,38 +1053,38 @@
 </tr>
 <tr class="even">
 <td align="right">602.15</td>
-<td align="right">625.55</td>
-<td align="right">613.85</td>
-<td align="right">23.40</td>
-<td align="right">6453</td>
-</tr>
-<tr class="odd">
 <td align="right">625.45</td>
-<td align="right">649.45</td>
-<td align="right">637.45</td>
-<td align="right">24.00</td>
-<td align="right">6338</td>
-</tr>
-<tr class="even">
-<td align="right">649.25</td>
-<td align="right">675.15</td>
-<td align="right">662.20</td>
-<td align="right">25.90</td>
-<td align="right">6392</td>
+<td align="right">613.80</td>
+<td align="right">23.30</td>
+<td align="right">6450</td>
 </tr>
 <tr class="odd">
-<td align="right">674.55</td>
-<td align="right">701.15</td>
-<td align="right">687.85</td>
-<td align="right">26.60</td>
-<td align="right">6293</td>
+<td align="right">625.15</td>
+<td align="right">649.15</td>
+<td align="right">637.15</td>
+<td align="right">24.00</td>
+<td align="right">6357</td>
 </tr>
 <tr class="even">
+<td align="right">648.55</td>
+<td align="right">674.45</td>
+<td align="right">661.50</td>
+<td align="right">25.90</td>
+<td align="right">6387</td>
+</tr>
+<tr class="odd">
+<td align="right">674.25</td>
 <td align="right">700.55</td>
+<td align="right">687.40</td>
+<td align="right">26.30</td>
+<td align="right">6277</td>
+</tr>
+<tr class="even">
+<td align="right">700.25</td>
 <td align="right">728.55</td>
-<td align="right">714.55</td>
-<td align="right">28.00</td>
-<td align="right">6160</td>
+<td align="right">714.40</td>
+<td align="right">28.30</td>
+<td align="right">6252</td>
 </tr>
 <tr class="odd">
 <td align="right">728.25</td>
@@ -1091,59 +1095,59 @@
 </tr>
 <tr class="even">
 <td align="right">758.25</td>
+<td align="right">790.65</td>
+<td align="right">774.45</td>
+<td align="right">32.40</td>
+<td align="right">5950</td>
+</tr>
+<tr class="odd">
 <td align="right">790.55</td>
-<td align="right">774.40</td>
-<td align="right">32.30</td>
-<td align="right">5946</td>
-</tr>
-<tr class="odd">
-<td align="right">790.25</td>
-<td align="right">826.25</td>
-<td align="right">808.25</td>
+<td align="right">826.55</td>
+<td align="right">808.55</td>
 <td align="right">36.00</td>
-<td align="right">5820</td>
+<td align="right">5819</td>
 </tr>
 <tr class="even">
-<td align="right">825.65</td>
-<td align="right">866.05</td>
-<td align="right">845.85</td>
-<td align="right">40.40</td>
-<td align="right">5649</td>
+<td align="right">826.25</td>
+<td align="right">866.55</td>
+<td align="right">846.40</td>
+<td align="right">40.30</td>
+<td align="right">5622</td>
 </tr>
 <tr class="odd">
-<td align="right">865.65</td>
-<td align="right">911.05</td>
-<td align="right">888.35</td>
+<td align="right">866.35</td>
+<td align="right">911.75</td>
+<td align="right">889.05</td>
 <td align="right">45.40</td>
-<td align="right">5398</td>
+<td align="right">5366</td>
 </tr>
 <tr class="even">
-<td align="right">910.85</td>
-<td align="right">963.65</td>
-<td align="right">937.25</td>
-<td align="right">52.80</td>
-<td align="right">5187</td>
+<td align="right">911.65</td>
+<td align="right">963.85</td>
+<td align="right">937.75</td>
+<td align="right">52.20</td>
+<td align="right">5111</td>
 </tr>
 <tr class="odd">
-<td align="right">963.35</td>
-<td align="right">1027.15</td>
-<td align="right">995.25</td>
-<td align="right">63.80</td>
-<td align="right">4639</td>
+<td align="right">963.75</td>
+<td align="right">1026.85</td>
+<td align="right">995.30</td>
+<td align="right">63.10</td>
+<td align="right">4584</td>
 </tr>
 <tr class="even">
-<td align="right">1026.95</td>
-<td align="right">1101.45</td>
-<td align="right">1064.20</td>
-<td align="right">74.50</td>
-<td align="right">4094</td>
+<td align="right">1026.75</td>
+<td align="right">1102.35</td>
+<td align="right">1064.55</td>
+<td align="right">75.60</td>
+<td align="right">4148</td>
 </tr>
 <tr class="odd">
-<td align="right">1101.35</td>
+<td align="right">1102.25</td>
 <td align="right">1200.05</td>
-<td align="right">1150.70</td>
-<td align="right">98.70</td>
-<td align="right">3046</td>
+<td align="right">1151.15</td>
+<td align="right">97.80</td>
+<td align="right">2995</td>
 </tr>
 </tbody>
 </table>
@@ -1164,9 +1168,9 @@
 <div id="session-info" class="section level1">
 <h1 class="hasAnchor">
 <a href="#session-info" class="anchor"></a>Session info</h1>
-<pre><code>## R version 4.0.3 (2020-10-10)
+<pre><code>## R version 4.1.1 (2021-08-10)
 ## Platform: x86_64-w64-mingw32/x64 (64-bit)
-## Running under: Windows 10 x64 (build 19041)
+## Running under: Windows 10 x64 (build 19044)
 ## 
 ## Matrix products: default
 ## 
@@ -1181,24 +1185,26 @@
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
-## [1] prozor_0.2.14
+## [1] prozor_0.3.0
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] Rcpp_1.0.6            highr_0.8             compiler_4.0.3       
-##  [4] prettyunits_1.1.1     tools_4.0.3           progress_1.2.2       
-##  [7] digest_0.6.27         evaluate_0.14         memoise_2.0.0        
-## [10] lifecycle_1.0.0       AhoCorasickTrie_0.1.2 lattice_0.20-41      
-## [13] pkgconfig_2.0.3       rlang_0.4.10          Matrix_1.2-18        
-## [16] yaml_2.2.1            pkgdown_1.6.1         xfun_0.21            
-## [19] fastmap_1.1.0         stringr_1.4.0         knitr_1.31           
-## [22] desc_1.2.0            fs_1.5.0              vctrs_0.3.6          
-## [25] systemfonts_1.0.1     hms_1.0.0             rprojroot_2.0.2      
-## [28] ade4_1.7-16           grid_4.0.3            R6_2.5.0             
-## [31] textshaping_0.3.0     rmarkdown_2.6         purrr_0.3.4          
-## [34] seqinr_4.2-5          magrittr_2.0.1        htmltools_0.5.1.1    
-## [37] ellipsis_0.3.1        MASS_7.3-53           assertthat_0.2.1     
-## [40] ragg_1.1.0            stringi_1.5.3         cachem_1.0.3         
-## [43] crayon_1.4.1</code></pre>
+##  [1] Rcpp_1.0.7            highr_0.9             pillar_1.6.4         
+##  [4] bslib_0.3.1           compiler_4.1.1        jquerylib_0.1.4      
+##  [7] tools_4.1.1           digest_0.6.28         docopt_0.7.1         
+## [10] tibble_3.1.4          lifecycle_1.0.1       jsonlite_1.7.2       
+## [13] evaluate_0.14         memoise_2.0.0         AhoCorasickTrie_0.1.2
+## [16] lattice_0.20-44       pkgconfig_2.0.3       rlang_0.4.11         
+## [19] Matrix_1.3-4          yaml_2.2.1            pkgdown_1.6.1        
+## [22] xfun_0.26             fastmap_1.1.0         stringr_1.4.0        
+## [25] knitr_1.36            desc_1.4.0            fs_1.5.0             
+## [28] sass_0.4.0            vctrs_0.3.8           systemfonts_1.0.3    
+## [31] hms_1.1.1             rprojroot_2.0.2       ade4_1.7-18          
+## [34] grid_4.1.1            R6_2.5.1              textshaping_0.3.6    
+## [37] fansi_0.5.0           rmarkdown_2.11        tzdb_0.1.2           
+## [40] purrr_0.3.4           readr_2.0.1           seqinr_4.2-8         
+## [43] magrittr_2.0.1        htmltools_0.5.2       ellipsis_0.3.2       
+## [46] MASS_7.3-54           ragg_1.2.0            utf8_1.2.2           
+## [49] stringi_1.7.4         cachem_1.0.6          crayon_1.4.2</code></pre>
 </div>
   </div>
 

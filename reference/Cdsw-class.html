@@ -40,7 +40,15 @@
 
 
 <meta property="og:title" content="Compute dynamic swath windows — Cdsw-class" />
-<meta property="og:description" content="Compute dynamic swath windows" />
+<meta property="og:description" content="initialize
+create equidistant breaks
+quantile breaks
+sampling breaks
+barplot showing the number of precursors per window
+Table with window boundaries and statistics
+summary of the binning process (see objectiveMS1Function for more details)
+moves window start and end to region with as few as possible precursor masses
+shows the generated DIA cycle" />
 
 
 
@@ -72,7 +80,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">prozor</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.14</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
       </span>
     </div>
 
@@ -108,6 +116,9 @@
     </li>
   </ul>
 </li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -135,11 +146,71 @@
     </div>
 
     <div class="ref-description">
-    <p>Compute dynamic swath windows</p>
+    <p>initialize</p>
+<p>create equidistant breaks</p>
+<p>quantile breaks</p>
+<p>sampling breaks</p>
+<p>barplot showing the number of precursors per window</p>
+<p>Table with window boundaries and statistics</p>
+<p>summary of the binning process (see objectiveMS1Function for more details)</p>
+<p>moves window start and end to region with as few as possible precursor masses</p>
+<p>shows the generated DIA cycle</p>
     </div>
 
 
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>list</th>
+      <td><p>of masses</p></td>
+    </tr>
+    <tr>
+      <th>nbins</th>
+      <td><p>number of bins default 25</p></td>
+    </tr>
+    <tr>
+      <th>maxwindow</th>
+      <td><p>largest window size</p></td>
+    </tr>
+    <tr>
+      <th>minwindow</th>
+      <td><p>smallest window size</p></td>
+    </tr>
+    <tr>
+      <th>digits</th>
+      <td><p>mass precision default 2</p></td>
+    </tr>
+    <tr>
+      <th>digigits</th>
+      <td><p>mass precision</p></td>
+    </tr>
+    <tr>
+      <th>max</th>
+      <td><p>number of bins</p></td>
+    </tr>
+    <tr>
+      <th>plot</th>
+      <td><p>default TRUE</p></td>
+    </tr>
+    <tr>
+      <th>overlap</th>
+      <td><p>size of window overlap default 1 m/z</p></td>
+    </tr>
+    </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>array of masses</p>
+<p>array with masses</p>
+<p>array with masses</p>
+<p>data.frame with columns:
+- from (window start)
+- to (window end)
+- mid (window centre), width (window width)
+- counts expected number of precursors</p>
+<p>list with optimization scores</p>
+<p>data.frame with optimized windows</p>
     <h2 class="hasAnchor" id="fields"><a class="anchor" href="#fields"></a>Fields</h2>
 
     
@@ -169,48 +240,79 @@
 
 <dt><code>sampling_breaks(maxwindow = 150, minwindow = 5, digits = 2, plot = FALSE)</code></dt><dd><p>starts with quantile breaks but mixes with uniform data to satisfy had constraints</p></dd>
 
-<dt><code>showCycle(overlap = 1)</code></dt><dd><p>shows the generated DIA cycle</p></dd>
-
 </dl>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/protviz/prozor'>prozor</a></span><span class='op'>)</span>
-<span class='va'>cdsw</span> <span class='op'>&lt;-</span> <span class='fu'>Cdsw</span><span class='op'>(</span><span class='va'>masses</span><span class='op'>)</span>
-<span class='va'>cdsw</span><span class='op'>$</span><span class='fu'>sampling_breaks</span><span class='op'>(</span>maxwindow<span class='op'>=</span><span class='fl'>100</span>,plot<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span>
-</div><div class='img'><img src='Cdsw-class-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='va'>cdsw</span><span class='op'>$</span><span class='fu'>plot</span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='img'><img src='Cdsw-class-2.png' alt='' width='700' height='433' /></div><div class='input'><span class='va'>cdsw</span><span class='op'>$</span><span class='fu'>asTable</span><span class='op'>(</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;        from      to      mid  width counts
-#&gt; 0%   349.63  381.69  365.660  32.06   6098
-#&gt; 4%   380.69  408.69  394.690  28.00   6428
-#&gt; 8%   407.69  432.39  420.040  24.70   6553
-#&gt; 12%  431.39  455.19  443.290  23.80   6612
-#&gt; 16%  454.19  476.44  465.315  22.25   6622
-#&gt; 20%  475.44  497.08  486.260  21.64   6678
-#&gt; 24%  496.08  517.97  507.025  21.89   6752
-#&gt; 28%  516.97  538.78  527.875  21.81   6717
-#&gt; 32%  537.78  559.80  548.790  22.02   6701
-#&gt; 36%  558.80  580.86  569.830  22.06   6662
-#&gt; 40%  579.86  602.86  591.360  23.00   6679
-#&gt; 44%  601.86  626.05  613.955  24.19   6640
-#&gt; 48%  625.05  649.83  637.440  24.78   6539
-#&gt; 52%  648.83  674.86  661.845  26.03   6405
-#&gt; 56%  673.86  700.87  687.365  27.01   6405
-#&gt; 60%  699.87  728.40  714.135  28.53   6295
-#&gt; 64%  727.40  758.26  742.830  30.86   6150
-#&gt; 68%  757.26  790.59  773.925  33.33   6136
-#&gt; 72%  789.59  826.63  808.110  37.04   5997
-#&gt; 76%  825.63  867.13  846.380  41.50   5802
-#&gt; 80%  866.13  912.57  889.350  46.44   5481
-#&gt; 84%  911.57  963.95  937.760  52.38   5115
-#&gt; 88%  962.95 1027.00  994.975  64.05   4654
-#&gt; 92% 1026.00 1100.73 1063.365  74.73   4121
-#&gt; 96% 1099.73 1200.48 1150.105 100.75   3121</div><div class='input'><span class='va'>cdsw</span><span class='op'>$</span><span class='va'>breaks</span>
-</div><div class='output co'>#&gt;      0%      4%      8%     12%     16%     20%     24%     28%     32%     36% 
-#&gt;  350.13  381.19  408.19  431.89  454.69  475.94  496.58  517.47  538.28  559.30 
-#&gt;     40%     44%     48%     52%     56%     60%     64%     68%     72%     76% 
-#&gt;  580.36  602.36  625.55  649.33  674.36  700.37  727.90  757.76  790.09  826.13 
-#&gt;     80%     84%     88%     92%     96%    100% 
-#&gt;  866.63  912.07  963.45 1026.50 1100.23 1199.98 </div></pre>
+    <pre class="examples"><span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>masses</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>cdsw</span> <span class='op'>&lt;-</span> <span class='fu'>Cdsw</span><span class='op'>(</span><span class='va'>masses</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>tmp</span> <span class='op'>&lt;-</span> <span class='va'>cdsw</span><span class='op'>$</span><span class='fu'>sampling_breaks</span><span class='op'>(</span>maxwindow<span class='op'>=</span><span class='fl'>100</span>,plot<span class='op'>=</span><span class='cn'>TRUE</span><span class='op'>)</span></span>
+<span class='r-plt img'><img src='Cdsw-class-1.png' alt='' width='700' height='433' /></span>
+<span class='r-in'><span class='va'>cdsw</span><span class='op'>$</span><span class='fu'>plot</span><span class='op'>(</span><span class='op'>)</span></span>
+<span class='r-plt img'><img src='Cdsw-class-2.png' alt='' width='700' height='433' /></span>
+<span class='r-in'><span class='va'>cdsw</span><span class='op'>$</span><span class='fu'>asTable</span><span class='op'>(</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>        from      to      mid  width counts</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 0%   349.63  381.69  365.660  32.06   6098</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 4%   380.69  408.69  394.690  28.00   6428</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 8%   407.69  432.39  420.040  24.70   6553</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 12%  431.39  455.19  443.290  23.80   6612</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 16%  454.19  476.44  465.315  22.25   6622</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 20%  475.44  497.08  486.260  21.64   6678</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 24%  496.08  517.97  507.025  21.89   6752</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 28%  516.97  538.78  527.875  21.81   6717</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 32%  537.78  559.80  548.790  22.02   6701</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 36%  558.80  580.86  569.830  22.06   6662</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 40%  579.86  602.86  591.360  23.00   6679</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 44%  601.86  626.05  613.955  24.19   6640</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 48%  625.05  649.83  637.440  24.78   6539</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 52%  648.83  674.86  661.845  26.03   6405</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 56%  673.86  700.87  687.365  27.01   6405</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 60%  699.87  728.40  714.135  28.53   6295</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 64%  727.40  758.26  742.830  30.86   6150</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 68%  757.26  790.59  773.925  33.33   6136</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 72%  789.59  826.63  808.110  37.04   5997</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 76%  825.63  867.13  846.380  41.50   5802</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 80%  866.13  912.57  889.350  46.44   5481</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 84%  911.57  963.95  937.760  52.38   5115</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 88%  962.95 1027.00  994.975  64.05   4654</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 92% 1026.00 1100.73 1063.365  74.73   4121</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 96% 1099.73 1200.48 1150.105 100.75   3121</span>
+<span class='r-in'><span class='va'>cdsw</span><span class='op'>$</span><span class='va'>breaks</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>      0%      4%      8%     12%     16%     20%     24%     28%     32%     36% </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  350.13  381.19  408.19  431.89  454.69  475.94  496.58  517.47  538.28  559.30 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     40%     44%     48%     52%     56%     60%     64%     68%     72%     76% </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  580.36  602.36  625.55  649.33  674.36  700.37  727.90  757.76  790.09  826.13 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     80%     84%     88%     92%     96%    100% </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  866.63  912.07  963.45 1026.50 1100.23 1199.98 </span>
+<span class='r-in'><span class='va'>cdsw</span><span class='op'>$</span><span class='fu'>optimizeWindows</span><span class='op'>(</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>       from      to     mid width counts</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 1   350.13  381.35  365.74 31.22   6053</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 2   381.05  408.35  394.70 27.30   6304</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 3   408.15  431.95  420.05 23.80   6319</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 4   431.85  454.85  443.35 23.00   6449</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 5   454.65  476.05  465.35 21.40   6362</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 6   475.85  496.85  486.35 21.00   6526</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 7   496.45  517.85  507.15 21.40   6587</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 8   517.45  538.45  527.95 21.00   6492</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 9   538.15  559.45  548.80 21.30   6508</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 10  559.15  580.45  569.80 21.30   6448</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 11  580.15  602.45  591.30 22.30   6526</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 12  602.15  626.05  614.10 23.90   6604</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 13  625.45  649.45  637.45 24.00   6338</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 14  649.25  674.45  661.85 25.20   6248</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 15  674.25  700.45  687.35 26.20   6277</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 16  700.25  728.15  714.20 27.90   6163</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 17  727.75  758.15  742.95 30.40   6117</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 18  757.75  790.15  773.95 32.40   5970</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 19  789.65  826.15  807.90 36.50   5928</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 20  825.65  866.65  846.15 41.00   5733</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 21  866.55  912.15  889.35 45.60   5353</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 22  912.05  963.55  937.80 51.50   5057</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 23  963.35 1026.65  995.00 63.30   4612</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 24 1026.45 1100.25 1063.35 73.80   4081</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 25 1100.15 1200.05 1150.10 99.90   3101</span>
+<span class='r-in'><span class='va'>cdsw</span><span class='op'>$</span><span class='fu'>showCycle</span><span class='op'>(</span><span class='op'>)</span></span>
+<span class='r-plt img'><img src='Cdsw-class-3.png' alt='' width='700' height='433' /></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">prozor</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.14</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
       </span>
     </div>
 
@@ -107,6 +107,9 @@
       <a href="../articles/TargetDecoyFDR_Example.html">Target Decoy FDR</a>
     </li>
   </ul>
+</li>
+<li>
+  <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -176,42 +179,48 @@
     <p>sparse matrix</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/protviz/prozor'>prozor</a></span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>protpepmetashort</span><span class='op'>)</span>
-<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='http://Matrix.R-forge.R-project.org/'>Matrix</a></span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span><span class='op'>(</span><span class='va'>protpepmetashort</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] "peptideSeq"      "lengthProtein"   "proteinID"       "peptideModSeq"  
-#&gt; [5] "precursorCharge" "m"               "lengthPeptide"  </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>protpepmetashort</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;       peptideSeq lengthProtein               proteinID  peptideModSeq
-#&gt; 1 AAAITSDLLESLGR           838   sp|Q62009|POSTN_MOUSE AAAITSDLLESLGR
-#&gt; 2 AAAITSDLLESLGR           811 sp|Q62009-2|POSTN_MOUSE AAAITSDLLESLGR
-#&gt; 3 AAAITSDLLESLGR           810 sp|Q62009-3|POSTN_MOUSE AAAITSDLLESLGR
-#&gt; 4 AAAITSDLLESLGR           784 sp|Q62009-4|POSTN_MOUSE AAAITSDLLESLGR
-#&gt; 5 AAAITSDLLESLGR           783 sp|Q62009-5|POSTN_MOUSE AAAITSDLLESLGR
-#&gt; 6       AAAQTLER           289    sp|P23492|PNPH_MOUSE       AAAQTLER
-#&gt;   precursorCharge        m lengthPeptide
-#&gt; 1               2 708.8887            14
-#&gt; 2               2 708.8887            14
-#&gt; 3               2 708.8887            14
-#&gt; 4               2 708.8887            14
-#&gt; 5               2 708.8887            14
-#&gt; 6               2 430.2353             8</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span><span class='op'>(</span><span class='va'>protpepmetashort</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] 423   7</div><div class='input'><span class='va'>count</span> <span class='op'>=</span> <span class='fu'>prepareMatrix</span><span class='op'>(</span> <span class='va'>protpepmetashort</span>, peptideID <span class='op'>=</span> <span class='st'>"peptideSeq"</span> <span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span><span class='op'>(</span><span class='va'>count</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] 149 250</div><div class='input'><span class='va'>inverse</span> <span class='op'>=</span> <span class='fu'>prepareMatrix</span><span class='op'>(</span> <span class='va'>protpepmetashort</span>, peptideID <span class='op'>=</span> <span class='st'>"peptideSeq"</span> , weight <span class='op'>=</span> <span class='st'>"inverse"</span><span class='op'>)</span>
-<span class='co'>#aa = prepareMatrix(protpepmetashort,  peptideID = "peptideSeq" , weight = "AA")</span>
-<span class='co'>#xx = prepareMatrix(protpepmetashort,  peptideID = "peptideSeq" , weight = "coverage")</span>
-<span class='fu'><a href='https://rdrr.io/r/graphics/image.html'>image</a></span><span class='op'>(</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>as.matrix</a></span><span class='op'>(</span><span class='va'>count</span><span class='op'>)</span> <span class='op'>)</span>
-</div><div class='img'><img src='prepareMatrix-1.png' alt='' width='700' height='433' /></div><div class='input'>
-<span class='va'>corProt</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/cor.html'>cor</a></span><span class='op'>(</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>as.matrix</a></span><span class='op'>(</span><span class='va'>count</span><span class='op'>)</span> <span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/graphics/par.html'>par</a></span><span class='op'>(</span>mfrow <span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>,<span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/graphics/image.html'>image</a></span><span class='op'>(</span><span class='va'>corProt</span><span class='op'>)</span>
-
-<span class='co'>#penalise peptides matching many proteins</span>
-<span class='va'>corProtn</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/cor.html'>cor</a></span><span class='op'>(</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>as.matrix</a></span><span class='op'>(</span><span class='va'>inverse</span><span class='op'>)</span> <span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/graphics/image.html'>image</a></span><span class='op'>(</span><span class='va'>corProtn</span><span class='op'>)</span>
-</div><div class='img'><img src='prepareMatrix-2.png' alt='' width='700' height='433' /></div><div class='input'>
-</div></pre>
+    <pre class="examples"><span class='r-in'><span class='co'>#library(prozor)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>protpepmetashort</span><span class='op'>)</span></span>
+<span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='http://Matrix.R-forge.R-project.org/'>Matrix</a></span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span><span class='op'>(</span><span class='va'>protpepmetashort</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "peptideSeq"      "lengthProtein"   "proteinID"       "peptideModSeq"  </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [5] "precursorCharge" "m"               "lengthPeptide"  </span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>protpepmetashort</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>       peptideSeq lengthProtein               proteinID  peptideModSeq</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 1 AAAITSDLLESLGR           838   sp|Q62009|POSTN_MOUSE AAAITSDLLESLGR</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 2 AAAITSDLLESLGR           811 sp|Q62009-2|POSTN_MOUSE AAAITSDLLESLGR</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 3 AAAITSDLLESLGR           810 sp|Q62009-3|POSTN_MOUSE AAAITSDLLESLGR</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 4 AAAITSDLLESLGR           784 sp|Q62009-4|POSTN_MOUSE AAAITSDLLESLGR</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 5 AAAITSDLLESLGR           783 sp|Q62009-5|POSTN_MOUSE AAAITSDLLESLGR</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 6       AAAQTLER           289    sp|P23492|PNPH_MOUSE       AAAQTLER</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   precursorCharge        m lengthPeptide</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 1               2 708.8887            14</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 2               2 708.8887            14</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 3               2 708.8887            14</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 4               2 708.8887            14</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 5               2 708.8887            14</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 6               2 430.2353             8</span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span><span class='op'>(</span><span class='va'>protpepmetashort</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 423   7</span>
+<span class='r-in'><span class='va'>count</span> <span class='op'>=</span> <span class='fu'>prepareMatrix</span><span class='op'>(</span> <span class='va'>protpepmetashort</span>, peptideID <span class='op'>=</span> <span class='st'>"peptideSeq"</span> <span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/dim.html'>dim</a></span><span class='op'>(</span><span class='va'>count</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 149 250</span>
+<span class='r-in'><span class='va'>inverse</span> <span class='op'>=</span> <span class='fu'>prepareMatrix</span><span class='op'>(</span> <span class='va'>protpepmetashort</span>, peptideID <span class='op'>=</span> <span class='st'>"peptideSeq"</span> , weight <span class='op'>=</span> <span class='st'>"inverse"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='co'>#aa = prepareMatrix(protpepmetashort,  peptideID = "peptideSeq" , weight = "AA")</span></span>
+<span class='r-in'><span class='co'>#xx = prepareMatrix(protpepmetashort,  peptideID = "peptideSeq" , weight = "coverage")</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/graphics/image.html'>image</a></span><span class='op'>(</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>as.matrix</a></span><span class='op'>(</span><span class='va'>count</span><span class='op'>)</span> <span class='op'>)</span></span>
+<span class='r-plt img'><img src='prepareMatrix-1.png' alt='' width='700' height='433' /></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>corProt</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/cor.html'>cor</a></span><span class='op'>(</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>as.matrix</a></span><span class='op'>(</span><span class='va'>count</span><span class='op'>)</span> <span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/graphics/par.html'>par</a></span><span class='op'>(</span>mfrow <span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>,<span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/graphics/image.html'>image</a></span><span class='op'>(</span><span class='va'>corProt</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>#penalise peptides matching many proteins</span></span>
+<span class='r-in'><span class='va'>corProtn</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/cor.html'>cor</a></span><span class='op'>(</span> <span class='fu'><a href='https://rdrr.io/r/base/matrix.html'>as.matrix</a></span><span class='op'>(</span><span class='va'>inverse</span><span class='op'>)</span> <span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/graphics/image.html'>image</a></span><span class='op'>(</span><span class='va'>corProtn</span><span class='op'>)</span></span>
+<span class='r-plt img'><img src='prepareMatrix-2.png' alt='' width='700' height='433' /></span>
+<span class='r-in'></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

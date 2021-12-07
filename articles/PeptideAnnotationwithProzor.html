@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">prozor</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.14</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
       </span>
     </div>
 
@@ -67,6 +67,9 @@
     </li>
   </ul>
 </li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
@@ -85,7 +88,7 @@
 
       
 
-      </header><script src="PeptideAnnotationwithProzor_files/header-attrs-2.6/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Peptide Annotation and Protein Inference</h1>
@@ -93,17 +96,13 @@
             
             <h4 class="date">March 16, 2017</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/protviz/prozor/blob/master/vignettes/PeptideAnnotationwithProzor.Rmd"><code>vignettes/PeptideAnnotationwithProzor.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/protviz/prozor/blob/master/../vignettes/PeptideAnnotationwithProzor.Rmd"><code>../vignettes/PeptideAnnotationwithProzor.Rmd</code></a></small>
       <div class="hidden name"><code>PeptideAnnotationwithProzor.Rmd</code></div>
 
     </div>
 
     
     
-<!--
-%\VignetteEngine{knitr::rmarkdown}
-%\VignetteIndexEntry{Spectra Annotation and Protein Inference}
--->
 <div id="introduction" class="section level1">
 <h1 class="hasAnchor">
 <a href="#introduction" class="anchor"></a>Introduction</h1>
@@ -117,14 +116,14 @@
 <span class="va">specMeta</span> <span class="op">&lt;-</span> <span class="fu">readr</span><span class="fu">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html">read_tsv</a></span><span class="op">(</span><span class="va">file</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">specMeta</span><span class="op">)</span></code></pre></div>
 <pre><code>## # A tibble: 6 x 12
-##   RefSpectraId numPeaks peptideSeq precursorCharge precursorMZ retentionTime
-##          &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;                &lt;dbl&gt;       &lt;dbl&gt;         &lt;dbl&gt;
-## 1         9908       57 GPDVLTATV~               2        573.          73.6
-## 2        36028       70 VPQVSTPTL~               3        505.          93.3
-## 3        74786      177 EVQLVETGG~               3        637.         121. 
-## 4        53362      184 AQPVQVAEG~               3        758.         129. 
-## 5        48668      157 KYLYEIAR                 2        528.          69.8
-## 6        90153      158 AQLVPLPPS~               3        860.         137. 
+##   RefSpectraId numPeaks peptideSeq     precursorCharge precursorMZ retentionTime
+##          &lt;dbl&gt;    &lt;dbl&gt; &lt;chr&gt;                    &lt;dbl&gt;       &lt;dbl&gt;         &lt;dbl&gt;
+## 1         9908       57 GPDVLTATVSGK                 2        573.          73.6
+## 2        36028       70 VPQVSTPTLVEVSR               3        505.          93.3
+## 3        74786      177 EVQLVETGGGLIQ~               3        637.         121. 
+## 4        53362      184 AQPVQVAEGSEPD~               3        758.         129. 
+## 5        48668      157 KYLYEIAR                     2        528.          69.8
+## 6        90153      158 AQLVPLPPSTYVE~               3        860.         137. 
 ## # ... with 6 more variables: copies &lt;dbl&gt;, peptideModSeq &lt;chr&gt;, score &lt;dbl&gt;,
 ## #   lengthPepSeq &lt;dbl&gt;, fileName &lt;dbl&gt;, SpecIDinFile &lt;dbl&gt;</code></pre>
 <p>Annotate peptide sequences with protein sequences from two fasta files on with reviewed entries only (sp) and the other with reviewed and Trembl entries (sp/tr).</p>
@@ -136,11 +135,11 @@
 
 <span class="va">resAll</span> <span class="op">&lt;-</span>
     <span class="fu">prozor</span><span class="fu">::</span><span class="fu"><a href="../reference/readPeptideFasta.html">readPeptideFasta</a></span><span class="op">(</span>
-        <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata/Annotation_allSeq.fasta.gz"</span> , package <span class="op">=</span> <span class="st">"prozor"</span><span class="op">)</span><span class="op">)</span>
+        <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"p1000_db1_example/Annotation_allSeq.fasta.gz"</span> , package <span class="op">=</span> <span class="st">"prozor"</span><span class="op">)</span><span class="op">)</span>
 
 <span class="va">resCan</span> <span class="op">&lt;-</span>
     <span class="fu">prozor</span><span class="fu">::</span><span class="fu"><a href="../reference/readPeptideFasta.html">readPeptideFasta</a></span><span class="op">(</span>
-        <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"extdata/Annotation_canSeq.fasta.gz"</span> , package <span class="op">=</span> <span class="st">"prozor"</span><span class="op">)</span><span class="op">)</span>
+        <span class="fu"><a href="https://rdrr.io/r/base/system.file.html">system.file</a></span><span class="op">(</span><span class="st">"p1000_db1_example/Annotation_canSeq.fasta.gz"</span> , package <span class="op">=</span> <span class="st">"prozor"</span><span class="op">)</span><span class="op">)</span>
 
 <span class="va">annotAll</span> <span class="op">&lt;-</span> <span class="fu">prozor</span><span class="fu">::</span><span class="fu"><a href="../reference/annotatePeptides.html">annotatePeptides</a></span><span class="op">(</span><span class="va">upeptide</span>, <span class="va">resAll</span><span class="op">)</span></code></pre></div>
 <pre><code>## Warning: `funs()` was deprecated in dplyr 0.8.0.
@@ -153,16 +152,18 @@
 ##   tibble::lst(mean, median)
 ## 
 ##   # Using lambdas
-##   list(~ mean(., trim = .2), ~ median(., na.rm = TRUE))</code></pre>
+##   list(~ mean(., trim = .2), ~ median(., na.rm = TRUE))
+## This warning is displayed once every 8 hours.
+## Call `lifecycle::last_lifecycle_warnings()` to see where this warning was generated.</code></pre>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/subset.html">subset</a></span><span class="op">(</span><span class="va">annotAll</span>,select <span class="op">=</span>  <span class="op">-</span><span class="va">proteinSequence</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <pre><code>##             peptideSeq                      proteinID Offset matched
-## 1 AACAQLNDFLQEYGTQGCQV           sp|P0C0L4|CO4A_HUMAN   1725    TRUE
-## 2 AACAQLNDFLQEYGTQGCQV tr|A0A140TA44|A0A140TA44_HUMAN   1679    TRUE
+## 1 AACAQLNDFLQEYGTQGCQV         sp|P0C0L4-2|CO4A_HUMAN   1679    TRUE
+## 2 AACAQLNDFLQEYGTQGCQV tr|A0A140TA49|A0A140TA49_HUMAN   1679    TRUE
 ## 3 AACAQLNDFLQEYGTQGCQV tr|A0A140TA29|A0A140TA29_HUMAN   1679    TRUE
-## 4 AACAQLNDFLQEYGTQGCQV tr|A0A140TA32|A0A140TA32_HUMAN   1679    TRUE
-## 5 AACAQLNDFLQEYGTQGCQV tr|A0A140TA29|A0A140TA29_HUMAN   1679    TRUE
-## 6 AACAQLNDFLQEYGTQGCQV           sp|P0C0L4|CO4A_HUMAN   1725    TRUE
+## 4 AACAQLNDFLQEYGTQGCQV         tr|F5GXS0|F5GXS0_HUMAN   1679    TRUE
+## 5 AACAQLNDFLQEYGTQGCQV tr|A0A140TA44|A0A140TA44_HUMAN   1679    TRUE
+## 6 AACAQLNDFLQEYGTQGCQV tr|A0A0G2JPR0|A0A0G2JPR0_HUMAN   1725    TRUE
 ##   lengthPeptide
 ## 1            20
 ## 2            20
@@ -172,7 +173,6 @@
 ## 6            20</code></pre>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">annotCan</span> <span class="op">&lt;-</span> <span class="fu">prozor</span><span class="fu">::</span><span class="fu"><a href="../reference/annotatePeptides.html">annotatePeptides</a></span><span class="op">(</span><span class="va">upeptide</span>, <span class="va">resCan</span><span class="op">)</span>
-
 <span class="fu"><a href="https://rdrr.io/r/graphics/barplot.html">barplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span>All <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">resAll</span><span class="op">)</span>,Canonical <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html">length</a></span><span class="op">(</span><span class="va">resCan</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <div class="figure">
 <img src="PeptideAnnotationwithProzor_files/figure-html/unnamed-chunk-1-1.png" alt="Number of proteins in the All and Canonical database." width="700"><p class="caption">
@@ -280,6 +280,53 @@ Number of proteins before and after protein inference.
 <h1 class="hasAnchor">
 <a href="#todo" class="anchor"></a>TODO</h1>
 <p><a href="https://www.dropbox.com/s/a4kqyc4gxln8sfj/scaffold_protein_grouping_clustering.pdf?dl=1">Protein Grouping and Clustering in Scaffold</a></p>
+</div>
+<div id="session-info" class="section level1">
+<h1 class="hasAnchor">
+<a href="#session-info" class="anchor"></a>Session Info</h1>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<pre><code>## R version 4.1.1 (2021-08-10)
+## Platform: x86_64-w64-mingw32/x64 (64-bit)
+## Running under: Windows 10 x64 (build 19044)
+## 
+## Matrix products: default
+## 
+## locale:
+## [1] LC_COLLATE=English_United States.1252 
+## [2] LC_CTYPE=English_United States.1252   
+## [3] LC_MONETARY=English_United States.1252
+## [4] LC_NUMERIC=C                          
+## [5] LC_TIME=English_United States.1252    
+## 
+## attached base packages:
+## [1] stats     graphics  grDevices utils     datasets  methods   base     
+## 
+## other attached packages:
+## [1] Matrix_1.3-4 prozor_0.3.0
+## 
+## loaded via a namespace (and not attached):
+##  [1] tidyselect_1.1.1      xfun_0.26             bslib_0.3.1          
+##  [4] purrr_0.3.4           lattice_0.20-44       vctrs_0.3.8          
+##  [7] generics_0.1.1        htmltools_0.5.2       yaml_2.2.1           
+## [10] utf8_1.2.2            rlang_0.4.11          pkgdown_1.6.1        
+## [13] jquerylib_0.1.4       pillar_1.6.4          glue_1.4.2           
+## [16] DBI_1.1.1             bit64_4.0.5           lifecycle_1.0.1      
+## [19] stringr_1.4.0         AhoCorasickTrie_0.1.2 ragg_1.2.0           
+## [22] memoise_2.0.0         evaluate_0.14         knitr_1.36           
+## [25] tzdb_0.1.2            fastmap_1.1.0         parallel_4.1.1       
+## [28] fansi_0.5.0           highr_0.9             Rcpp_1.0.7           
+## [31] readr_2.0.1           cachem_1.0.6          desc_1.4.0           
+## [34] vroom_1.5.6           jsonlite_1.7.2        systemfonts_1.0.3    
+## [37] fs_1.5.0              bit_4.0.4             textshaping_0.3.6    
+## [40] hms_1.1.1             digest_0.6.28         stringi_1.7.4        
+## [43] dplyr_1.0.7           grid_4.1.1            ade4_1.7-18          
+## [46] rprojroot_2.0.2       cli_3.1.0             tools_4.1.1          
+## [49] magrittr_2.0.1        sass_0.4.0            tibble_3.1.4         
+## [52] crayon_1.4.2          seqinr_4.2-8          pkgconfig_2.0.3      
+## [55] docopt_0.7.1          MASS_7.3-54           ellipsis_0.3.2       
+## [58] assertthat_0.2.1      rmarkdown_2.11        R6_2.5.1             
+## [61] compiler_4.1.1</code></pre>
 </div>
   </div>
 

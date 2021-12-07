@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">prozor</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.14</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
       </span>
     </div>
 
@@ -107,6 +107,9 @@
       <a href="../articles/TargetDecoyFDR_Example.html">Target Decoy FDR</a>
     </li>
   </ul>
+</li>
+<li>
+  <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -153,34 +156,38 @@
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>string with reversed sequence</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='http://seqinr.r-forge.r-project.org/'>seqinr</a></span><span class='op'>)</span>
-<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/protviz/prozor'>prozor</a></span><span class='op'>)</span>
-
-<span class='co'>#file = file.path(path.package("prozor"),"extdata/fgcz_contaminants_20150123.fasta.gz")</span>
-<span class='va'>file</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata/fgcz_contaminants_20150123.fasta.gz"</span>,package <span class='op'>=</span> <span class='st'>"prozor"</span><span class='op'>)</span>
-<span class='va'>fasta</span> <span class='op'>=</span> <span class='fu'><a href='readPeptideFasta.html'>readPeptideFasta</a></span><span class='op'>(</span>file <span class='op'>=</span> <span class='va'>file</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/pkg/seqinr/man/getAnnot.html'>getAnnot</a></span><span class='op'>(</span><span class='va'>fasta</span><span class='op'>[[</span><span class='fl'>1</span><span class='op'>]</span><span class='op'>]</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] "&gt;zz|ZZ_FGCZCont0000| sp|LYSC_HUMAN| "</div><div class='input'><span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'>reverseSeq</span><span class='op'>(</span><span class='va'>fasta</span><span class='op'>)</span>
-
-<span class='va'>revseq</span> <span class='op'>&lt;-</span> <span class='fu'>reverseSeq</span><span class='op'>(</span><span class='va'>fasta</span> ,revLab <span class='op'>=</span> <span class='st'>"REV_"</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/base/stopifnot.html'>stopifnot</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>revseq</span><span class='op'>)</span> <span class='op'>==</span> <span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>fasta</span><span class='op'>)</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/base/stopifnot.html'>stopifnot</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/grep.html'>grep</a></span><span class='op'>(</span><span class='st'>"^REV_"</span>,<span class='st'>"REV_zz|ZZ_FGCZCont0000|"</span><span class='op'>)</span><span class='op'>==</span><span class='fl'>1</span><span class='op'>)</span>
-
-<span class='va'>tmp</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/pkg/seqinr/man/SeqFastaAA.html'>as.SeqFastaAA</a></span><span class='op'>(</span><span class='op'>(</span><span class='st'>"DYKDDDDK"</span><span class='op'>)</span>,name<span class='op'>=</span><span class='st'>"Flag|FLAG|p2079"</span>,Annot<span class='op'>=</span><span class='st'>""</span><span class='op'>)</span><span class='op'>)</span>
-
-<span class='fu'>reverseSeq</span><span class='op'>(</span><span class='va'>tmp</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; $`REV_Flag|FLAG|p2079`
-#&gt; [1] "KDDDDKYD"
-#&gt; attr(,"name")
-#&gt; [1] "REV_Flag|FLAG|p2079"
-#&gt; attr(,"Annot")
-#&gt; [1] "&gt;REV_"
-#&gt; attr(,"class")
-#&gt; [1] "SeqFastaAA"
-#&gt; </div><div class='input'>
-</div></pre>
+    <pre class="examples"><span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='http://seqinr.r-forge.r-project.org/'>seqinr</a></span><span class='op'>)</span></span>
+<span class='r-in'><span class='co'>#library(prozor)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>file</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata/fgcz_contaminants2021_20210929.fasta.gz"</span>, package<span class='op'>=</span><span class='st'>"prozor"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>fasta</span> <span class='op'>=</span> <span class='fu'><a href='readPeptideFasta.html'>readPeptideFasta</a></span><span class='op'>(</span>file <span class='op'>=</span> <span class='va'>file</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/pkg/seqinr/man/getAnnot.html'>getAnnot</a></span><span class='op'>(</span><span class='va'>fasta</span><span class='op'>[[</span><span class='fl'>1</span><span class='op'>]</span><span class='op'>]</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "&gt;zz|fgczContaminants2021| jg: 2021-09-29 updated list of important MS contaminants, incl Preomics LysC, BioID, APEX2 domain compiled by FGCZ protInf"</span>
+<span class='r-in'><span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'>reverseSeq</span><span class='op'>(</span><span class='va'>fasta</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>revseq</span> <span class='op'>&lt;-</span> <span class='fu'>reverseSeq</span><span class='op'>(</span><span class='va'>fasta</span> ,revLab <span class='op'>=</span> <span class='st'>"REV_"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/stopifnot.html'>stopifnot</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>revseq</span><span class='op'>)</span> <span class='op'>==</span> <span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>fasta</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/stopifnot.html'>stopifnot</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/grep.html'>grep</a></span><span class='op'>(</span><span class='st'>"^REV_"</span>,<span class='st'>"REV_zz|ZZ_FGCZCont0000|"</span><span class='op'>)</span><span class='op'>==</span><span class='fl'>1</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>tmp</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/pkg/seqinr/man/SeqFastaAA.html'>as.SeqFastaAA</a></span><span class='op'>(</span><span class='op'>(</span><span class='st'>"DYKDDDDK"</span><span class='op'>)</span>,name<span class='op'>=</span><span class='st'>"Flag|FLAG|p2079"</span>,Annot<span class='op'>=</span><span class='st'>""</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='fu'>reverseSeq</span><span class='op'>(</span><span class='va'>tmp</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $`REV_Flag|FLAG|p2079`</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "KDDDDKYD"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> attr(,"name")</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "REV_Flag|FLAG|p2079"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> attr(,"Annot")</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "&gt;REV_"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> attr(,"class")</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "SeqFastaAA"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-in'></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

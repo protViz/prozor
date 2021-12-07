@@ -73,7 +73,7 @@ vignette(&quot;TargetDecoyFDR_Example&quot;, package = &quot;prozor&quot;)" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">prozor</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.14</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
       </span>
     </div>
 
@@ -108,6 +108,9 @@ vignette(&quot;TargetDecoyFDR_Example&quot;, package = &quot;prozor&quot;)" />
       <a href="../articles/TargetDecoyFDR_Example.html">Target Decoy FDR</a>
     </li>
   </ul>
+</li>
+<li>
+  <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -169,30 +172,36 @@ vignette(&quot;TargetDecoyFDR_Example&quot;, package = &quot;prozor&quot;)" />
 FDR1 false discovery rate estimated using the method of Elias and Gygi; FDR2 - estimated using the method of Kell.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/protviz/prozor'>prozor</a></span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>fdrSample</span><span class='op'>)</span>
-<span class='co'># call constructor</span>
-
-<span class='va'>fdr1</span><span class='op'>&lt;-</span><span class='fu'>computeFDRwithID</span><span class='op'>(</span><span class='va'>fdrSample</span><span class='op'>$</span><span class='va'>score</span>, <span class='va'>fdrSample</span><span class='op'>$</span><span class='va'>proteinID</span>, larger_better <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='va'>fdr1</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] "larger_better"    "order"            "decoy_hit"        "score"           
-#&gt; [5] "FPR"              "SimpleFDR"        "qValue_FPR"       "qValue_SimpleFDR"
-#&gt; [9] "ID"              </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>fdr1</span><span class='op'>$</span><span class='va'>score</span>, <span class='va'>fdr1</span><span class='op'>$</span><span class='va'>FPR</span>,type<span class='op'>=</span><span class='st'>"l"</span>,xlim<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>,<span class='fl'>0.001</span><span class='op'>)</span>, ylim<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>,<span class='fl'>0.0002</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/lines.html'>lines</a></span><span class='op'>(</span><span class='va'>fdr1</span><span class='op'>$</span><span class='va'>score</span>, <span class='va'>fdr1</span><span class='op'>$</span><span class='va'>qValue_FPR</span>, col<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span>
-</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/lines.html'>lines</a></span><span class='op'>(</span><span class='va'>fdr1</span><span class='op'>$</span><span class='va'>score</span>, <span class='va'>fdr1</span><span class='op'>$</span><span class='va'>SimpleFDR</span>,type<span class='op'>=</span><span class='st'>"l"</span>,col<span class='op'>=</span><span class='fl'>4</span><span class='op'>)</span>
-</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/lines.html'>lines</a></span><span class='op'>(</span><span class='va'>fdr1</span><span class='op'>$</span><span class='va'>score</span>, <span class='va'>fdr1</span><span class='op'>$</span><span class='va'>qValue_SimpleFDR</span>, col<span class='op'>=</span><span class='fl'>5</span><span class='op'>)</span>
-</div><div class='img'><img src='computeFDRwithID-1.png' alt='' width='700' height='433' /></div><div class='input'>
-
-<span class='va'>fdr1</span><span class='op'>&lt;-</span><span class='fu'>computeFDRwithID</span><span class='op'>(</span><span class='va'>fdrSample</span><span class='op'>$</span><span class='va'>score2</span>, <span class='va'>fdrSample</span><span class='op'>$</span><span class='va'>proteinID</span>, larger_better <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='va'>fdr1</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] "larger_better"    "order"            "decoy_hit"        "score"           
-#&gt; [5] "FPR"              "SimpleFDR"        "qValue_FPR"       "qValue_SimpleFDR"
-#&gt; [9] "ID"              </div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>fdr1</span><span class='op'>$</span><span class='va'>score</span>, <span class='va'>fdr1</span><span class='op'>$</span><span class='va'>FPR</span>,type<span class='op'>=</span><span class='st'>"l"</span>, xlim<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>2.5</span>,<span class='fl'>5</span><span class='op'>)</span>,ylim<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>,<span class='fl'>0.001</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/lines.html'>lines</a></span><span class='op'>(</span><span class='va'>fdr1</span><span class='op'>$</span><span class='va'>score</span>, <span class='va'>fdr1</span><span class='op'>$</span><span class='va'>qValue_FPR</span>, col<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span>
-</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/lines.html'>lines</a></span><span class='op'>(</span><span class='va'>fdr1</span><span class='op'>$</span><span class='va'>score</span>, <span class='va'>fdr1</span><span class='op'>$</span><span class='va'>SimpleFDR</span>,type<span class='op'>=</span><span class='st'>"l"</span>,col<span class='op'>=</span><span class='fl'>4</span><span class='op'>)</span>
-</div><div class='input'><span class='fu'><a href='https://rdrr.io/r/graphics/lines.html'>lines</a></span><span class='op'>(</span><span class='va'>fdr1</span><span class='op'>$</span><span class='va'>score</span>, <span class='va'>fdr1</span><span class='op'>$</span><span class='va'>qValue_SimpleFDR</span>, col<span class='op'>=</span><span class='fl'>5</span><span class='op'>)</span>
-</div><div class='img'><img src='computeFDRwithID-2.png' alt='' width='700' height='433' /></div><div class='input'>
-</div></pre>
+    <pre class="examples"><span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>fdrSample</span><span class='op'>)</span></span>
+<span class='r-in'><span class='co'># call constructor</span></span>
+<span class='r-in'><span class='co'>#nrow(fdrSample)</span></span>
+<span class='r-in'><span class='co'>#fdrSample &lt;- dplyr::slice_sample(fdrSample, n = 40000)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'>#usethis::use_data(fdrSample, overwrite = TRUE)</span></span>
+<span class='r-in'><span class='va'>fdr1</span> <span class='op'>&lt;-</span> <span class='fu'>computeFDRwithID</span><span class='op'>(</span><span class='va'>fdrSample</span><span class='op'>$</span><span class='va'>score</span>, <span class='va'>fdrSample</span><span class='op'>$</span><span class='va'>proteinID</span>, larger_better <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='va'>fdr1</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "larger_better"    "order"            "decoy_hit"        "score"           </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [5] "FPR"              "SimpleFDR"        "qValue_FPR"       "qValue_SimpleFDR"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [9] "ID"              </span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>fdr1</span><span class='op'>$</span><span class='va'>score</span>, <span class='va'>fdr1</span><span class='op'>$</span><span class='va'>FPR</span>,type<span class='op'>=</span><span class='st'>"l"</span>,xlim<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>,<span class='fl'>0.001</span><span class='op'>)</span>, ylim<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>,<span class='fl'>0.0002</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/graphics/lines.html'>lines</a></span><span class='op'>(</span><span class='va'>fdr1</span><span class='op'>$</span><span class='va'>score</span>, <span class='va'>fdr1</span><span class='op'>$</span><span class='va'>qValue_FPR</span>, col<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/graphics/lines.html'>lines</a></span><span class='op'>(</span><span class='va'>fdr1</span><span class='op'>$</span><span class='va'>score</span>, <span class='va'>fdr1</span><span class='op'>$</span><span class='va'>SimpleFDR</span>,type<span class='op'>=</span><span class='st'>"l"</span>,col<span class='op'>=</span><span class='fl'>4</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/graphics/lines.html'>lines</a></span><span class='op'>(</span><span class='va'>fdr1</span><span class='op'>$</span><span class='va'>score</span>, <span class='va'>fdr1</span><span class='op'>$</span><span class='va'>qValue_SimpleFDR</span>, col<span class='op'>=</span><span class='fl'>5</span><span class='op'>)</span></span>
+<span class='r-plt img'><img src='computeFDRwithID-1.png' alt='' width='700' height='433' /></span>
+<span class='r-in'></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>fdr1</span> <span class='op'>&lt;-</span> <span class='fu'>computeFDRwithID</span><span class='op'>(</span><span class='va'>fdrSample</span><span class='op'>$</span><span class='va'>score2</span>, <span class='va'>fdrSample</span><span class='op'>$</span><span class='va'>proteinID</span>, larger_better <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/names.html'>names</a></span><span class='op'>(</span><span class='va'>fdr1</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "larger_better"    "order"            "decoy_hit"        "score"           </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [5] "FPR"              "SimpleFDR"        "qValue_FPR"       "qValue_SimpleFDR"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [9] "ID"              </span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/graphics/plot.default.html'>plot</a></span><span class='op'>(</span><span class='va'>fdr1</span><span class='op'>$</span><span class='va'>score</span>, <span class='va'>fdr1</span><span class='op'>$</span><span class='va'>FPR</span>,type<span class='op'>=</span><span class='st'>"l"</span>, xlim<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>2.5</span>,<span class='fl'>5</span><span class='op'>)</span>,ylim<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0</span>,<span class='fl'>0.001</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/graphics/lines.html'>lines</a></span><span class='op'>(</span><span class='va'>fdr1</span><span class='op'>$</span><span class='va'>score</span>, <span class='va'>fdr1</span><span class='op'>$</span><span class='va'>qValue_FPR</span>, col<span class='op'>=</span><span class='fl'>2</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/graphics/lines.html'>lines</a></span><span class='op'>(</span><span class='va'>fdr1</span><span class='op'>$</span><span class='va'>score</span>, <span class='va'>fdr1</span><span class='op'>$</span><span class='va'>SimpleFDR</span>,type<span class='op'>=</span><span class='st'>"l"</span>,col<span class='op'>=</span><span class='fl'>4</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/graphics/lines.html'>lines</a></span><span class='op'>(</span><span class='va'>fdr1</span><span class='op'>$</span><span class='va'>score</span>, <span class='va'>fdr1</span><span class='op'>$</span><span class='va'>qValue_SimpleFDR</span>, col<span class='op'>=</span><span class='fl'>5</span><span class='op'>)</span></span>
+<span class='r-plt img'><img src='computeFDRwithID-2.png' alt='' width='700' height='433' /></span>
+<span class='r-in'></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

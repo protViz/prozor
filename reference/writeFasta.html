@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">prozor</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.14</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
       </span>
     </div>
 
@@ -107,6 +107,9 @@
       <a href="../articles/TargetDecoyFDR_Example.html">Target Decoy FDR</a>
     </li>
   </ul>
+</li>
+<li>
+  <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -153,21 +156,23 @@
     </tr>
     </table>
 
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>writes a file.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'>#example how to create a protein db with decoy sequences</span>
-<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='http://seqinr.r-forge.r-project.org/'>seqinr</a></span><span class='op'>)</span>
-<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='https://github.com/protviz/prozor'>prozor</a></span><span class='op'>)</span>
-<span class='co'>#file = file.path(path.package("prozor"),"extdata/fgcz_contaminants_20150123.fasta.gz")</span>
-<span class='va'>file</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata/fgcz_contaminants_20150123.fasta.gz"</span>,package <span class='op'>=</span> <span class='st'>"prozor"</span><span class='op'>)</span>
-<span class='va'>fasta</span> <span class='op'>=</span> <span class='fu'><a href='readPeptideFasta.html'>readPeptideFasta</a></span><span class='op'>(</span>file <span class='op'>=</span> <span class='va'>file</span><span class='op'>)</span>
-<span class='va'>revfasta</span> <span class='op'>&lt;-</span> <span class='fu'><a href='reverseSeq.html'>reverseSeq</a></span><span class='op'>(</span><span class='va'>fasta</span><span class='op'>)</span>
-<span class='va'>decoyDB</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>fasta</span>,<span class='va'>revfasta</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/base/stopifnot.html'>stopifnot</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>decoyDB</span><span class='op'>)</span> <span class='op'>==</span> <span class='fl'>2</span> <span class='op'>*</span> <span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>fasta</span><span class='op'>)</span><span class='op'>)</span>
-<span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
-<span class='fu'>writeFasta</span><span class='op'>(</span><span class='va'>decoyDB</span>, file<span class='op'>=</span><span class='st'>"test.fasta"</span><span class='op'>)</span>
-<span class='op'>}</span>
-</div></pre>
+    <pre class="examples"><span class='r-in'><span class='co'>#example how to create a protein db with decoy sequences</span></span>
+<span class='r-in'><span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'><a href='http://seqinr.r-forge.r-project.org/'>seqinr</a></span><span class='op'>)</span></span>
+<span class='r-in'><span class='co'>#library(prozor)</span></span>
+<span class='r-in'><span class='va'>file</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span><span class='op'>(</span><span class='st'>"extdata/fgcz_contaminants2021_20210929.fasta.gz"</span>,package <span class='op'>=</span> <span class='st'>"prozor"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>fasta</span> <span class='op'>=</span> <span class='fu'><a href='readPeptideFasta.html'>readPeptideFasta</a></span><span class='op'>(</span>file <span class='op'>=</span> <span class='va'>file</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>revfasta</span> <span class='op'>&lt;-</span> <span class='fu'><a href='reverseSeq.html'>reverseSeq</a></span><span class='op'>(</span><span class='va'>fasta</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>decoyDB</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='va'>fasta</span>,<span class='va'>revfasta</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/stopifnot.html'>stopifnot</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>decoyDB</span><span class='op'>)</span> <span class='op'>==</span> <span class='fl'>2</span> <span class='op'>*</span> <span class='fu'><a href='https://rdrr.io/r/base/length.html'>length</a></span><span class='op'>(</span><span class='va'>fasta</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span></span>
+<span class='r-in'><span class='fu'>writeFasta</span><span class='op'>(</span><span class='va'>decoyDB</span>, file<span class='op'>=</span><span class='st'>"test.fasta"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='op'>}</span></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

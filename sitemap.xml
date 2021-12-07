@@ -10,9 +10,6 @@
     <loc>https://protviz.github.io/prozor/reference/annotatePeptides.html</loc>
   </url>
   <url>
-    <loc>https://protviz.github.io/prozor/reference/bfabric_save_fasta.html</loc>
-  </url>
-  <url>
     <loc>https://protviz.github.io/prozor/reference/Cdsw-class.html</loc>
   </url>
   <url>
@@ -40,13 +37,10 @@
     <loc>https://protviz.github.io/prozor/reference/hardconstrain.html</loc>
   </url>
   <url>
-    <loc>https://protviz.github.io/prozor/reference/loadContaminantsFasta.html</loc>
-  </url>
-  <url>
     <loc>https://protviz.github.io/prozor/reference/loadContaminantsFasta2019.html</loc>
   </url>
   <url>
-    <loc>https://protviz.github.io/prozor/reference/loadContaminantsNoHumanFasta.html</loc>
+    <loc>https://protviz.github.io/prozor/reference/loadContaminantsFasta2021.html</loc>
   </url>
   <url>
     <loc>https://protviz.github.io/prozor/reference/makeID.html</loc>
@@ -89,9 +83,6 @@
   </url>
   <url>
     <loc>https://protviz.github.io/prozor/reference/reverseSeq.html</loc>
-  </url>
-  <url>
-    <loc>https://protviz.github.io/prozor/reference/scp_copy.html</loc>
   </url>
   <url>
     <loc>https://protviz.github.io/prozor/reference/writeFasta.html</loc>

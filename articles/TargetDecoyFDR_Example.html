@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">prozor</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.2.14</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.3.0</span>
       </span>
     </div>
 
@@ -67,6 +67,9 @@
     </li>
   </ul>
 </li>
+<li>
+  <a href="../news/index.html">Changelog</a>
+</li>
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
@@ -85,25 +88,21 @@
 
       
 
-      </header><script src="TargetDecoyFDR_Example_files/header-attrs-2.6/header-attrs.js"></script><div class="row">
+      </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Target Decoy FDR</h1>
                         <h4 class="author">Witold Wolski</h4>
             
-            <h4 class="date">2021-02-26</h4>
+            <h4 class="date">2021-12-07</h4>
       
-      <small class="dont-index">Source: <a href="https://github.com/protviz/prozor/blob/master/vignettes/TargetDecoyFDR_Example.Rmd"><code>vignettes/TargetDecoyFDR_Example.Rmd</code></a></small>
+      <small class="dont-index">Source: <a href="https://github.com/protviz/prozor/blob/master/../vignettes/TargetDecoyFDR_Example.Rmd"><code>../vignettes/TargetDecoyFDR_Example.Rmd</code></a></small>
       <div class="hidden name"><code>TargetDecoyFDR_Example.Rmd</code></div>
 
     </div>
 
     
     
-<!--
-%\VignetteEngine{knitr::rmarkdown}
-%\VignetteIndexEntry{Target Decoy FDR}
--->
 <p>Here we describe how you can estimate the false discovery rate (FDR) when matching your spectra against a FASTA sequence database using spectra search engines such as Mascot or Comet. The sequence database contains forward sequences and the same number of reverse sequences.</p>
 <div id="the-data" class="section level2">
 <h2 class="hasAnchor">
@@ -123,40 +122,47 @@ Black line - Score distribution of decoy hits. Green line - Score distribution o
 <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html">kable</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">fdrSample</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <table class="table">
 <thead><tr class="header">
+<th align="left"></th>
 <th align="left">proteinID</th>
 <th align="right">score</th>
 <th align="right">score2</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="left">sp|P0C0L4|CO4A_HUMAN</td>
-<td align="right">0.0000008</td>
-<td align="right">6.121995</td>
+<td align="left">28064</td>
+<td align="left">sp|P00738|HPT_HUMAN</td>
+<td align="right">0.0030141</td>
+<td align="right">2.520847</td>
 </tr>
 <tr class="even">
-<td align="left">sp|P0C0L4|CO4A_HUMAN</td>
-<td align="right">0.0000023</td>
-<td align="right">5.640072</td>
+<td align="left">47194</td>
+<td align="left">sp|P19823|ITIH2_HUMAN</td>
+<td align="right">0.0008878</td>
+<td align="right">3.051662</td>
 </tr>
 <tr class="odd">
-<td align="left">sp|P0C0L4|CO4A_HUMAN</td>
-<td align="right">0.0288739</td>
-<td align="right">1.539495</td>
+<td align="left">8916</td>
+<td align="left">sp|Q86WI1|PKHL1_HUMAN</td>
+<td align="right">0.0350109</td>
+<td align="right">1.455797</td>
 </tr>
 <tr class="even">
-<td align="left">sp|P0C0L4|CO4A_HUMAN</td>
-<td align="right">0.0019398</td>
-<td align="right">2.712251</td>
+<td align="left">37157</td>
+<td align="left">sp|P04003|C4BPA_HUMAN</td>
+<td align="right">0.0018141</td>
+<td align="right">2.741330</td>
 </tr>
 <tr class="odd">
-<td align="left">sp|P0C0L4|CO4A_HUMAN</td>
-<td align="right">0.0000001</td>
-<td align="right">7.231987</td>
+<td align="left">60963</td>
+<td align="left">sp|P01876|IGHA1_HUMAN</td>
+<td align="right">0.0000013</td>
+<td align="right">5.897889</td>
 </tr>
 <tr class="even">
-<td align="left">sp|P0C0L4|CO4A_HUMAN</td>
-<td align="right">0.0000063</td>
-<td align="right">5.203215</td>
+<td align="left">89689</td>
+<td align="left">sp|P01042|KNG1_HUMAN</td>
+<td align="right">0.0000000</td>
+<td align="right">12.305967</td>
 </tr>
 </tbody>
 </table>
@@ -165,7 +171,7 @@ Black line - Score distribution of decoy hits. Green line - Score distribution o
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/table.html">table</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html">grepl</a></span><span class="op">(</span><span class="st">"REV_"</span>,<span class="va">fdrSample</span><span class="op">$</span><span class="va">proteinID</span><span class="op">)</span><span class="op">)</span></code></pre></div>
 <pre><code>## 
 ## FALSE  TRUE 
-## 88782  1933</code></pre>
+## 39142   858</code></pre>
 <p>In our example, we will use the package to filter the data further for a 1% FDR.</p>
 <p>Computing the FDR can be done by calling the function <code>computeFDR</code>. <code>plotFDR</code> than shows the score distribution for the targets (black) and decoys (red) as well as the FDR for the two scores implemented (x axis).</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
@@ -190,7 +196,7 @@ Black line - Score distribution of decoy hits. Green line - Score distribution o
 <tbody>
 <tr class="odd">
 <td align="left">FALSE</td>
-<td align="right">26160</td>
+<td align="right">287</td>
 <td align="left">FALSE</td>
 <td align="right">0</td>
 <td align="right">0</td>
@@ -200,7 +206,7 @@ Black line - Score distribution of decoy hits. Green line - Score distribution o
 </tr>
 <tr class="even">
 <td align="left">FALSE</td>
-<td align="right">26265</td>
+<td align="right">3581</td>
 <td align="left">FALSE</td>
 <td align="right">0</td>
 <td align="right">0</td>
@@ -210,7 +216,7 @@ Black line - Score distribution of decoy hits. Green line - Score distribution o
 </tr>
 <tr class="odd">
 <td align="left">FALSE</td>
-<td align="right">26156</td>
+<td align="right">29584</td>
 <td align="left">FALSE</td>
 <td align="right">0</td>
 <td align="right">0</td>
@@ -220,7 +226,7 @@ Black line - Score distribution of decoy hits. Green line - Score distribution o
 </tr>
 <tr class="even">
 <td align="left">FALSE</td>
-<td align="right">26158</td>
+<td align="right">26559</td>
 <td align="left">FALSE</td>
 <td align="right">0</td>
 <td align="right">0</td>
@@ -230,7 +236,7 @@ Black line - Score distribution of decoy hits. Green line - Score distribution o
 </tr>
 <tr class="odd">
 <td align="left">FALSE</td>
-<td align="right">26253</td>
+<td align="right">15524</td>
 <td align="left">FALSE</td>
 <td align="right">0</td>
 <td align="right">0</td>
@@ -240,7 +246,7 @@ Black line - Score distribution of decoy hits. Green line - Score distribution o
 </tr>
 <tr class="even">
 <td align="left">FALSE</td>
-<td align="right">26286</td>
+<td align="right">30840</td>
 <td align="left">FALSE</td>
 <td align="right">0</td>
 <td align="right">0</td>
@@ -260,7 +266,7 @@ Black line - Score distribution of decoy hits. Green line - Score distribution o
 <div id="false-postive-rate" class="section level3">
 <h3 class="hasAnchor">
 <a href="#false-postive-rate" class="anchor"></a>False postive rate</h3>
-<p>Which is the “Fraction of incorrect assignments above score threshold.” The multiplier 2 is needed here since we assume that also the forward sequences have false assignments.</p>
+<p>Which is the “Fraction of incorrect assignments above score threshold”. The multiplier 2 is needed here since we assume that also the forward sequences have false assignments.</p>
 <p><span class="math display">\[
 FPR = \frac{2 \cdot FP}{TP + FP}
 \]</span></p>
@@ -289,22 +295,22 @@ SimpleFDR =  \frac{FP}{TP}
 <p>Most frequently you will need to get the score for an FDR in order to filter your data. To report your data with an FDR of 1% instead of 5% you can execute this code:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="op">(</span><span class="va">score01G</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/predictScoreFDR.html">predictScoreFDR</a></span><span class="op">(</span><span class="va">fdr1</span>,qValue <span class="op">=</span> <span class="fl">5</span>,method <span class="op">=</span> <span class="st">"FPR"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] 0.09996855</code></pre>
+<pre><code>## [1] 0.09991592</code></pre>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">fdrSample</span>, <span class="va">score</span> <span class="op">&lt;</span> <span class="va">score01G</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] 90714     3</code></pre>
+<pre><code>## [1] 39999     3</code></pre>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="op">(</span><span class="va">score01G</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/predictScoreFDR.html">predictScoreFDR</a></span><span class="op">(</span><span class="va">fdr1</span>,qValue <span class="op">=</span> <span class="fl">1</span>,method <span class="op">=</span> <span class="st">"FPR"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] 0.007166919</code></pre>
+<pre><code>## [1] 0.008509834</code></pre>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">fdrSample</span>, <span class="va">score</span> <span class="op">&lt;</span> <span class="va">score01G</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] 64469     3</code></pre>
+<pre><code>## [1] 29179     3</code></pre>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="op">(</span><span class="va">score01K</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/predictScoreFDR.html">predictScoreFDR</a></span><span class="op">(</span><span class="va">fdr1</span>,qValue <span class="op">=</span> <span class="fl">1</span>,method <span class="op">=</span> <span class="st">"SimpleFDR"</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] 0.02797633</code></pre>
+<pre><code>## [1] 0.03394749</code></pre>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">fdrSample</span>, <span class="va">score</span> <span class="op">&lt;</span> <span class="va">score01K</span><span class="op">)</span><span class="op">)</span></code></pre></div>
-<pre><code>## [1] 77266     3</code></pre>
+<pre><code>## [1] 34875     3</code></pre>
 </div>
 <div id="the-order-column" class="section level2">
 <h2 class="hasAnchor">
@@ -328,29 +334,7 @@ SimpleFDR =  \frac{FP}{TP}
 <tr class="odd">
 <td align="left">sp|P04264|K2C1_HUMAN</td>
 <td align="left">FALSE</td>
-<td align="right">26160</td>
-<td align="left">FALSE</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">0</td>
-</tr>
-<tr class="even">
-<td align="left">sp|P35527|K1C9_HUMAN</td>
-<td align="left">FALSE</td>
-<td align="right">26265</td>
-<td align="left">FALSE</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">0</td>
-</tr>
-<tr class="odd">
-<td align="left">sp|P04264|K2C1_HUMAN</td>
-<td align="left">FALSE</td>
-<td align="right">26156</td>
+<td align="right">287</td>
 <td align="left">FALSE</td>
 <td align="right">0</td>
 <td align="right">0</td>
@@ -361,7 +345,7 @@ SimpleFDR =  \frac{FP}{TP}
 <tr class="even">
 <td align="left">sp|P04264|K2C1_HUMAN</td>
 <td align="left">FALSE</td>
-<td align="right">26158</td>
+<td align="right">3581</td>
 <td align="left">FALSE</td>
 <td align="right">0</td>
 <td align="right">0</td>
@@ -372,7 +356,7 @@ SimpleFDR =  \frac{FP}{TP}
 <tr class="odd">
 <td align="left">sp|P35527|K1C9_HUMAN</td>
 <td align="left">FALSE</td>
-<td align="right">26253</td>
+<td align="right">29584</td>
 <td align="left">FALSE</td>
 <td align="right">0</td>
 <td align="right">0</td>
@@ -381,9 +365,31 @@ SimpleFDR =  \frac{FP}{TP}
 <td align="right">0</td>
 </tr>
 <tr class="even">
-<td align="left">sp|P35527|K1C9_HUMAN</td>
+<td align="left">sp|P04264|K2C1_HUMAN</td>
 <td align="left">FALSE</td>
-<td align="right">26286</td>
+<td align="right">26559</td>
+<td align="left">FALSE</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+</tr>
+<tr class="odd">
+<td align="left">sp|P02768|ALBU_HUMAN</td>
+<td align="left">FALSE</td>
+<td align="right">15524</td>
+<td align="left">FALSE</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="left">sp|P04264|K2C1_HUMAN</td>
+<td align="left">FALSE</td>
+<td align="right">30840</td>
 <td align="left">FALSE</td>
 <td align="right">0</td>
 <td align="right">0</td>
@@ -412,7 +418,7 @@ SimpleFDR =  \frac{FP}{TP}
 <tbody>
 <tr class="odd">
 <td align="left">FALSE</td>
-<td align="right">26160</td>
+<td align="right">287</td>
 <td align="left">FALSE</td>
 <td align="right">0</td>
 <td align="right">0</td>
@@ -423,29 +429,7 @@ SimpleFDR =  \frac{FP}{TP}
 </tr>
 <tr class="even">
 <td align="left">FALSE</td>
-<td align="right">26265</td>
-<td align="left">FALSE</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="left">sp|P35527|K1C9_HUMAN</td>
-</tr>
-<tr class="odd">
-<td align="left">FALSE</td>
-<td align="right">26156</td>
-<td align="left">FALSE</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="right">0</td>
-<td align="left">sp|P04264|K2C1_HUMAN</td>
-</tr>
-<tr class="even">
-<td align="left">FALSE</td>
-<td align="right">26158</td>
+<td align="right">3581</td>
 <td align="left">FALSE</td>
 <td align="right">0</td>
 <td align="right">0</td>
@@ -456,7 +440,7 @@ SimpleFDR =  \frac{FP}{TP}
 </tr>
 <tr class="odd">
 <td align="left">FALSE</td>
-<td align="right">26253</td>
+<td align="right">29584</td>
 <td align="left">FALSE</td>
 <td align="right">0</td>
 <td align="right">0</td>
@@ -467,30 +451,97 @@ SimpleFDR =  \frac{FP}{TP}
 </tr>
 <tr class="even">
 <td align="left">FALSE</td>
-<td align="right">26286</td>
+<td align="right">26559</td>
 <td align="left">FALSE</td>
 <td align="right">0</td>
 <td align="right">0</td>
 <td align="right">0</td>
 <td align="right">0</td>
 <td align="right">0</td>
-<td align="left">sp|P35527|K1C9_HUMAN</td>
+<td align="left">sp|P04264|K2C1_HUMAN</td>
+</tr>
+<tr class="odd">
+<td align="left">FALSE</td>
+<td align="right">15524</td>
+<td align="left">FALSE</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="left">sp|P02768|ALBU_HUMAN</td>
+</tr>
+<tr class="even">
+<td align="left">FALSE</td>
+<td align="right">30840</td>
+<td align="left">FALSE</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="right">0</td>
+<td align="left">sp|P04264|K2C1_HUMAN</td>
 </tr>
 </tbody>
 </table>
 </div>
+<div id="session-info" class="section level1">
+<h1 class="hasAnchor">
+<a href="#session-info" class="anchor"></a>Session Info</h1>
+<div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></code></pre></div>
+<pre><code>## R version 4.1.1 (2021-08-10)
+## Platform: x86_64-w64-mingw32/x64 (64-bit)
+## Running under: Windows 10 x64 (build 19044)
+## 
+## Matrix products: default
+## 
+## locale:
+## [1] LC_COLLATE=English_United States.1252 
+## [2] LC_CTYPE=English_United States.1252   
+## [3] LC_MONETARY=English_United States.1252
+## [4] LC_NUMERIC=C                          
+## [5] LC_TIME=English_United States.1252    
+## 
+## attached base packages:
+## [1] stats     graphics  grDevices utils     datasets  methods   base     
+## 
+## other attached packages:
+## [1] prozor_0.3.0 dplyr_1.0.7 
+## 
+## loaded via a namespace (and not attached):
+##  [1] Rcpp_1.0.7            bslib_0.3.1           compiler_4.1.1       
+##  [4] pillar_1.6.4          jquerylib_0.1.4       highr_0.9            
+##  [7] tools_4.1.1           docopt_0.7.1          digest_0.6.28        
+## [10] lattice_0.20-44       AhoCorasickTrie_0.1.2 jsonlite_1.7.2       
+## [13] evaluate_0.14         memoise_2.0.0         lifecycle_1.0.1      
+## [16] tibble_3.1.4          pkgconfig_2.0.3       rlang_0.4.11         
+## [19] Matrix_1.3-4          DBI_1.1.1             yaml_2.2.1           
+## [22] pkgdown_1.6.1         xfun_0.26             fastmap_1.1.0        
+## [25] stringr_1.4.0         knitr_1.36            hms_1.1.1            
+## [28] desc_1.4.0            generics_0.1.1        fs_1.5.0             
+## [31] sass_0.4.0            vctrs_0.3.8           systemfonts_1.0.3    
+## [34] ade4_1.7-18           grid_4.1.1            rprojroot_2.0.2      
+## [37] tidyselect_1.1.1      glue_1.4.2            R6_2.5.1             
+## [40] textshaping_0.3.6     fansi_0.5.0           rmarkdown_2.11       
+## [43] tzdb_0.1.2            readr_2.0.1           seqinr_4.2-8         
+## [46] purrr_0.3.4           magrittr_2.0.1        MASS_7.3-54          
+## [49] htmltools_0.5.2       ellipsis_0.3.2        assertthat_0.2.1     
+## [52] ragg_1.2.0            utf8_1.2.2            stringi_1.7.4        
+## [55] cachem_1.0.6          crayon_1.4.2</code></pre>
+</div>
 <div id="references" class="section level1 unnumbered">
 <h1 class="hasAnchor">
 <a href="#references" class="anchor"></a>References</h1>
-<div id="refs" class="references csl-bib-body hanging-indent">
-<div id="ref-Elias2007" class="csl-entry">
-Elias, Joshua E, and Steven P Gygi. 2007. <span>“Target-Decoy Search Strategy for Increased Confidence in Large-Scale Protein Identifications by Mass Spectrometry.”</span> <em>Nature Methods</em> 4 (3): 207–14.
+<div id="refs" class="references">
+<div id="ref-Elias2007">
+<p>Elias, Joshua E, and Steven P Gygi. 2007. “Target-Decoy Search Strategy for Increased Confidence in Large-Scale Protein Identifications by Mass Spectrometry.” <em>Nature Methods</em> 4 (3): 207–14.</p>
 </div>
-<div id="ref-Kaell2007" class="csl-entry">
-Käll, Lukas, John D Storey, Michael J MacCoss, and William Stafford Noble. 2007. <span>“Assigning Significance to Peptides Identified by Tandem Mass Spectrometry Using Decoy Databases.”</span> <em>Journal of Proteome Research</em> 7 (01): 29–34.
+<div id="ref-Kaell2007">
+<p>Käll, Lukas, John D Storey, Michael J MacCoss, and William Stafford Noble. 2007. “Assigning Significance to Peptides Identified by Tandem Mass Spectrometry Using Decoy Databases.” <em>Journal of Proteome Research</em> 7 (01): 29–34.</p>
 </div>
-<div id="ref-Storey2003" class="csl-entry">
-Storey, John D, and Robert Tibshirani. 2003. <span>“Statistical Significance for Genomewide Studies.”</span> <em>Proceedings of the National Academy of Sciences</em> 100 (16): 9440–45.
+<div id="ref-Storey2003">
+<p>Storey, John D, and Robert Tibshirani. 2003. “Statistical Significance for Genomewide Studies.” <em>Proceedings of the National Academy of Sciences</em> 100 (16): 9440–5.</p>
 </div>
 </div>
 </div>
