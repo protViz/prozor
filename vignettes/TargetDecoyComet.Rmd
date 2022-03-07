@@ -1,0 +1,234 @@
+---
+title: "Target Decoy FDR"
+author: "Witold Wolski"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+bibliography: bibliography.bib
+vignette: >
+  %\VignetteIndexEntry{Target Decoy FDR}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE
+)
+```
+
+Here we describe how you can estimate the false discovery rate (FDR) when matching your spectra against a FASTA sequence database using spectra search engines such as Mascot or Comet. The sequence database contains forward sequences and the same number of reverse sequences.
+
+## The data
+
+Comet's E-value significantly outperforms SEQUEST'sprob-. ability score and Comet's cross-correlation score performs.
+
+
+```{r}
+library(dplyr)
+library(prozor)
+library(ggplot2)
+#path <- "/Users/witoldwolski/__checkout/HeCaTos/data/autoQC4L/FUSION_1.20180713_005_autoQC4L.HCD.lowres.comet.txt"
+#bcd <- read.table(file = path, header= TRUE, skip=1 , fill = TRUE)
+
+data(bcd)
+bcd |> ggplot(aes(x = -log10(e.value), y = sp_score)) + geom_point()
+bcd |> select(scan , plain_peptide, protein, e.value, sp_score) |> head() |> knitr::kable()
+
+```
+
+
+
+# Define helper function
+
+```{r}
+summarizeLevel <- function(data,
+                           level = "PSM",
+                           score = "e.value",
+                           protein = "protein",
+                           qValue = 1,
+                           rev = "REV_"){
+    fdr1 <- prozor::computeFDR((data[[score]]), grepl(rev,data[[protein]]),larger_better = FALSE)
+    score01K <- prozor::predictScoreFDR(fdr1,qValue = qValue, method = "SimpleFDR")
+    
+    filt <- dplyr::filter(data, !!sym(score) < score01K)
+    res <- data.frame(n = nrow(data),
+               nConfident = nrow(filt),
+               nDecoy = sum(grepl(rev, filt[[protein]])),
+               fdr = mean(grepl(rev, filt[[protein]])),
+               assignmentRate = nrow(filt)/nrow(data) * 100)
+    colnames(res) <- paste0(colnames(res), level)
+    return(res)
+}
+
+```
+
+# PSM level
+
+```{r}
+summarizeLevel(bcd)
+
+```
+
+
+# Peptide FDR
+
+Use minimum of e.value of all PSMs matching a peptide as new score for the peptide.
+
+```{r}
+peptideLevel <-  bcd |> dplyr::group_by(plain_peptide,protein ) |>
+    summarize(n = n(), min_e.value = min(e.value))
+```
+
+```{r}
+table(peptideLevel$n)
+summarizeLevel(peptideLevel, score = "min_e.value", level = "Peptides")
+
+```
+
+# Protein FDR
+
+Use minimum of e.value of all PSMs matching a protein as new score for the protein.
+
+```{r}
+proteinLevel <-  bcd |> dplyr::group_by(protein ) |> 
+    summarize(n = n(), min_e.value = min(e.value))
+```
+
+```{r}
+table(proteinLevel$n)
+summarizeLevel(proteinLevel, score = "min_e.value",level="Proteins")
+
+```
+
+# Filter on PSM level only
+
+Filter on PSM level and then estimate the FDR on peptide and protein level.
+
+```{r}
+filtLevel <- function(data,
+                      level = "PSM",
+                      score = "e.value",
+                      larger_better = FALSE,
+                      protein = "protein",
+                      qValue = 1,
+                      rev = "REV_"){
+    fdr1 <- prozor::computeFDR((data[[score]]), grepl(rev,data[[protein]]),larger_better = larger_better)
+    score01K <- prozor::predictScoreFDR(fdr1,qValue = qValue, method = "SimpleFDR")
+    print(score01K)
+    if(larger_better){
+        filt <- dplyr::filter(data, !!sym(score) > score01K)
+    } else {
+        filt <- dplyr::filter(data, !!sym(score) < score01K)
+    }
+    return(filt)
+}
+
+
+```
+
+## Use e-value
+
+```{r}
+
+
+# psm level FDR
+psmFdrCutoff <- 0.01
+#debug(filtLevel)
+
+filt <- filtLevel(bcd, score = "e.value", larger_better = FALSE , qValue = psmFdrCutoff * 100)
+
+res <- list()
+res$nPSM <- nrow(bcd)
+res$psmFdrCutoff <- psmFdrCutoff
+res$fdrPSM <- round(mean(grepl("REV_",filt$protein)) * 100, digits = 2)
+res$nConfidentPSM <- nrow(filt)
+res$nDecoyPSM <- sum(grepl("REV_",filt$protein))
+
+# peptide level FDR
+filtPep <- filt |> select(plain_peptide, protein) |> distinct()
+res$fdrPeptide <- round(mean(grepl("REV_",filtPep$protein)) * 100, digits = 2)
+res$nConfidentPeptide <- nrow(filtPep)
+res$nDecoyPeptide <- sum(grepl("REV_",filtPep$protein))
+
+# protein level FDR
+filtProt <- filt |> select( protein) |> distinct()
+res$fdrProtein <- round(mean(grepl("REV_",filtProt$protein)) * 100, digits = 2)
+res$nConfidentProtein <- nrow(filtProt)
+res$nDecoyProtein <- sum(grepl("REV_",filtProt$protein))
+
+
+knitr::kable(data.frame(res))
+
+```
+
+
+## Use sp_score
+
+```{r}
+
+# psm level FDR
+psmFdrCutoff <- 0.01
+filt <- filtLevel(bcd, score = "sp_score", larger_better = TRUE, qValue = psmFdrCutoff * 100)
+res <- list()
+res$nPSM <- nrow(bcd)
+res$psmFdrCutoff <- psmFdrCutoff
+res$fdrPSM <- round(mean(grepl("REV_",filt$protein)) * 100, digits = 2)
+res$nConfidentPSM <- nrow(filt)
+res$nDecoyPSM <- sum(grepl("REV_",filt$protein))
+
+# peptide level FDR
+filtPep <- filt |> select(plain_peptide, protein) |> distinct()
+res$fdrPeptide <- round(mean(grepl("REV_",filtPep$protein)) * 100, digits = 2)
+res$nConfidentPeptide <- nrow(filtPep)
+res$nDecoyPeptide <- sum(grepl("REV_",filtPep$protein))
+
+# protein level FDR
+filtProt <- filt |> select( protein) |> distinct()
+res$fdrProtein <- round(mean(grepl("REV_",filtProt$protein)) * 100, digits = 2)
+res$nConfidentProtein <- nrow(filtProt)
+res$nDecoyProtein <- sum(grepl("REV_",filtProt$protein))
+
+
+knitr::kable(data.frame(res))
+
+```
+
+
+## Using protViz
+
+```{r}
+knitr::kable(protViz::summary.cometdecoy(bcd,psmFdrCutoff = 0.01))
+
+```
+
+
+# DEBUG
+
+```{r}
+predictScoreFDR_V2 <- function (fdrObj, qValue = 1, method = "SimpleFDR") 
+{
+    if (method == "FPR") {
+        validFDR <- fdrObj$qValue_FPR < qValue/100
+    }
+    else if (method == "SimpleFDR") {
+        validFDR <- fdrObj$qValue_SimpleFDR < qValue/100
+    }
+    else {
+        stop("no such method: ", method, "\n")
+    }
+    invalidScores <- fdrObj$score[!validFDR]
+    if (!fdrObj$larger_better) {
+        min(invalidScores)
+    }
+    else {
+        max(invalidScores)
+    }
+}
+```
+
+

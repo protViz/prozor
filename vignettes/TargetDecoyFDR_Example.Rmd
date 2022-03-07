@@ -29,7 +29,7 @@ The data needs to have two columns, one with a label, to distinguish targets and
 In our example data, we have two scores: `score` and `score2`. While the `score` is better if it smaller (e.g, posterior erro probability), `score2` is better if it is larger.
 
 
-```{r  targetdecoy, fig.cap = "Black line - Score distribution of decoy hits. Green line - Score distribution of vorward hits. TN - true netagive, FN - false negative, FP - false postitive, TP - true positive", echo = FALSE}
+```{r  targetdecoy, fig.cap = "Black line - Score distribution of decoy hits. Green line - Score distribution of vorward hits. TN - true netagive, FN - false negative, FP - false postitive, TP - true positive", echo = FALSE, fig.width=5, fig.height=5}
 x <- seq(0,10,by = 0.1)
 y1 <- dnorm(x,mean = 3, sd = 1)
 y2 <- dnorm(x,mean = 5, sd = 1)
@@ -44,7 +44,6 @@ legend("topright", legend = c("Forward", "Decoys"), lty = c(1,1), col = c(3,1))
 
 
 ```{r}
-rm(list = ls())
 library(dplyr)
 library(prozor)
 data(fdrSample)
