@@ -1,11 +1,11 @@
 ---
-title: "Target Decoy FDR"
+title: "Target Decoy FDR from COMET search results"
 author: "Witold Wolski"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 bibliography: bibliography.bib
 vignette: >
-  %\VignetteIndexEntry{Target Decoy FDR}
+  %\VignetteIndexEntry{Target Decoy FDR from COMET search results}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 editor_options: 
