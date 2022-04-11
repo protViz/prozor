@@ -25,7 +25,7 @@
 #' stopifnot(length(res) == (2*length(rabbit) + 1) )
 #'
 createDecoyDB <- function(dbs ,
-                          useContaminants = loadContaminantsFasta2021(),
+                          useContaminants = loadContaminantsFGCZ2022(),
                           revLab= "REV_",
                           annot="zz|sourceOf|database")
 {

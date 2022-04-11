@@ -9,7 +9,7 @@
 #' print("NO exmple since function also writes the fasta files")
 #'
 create_fgcz_fasta_db <- function(databasedirectory ,
-                                 useContaminants = loadContaminantsFasta2021(),
+                                 useContaminants = loadContaminantsFGCZ2022(),
                                  revLab = "REV_",
                                  outputdir = NULL){
     mcall <- match.call()

@@ -12,7 +12,7 @@ Usage:
 
 Options:
   -o --output_dir=<output_dir> output directory, default next to fasta_dir
-  -c --contamin=<contamin> add contaminants [default: fgcz2021] or `none`, or path to fasta file with contaminants
+  -c --contamin=<contamin> add contaminants [default: fgcz2022] or `none`, or path to fasta file with contaminants
   -r --revLab=<revLab> create reverse sequences with prefix [default: REV_].
 
 
@@ -41,7 +41,9 @@ params <- c("\nParameters used:\n\t",
 
 cat(paste(params, collapse = ""))
 
-if (contamin == "fgcz2021") {
+if (contamin == "fgcz2022") {
+  contamin <- loadContaminantsFGCZ2022()
+} else if (contamin == "fgcz2021") {
   contamin <- loadContaminantsFasta2021()
 } else if (contamin == "fgcz2019") {
   contamin <- loadContaminantsFasta2019()
