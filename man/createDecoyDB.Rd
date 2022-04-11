@@ -6,7 +6,7 @@
 \usage{
 createDecoyDB(
   dbs,
-  useContaminants = loadContaminantsFasta2021(),
+  useContaminants = loadContaminantsFGCZ2022(),
   revLab = "REV_",
   annot = "zz|sourceOf|database"
 )
