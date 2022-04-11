@@ -10,11 +10,10 @@
 #' @export
 #' @return list of SeqFastaAA entries
 #' @examples
-#' file = system.file("extdata/fgcz_contaminants2021_20210929.fasta.gz",package="prozor")
-#' cont <- loadContaminantsFasta2021()
+#' file = system.file("extdata/fgcz_contaminants2022_20220405.fasta.gz",package="prozor")
+#' cont <- loadContaminantsFGCZ2022()
 #' rabbit <-readPeptideFasta(file)
 #' tmp <- 2*(2*length(rabbit)+length(cont)) + 1
-#'
 #' res <- createDecoyDB(c(file,file))
 #' length(res)
 #' stopifnot(length(res) == tmp)
