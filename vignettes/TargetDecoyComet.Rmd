@@ -56,10 +56,13 @@ summarizeLevel <- function(data,
     score01K <- prozor::predictScoreFDR(fdr1,qValue = qValue, method = "SimpleFDR")
     
     filt <- dplyr::filter(data, !!sym(score) < score01K)
+    nDecoy = sum(grepl(rev, filt[[protein]]))
+    nConfident = nrow(filt) - nDecoy
+    
     res <- data.frame(n = nrow(data),
-               nConfident = nrow(filt),
-               nDecoy = sum(grepl(rev, filt[[protein]])),
-               fdr = mean(grepl(rev, filt[[protein]])),
+               nConfident = nConfident,
+               nDecoy = nDecoy,
+               fdr = nDecoy / nConfident,
                assignmentRate = nrow(filt)/nrow(data) * 100)
     colnames(res) <- paste0(colnames(res), level)
     return(res)
@@ -142,25 +145,30 @@ psmFdrCutoff <- 0.01
 
 filt <- filtLevel(bcd, score = "e.value", larger_better = FALSE , qValue = psmFdrCutoff * 100)
 
-res <- list()
-res$nPSM <- nrow(bcd)
-res$psmFdrCutoff <- psmFdrCutoff
-res$fdrPSM <- round(mean(grepl("REV_",filt$protein)) * 100, digits = 2)
-res$nConfidentPSM <- nrow(filt)
-res$nDecoyPSM <- sum(grepl("REV_",filt$protein))
+summarizeFDRS <- function(bcd, filt, pep = "plain_peptide", prot = "protein"){
+    res <- list()
+    res$nPSM <- nrow(bcd)
+    res$psmFdrCutoff <- psmFdrCutoff
+    res$nDecoyPSM <- sum(grepl("REV_",filt$protein))
+    res$nConfidentPSM <- nrow(filt) - res$nDecoyPSM
+    res$fdrPSM <- res$nDecoyPSM / res$nConfidentPSM
+    
+    # peptide level FDR
+    filtPep <- filt |> select(!!sym(pep), !!sym(prot)) |> distinct()
+    res$nDecoyPeptide <- sum(grepl("REV_",filtPep[[prot]]))
+    res$nConfidentPeptide <- nrow(filtPep) - res$nDecoyPeptide
+    res$fdrPeptide <- res$nDecoyPeptide / res$nConfidentPeptide
+    
+    # protein level FDR
+    filtProt <- filt |> select( !!sym(prot)) |> distinct()
+    
+    res$nDecoyProtein <- sum( grepl("REV_", filtProt[[prot]] ))
+    res$nConfidentProtein <- nrow(filtProt) - res$nDecoyProtein
+    res$fdrProtein <- res$nDecoyProtein / res$nConfidentProtein
+    return(data.frame(res))
+}
 
-# peptide level FDR
-filtPep <- filt |> select(plain_peptide, protein) |> distinct()
-res$fdrPeptide <- round(mean(grepl("REV_",filtPep$protein)) * 100, digits = 2)
-res$nConfidentPeptide <- nrow(filtPep)
-res$nDecoyPeptide <- sum(grepl("REV_",filtPep$protein))
-
-# protein level FDR
-filtProt <- filt |> select( protein) |> distinct()
-res$fdrProtein <- round(mean(grepl("REV_",filtProt$protein)) * 100, digits = 2)
-res$nConfidentProtein <- nrow(filtProt)
-res$nDecoyProtein <- sum(grepl("REV_",filtProt$protein))
-
+summarizeFDRS(bcd, filt)
 
 knitr::kable(data.frame(res))
 
@@ -173,26 +181,9 @@ knitr::kable(data.frame(res))
 
 # psm level FDR
 psmFdrCutoff <- 0.01
+
 filt <- filtLevel(bcd, score = "sp_score", larger_better = TRUE, qValue = psmFdrCutoff * 100)
-res <- list()
-res$nPSM <- nrow(bcd)
-res$psmFdrCutoff <- psmFdrCutoff
-res$fdrPSM <- round(mean(grepl("REV_",filt$protein)) * 100, digits = 2)
-res$nConfidentPSM <- nrow(filt)
-res$nDecoyPSM <- sum(grepl("REV_",filt$protein))
-
-# peptide level FDR
-filtPep <- filt |> select(plain_peptide, protein) |> distinct()
-res$fdrPeptide <- round(mean(grepl("REV_",filtPep$protein)) * 100, digits = 2)
-res$nConfidentPeptide <- nrow(filtPep)
-res$nDecoyPeptide <- sum(grepl("REV_",filtPep$protein))
-
-# protein level FDR
-filtProt <- filt |> select( protein) |> distinct()
-res$fdrProtein <- round(mean(grepl("REV_",filtProt$protein)) * 100, digits = 2)
-res$nConfidentProtein <- nrow(filtProt)
-res$nDecoyProtein <- sum(grepl("REV_",filtProt$protein))
-
+res <- summarizeFDRS(bcd , filt)
 
 knitr::kable(data.frame(res))
 

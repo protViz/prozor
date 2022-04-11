@@ -138,9 +138,9 @@ predictScoreFDR <- function(fdrObj,
                             qValue=1,
                             method="SimpleFDR"){
     if (method == "FPR") {
-        validFDR <- fdrObj$qValue_FPR < qValue/100
+        validFDR <- fdrObj$qValue_FPR <= qValue/100
     } else if (method == "SimpleFDR") {
-        validFDR <- fdrObj$qValue_SimpleFDR < qValue/100
+        validFDR <- fdrObj$qValue_SimpleFDR <= qValue/100
     } else {
         stop("no such method: ", method , "\n")
     }

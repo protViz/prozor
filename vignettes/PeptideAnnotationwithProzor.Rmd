@@ -5,8 +5,10 @@ date: "March 16, 2017"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Peptide Annotation and Protein Inference}
-  %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
 ---
 
 
@@ -25,7 +27,7 @@ rm(list = ls())
 
 file = system.file("extdata/IDResults.txt.gz" , package = "prozor")
 specMeta <- readr::read_tsv(file)
-head(specMeta)
+head(specMeta) |> knitr::kable()
 
 ```
 
@@ -33,9 +35,6 @@ head(specMeta)
 Annotate peptide sequences with protein sequences from two fasta files on with reviewed entries only (sp) and the other with reviewed and Trembl entries (sp/tr).
 
 ```{r fig.cap = "Number of proteins in the All and Canonical database."}
-length(unique(specMeta$peptideSeq))
-upeptide <- unique(specMeta$peptideSeq)
-
 resAll <-
     prozor::readPeptideFasta(
         system.file("p1000_db1_example/Annotation_allSeq.fasta.gz" , package = "prozor"))
@@ -44,10 +43,17 @@ resCan <-
     prozor::readPeptideFasta(
         system.file("p1000_db1_example/Annotation_canSeq.fasta.gz" , package = "prozor"))
 
-annotAll <- prozor::annotatePeptides(upeptide, resAll)
-head(subset(annotAll,select =  -proteinSequence))
-annotCan <- prozor::annotatePeptides(upeptide, resCan)
 barplot(c(All = length(resAll),Canonical = length(resCan)))
+```
+
+```{r}
+length(unique(specMeta$peptideSeq))
+upeptide <- unique(specMeta$peptideSeq)
+
+annotAll <- prozor::annotatePeptides(upeptide, resAll)
+head(subset(annotAll,select =  -proteinSequence)) |> knitr::kable()
+
+annotCan <- prozor::annotatePeptides(upeptide, resCan)
 ```
 
 
@@ -57,8 +63,9 @@ barplot(c(All = nrow(annotAll), Canonical = nrow(annotCan)), ylab = "# peptide p
 ```
 
 We can see that using the larger fasta database reduces the proportion of proteotypic peptides.
+A proteotypic peptide is one which matches only a single protein.
 
-```{r}
+```{r proteotypicPetides, fig.cap="Proportion of proteotypic peptides."}
 PCProteotypic_all <-
     sum(table(annotAll$peptideSeq) == 1) / length(table(annotAll$peptideSeq)) * 100
 PCProteotypic_canonical <-
@@ -103,6 +110,8 @@ xx <-
                   peptideID = "peptideSeq")
 
 image(xx)
+dim(xx)
+xx[1:10, 1:100]
 xxAll <- greedy(xx)
 
 ```
@@ -122,6 +131,7 @@ xx <-
                   proteinID = "proteinID",
                   peptideID = "peptideSeq")
 image(xx)
+xx[80:100,1:10]
 xxCAN <- greedy(xx)
 
 ```
