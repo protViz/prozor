@@ -168,7 +168,7 @@ summarizeFDRS <- function(bcd, filt, pep = "plain_peptide", prot = "protein"){
     return(data.frame(res))
 }
 
-summarizeFDRS(bcd, filt)
+res <- summarizeFDRS(bcd, filt)
 
 knitr::kable(data.frame(res))
 

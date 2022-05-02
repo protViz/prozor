@@ -23,7 +23,7 @@ Create fasta file with FGCZ contaminants and decoys.
 rm(list = ls())
 library(prozor)
 
-file = file.path(system.file("extdata/uniprot_taxonomy_Oryctolagus_cuniculus.fasta.gz", package = "prozor")
+file = file.path(system.file("extdata/uniprot_taxonomy_Oryctolagus_cuniculus.fasta.gz", package = "prozor"))
 res <- createDecoyDB(c(file,file))
 
 ```
@@ -1807,5 +1807,19 @@ bfabricpy$save_fasta(projectid = project_id, fasta_file = filepath, description_
 
 ```
 
+# Create triple proteome
+
+```{r}
+library(prozor)
+library(seqinr)
+
+annot <- "zz|tripleProteome|MSV000090837 Ecoli,Human,Yeast,downloaded from MSV000090837"
+writeLines(annot, con = "~/Downloads/fgcz_tripleProteome_MSV000090837/annotation.txt")
+
+databasedirectory <- "~/Downloads/fgcz_tripleProteome_MSV000090837/"
+#debug(create_fgcz_fasta_db)
+resDBRev <- create_fgcz_fasta_db(databasedirectory,useContaminants = loadContaminantsFGCZ2022(), revLab = "REV_")
+
+```
 
 
