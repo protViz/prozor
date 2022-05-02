@@ -49,7 +49,7 @@ create_fgcz_fasta_db <- function(databasedirectory ,
 
         aafreq <- table(vec)
         aafreq <- paste(utils::capture.output(as.matrix(aafreq)),"\n", sep = "")
-        length_s <- summary(vapply(resDB, seqinr::getLength))
+        length_s <- summary(vapply(resDB, seqinr::getLength, numeric(1)))
         length_s <- paste(utils::capture.output(length_s),"\n", sep = "")
 
 

@@ -24,7 +24,7 @@ if (FALSE) {
   args <- c("C:\\Users\\wewol\\Dropbox\\DataAnalysis\\p65\\fgcz_9606_SARS_CoV_2_reviewed_cnl", "-o" ,"c:/users/wewol")
   #args <- c("C:\\Users\\wewol\\Dropbox\\DataAnalysis\\p65\\fgcz_10116_RattusNor_reviewed_cnl")
   args <- c("Z:/p65/Proteomics/fasta_db/o24206_db1_Synechococcus_sp_PCC7336", "nodecoy", "-o", "c:/users/wewol")
-  args <- c("c:/Users/wolski/prog/prozor/inst/p24073_db3_OSSD_Jan2021", "nodecoy", "-o", "c:/users/wewol")
+  args <- c("/Users/witoldwolski/p2799_d_db10_Vibrio_O1")
 
   opt <- docopt(doc,args = args)
 }else{
@@ -58,7 +58,6 @@ if (contamin == "fgcz2022") {
 if (nodecoy) {
   revLab <- NULL
 }
-
 
 resDB <-  create_fgcz_fasta_db(fasta_dir,
                                useContaminants = contamin,
