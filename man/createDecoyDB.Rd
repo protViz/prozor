@@ -29,7 +29,7 @@ For more details and references see package vignette
 }
 \examples{
 file = system.file("extdata/fgcz_contaminants2022_20220405.fasta.gz",package="prozor")
-cont <- loadContaminantsFasta2021()
+cont <- loadContaminantsFGCZ2022()
 rabbit <-readPeptideFasta(file)
 tmp <- 2*(2*length(rabbit)+length(cont)) + 1
 res <- createDecoyDB(c(file,file))
