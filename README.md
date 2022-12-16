@@ -50,7 +50,7 @@ more ./fasta_db/p3071_Chlorella/uniprot-taxonomy_3071.fasta
 clear
 /usr/local/lib/R/site-library/prozor/script/fgcz_create_fasta.R -h
 
-/usr/local/lib/R/site-library/prozor/script/fgcz_create_fasta.R nodecoy ./fasta_db/p3071_Chlorella -o /srv/www/htdocs/FASTA/
+/usr/local/lib/R/site-library/prozor/script/fgcz_create_fasta.R ./fasta_db/p3071_Chlorella nodecoy -o /srv/www/htdocs/FASTA/
 /usr/local/lib/R/site-library/prozor/script/fgcz_create_fasta.R ./fasta_db/p3071_Chlorella -o /srv/www/htdocs/FASTA/
 
 cat p3071_Chlorella_d.txt
