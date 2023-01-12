@@ -1823,3 +1823,33 @@ resDBRev <- create_fgcz_fasta_db(databasedirectory,useContaminants = loadContami
 ```
 
 
+
+## Create triple proteome
+
+```{r}
+library(prozor)
+library(seqinr)
+databasedirectory <- "~/Dropbox/fgcz_tripleProteome_SoybeanHumanECOLI/"
+
+
+annot <- "zz|tripleProteome|FromItaly Ecoli, Human, Soybe downloaded 20221222"
+writeLines(annot, con = file.path(databasedirectory,"annotation.txt"))
+resDBRev <- create_fgcz_fasta_db(databasedirectory,useContaminants = loadContaminantsFGCZ2022(), revLab = NULL)
+
+```
+
+## more
+
+```{r}
+library(prozor)
+library(seqinr)
+databasedirectory <- "~/Downloads/p30383_db1_Pfalciparum3D7/"
+
+
+annot <- "zz|p30383|Pfalciparum3D7 Database provided by user in bfabric comment"
+writeLines(annot, con = file.path(databasedirectory,"annotation.txt"))
+resDBRev <- create_fgcz_fasta_db(databasedirectory,useContaminants = loadContaminantsFGCZ2022(), revLab = NULL)
+resDBRev <- create_fgcz_fasta_db(databasedirectory,useContaminants = loadContaminantsFGCZ2022(), revLab = "REV_")
+
+```
+
