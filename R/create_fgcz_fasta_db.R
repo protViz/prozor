@@ -12,7 +12,7 @@ create_fgcz_fasta_db <- function(databasedirectory ,
                                  useContaminants = loadContaminantsFGCZ2022(),
                                  revLab = "REV_",
                                  outputdir = NULL,
-                                 summary = TRUE){
+                                 make_summary = TRUE){
     mcall <- match.call()
 
     dir.exists(databasedirectory)
@@ -43,7 +43,7 @@ create_fgcz_fasta_db <- function(databasedirectory ,
 
     message("writing db to : ", filepath)
     writeFasta(resDB, file = filepath)
-    summary <- paste0(
+    summaryStr <- paste0(
         "Database created with prozor: ", paste(utils::capture.output(mcall), collapse = "\n"), "\n",
         "where databasedirectory was prepared according to https://fgcz-intranet.uzh.ch/tiki-index.php?page=SOPrequestFASTA \n\n",
         "\n      FASTA name : ", dbname,
@@ -53,7 +53,7 @@ create_fgcz_fasta_db <- function(databasedirectory ,
         annotation, "\n",
         "\n      nr sequences: " , length(resDB), "\n")
 
-    if ( summary ) {
+    if ( make_summary ) {
         bigstr <- paste(resDB, collapse = "")
         vec <- strsplit(bigstr,split = "")[[1]]
 
@@ -62,8 +62,8 @@ create_fgcz_fasta_db <- function(databasedirectory ,
         length_s <- summary(vapply(resDB, seqinr::getLength, numeric(1)))
         length_s <- paste(utils::capture.output(length_s),"\n", sep = "")
 
-        summary <- c(summary, "length summary:\n", length_s, "AA frequencies:\n", aafreq)
+        summaryStr <- c(summaryStr, "length summary:\n", length_s, "AA frequencies:\n", aafreq)
 
     }
-    return( list(resDB = resDB, filepath = filepath, summary = summary, mcall = mcall, dbname = dbname))
+    return( list(resDB = resDB, filepath = filepath, summary = summaryStr, mcall = mcall, dbname = dbname))
 }

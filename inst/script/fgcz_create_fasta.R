@@ -7,7 +7,7 @@ doc <- "Create fasta file with prozor
 
 Usage:
   fgcz_create_fasta.R <fasta_dir>  [--contamin=<contamin>] [--revLab=<revLab>] [--output_dir=<output_dir>] [--summary]
-  fgcz_create_fasta.R <fasta_dir> nodecoy  [--contamin=<contamin>] [--output_dir=<output_dir>]
+  fgcz_create_fasta.R <fasta_dir> nodecoy  [--contamin=<contamin>] [--output_dir=<output_dir>] [--summary]
 
 
 Options:
@@ -26,6 +26,8 @@ if (FALSE) {
   args <- c("Z:/p65/Proteomics/fasta_db/o24206_db1_Synechococcus_sp_PCC7336", "nodecoy", "-o", "c:/users/wewol")
   args <- c("/Users/witoldwolski/p2799_d_db10_Vibrio_O1")
   args <- c("/Users/witoldwolski/p2799_d_db10_Vibrio_O1", "--summary")
+  args <- c("/Users/witoldwolski/p2799_d_db10_Vibrio_O1","nodecoy", "--summary")
+  args <- c("/Users/witoldwolski/p2799_d_db10_Vibrio_O1","nodecoy")
   opt <- docopt(doc,args = args)
 }else{
   opt <- docopt(doc)
