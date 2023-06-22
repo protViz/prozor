@@ -11,7 +11,8 @@
 create_fgcz_fasta_db <- function(databasedirectory ,
                                  useContaminants = loadContaminantsFGCZ2022(),
                                  revLab = "REV_",
-                                 outputdir = NULL){
+                                 outputdir = NULL,
+                                 summary = TRUE){
     mcall <- match.call()
 
     dir.exists(databasedirectory)
@@ -42,8 +43,17 @@ create_fgcz_fasta_db <- function(databasedirectory ,
 
     message("writing db to : ", filepath)
     writeFasta(resDB, file = filepath)
+    summary <- paste0(
+        "Database created with prozor: ", paste(utils::capture.output(mcall), collapse = "\n"), "\n",
+        "where databasedirectory was prepared according to https://fgcz-intranet.uzh.ch/tiki-index.php?page=SOPrequestFASTA \n\n",
+        "\n      FASTA name : ", dbname,
+        "\n FASTA file name : ", basename(filepath),
+        "\n  written to dir : ", outputdir,
+        "\n       annotation:\n",
+        annotation, "\n",
+        "\n      nr sequences: " , length(resDB), "\n")
 
-    {
+    if ( summary ) {
         bigstr <- paste(resDB, collapse = "")
         vec <- strsplit(bigstr,split = "")[[1]]
 
@@ -52,16 +62,6 @@ create_fgcz_fasta_db <- function(databasedirectory ,
         length_s <- summary(vapply(resDB, seqinr::getLength, numeric(1)))
         length_s <- paste(utils::capture.output(length_s),"\n", sep = "")
 
-
-        summary <- paste0(
-            "Database created with prozor: ", paste(utils::capture.output(mcall), collapse = "\n"), "\n",
-            "where databasedirectory was prepared according to https://fgcz-intranet.uzh.ch/tiki-index.php?page=SOPrequestFASTA \n\n",
-            "\n      FASTA name : ", dbname,
-            "\n FASTA file name : ", basename(filepath),
-            "\n  written to dir : ", outputdir,
-            "\n       annotation:\n",
-            annotation, "\n",
-            "\n      nr sequences: " , length(resDB), "\n")
         summary <- c(summary, "length summary:\n", length_s, "AA frequencies:\n", aafreq)
 
     }

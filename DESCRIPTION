@@ -17,6 +17,7 @@ Imports:
     Matrix,
     methods,
     purrr,
+    protViz,
     readr,
     rlang,
     seqinr,
