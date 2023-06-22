@@ -66,7 +66,7 @@ resDB <-  create_fgcz_fasta_db(fasta_dir,
                                useContaminants = contamin,
                                revLab = revLab,
                                outputdir = output_dir,
-                               summary = opt$summary)
+                               make_summary = opt$summary)
 
 cat(resDB$summary)
 
