@@ -1,3 +1,52 @@
+#' make db summary which includes number of sequences, and amino acid statistcis
+#' @export
+#' @return array of strings which should be passed to the cat function.
+#' @examples
+#' file = system.file("extdata/fgcz_contaminants2022_20220405.fasta.gz",package="prozor")
+#' xx <- prozor::readPeptideFasta(file)
+#' cat(make_fasta_summary(xx))
+#' rbenchmark::benchmark(make_fasta_summary(xx),replications = 10)
+#' rbenchmark::benchmark(make_fasta_summary(xx, old = TRUE), replications = 10)
+#' make_fasta_summary(xx, as_string = FALSE)
+#' make_fasta_summary(xx, old =TRUE, as_string = FALSE)
+make_fasta_summary <- function(resDB, old = FALSE, as_string = TRUE){
+    if (old) {
+        bigstr <- paste(resDB, collapse = "")
+        vec <- strsplit(bigstr,split = "")[[1]]
+        aafreq <- table(vec)
+    } else {
+        res <- list()
+        tmp <- lapply(resDB, function(x){table(strsplit(x,split = "")[[1]])})
+        for (i in seq_along(tmp)) {
+            x <- tmp[[i]]
+            for (j in names(x) ) {
+                if (is.null(res[[j]])) {
+                    res[[j]] <- as.numeric(x[j])
+                } else {
+                    res[[j]] <- res[[j]] + as.numeric(x[j])
+                }
+            }
+        }
+        aafreq <- unlist(res)
+        aafreq <- aafreq[order(names(aafreq))]
+    }
+    length_s <- summary(vapply(resDB, seqinr::getLength, numeric(1)))
+
+    if (as_string) {
+        aafreq <- paste(utils::capture.output(as.matrix(aafreq)),"\n", sep = "")
+        length_s <- paste(utils::capture.output(length_s),"\n", sep = "")
+        summaryRes <- c("nr sequences:\n", length(resDB) , "\n length summary:\n", length_s, "AA frequencies:\n", aafreq)
+
+    } else {
+        summaryRes <- list()
+        summaryRes$nrSequences <- length(resDB)
+        summaryRes$lengthSummary <- length_s
+        summaryRes$aafreq <- aafreq
+    }
+    return(summaryRes)
+}
+
+
 #' create fasta db from one or more fasta files
 #' @export
 #' @param databasedirectory directory with fasta files
@@ -54,16 +103,8 @@ create_fgcz_fasta_db <- function(databasedirectory ,
         "\n      nr sequences: " , length(resDB), "\n")
 
     if ( make_summary ) {
-        bigstr <- paste(resDB, collapse = "")
-        vec <- strsplit(bigstr,split = "")[[1]]
-
-        aafreq <- table(vec)
-        aafreq <- paste(utils::capture.output(as.matrix(aafreq)),"\n", sep = "")
-        length_s <- summary(vapply(resDB, seqinr::getLength, numeric(1)))
-        length_s <- paste(utils::capture.output(length_s),"\n", sep = "")
-
-        summaryStr <- c(summaryStr, "length summary:\n", length_s, "AA frequencies:\n", aafreq)
-
+        addSR <- make_fasta_summary(resDB, old = FALSE, as_string = TRUE)
+        summaryStr <- c(summaryStr, addSR)
     }
     return( list(resDB = resDB, filepath = filepath, summary = summaryStr, mcall = mcall, dbname = dbname))
 }

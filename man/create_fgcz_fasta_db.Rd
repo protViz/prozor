@@ -8,7 +8,8 @@ create_fgcz_fasta_db(
   databasedirectory,
   useContaminants = loadContaminantsFGCZ2022(),
   revLab = "REV_",
-  outputdir = NULL
+  outputdir = NULL,
+  make_summary = TRUE
 )
 }
 \arguments{
