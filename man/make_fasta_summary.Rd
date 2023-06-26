@@ -16,6 +16,8 @@ make db summary which includes number of sequences, and amino acid statistcis
 file = system.file("extdata/fgcz_contaminants2022_20220405.fasta.gz",package="prozor")
 xx <- prozor::readPeptideFasta(file)
 cat(make_fasta_summary(xx))
-rbenchmark::benchmark(make_fasta_summary(xx),replications = 500)
-rbenchmark::benchmark(make_fasta_summary(xx, old = TRUE), replications = 500)
+rbenchmark::benchmark(make_fasta_summary(xx),replications = 10)
+rbenchmark::benchmark(make_fasta_summary(xx, old = TRUE), replications = 10)
+make_fasta_summary(xx, as_string = FALSE)
+make_fasta_summary(xx, old =TRUE, as_string = FALSE)
 }
