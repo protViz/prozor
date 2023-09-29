@@ -34,18 +34,23 @@
 #' corProtn = cor( as.matrix(inverse) )
 #' image(corProtn)
 #'
-prepareMatrix <- function(data, proteinID = "proteinID", peptideID = "strippedSequence", weighting = NULL, sep="|" ) {
+prepareMatrix <- function(data,
+                          proteinID = "proteinID",
+                          peptideID = "strippedSequence",
+                          weighting = NULL,
+                          sep="|" ,
+                          use.last.ij = TRUE) {
     fprots = as.factor( data[,proteinID] )
     prots = as.integer( fprots )
     fpeps = as.factor( data[,peptideID] )
     peps = as.integer(fpeps)
 
     if (is.null(weighting)) {
-        pepProt = Matrix::sparseMatrix(peps , prots, x = 1 )
+        pepProt = Matrix::sparseMatrix(peps , prots, x = 1 , use.last.ij = use.last.ij)
     } else if (length(weighting) == nrow(data)) {
         pepProt = Matrix::sparseMatrix(peps, prots, x = weighting )
     } else if (weighting == "inverse") {
-        pepProt = Matrix::sparseMatrix(peps, prots, x = 1 )
+        pepProt = Matrix::sparseMatrix(peps, prots, x = 1,  use.last.ij = use.last.ij )
         nrPeps = rowSums(pepProt)
         pepProt <- sweep(pepProt, 1 , nrPeps, "/" )
     } else {

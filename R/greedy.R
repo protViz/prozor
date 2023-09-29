@@ -4,6 +4,14 @@
     return(y)
 }
 
+#'
+if(FALSE){
+    data(protpepmetashort)
+    protpepmetashort
+    xx = prepareMatrix(protpepmetashort, peptideID = "peptideModSeq")
+    debug(prozor:::.greedy2)
+    prozor:::.greedy2(xx)
+}
 .greedy2 <- function(pepprot){
     ncolX = ncol(pepprot)
     res <- vector(ncolX , mode = "list")
@@ -17,8 +25,16 @@
         if (max(pepsPerProt) == 0) {
             return(res[seq_len(i - 1)])
         }
-        idx <- which.max(pepsPerProt)
+        mymax <- function(x){which(max(x) == x)}
+        idx <- mymax(pepsPerProt)
+        # if there is tie you need to resolve it.
+        # if peptides are disjoint, return arbitrary since it will win in the next round .
+        # if peptides are not disjoint:
+        # - either they share all peptides then merge/group and remove
+        # - or there are overlapping N and O disjoint peptides then sample winner and warn.
         if (length(idx) > 1) {
+            # check if disjoint
+            mm <- pepprot[,idx]
             idx <- idx[1]
         }
         dele <- pepprot[,idx] > 0
@@ -30,6 +46,7 @@
     message("time : ", newtime - oldtime)
     return(res)
 }
+
 
 
 #' given matrix (columns protein rows peptides), compute minimal protein set using greedy algorithm
@@ -45,7 +62,9 @@
 #' xx = prepareMatrix(protpepmetashort, peptideID = "peptideModSeq")
 #' dim(xx)
 #' stopifnot(dim(xx)[1] == dim(unique(protpepmetashort[,4]))[1])
+#'
 #' es = greedy(xx)
+#' debug(prozor:::.greedy2)
 #' stopifnot(length(unique(names(es))) == dim(unique(protpepmetashort[,4]))[1])
 #'
 greedy <- function(pepprot) {

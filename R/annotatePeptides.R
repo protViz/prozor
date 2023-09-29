@@ -58,7 +58,7 @@ annotatePeptides <- function(pepinfo,
                                 .funs = dplyr::funs("lengthPeptide" := nchar))
 
     pepseq  = unique(as.character(pepinfo[, peptide]))
-    restab <- annotateAHO(pepseq, fasta)
+    restab <- annotateAHO(pepseq, fasta, peptide = peptide)
     if (!is.null(restab)) {
 
         restab <-
@@ -108,7 +108,7 @@ annotatePeptides <- function(pepinfo,
 #' dim(annotAll)
 #'
 #' @export
-annotateAHO <- function(pepseq, fasta) {
+annotateAHO <- function(pepseq, fasta, peptide = "peptideSeq") {
     #100_000 peptides
     #40_000 Proteine
 
@@ -139,7 +139,7 @@ annotateAHO <- function(pepseq, fasta) {
             )
         }
     )
-    colnames(xx)[colnames(xx) == "Keyword"] <- "peptideSeq"
+    colnames(xx)[colnames(xx) == "Keyword"] <- peptide
     dbframe <- data.frame(
         proteinID = names(fasta),
         proteinSequence = as.character(unlist(fasta)),
