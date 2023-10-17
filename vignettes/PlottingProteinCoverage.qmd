@@ -1,0 +1,96 @@
+---
+title: "Untitled"
+format: html
+editor: visual
+editor_options: 
+  chunk_output_type: console
+---
+
+
+```{r}
+library(prozor)
+resCan <-
+    prozor::readPeptideFasta(
+        system.file("p1000_db1_example/Annotation_canSeq.fasta.gz" , package = "prozor"))
+
+file = system.file("extdata/IDResults.txt.gz" , package = "prozor")
+specMeta <- readr::read_tsv(file)
+upeptide <- unique(specMeta$peptideSeq)
+
+annotCan <- prozor::annotatePeptides(upeptide, resCan)
+#undebug(annotatePeptides)
+
+```
+
+
+
+```{r}
+library(tidyverse)
+xx <- annotCan |> group_by(proteinID,proteinSequence) |> nest()
+
+head(xx)
+y <- xx$data[[1]]
+
+strl <- str_length(xx$proteinSequence[[1]])
+x <- vector(mode = "numeric", strl)
+
+
+for(i in 1:nrow(y)) {
+  x[y$Offset[i]:(y$Offset[i] + y$lengthPeptide[i] - 1)] <- x[y$Offset[i]:(y$Offset[i] + y$lengthPeptide[i] -1)] + 1
+}
+
+xd <- data.frame(pos = 1:strl, sequence = str_split_1(xx$proteinSequence[1],"") , nr = x)
+#plot(xd$pos,xd$nr, type="h", xlim = c(100,200)) 
+
+xd$ypos <- rep(1:100, length.out = nrow(xd), each = 50)
+head(xd)
+xd <- xd |> mutate(xpos = row_number(), .by = c(ypos))
+head(xd)
+xd$nr <- as.factor(xd$nr)
+xd |> ggplot(aes(x = xpos, y = -ypos, color = nr, label = sequence)) +
+  geom_text(size = 4) + 
+  theme_classic() +  
+  scale_color_manual(guide = "none", values = c("lightgray", "green", "blue", "black"))
+ 
+
+```
+
+
+```{r}
+library(Matrix)
+precursors <-
+    unique(subset(specMeta, select = c(
+        peptideModSeq, precursorCharge, peptideSeq
+    )))
+
+```
+
+## Protein Inference for database with Trembl identifiers
+
+```{r greedyTrembl, fig.cap="Peptide protein machtes for the All database. Rows - peptides, Columns - proteins, black - peptide protein match."}
+annotatedPrecursors <-
+    merge(precursors ,
+          subset(annotCan, select = c(peptideSeq, proteinID)),
+          by.x = "peptideSeq",
+          by.y = "peptideSeq")
+
+
+xx <-
+    prepareMatrix(annotatedPrecursors ,
+                  proteinID = "proteinID",
+                  peptideID = "peptideSeq")
+
+
+xx <- xx[order(rowSums(xx), decreasing = FALSE),]
+xx <- xx[,order(colSums(xx), decreasing = TRUE)]
+dd <- summary(xx)
+plot(dd$j, dd$i , col= dd$x, pch = 15, cex=0.5)
+abline(h = c(0, nrow(xx)), v=c(0, ncol(xx)))
+
+
+
+xxCAN <- greedy_parsimony(xx)
+protPepAssingments <- prozor:::.greedy2(xx)
+matrixlist <- lapply(protPepAssingments,function(x){ t(cbind(x$peps, rep(x$prot,length(x$peps)))) })
+
+```

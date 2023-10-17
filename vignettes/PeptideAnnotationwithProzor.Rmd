@@ -43,7 +43,7 @@ resCan <-
     prozor::readPeptideFasta(
         system.file("p1000_db1_example/Annotation_canSeq.fasta.gz" , package = "prozor"))
 
-barplot(c(All = length(resAll),Canonical = length(resCan)))
+barplot(c(All = length(resAll), Canonical = length(resCan)))
 ```
 
 ```{r}
@@ -83,7 +83,7 @@ barplot(
 # Protein Inference 
 
 
-We can now identify a minmal set of proteins explaining all the peptides observed for both databases
+We can now identify a minimal set of proteins explaining all the peptides observed for both databases
 
 ```{r}
 library(Matrix)
@@ -112,7 +112,7 @@ xx <-
 image(xx)
 dim(xx)
 xx[1:10, 1:100]
-xxAll <- greedy(xx)
+xxAll <- greedy_parsimony(xx)
 
 ```
 
@@ -132,7 +132,7 @@ xx <-
                   peptideID = "peptideSeq")
 image(xx)
 xx[80:100,1:10]
-xxCAN <- greedy(xx)
+xxCAN <- greedy_parsimony(xx)
 
 ```
 

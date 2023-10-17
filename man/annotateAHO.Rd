@@ -4,7 +4,7 @@
 \alias{annotateAHO}
 \title{annotate peptides using AhoCorasickTrie}
 \usage{
-annotateAHO(pepseq, fasta)
+annotateAHO(pepseq, fasta, peptide = "peptideSeq")
 }
 \arguments{
 \item{pepseq}{- list of peptides - sequence, optional modified sequence, charge state.}

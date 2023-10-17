@@ -45,6 +45,7 @@ Collate:
     'readFasta.R'
     'removeSignalPeptides.R'
     'reverseSeq.R'
+    'tieResolution.R'
     'writeFasta.R'
     'zzz.R'
 biocViews: Software, MassSpectrometry, Proteomics, ExperimentHubSoftware, 
