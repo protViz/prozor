@@ -9,7 +9,8 @@ prepareMatrix(
   proteinID = "proteinID",
   peptideID = "strippedSequence",
   weighting = NULL,
-  sep = "|"
+  sep = "|",
+  use.last.ij = TRUE
 )
 }
 \arguments{
