@@ -13,12 +13,13 @@ inter_y <- function(x, y){
     return(sum(y[int]))
 }
 
-if(FALSE){
+if (FALSE) {
     debug(prozor:::sdiff_x)
     prozor:::sdiff_x(c(1,1,0,0,1),c(0,0,1,1,1))
     debug(prozor:::sdiff_y)
     prozor:::sdiff_y(c(1,1,0,0,1),c(0,0,1,1,1))
 }
+
 sdiff_x <- function(x, y){
     i1 <- which(x > 0)
     i2 <- which(y > 0)
@@ -63,10 +64,10 @@ if (FALSE) {
     dd <- data.frame(x = 1:10, y = 10:1, z = 2:11, w = rep(5,10))
     xx <- mdist(dd, diag = FALSE, upper = FALSE)
     xx <- as.dist(xx)
-    cS <- mean(colSums(mm))
+    cS <- mean( colSums(mm) )
 
-    ii_x <- mdist(t(as.matrix(mm)), .func = prozor:::inter_x)
-    ii_y <- mdist(t(as.matrix(mm)), .func = prozor:::inter_y)
+    ii_x <- mdist(t( as.matrix(mm) ), .func = prozor:::inter_x)
+    ii_y <- mdist(t( as.matrix(mm) ), .func = prozor:::inter_y)
     all(na.omit(ii_x == ii_y))
     ib <- which(ii_x == cS, arr.ind = TRUE)
     if(nrow(ib) > 1) {

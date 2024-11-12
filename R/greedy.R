@@ -5,7 +5,7 @@
 }
 
 #'
-if(FALSE){
+if (FALSE) {
     data(protpepmetashort)
     protpepmetashort
     xx = prepareMatrix(protpepmetashort, peptideID = "peptideModSeq")

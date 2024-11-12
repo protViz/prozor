@@ -2,6 +2,7 @@
 % Please edit documentation in R/hello.R
 \docType{package}
 \name{prozor}
+\alias{prozor-package}
 \alias{prozor}
 \title{Minimal Protein Set Explaining Peptides}
 \description{
@@ -9,4 +10,16 @@ Determine minimal protein set explaining
  peptide spectrum matches. Utility functions for creating fasta amino acid databases with decoys and contaminants.
  Peptide false discovery rate estimation for target decoy search results on psm, precursor, peptide and protein
  level. Computing dynamic swath window sizes based on MS1 and MS2 signal distributions.
+}
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/protviz/prozor}
+  \item Report bugs at \url{https://github.com/protviz/prozor/issues}
+}
+
+}
+\author{
+\strong{Maintainer}: Witold Wolski \email{wewolski@gmail.com} (\href{https://orcid.org/0000-0002-6468-120X}{ORCID})
+
 }

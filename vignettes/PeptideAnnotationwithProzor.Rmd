@@ -49,11 +49,13 @@ barplot(c(All = length(resAll), Canonical = length(resCan)))
 ```{r}
 length(unique(specMeta$peptideSeq))
 upeptide <- unique(specMeta$peptideSeq)
-
+debug( prozor::annotatePeptides)
 annotAll <- prozor::annotatePeptides(upeptide, resAll)
 head(subset(annotAll,select =  -proteinSequence)) |> knitr::kable()
 
 annotCan <- prozor::annotatePeptides(upeptide, resCan)
+
+
 ```
 
 

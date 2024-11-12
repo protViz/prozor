@@ -2,16 +2,16 @@
 % Please edit documentation in R/greedy.R
 \name{greedyRes2Matrix}
 \alias{greedyRes2Matrix}
-\title{converts result of greedy function to a matrix with 3 columns - peptide - charge and protein}
+\title{converts result of greedy_parsimony function to a matrix with 3 columns - peptide - charge and protein}
 \usage{
 greedyRes2Matrix(res)
 }
 \arguments{
-\item{res}{result of function prozor::greedy}
+\item{res}{result of function prozor::greedy_parsimony}
 }
 \value{
 matrix of peptide protein assignments
 }
 \description{
-converts result of greedy function to a matrix with 3 columns - peptide - charge and protein
+converts result of greedy_parsimony function to a matrix with 3 columns - peptide - charge and protein
 }

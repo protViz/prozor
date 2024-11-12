@@ -65,3 +65,50 @@ loadContaminantsFGCZ2022 <- function(noHuman = FALSE){
     }
     invisible(contaminants)
 }
+
+#' load universal contaminants
+#'
+#' These sequences are downloaded from here https://github.com/HaoGroup-ProtContLib/Protein-Contaminant-Libraries-for-DDA-and-DIA-Proteomics
+#'
+#' @export
+#' @param noHuman should human contaminants be excluded? default FALSE
+#' @return list with contaminant sequences
+#' @examples
+#' #library(prozor)
+#' cont <- load_universal_contaminants_2024()
+#' length(cont)
+#' contNH <- load_universal_contaminants_2024(noHuman = TRUE)
+#' length(contNH)
+#' #example how to create a protein db with decoy sequences
+load_universal_contaminants_2024 <- function(noHuman = FALSE){
+  file = system.file("extdata/fgcz_universal_contaminants_github_20241112.fasta.gz",package = "prozor")
+  contaminants <- readPeptideFasta(file)
+  if (noHuman) {
+    annot <- vapply(contaminants, seqinr::getAnnot, character(1))
+    contaminants <- contaminants[!grepl("HUMAN",annot)]
+  }
+  invisible(contaminants)
+}
+
+
+#' load special prot
+#'
+#' @export
+#' @param noHuman should human contaminants be excluded? default FALSE
+#' @return list with contaminant sequences
+#' @examples
+#' #library(prozor)
+#' cont <- load_special_prot_2024()
+#' length(cont)
+#' contNH <- load_special_prot_2024(noHuman = TRUE)
+#' length(contNH)
+#' #example how to create a protein db with decoy sequences
+load_special_prot_2024 <- function(noHuman = FALSE){
+  file = system.file("extdata/fgcz_special_prot_20241112.fasta.gz", package = "prozor")
+  contaminants <- readPeptideFasta(file)
+  if (noHuman) {
+    annot <- vapply(contaminants, seqinr::getAnnot, character(1))
+    contaminants <- contaminants[!grepl("HUMAN",annot)]
+  }
+  invisible(contaminants)
+}

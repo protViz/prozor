@@ -25,7 +25,7 @@ xx = prepareMatrix(protpepmetashort, peptideID = "peptideModSeq")
 dim(xx)
 stopifnot(dim(xx)[1] == dim(unique(protpepmetashort[,4]))[1])
 
-es = greedy(xx)
+es = greedy_parsimony(xx)
 debug(prozor:::.greedy2)
 stopifnot(length(unique(names(es))) == dim(unique(protpepmetashort[,4]))[1])
 
