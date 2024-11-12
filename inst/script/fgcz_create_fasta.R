@@ -12,7 +12,7 @@ Usage:
 
 Options:
   -o --output_dir=<output_dir> output directory, default next to fasta_dir
-  -c --contamin=<contamin> add contaminants [default: fgcz2022] or `none`, or path to fasta file with contaminants
+  -c --contamin=<contamin> add contaminants [default: special] or `none`, or path to fasta file with contaminants
   -r --revLab=<revLab> create reverse sequences with prefix [default: REV_].
 
 
@@ -20,7 +20,7 @@ Arguments:
   fasta_dir input file
 "
 
-if (FALSE) {
+if (TRUE) {
   args <- c("C:\\Users\\wewol\\Dropbox\\DataAnalysis\\p65\\fgcz_9606_SARS_CoV_2_reviewed_cnl", "-o" ,"c:/users/wewol")
   #args <- c("C:\\Users\\wewol\\Dropbox\\DataAnalysis\\p65\\fgcz_10116_RattusNor_reviewed_cnl")
   args <- c("Z:/p65/Proteomics/fasta_db/o24206_db1_Synechococcus_sp_PCC7336", "nodecoy", "-o", "c:/users/wewol")
@@ -44,7 +44,9 @@ params <- c("\nParameters used:\n\t",
 
 cat(paste(params, collapse = ""))
 
-if (contamin == "fgcz2022") {
+if (contamin == "special") {
+  contamin <- c(load_special_prot_2024(), load_universal_contaminants_2024())
+} else if (contamin == "fgcz2022") {
   contamin <- loadContaminantsFGCZ2022()
 } else if (contamin == "fgcz2021") {
   contamin <- loadContaminantsFasta2021()
