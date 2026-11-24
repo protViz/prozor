@@ -12,7 +12,8 @@ Usage:
 
 Options:
   -o --output_dir=<output_dir> output directory, default next to fasta_dir
-  -c --contamin=<contamin> add contaminants [default: special] or `none`, or path to fasta file with contaminants
+  -c --contamin=<contamin> add contaminants: special (special2024 and universal2024), `none`, a set of
+                           load_contaminants() such as fgcz2022, or a FASTA file [default: special]
   -r --revLab=<revLab> create reverse sequences with prefix [default: REV_].
 
 
@@ -28,47 +29,31 @@ make_summary <- opt$summary
 contamin <- opt[["--contamin"]]
 rev_lab <- opt[["--revLab"]]
 output_dir <- if (is.null(opt[["--output_dir"]])) dirname(fasta_dir) else opt[["--output_dir"]]
+if (nodecoy) {
+  rev_lab <- NULL
+}
 
 params <- c(
-  "\nParameters used:\n\t",
-  " fasta_dir: ",
-  fasta_dir,
-  "\n\t",
-  "   nodecoy: ",
-  nodecoy,
-  "\n\t",
-  "   summary: ",
-  make_summary,
-  "\n\t",
-  "  contamin: ",
-  contamin,
-  "\n\t",
-  "    revLab: ",
-  rev_lab,
-  "\n\t",
-  "output_dir: ",
-  output_dir,
-  "\n\n\n\t"
+  fasta_dir = fasta_dir,
+  nodecoy = nodecoy,
+  summary = make_summary,
+  contamin = contamin,
+  revLab = if (is.null(rev_lab)) "NULL" else rev_lab,
+  output_dir = output_dir
 )
-cat(paste(params, collapse = ""))
+params_text <- paste0(
+  "\nParameters used:\n",
+  paste0(sprintf("\t%10s: %s\n", names(params), params), collapse = ""),
+  "\n"
+)
+cat(params_text)
 
 contaminants <- switch(
   contamin,
   special = c(load_contaminants("special2024"), load_contaminants("universal2024")),
-  fgcz2022 = load_contaminants("fgcz2022"),
-  fgcz2021 = load_contaminants("fgcz2021"),
-  fgcz2019 = load_contaminants("fgcz2019"),
   none = NULL,
-  if (file.exists(contamin)) {
-    read_peptide_fasta(contamin)
-  } else {
-    stop("--contamin must be special, fgcz2022, fgcz2021, fgcz2019, none or a FASTA file, not ", contamin)
-  }
+  if (file.exists(contamin)) read_peptide_fasta(contamin) else load_contaminants(contamin)
 )
-
-if (nodecoy) {
-  rev_lab <- NULL
-}
 
 res_db <- create_fgcz_fasta_db(
   fasta_dir,
@@ -80,5 +65,7 @@ res_db <- create_fgcz_fasta_db(
 
 cat(res_db$summary)
 
-res <- paste(c("fgcz_create_fasta.R run with params\n", params), collapse = "")
-writeLines(c(res, paste(res_db$summary, collapse = "")), con = paste0(res_db$db_name, ".txt"))
+writeLines(
+  c(paste0("fgcz_create_fasta.R run with params\n", params_text), paste(res_db$summary, collapse = "")),
+  con = paste0(res_db$db_name, ".txt")
+)

@@ -1,6 +1,7 @@
-#' Peptide-protein assignments
+#' Precursors of identified peptides
 #'
-#' Precursors of identified peptides.
+#' Sequence, charge and m/z of identified precursors, without proteins; [protpepmetashort] holds the proteins of
+#' some of them.
 #'
 #' @format A data frame with 4,938 rows and 4 columns:
 #' * `peptide_seq`: peptide sequence (factor).
@@ -12,7 +13,7 @@
 #' @keywords data
 NULL
 
-#' Peptide-protein assignments, small version
+#' Peptide-protein assignments
 #'
 #' Peptide-protein pairs for 250 mouse proteins; small, so the examples stay fast.
 #'

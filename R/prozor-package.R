@@ -1,4 +1,4 @@
 #' @keywords internal
-#' @import Matrix seqinr
+#' @importFrom Matrix colSums rowSums
 #' @importFrom ggplot2 .data
 "_PACKAGE"

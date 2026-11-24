@@ -7,12 +7,13 @@
 greedy_to_table(res)
 }
 \arguments{
-\item{res}{A result of \code{\link[=greedy_parsimony]{greedy_parsimony()}} whose names have the form \code{peptide.charge}. The charge is taken
-after the last dot, so modified peptides such as \code{"AC[+57.0]K.2"} work.}
+\item{res}{A result of \code{\link[=greedy_parsimony]{greedy_parsimony()}} whose names have the form \code{peptide.charge}, i.e. end in a dot and
+an integer charge; an error otherwise. The charge is taken after the last dot, so modified peptides such as
+\code{"AC[+57.0]K.2"} work.}
 }
 \value{
-A data frame with the columns \code{peptide}, \code{precursor_charge} and \code{protein}, and the precursor IDs as row
-names.
+A data frame with the columns \code{peptide}, \code{precursor_charge} (integer) and \code{protein}, and the precursor
+IDs as row names.
 }
 \description{
 Convert a greedy_parsimony() result to a table

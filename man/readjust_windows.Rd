@@ -16,7 +16,7 @@ readjust_windows(wind, ms1data, digits = 1, maxbin = 15)
 \item{maxbin}{Bins with fewer than \code{maxbin} precursors count as empty.}
 }
 \value{
-A list with the elements \code{from}, \code{to}, \code{mid}, \code{width} and \code{counts} (precursors per window).
+A list with the elements \code{from}, \code{to}, \code{mid}, \code{width} and \code{counts} (precursors with \verb{from < m/z <= to}).
 }
 \description{
 Move DIA window boundaries to regions with few precursors

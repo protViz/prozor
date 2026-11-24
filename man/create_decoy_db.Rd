@@ -18,24 +18,25 @@ create_decoy_db(
 
 \item{rev_lab}{Prefix of the reversed decoy sequences, or \code{NULL} for no decoys.}
 
-\item{annot}{Header of the dummy entry that records the source of the database.}
+\item{annot}{Header of the dummy entry that records the source of the database, with or without the leading \code{>}.}
 }
 \value{
-A list of \code{SeqFastaAA} objects: the dummy entry, the targets, the contaminants and, unless \code{rev_lab}
-is \code{NULL}, the reversed decoys of the targets and contaminants.
+A list of \code{SeqFastaAA} objects with unique names: the dummy entry, the targets, the contaminants and,
+unless \code{rev_lab} is \code{NULL}, the reversed decoys of the targets and contaminants.
 }
 \description{
 Reads one or more FASTA files, adds contaminants and reversed decoy sequences, and puts first a dummy
-entry \code{CRAPCRAPCRAP} whose header records the source of the database. See
-\code{vignette("CreatingDecoyDB", package = "prozor")}.
+entry \code{CRAPCRAPCRAP} whose header records the source of the database. Of entries with the same name, only
+the first is kept. See \code{vignette("CreatingDecoyDB", package = "prozor")}.
 }
 \examples{
 file <- system.file("extdata/fgcz_contaminants2022_20220405.fasta.gz", package = "prozor")
 targets <- read_peptide_fasta(file)
 cont <- load_contaminants("fgcz2022")
 
+# the file, read twice, holds the same entries as the default contaminants: each is kept once
 db <- create_decoy_db(c(file, file))
-stopifnot(length(db) == 1 + 2 * (2 * length(targets) + length(cont)))
+stopifnot(length(db) == 1 + 2 * length(targets), identical(names(targets), names(cont)))
 
 db <- create_decoy_db(file, rev_lab = NULL, contaminants = NULL)
 stopifnot(length(db) == 1 + length(targets))

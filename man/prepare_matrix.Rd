@@ -9,24 +9,22 @@ prepare_matrix(
   protein_id = "protein_id",
   peptide_id = "peptide_seq",
   weighting = NULL,
-  sep = "|",
   use.last.ij = TRUE
 )
 }
 \arguments{
 \item{data}{A data frame (or tibble) of peptide-protein pairs, e.g. from \code{\link[=annotate_peptides]{annotate_peptides()}}.}
 
-\item{protein_id}{Name of the protein ID column.}
+\item{protein_id}{Name of the protein ID column (character or factor; unused factor levels are dropped).}
 
-\item{peptide_id}{Name of the peptide or precursor ID column.}
+\item{peptide_id}{Name of the peptide or precursor ID column (character or factor; unused factor levels are
+dropped).}
 
 \item{weighting}{\code{NULL} (default) gives each peptide-protein pair the weight 1. \code{"inverse"} divides the weights
 of each peptide by the number of proteins it matches. A numeric vector gives one weight per row of \code{data}.}
 
-\item{sep}{Not used.}
-
-\item{use.last.ij}{Passed to \code{\link[Matrix:sparseMatrix]{Matrix::sparseMatrix()}}; if \code{TRUE}, a repeated peptide-protein pair keeps a single
-entry instead of the sum of its entries.}
+\item{use.last.ij}{Passed to \code{\link[Matrix:sparseMatrix]{Matrix::sparseMatrix()}}; if \code{TRUE}, a repeated peptide-protein pair keeps the
+weight of its last row, if \code{FALSE} the sum of the weights of its rows. Applies to every \code{weighting}.}
 }
 \value{
 A sparse matrix with peptides in rows and proteins in columns.

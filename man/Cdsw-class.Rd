@@ -17,31 +17,31 @@ subject to minimum and maximum window widths.
 \item{\code{breaks}}{The window boundaries.}
 
 \item{\code{nbins}}{Number of windows.}
-
-\item{\code{digits}}{Mass accuracy of the result.}
 }}
 
 \section{Methods}{
 
 \describe{
-\item{\code{as_table(overlap = 1)}}{Windows as a data.frame with start (from), end (to), center (mid), width and precursor count; overlap in m/z.}
+\item{\code{as_table(overlap = 1)}}{Windows as a data.frame with start (from), end (to), center (mid), width and the number of precursors with
+from < m/z <= to (counts); overlap in m/z.}
 
 \item{\code{constant_breaks(digits = 2)}}{Equal-width windows; returns the breaks invisibly.}
 
 \item{\code{error()}}{Deviation of the windows from equal counts: a list, see objective_ms1().}
 
-\item{\code{initialize(masses, nbins = 25, digits = 1)}}{Create the object from a vector of MS1 masses, with nbins windows of equal width and mass accuracy digits.}
+\item{\code{initialize(masses, nbins = 25)}}{Create the object from a vector of MS1 masses, with nbins windows of equal width.}
 
 \item{\code{optimize_windows(digits = 1, maxbin = 15, overlap = 0)}}{Move window starts and ends to regions with few precursor masses; returns a data.frame.}
 
-\item{\code{plot()}}{ggplot of the precursors per window; the dashed line marks equal counts.}
+\item{\code{plot()}}{ggplot of the precursors per window (from < m/z <= to); the dashed line marks equal counts.}
 
 \item{\code{plot_breaks()}}{ggplot of the current breaks against equal-width and quantile breaks.}
 
 \item{\code{quantile_breaks(digits = 2)}}{Windows with equal numbers of MS1 masses; widths may violate the limits of sampling_breaks().}
 
-\item{\code{sampling_breaks(maxwindow = 150, minwindow = 5, digits = 2)}}{Quantile windows, mixed with uniform data until all widths lie within [minwindow, maxwindow].
-Stops if even equal-width windows violate the limits; returns the breaks invisibly.}
+\item{\code{sampling_breaks(maxwindow = 150, minwindow = 5, digits = 2)}}{Quantile breaks of the masses mixed with uniformly spread data, with the smallest share of uniform data
+that keeps all widths within [minwindow, maxwindow]. Stops if even equal-width windows violate the limits;
+returns the breaks invisibly.}
 
 \item{\code{show_cycle(overlap = 1)}}{ggplot of the DIA cycle, one window per step; overlap in m/z.}
 }}

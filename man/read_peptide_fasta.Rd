@@ -10,15 +10,18 @@ read_peptide_fasta(file)
 \item{file}{Path to a FASTA file, optionally gzip-compressed.}
 }
 \value{
-A named list of \code{SeqFastaAA} objects, one per sequence.
+A named list with one \code{SeqFastaAA} object per sequence: the sequence as a string, with the attributes
+\code{name} (the first word of the header, without \code{>}, also the list name) and \code{Annot} (the header line).
 }
 \description{
-Reads amino-acid sequences with \code{\link[seqinr:read.fasta]{seqinr::read.fasta()}}, each sequence as one string.
+Reads amino-acid sequences, each sequence as one string. Lines starting with \verb{;} and lines before the first
+header are skipped; an entry without sequence lines gets the empty string.
 }
 \examples{
 file <- system.file("extdata/fgcz_contaminants2021_20210929.fasta.gz", package = "prozor")
 fasta <- read_peptide_fasta(file)
 length(fasta)
+attributes(fasta[[1]])
 }
 \seealso{
 Other FASTA databases:

@@ -24,6 +24,7 @@ PSMs
 Proteome
 Proteomics
 ROR
+RcppArmadillo
 SEQUEST's
 SimpleFDR
 Storey
@@ -37,6 +38,7 @@ blib
 cdot
 docopt
 doi
+dplyr
 dplyr's
 et
 frac
@@ -44,11 +46,12 @@ funder
 ggplot
 gzip
 gzipped
+keratins
 maxwindow
-methionine
 minwindow
 nbins
 nmeth
+proline
 protViz
 proteomics
 proteotypic
@@ -57,11 +60,14 @@ readr
 rlang
 roxygen
 runnable
+seqinr
+seqinr's
 sp
 spectrometry
 stringr
 tibble
 tibbles
+trie's
 tryptic
 xcorr
 xtfrm

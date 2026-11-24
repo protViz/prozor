@@ -7,7 +7,8 @@
 remove_signal_peptide(db, signal, id_fun = make_chain_id)
 }
 \arguments{
-\item{db}{A list of UniProt protein sequences, as returned by \code{\link[=read_peptide_fasta]{read_peptide_fasta()}}.}
+\item{db}{A list of UniProt protein sequences, as returned by \code{\link[=read_peptide_fasta]{read_peptide_fasta()}}, named with UniProt IDs
+such as \code{"sp|P30443|1A01_HUMAN"} (the accession follows the first \code{|}).}
 
 \item{signal}{A data frame with one row per entry of \code{db}, in the same order, and the columns \code{Entry} (the
 UniProt accession) and \code{Signal.peptide} (UniProt's signal peptide feature, e.g. \code{"SIGNAL 1 20"} or
@@ -17,7 +18,8 @@ UniProt accession) and \code{Signal.peptide} (UniProt's signal peptide feature, 
 \code{\link[=make_chain_id_uniprot]{make_chain_id_uniprot()}}.}
 }
 \value{
-\code{db} with the signal peptides removed and the IDs of the shortened sequences changed by \code{id_fun}.
+\code{db} with the signal peptides removed. A shortened sequence gets the ID made by \code{id_fun} as its list
+name, its \code{name} and the first word of its header; the rest of the header is kept.
 }
 \description{
 Remove signal peptides from protein sequences

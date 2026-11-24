@@ -1,29 +1,17 @@
-# Moves each window boundary to the nearest bin with few peaks: starts move down, ends move up.
-.make_new_from_to <- function(boundaries, empty, is_from = TRUE) {
-  vapply(
-    boundaries,
-    function(boundary) {
-      idx <- which.min(abs(boundary - empty))
-      if (is_from) {
-        if (idx == 1) {
-          boundary
-        } else if (empty[idx] < boundary) {
-          empty[idx]
-        } else {
-          empty[idx - 1]
-        }
-      } else {
-        if (idx == length(empty)) {
-          boundary
-        } else if (empty[idx] > boundary) {
-          empty[idx]
-        } else {
-          empty[idx + 1]
-        }
-      }
-    },
-    numeric(1)
-  )
+# Moves each window start down to the nearest empty bin below it; starts without an empty bin below stay.
+# `empty` holds the sorted mids of the empty bins.
+.move_starts <- function(starts, empty) {
+  below <- findInterval(starts, empty, left.open = TRUE)
+  starts[below > 0] <- empty[below[below > 0]]
+  starts
+}
+
+# Moves each window end up to the nearest empty bin above it; ends without an empty bin above stay
+.move_ends <- function(ends, empty) {
+  above <- findInterval(ends, empty) + 1L
+  moved <- above <= length(empty)
+  ends[moved] <- empty[above[moved]]
+  ends
 }
 
 #' Move DIA window boundaries to regions with few precursors
@@ -32,7 +20,7 @@
 #' @param ms1data Precursor masses (m/z).
 #' @param digits Mass accuracy: the masses are binned into bins of width `1 / 10^digits`.
 #' @param maxbin Bins with fewer than `maxbin` precursors count as empty.
-#' @return A list with the elements `from`, `to`, `mid`, `width` and `counts` (precursors per window).
+#' @return A list with the elements `from`, `to`, `mid`, `width` and `counts` (precursors with `from < m/z <= to`).
 #' @family DIA windows
 #' @export
 #' @examples
@@ -42,20 +30,13 @@
 #' windows <- cdsw$as_table()
 #' head(data.frame(readjust_windows(windows, masses, maxbin = 10)))
 readjust_windows <- function(wind, ms1data, digits = 1, maxbin = 15) {
-  breaks <- seq(
-    round(min(ms1data) - 1 / 10^digits, digits = 1),
-    round(max(ms1data) + 1 / 10^digits, digits = 1),
-    by = 1 / 10^digits
-  )
+  mass_range <- .padded_range(ms1data, digits)
+  breaks <- seq(mass_range[1], mass_range[2], by = 1 / 10^digits)
   reshist <- graphics::hist(ms1data, breaks = breaks, plot = FALSE)
   empty <- reshist$mids[reshist$counts < maxbin]
-  new_from <- .make_new_from_to(wind$from, empty)
-  new_to <- .make_new_from_to(wind$to, empty, is_from = FALSE)
-  counts <- vapply(
-    seq_along(new_from),
-    function(i) sum(ms1data >= new_from[i] & ms1data <= new_to[i]),
-    integer(1)
-  )
+  new_from <- .move_starts(wind$from, empty)
+  new_to <- .move_ends(wind$to, empty)
+  counts <- .window_counts(ms1data, new_from, new_to)
   list(from = new_from, to = new_to, mid = (new_from + new_to) * 0.5, width = new_to - new_from, counts = counts)
 }
 

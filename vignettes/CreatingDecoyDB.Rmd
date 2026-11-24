@@ -35,7 +35,7 @@ length(load_contaminants("fgcz2021", no_human = TRUE))
 # Creating a FASTA protein amino acid sequence database for searching.
 
 To merge several _FASTA_ databases into a single file place them into a single folder and give the folder the name of the database.
-At the [FGCZ](https://fgcz.ch/) the database name starts with the project number e.g. `p1000` a consecutive number e.g. `db1` and descriptive name `example,i.e. `p1000_db1_example`.
+At the [FGCZ](https://fgcz.ch/) the database name is the project number, e.g. `p1000`, a consecutive number, e.g. `db1`, and a descriptive name, e.g. `example`: `p1000_db1_example`.
 
 Add to the folder also an annotation.txt file. The annotation file should contain a single line formatted like a _FASTA_ entry header with the following content:
 `aa|p<project_number>_<database_name>|<YYYYMMDD> <detailed_description>`.
@@ -43,64 +43,70 @@ Add to the folder also an annotation.txt file. The annotation file should contai
 Example : `AA|p1000_db1_example|20180119_Example https://github.com/protViz/prozor`
 
 
-The package provides an example of such a folder with the FASTA files. Based on this folder a database can be created.
+The package provides an example of such a folder with the FASTA files. `create_fgcz_fasta_db()` reads the FASTA files in it (`*.fasta`, `*.fa` or `*.faa`, optionally gzipped) and the first line of `annotation.txt`; here we do the same step by step.
 
 ```{r}
 database_dir <- system.file("p1000_db1_example", package = "prozor")
-dbname <- basename(database_dir)
-fasta <- grep("fasta", dir(database_dir), value = TRUE)
-files1 <- file.path(database_dir, fasta)
-annot <- grep("annotation", dir(database_dir), value = TRUE)
-annotation <- readLines(file.path(database_dir, annot))
+files <- list.files(database_dir, pattern = "\\.(fasta|fa|faa)(\\.gz)?$", full.names = TRUE)
+basename(files)
+annotation <- readLines(file.path(database_dir, "annotation.txt"))[1]
 annotation
 ```
 
 ## Create non decoy database
 
+`create_decoy_db()` puts a dummy entry, whose header is the annotation, first, followed by the sequences of the FASTA files and the contaminants. Of entries with the same name, only the first is kept.
 
-```{r}
-resDB <- create_decoy_db(files1, contaminants = load_contaminants("fgcz2021"), annot = annotation, rev_lab = NULL)
-length(resDB)
+```{r message = FALSE}
+db <- create_decoy_db(files, contaminants = load_contaminants("fgcz2021"), annot = annotation, rev_lab = NULL)
+length(db)
 ```
 
 Based on the directory name we build the name of the FASTA file adding the current date.
 
 ```{r}
-dirname(database_dir)
-xx <- file.path(dirname(database_dir), paste0(dbname, "_", format(Sys.time(), "%Y%m%d"), ".fasta"))
-print(xx)
-```
-
-
-```{r eval=FALSE}
-write_fasta(resDB, file = xx)
+db_file <- file.path(tempdir(), paste0(basename(database_dir), "_", format(Sys.time(), "%Y%m%d"), ".fasta"))
+basename(db_file)
+write_fasta(db, file = db_file)
 ```
 
 ## Create decoy database
 
-To add a decoy database, using reverse sequences specify the `rev_lab` parameter in the `create_decoy_db()` function.
-The resulting database will be twice as long as the non-decoy database.
+To add decoys, reversed sequences, specify the `rev_lab` parameter of `create_decoy_db()`.
+Apart from the dummy entry, the resulting database is twice as long as the non-decoy database.
+The names stay unique.
 
-
-```{r}
-resDBDecoy <- create_decoy_db(files1, contaminants = load_contaminants("fgcz2021"), annot = annotation, rev_lab = "REV_")
-resDBDecoy[[length(resDBDecoy) - 1]]
-length(resDBDecoy)
-
-sum(duplicated(names(resDBDecoy)))
-sum(duplicated(resDBDecoy))
-
-dbname_decoy <- unlist(strsplit(dbname, "_"))
-dbname_decoy <- paste(c(dbname_decoy[1], "d", dbname_decoy[2:length(dbname_decoy)]), collapse = "_")
-dbname_decoy
-
-xx <- file.path(dirname(database_dir), paste0(dbname_decoy, "_", format(Sys.time(), "%Y%m%d"), ".fasta"))
-print(xx)
+```{r message = FALSE}
+db_decoy <- create_decoy_db(files, contaminants = load_contaminants("fgcz2021"), annot = annotation, rev_lab = "REV_")
+db_decoy[[length(db_decoy)]]
+length(db_decoy)
+anyDuplicated(names(db_decoy))
 ```
 
+The name of a database with decoys ends in `_d`.
 
-```{r eval=FALSE}
-write_fasta(resDBDecoy, file = xx)
+```{r}
+db_decoy_file <- file.path(
+  tempdir(),
+  paste0(basename(database_dir), "_d_", format(Sys.time(), "%Y%m%d"), ".fasta")
+)
+basename(db_decoy_file)
+write_fasta(db_decoy, file = db_decoy_file)
+```
+
+## All steps in one call
+
+`create_fgcz_fasta_db()` runs these steps, writes the file to `output_dir` and returns a summary.
+
+```{r message = FALSE}
+res <- create_fgcz_fasta_db(
+  database_dir,
+  contaminants = load_contaminants("fgcz2021"),
+  output_dir = tempdir(),
+  make_summary = FALSE
+)
+cat(res$summary)
+unlink(c(db_file, db_decoy_file, res$file_path))
 ```
 
 

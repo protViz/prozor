@@ -31,17 +31,16 @@ Encoding: UTF-8
 Language: en-US
 Imports:
     AhoCorasickTrie,
-    dplyr (>= 1.1.0),
     ggplot2,
     graphics,
     Matrix,
     methods,
-    seqinr,
     stats,
     utils
 Suggests:
     altdoc,
     docopt,
+    dplyr (>= 1.1.0),
     knitr,
     readr,
     rmarkdown,
@@ -58,21 +57,3 @@ LazyDataCompression: xz
 Config/roxygen2/version: 8.1.1
 Roxygen: list(markdown = TRUE)
 Config/testthat/edition: 3
-Collate: 
-    'annotate_peptides.R'
-    'readjust_windows.R'
-    'cdsw.R'
-    'compute_fdr.R'
-    'create_decoy_db.R'
-    'create_fgcz_fasta_db.R'
-    'data.R'
-    'greedy_parsimony.R'
-    'load_contaminants.R'
-    'plot_fdr.R'
-    'prepare_matrix.R'
-    'prozor-package.R'
-    'read_peptide_fasta.R'
-    'remove_signal_peptide.R'
-    'reverse_seq.R'
-    'write_fasta.R'
-    'zzz.R'

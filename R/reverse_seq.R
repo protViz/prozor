@@ -1,12 +1,8 @@
-.str_reverse <- function(x) {
-  vapply(strsplit(x, NULL), function(chars) paste(rev(chars), collapse = ""), character(1))
-}
-
 .reverse_single_seq <- function(fasta, rev_lab) {
-  seqinr::as.SeqFastaAA(
-    .str_reverse(fasta),
-    Annot = paste0(">", rev_lab, sub("^>", "", seqinr::getAnnot(fasta))),
-    name = paste0(rev_lab, seqinr::getName(fasta))
+  .as_seq_fasta_aa(
+    intToUtf8(rev(utf8ToInt(fasta))),
+    name = paste0(rev_lab, attr(fasta, "name")),
+    annot = paste0(">", rev_lab, sub("^>", "", attr(fasta, "Annot")))
   )
 }
 
@@ -23,8 +19,14 @@
 #' decoys <- reverse_seq(fasta)
 #' names(decoys)[1:3]
 #'
-#' tag <- list(seqinr::as.SeqFastaAA("DYKDDDDK", name = "Flag|FLAG|p2079", Annot = ">Flag|FLAG|p2079"))
-#' reverse_seq(tag, rev_lab = "DECOY_")
+#' # an entry as read_peptide_fasta() returns it
+#' tag <- structure(
+#'   "DYKDDDDK",
+#'   name = "Flag|FLAG|p2079",
+#'   Annot = ">Flag|FLAG|p2079",
+#'   class = "SeqFastaAA"
+#' )
+#' reverse_seq(list(tag), rev_lab = "DECOY_")
 reverse_seq <- function(fasta, rev_lab = "REV_") {
   res <- lapply(fasta, .reverse_single_seq, rev_lab = rev_lab)
   names(res) <- vapply(res, function(x) attributes(x)$name, character(1))

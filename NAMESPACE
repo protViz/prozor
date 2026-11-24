@@ -23,11 +23,9 @@ export(remove_signal_peptide)
 export(reverse_seq)
 export(write_fasta)
 exportClasses(Cdsw)
-import(Matrix)
 import(methods)
-import(seqinr)
-importFrom(ggplot2,.data)
-importFrom(stats,
-  quantile,
-  runif
+importFrom(Matrix,
+  colSums,
+  rowSums
 )
+importFrom(ggplot2,.data)

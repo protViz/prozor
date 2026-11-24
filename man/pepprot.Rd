@@ -3,7 +3,7 @@
 \docType{data}
 \name{pepprot}
 \alias{pepprot}
-\title{Peptide-protein assignments}
+\title{Precursors of identified peptides}
 \format{
 A data frame with 4,938 rows and 4 columns:
 \itemize{
@@ -14,6 +14,7 @@ A data frame with 4,938 rows and 4 columns:
 }
 }
 \description{
-Precursors of identified peptides.
+Sequence, charge and m/z of identified precursors, without proteins; \link{protpepmetashort} holds the proteins of
+some of them.
 }
 \keyword{data}

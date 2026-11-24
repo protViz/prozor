@@ -7,9 +7,9 @@
 compute_fdr(score, decoy_hit, larger_better = TRUE)
 }
 \arguments{
-\item{score}{Search engine scores.}
+\item{score}{Search engine scores, without \code{NA}.}
 
-\item{decoy_hit}{Logical, \code{TRUE} for decoy hits, one per score.}
+\item{decoy_hit}{Logical, \code{TRUE} for decoy hits, one per score, without \code{NA}.}
 
 \item{larger_better}{\code{TRUE} if a larger score is better, \code{FALSE} if a smaller score is better.}
 }
@@ -19,9 +19,10 @@ A list of vectors in the sorted order:
 \item \code{larger_better}: the argument.
 \item \code{order}: the positions of the sorted hits in the input.
 \item \code{decoy_hit}, \code{score}: the sorted input.
-\item \code{fpr}: the FDR estimated as 2 * decoys / all hits (Elias and Gygi).
+\item \code{fdr_concatenated}: the FDR of a concatenated target-decoy search, estimated as 2 * decoys / all hits (Elias
+and Gygi).
 \item \code{simple_fdr}: the FDR estimated as decoys / targets (Kaell).
-\item \code{q_value_fpr}, \code{q_value_simple_fdr}: the q-values of both estimates.
+\item \code{q_value_fdr_concatenated}, \code{q_value_simple_fdr}: the q-values of both estimates, as fractions.
 }
 }
 \description{

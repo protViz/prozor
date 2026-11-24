@@ -22,7 +22,6 @@ Function optimizes Extraction windows for DIA/SWATH so we have the same number o
 ```{r echo=FALSE}
 library(prozor)
 library(ggplot2)
-set.seed(1)
 ```
 
 # Constant width method
@@ -30,7 +29,7 @@ set.seed(1)
 
 ```{r fig.retina=3}
 data("masses")
-cdsw <- Cdsw(masses, nbins = 25, digits = 1)
+cdsw <- Cdsw(masses, nbins = 25)
 cdsw$plot()
 ```
 
@@ -82,6 +81,8 @@ plot_windows(optimized, masses)
 - Number of windows (`nbins`, set in `Cdsw()`).
 - Window boundaries can then be moved to regions with few precursors (`optimize_windows()`).
 
+`sampling_breaks()` mixes the masses with uniformly spread data and takes the quantile breaks of the mixture, with the smallest share of uniform data for which all windows lie within `minwindow` and `maxwindow`.
+
 
 ```{r fig.retina=3}
 cdsw$sampling_breaks(maxwindow = 100)
@@ -127,7 +128,7 @@ ggplot(errors, aes(x = method, y = value)) +
   labs(x = NULL, y = "deviation from equal counts")
 ```
 
-The mixed method has a relatively small error although it is able to fulfill constraints such as maximum window size.
+The error of the mixed method lies between the two others: it is smaller than that of the equal-width windows, and unlike the quantile windows the mixed windows meet the width limits.
 
 # Session info
 

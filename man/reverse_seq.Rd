@@ -23,8 +23,14 @@ fasta <- read_peptide_fasta(file)
 decoys <- reverse_seq(fasta)
 names(decoys)[1:3]
 
-tag <- list(seqinr::as.SeqFastaAA("DYKDDDDK", name = "Flag|FLAG|p2079", Annot = ">Flag|FLAG|p2079"))
-reverse_seq(tag, rev_lab = "DECOY_")
+# an entry as read_peptide_fasta() returns it
+tag <- structure(
+  "DYKDDDDK",
+  name = "Flag|FLAG|p2079",
+  Annot = ">Flag|FLAG|p2079",
+  class = "SeqFastaAA"
+)
+reverse_seq(list(tag), rev_lab = "DECOY_")
 }
 \seealso{
 Other FASTA databases:

@@ -14,7 +14,8 @@ annotate_peptides(
 }
 \arguments{
 \item{pepinfo}{A character vector of peptide sequences, or a data frame (or tibble) with the column \code{peptide}
-and any further columns, such as the charge state, which are kept.}
+and any further columns, such as the charge state, which are kept. It must not have the columns \code{protein_id},
+\code{offset}, \code{protein_sequence}, \code{matched} or \code{peptide_length}, which the result adds.}
 
 \item{fasta}{A list of protein sequences with unique names, as returned by \code{\link[=read_peptide_fasta]{read_peptide_fasta()}}.}
 
@@ -26,17 +27,21 @@ and any further columns, such as the charge state, which are kept.}
 }
 \value{
 A data frame with one row per row of \code{pepinfo} and protein occurrence: the columns of \code{pepinfo},
-\code{protein_id}, \code{offset} (1-based start of the peptide), \code{protein_sequence}, \code{matched} and \code{peptide_length}.
-\code{NULL}, with a warning, if no peptide occurs in \code{fasta}.
+\code{protein_id}, \code{offset} (1-based start of the peptide), \code{protein_sequence} (as searched, see \code{\link[=annotate_aho]{annotate_aho()}}),
+\code{matched} and \code{peptide_length}. \code{NULL}, with a warning, if no peptide occurs in \code{fasta}.
 }
 \description{
-Finds every occurrence of each peptide in \code{fasta} with \code{\link[=annotate_aho]{annotate_aho()}} and flags whether it is a tryptic
-match. Peptides that occur in no protein are dropped.
+Finds every occurrence of each peptide in \code{fasta} with \code{\link[=annotate_aho]{annotate_aho()}} and flags whether it is preceded by a
+tryptic cleavage site. Peptides that occur in no protein are dropped.
 }
 \details{
 Each occurrence of a peptide in a protein is one row. \code{matched} is \code{TRUE} when the residues before that
-occurrence match \code{prefix} and the residues after it match \code{suffix}; by default, when the occurrence
-follows K or R, starts the protein, or follows its initial methionine.
+occurrence match \code{prefix} and the residues after it match \code{suffix}. With the defaults, \code{matched} means: preceded
+by K or R or the protein N-terminus (or by the Met at position 1). The end of the peptide is not checked, neither
+its last residue nor a following proline; pass a \code{suffix} to check the residues after it.
+
+Whitespace around the peptide sequences, such as the \code{"\\r"} of a file with Windows line endings, is removed
+before the search, and the result holds the trimmed sequences.
 }
 \examples{
 file <- system.file("extdata/IDResults.txt.gz", package = "prozor")

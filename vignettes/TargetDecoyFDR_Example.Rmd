@@ -94,16 +94,16 @@ We define
      * false positives (FP) as the number of passing decoy assignments
      * true positives (TP) as the number of passing forward hits.
 
-### False positive rate
+### FDR of a concatenated target-decoy search
 
 Which is the "Fraction of incorrect assignments above score threshold". The multiplier 2 is needed here since we assume that also the forward sequences have false assignments.
 
 
 $$
-FPR = \frac{2 \cdot FP}{TP + FP}
+FDR_{concatenated} = \frac{2 \cdot FP}{TP + FP}
 $$
 
-This is taken from the reference by [@Elias2007].  [@Storey2003] defines FPR differently. Kaell points out that the FPR here actually should be named FDR and that "Many proteomics papers incorrectly refer to this quantity as the _false positive rate_." 
+This is taken from the reference by [@Elias2007]. It is often called the false positive rate (FPR), which [@Storey2003] defines differently. Kaell points out that this quantity actually should be named FDR and that "Many proteomics papers incorrectly refer to this quantity as the _false positive rate_." `compute_fdr()` therefore returns it as `fdr_concatenated`.
 
 
 ### Simple FDR
@@ -148,13 +148,13 @@ Most frequently you will need to get the score for an FDR in order to filter you
 
 ```{r}
 
-(score05G <- predict_score_fdr(fdr1, q_value = 5, method = "fpr"))
+(score05G <- predict_score_fdr(fdr1, q_value = 0.05, method = "fdr_concatenated"))
 dim(filter(fdr_sample, score <= score05G))
 
-(score01G <- predict_score_fdr(fdr1, q_value = 1, method = "fpr"))
+(score01G <- predict_score_fdr(fdr1, q_value = 0.01, method = "fdr_concatenated"))
 dim(filter(fdr_sample, score <= score01G))
 
-(score01K <- predict_score_fdr(fdr1, q_value = 1, method = "simple_fdr"))
+(score01K <- predict_score_fdr(fdr1, q_value = 0.01, method = "simple_fdr"))
 dim(filter(fdr_sample, score <= score01K))
 
 ```

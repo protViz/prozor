@@ -7,7 +7,8 @@
 annotate_aho(pepseq, fasta, peptide = "peptide_seq")
 }
 \arguments{
-\item{pepseq}{Peptide sequences, upper-case letters only.}
+\item{pepseq}{Peptide sequences: upper-case letters only, without whitespace or modifications.
+\code{\link[=annotate_peptides]{annotate_peptides()}} removes surrounding whitespace before it calls this function.}
 
 \item{fasta}{A list of protein sequences with unique names, as returned by \code{\link[=read_peptide_fasta]{read_peptide_fasta()}}.}
 
@@ -15,11 +16,16 @@ annotate_aho(pepseq, fasta, peptide = "peptide_seq")
 }
 \value{
 A data frame with one row per occurrence and the columns \code{protein_id}, \code{peptide} (named by the
-argument), \code{offset} (1-based start of the peptide) and \code{protein_sequence}; \code{NULL} if no peptide occurs.
+argument), \code{offset} (1-based start of the peptide) and \code{protein_sequence} (the sequence as searched);
+\code{NULL} if no peptide occurs.
 }
 \description{
 Searches all peptides at once with \code{\link[AhoCorasickTrie:AhoCorasickSearch]{AhoCorasickTrie::AhoCorasickSearch()}}. Peptides that occur in no protein
 are dropped.
+}
+\details{
+The protein sequences are searched in upper case, with each character other than a letter, such as the stop
+codon \code{*} of a translated database, replaced by \code{X}. The offsets are those of the sequences in \code{fasta}.
 }
 \examples{
 file <- system.file("extdata/IDResults.txt.gz", package = "prozor")

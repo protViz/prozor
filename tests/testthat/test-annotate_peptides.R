@@ -14,6 +14,23 @@ test_that("annotate_aho() rejects peptides with characters other than upper-case
   expect_error(annotate_aho("AC[+57.0]K", toy_fasta()), "\"AC\\[\\+57\\.0\\]K\"")
 })
 
+test_that("annotate_aho() rejects peptides with whitespace and shows it escaped", {
+  expect_error(annotate_aho(c("PEPTIDEK", "GGGR\r"), toy_fasta()), "without whitespace.*\"GGGR\\\\r\"")
+  expect_error(annotate_aho(" PEPTIDEK", toy_fasta()), "\" PEPTIDEK\"")
+})
+
+test_that("annotate_aho() searches proteins with lower-case residues or characters other than letters", {
+  # a stop codon (*) of a translated database, soft-masked (lower-case) residues
+  fasta <- list(P1 = "M*KPEPTIDEKaaa*", P2 = "MRpeptidekR")
+
+  res <- annotate_aho("PEPTIDEK", fasta)
+
+  expect_equal(res$protein_id, c("P1", "P2"))
+  expect_equal(res$offset, c(4, 3))
+  expect_equal(res$protein_sequence, c("MXKPEPTIDEKAAAX", "MRPEPTIDEKR"))
+  expect_equal(annotate_peptides("PEPTIDEK", fasta)$matched, c(TRUE, TRUE))
+})
+
 test_that("annotate_aho() rejects duplicated protein names", {
   fasta <- c(toy_fasta(), toy_fasta()["P1"])
 
@@ -49,7 +66,31 @@ test_that("annotate_peptides() keeps one row per peptide row and protein occurre
   expect_equal(as.vector(table(res$charge[res$peptide_seq == "PEPTIDEK"])), c(6, 6))
 })
 
+test_that("annotate_peptides() trims whitespace around the peptides", {
+  # e.g. "\r" at the end of the last column of a file with Windows line endings
+  pepinfo <- data.frame(peptide_seq = c("PEPTIDEK\r", " GGGR"), charge = c(2, 3))
+
+  res <- annotate_peptides(pepinfo, toy_fasta())
+
+  expect_equal(nrow(res), 6 + 1)
+  expect_setequal(res$peptide_seq, c("PEPTIDEK", "GGGR"))
+  expect_equal(res$peptide_length[res$peptide_seq == "GGGR"], 4)
+  expect_equal(res$charge[res$peptide_seq == "GGGR"], 3)
+})
+
+test_that("annotate_peptides() rejects `pepinfo` columns named like result columns", {
+  # e.g. search engine output with a protein column
+  psm <- data.frame(peptide_seq = "PEPTIDEK", protein_id = "P1", offset = 99, matched = TRUE, peptide_length = 8)
+
+  expect_error(
+    annotate_peptides(psm, toy_fasta()),
+    "`pepinfo` has columns.*: protein_id, offset, matched, peptide_length\\."
+  )
+  expect_error(annotate_peptides("PEPTIDEK", toy_fasta(), peptide = "offset"), "`pepinfo` has columns.*: offset\\.")
+})
+
 test_that("annotate_peptides() gives the same result for a tibble and a data frame", {
+  skip_if_not_installed("dplyr")
   pepinfo <- data.frame(peptide_seq = c("PEPTIDEK", "GGGR"), charge = c(2, 3))
 
   from_df <- annotate_peptides(pepinfo, toy_fasta())

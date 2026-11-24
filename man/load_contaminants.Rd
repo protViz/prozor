@@ -10,7 +10,7 @@ load_contaminants(set, no_human = FALSE)
 \item{set}{Name of the contaminant set: \code{"fgcz2019"}, \code{"fgcz2021"}, \code{"fgcz2022"}, \code{"universal2024"} or
 \code{"special2024"}.}
 
-\item{no_human}{If \code{TRUE}, drop the sequences whose header contains \code{HUMAN}.}
+\item{no_human}{If \code{TRUE}, drop the sequences whose header contains \code{HUMAN} or \verb{Homo sapiens}.}
 }
 \value{
 A named list of \code{SeqFastaAA} objects.

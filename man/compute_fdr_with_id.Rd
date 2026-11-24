@@ -7,7 +7,7 @@
 compute_fdr_with_id(score, id, decoy = "^REV_", larger_better = TRUE)
 }
 \arguments{
-\item{score}{Search engine scores.}
+\item{score}{Search engine scores, without \code{NA}.}
 
 \item{id}{Protein IDs, one per score.}
 

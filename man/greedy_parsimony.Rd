@@ -7,15 +7,24 @@
 greedy_parsimony(pepprot)
 }
 \arguments{
-\item{pepprot}{A peptide-by-protein matrix, as returned by \code{\link[=prepare_matrix]{prepare_matrix()}}.}
+\item{pepprot}{A peptide-by-protein matrix with peptide row names and protein column names, as returned by
+\code{\link[=prepare_matrix]{prepare_matrix()}}.}
 }
 \value{
-A named list with one element per peptide (row of \code{pepprot}): the protein, or \verb{;}-separated protein
-group, it is assigned to.
+A named list with one element per peptide that matches a protein (row of \code{pepprot} with a positive
+entry): the protein, or \verb{;}-separated protein group, it is assigned to. Peptides without a protein are left
+out.
 }
 \description{
 Repeatedly assigns all unexplained peptides of the protein that explains the most of them. Proteins that
-explain exactly the same peptides are reported together, separated by \verb{;}.
+explain exactly the same unexplained peptides are reported together, separated by \verb{;}. The groups are formed
+on the peptides that remain in each round: proteins B (peptides p1, p5, p6) and C (p2, p5, p6) form the group
+\code{"B;C"} for p5 and p6 after protein A has taken p1 and p2.
+}
+\details{
+A protein explains a peptide when their entry in \code{pepprot} is positive. Proteins are ranked by the number of
+peptides they explain, not by the sum of their weights, so a matrix from \code{prepare_matrix(weighting = "inverse")}
+gives the same result as one with weights 1.
 }
 \examples{
 data(protpepmetashort)

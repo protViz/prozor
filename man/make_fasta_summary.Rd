@@ -4,12 +4,10 @@
 \alias{make_fasta_summary}
 \title{Summarize a FASTA database}
 \usage{
-make_fasta_summary(db, old = FALSE, as_string = TRUE)
+make_fasta_summary(db, as_string = TRUE)
 }
 \arguments{
 \item{db}{A list of sequences, as returned by \code{\link[=read_peptide_fasta]{read_peptide_fasta()}}.}
-
-\item{old}{If \code{TRUE}, count the amino acids by concatenating all sequences (the older, slower method).}
 
 \item{as_string}{If \code{TRUE}, return text to pass to \code{\link[=cat]{cat()}}; if \code{FALSE}, a list.}
 }

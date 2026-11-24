@@ -1,21 +1,26 @@
 #' Annotate peptides with the proteins that contain them
 #'
-#' Finds every occurrence of each peptide in `fasta` with [annotate_aho()] and flags whether it is a tryptic
-#' match. Peptides that occur in no protein are dropped.
+#' Finds every occurrence of each peptide in `fasta` with [annotate_aho()] and flags whether it is preceded by a
+#' tryptic cleavage site. Peptides that occur in no protein are dropped.
 #'
 #' Each occurrence of a peptide in a protein is one row. `matched` is `TRUE` when the residues before that
-#' occurrence match `prefix` and the residues after it match `suffix`; by default, when the occurrence
-#' follows K or R, starts the protein, or follows its initial methionine.
+#' occurrence match `prefix` and the residues after it match `suffix`. With the defaults, `matched` means: preceded
+#' by K or R or the protein N-terminus (or by the Met at position 1). The end of the peptide is not checked, neither
+#' its last residue nor a following proline; pass a `suffix` to check the residues after it.
+#'
+#' Whitespace around the peptide sequences, such as the `"\r"` of a file with Windows line endings, is removed
+#' before the search, and the result holds the trimmed sequences.
 #'
 #' @param pepinfo A character vector of peptide sequences, or a data frame (or tibble) with the column `peptide`
-#'   and any further columns, such as the charge state, which are kept.
+#'   and any further columns, such as the charge state, which are kept. It must not have the columns `protein_id`,
+#'   `offset`, `protein_sequence`, `matched` or `peptide_length`, which the result adds.
 #' @param fasta A list of protein sequences with unique names, as returned by [read_peptide_fasta()].
 #' @param peptide Name of the column with the peptide sequences.
 #' @param prefix Regular expression the residues before a match must end with.
 #' @param suffix Regular expression the residues after a match must start with.
 #' @return A data frame with one row per row of `pepinfo` and protein occurrence: the columns of `pepinfo`,
-#'   `protein_id`, `offset` (1-based start of the peptide), `protein_sequence`, `matched` and `peptide_length`.
-#'   `NULL`, with a warning, if no peptide occurs in `fasta`.
+#'   `protein_id`, `offset` (1-based start of the peptide), `protein_sequence` (as searched, see [annotate_aho()]),
+#'   `matched` and `peptide_length`. `NULL`, with a warning, if no peptide occurs in `fasta`.
 #' @family protein inference
 #' @export
 #' @examples
@@ -30,7 +35,11 @@ annotate_peptides <- function(pepinfo, fasta, peptide = "peptide_seq", prefix = 
     pepinfo <- data.frame(pepinfo)
     colnames(pepinfo) <- peptide
   }
-  pepinfo[[peptide]] <- as.character(pepinfo[[peptide]])
+  clashes <- intersect(colnames(pepinfo), c("protein_id", "offset", "protein_sequence", "matched", "peptide_length"))
+  if (length(clashes) > 0) {
+    stop("`pepinfo` has columns named like result columns; rename them: ", paste(clashes, collapse = ", "), ".")
+  }
+  pepinfo[[peptide]] <- trimws(as.character(pepinfo[[peptide]]))
   pepinfo$peptide_length <- nchar(pepinfo[[peptide]])
 
   restab <- annotate_aho(unique(pepinfo[[peptide]]), fasta, peptide = peptide)
@@ -50,11 +59,16 @@ annotate_peptides <- function(pepinfo, fasta, peptide = "peptide_seq", prefix = 
 #' Searches all peptides at once with [AhoCorasickTrie::AhoCorasickSearch()]. Peptides that occur in no protein
 #' are dropped.
 #'
-#' @param pepseq Peptide sequences, upper-case letters only.
+#' The protein sequences are searched in upper case, with each character other than a letter, such as the stop
+#' codon `*` of a translated database, replaced by `X`. The offsets are those of the sequences in `fasta`.
+#'
+#' @param pepseq Peptide sequences: upper-case letters only, without whitespace or modifications.
+#'   [annotate_peptides()] removes surrounding whitespace before it calls this function.
 #' @param fasta A list of protein sequences with unique names, as returned by [read_peptide_fasta()].
 #' @param peptide Name of the result column that holds the peptide sequences.
 #' @return A data frame with one row per occurrence and the columns `protein_id`, `peptide` (named by the
-#'   argument), `offset` (1-based start of the peptide) and `protein_sequence`; `NULL` if no peptide occurs.
+#'   argument), `offset` (1-based start of the peptide) and `protein_sequence` (the sequence as searched);
+#'   `NULL` if no peptide occurs.
 #' @family protein inference
 #' @export
 #' @examples
@@ -65,13 +79,13 @@ annotate_peptides <- function(pepinfo, fasta, peptide = "peptide_seq", prefix = 
 #' hits <- annotate_aho(peptides[1:20], fasta)
 #' dim(hits)
 annotate_aho <- function(pepseq, fasta, peptide = "peptide_seq") {
-  pepseq <- unique(trimws(pepseq))
+  pepseq <- unique(pepseq)
   invalid <- pepseq[!grepl("^[A-Z]+$", pepseq)]
   if (length(invalid) > 0) {
     # AhoCorasickTrie 0.1.3 crashes R on keywords outside A-Z (https://github.com/chambm/AhoCorasickTrie/pull/5)
     stop(
-      "Peptide sequences must consist of upper-case letters only; found: ",
-      paste0("\"", utils::head(invalid, 5), "\"", collapse = ", "),
+      "Peptide sequences must consist of upper-case letters only, without whitespace or modifications; found: ",
+      paste(encodeString(utils::head(invalid, 5), quote = "\""), collapse = ", "),
       "."
     )
   }
@@ -84,16 +98,22 @@ annotate_aho <- function(pepseq, fasta, peptide = "peptide_seq") {
       "."
     )
   }
-  sequences <- trimws(unlist(fasta, use.names = FALSE))
+  # AhoCorasickTrie stops on characters outside A-Z, such as the stop codon `*`; one X per character keeps the offsets
+  sequences <- gsub("[^A-Z]", "X", toupper(trimws(unlist(fasta, use.names = FALSE))), perl = TRUE)
   names(sequences) <- protein_ids
 
   res <- AhoCorasickTrie::AhoCorasickSearch(pepseq, sequences, alphabet = "aminoacid")
   if (length(res) == 0) {
     return(NULL)
   }
-  hits <- as.data.frame(dplyr::bind_rows(lapply(res, dplyr::bind_rows), .id = "protein_id"))
-  colnames(hits)[colnames(hits) == "Keyword"] <- peptide
-  colnames(hits)[colnames(hits) == "Offset"] <- "offset"
-  proteins <- data.frame(protein_id = protein_ids, protein_sequence = unname(sequences))
-  dplyr::inner_join(hits, proteins, by = "protein_id")
+  matches <- unlist(res, recursive = FALSE, use.names = FALSE)
+  protein_id <- rep(names(res), lengths(res))
+  hits <- data.frame(
+    protein_id = protein_id,
+    peptide = vapply(matches, `[[`, character(1), "Keyword"),
+    offset = vapply(matches, `[[`, numeric(1), "Offset"),
+    protein_sequence = unname(sequences[protein_id])
+  )
+  names(hits)[2] <- peptide
+  hits
 }

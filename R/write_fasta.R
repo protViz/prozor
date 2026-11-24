@@ -16,6 +16,19 @@
 #' length(read_peptide_fasta(out))
 #' unlink(out)
 write_fasta <- function(fasta, file) {
-  headers <- vapply(fasta, function(x) attributes(x)$Annot, character(1))
-  seqinr::write.fasta(fasta, sub("^>", "", headers), file.out = file, nbchar = 60, as.string = TRUE)
+  con <- file(file, "w")
+  on.exit(close(con))
+  # one writeLines() per chunk of 20,000 entries; only the lines of one chunk are held in memory
+  for (chunk in split(seq_along(fasta), ceiling(seq_along(fasta) / 20000))) {
+    entries <- fasta[chunk]
+    headers <- paste0(">", sub("^>", "", vapply(entries, attr, character(1), "Annot", USE.NAMES = FALSE)))
+    sequences <- unlist(entries, use.names = FALSE)
+    n_lines <- ceiling(nchar(sequences) / 60)
+    starts <- sequence(n_lines, from = 1L, by = 60L)
+    lines <- character(length(entries) + sum(n_lines))
+    header_pos <- cumsum(c(1, n_lines[-length(n_lines)] + 1))
+    lines[header_pos] <- headers
+    lines[-header_pos] <- substring(rep.int(sequences, n_lines), starts, starts + 59L)
+    writeLines(lines, con)
+  }
 }

@@ -19,19 +19,25 @@ create_fgcz_fasta_db(
 
 \item{rev_lab}{Prefix of the reversed decoy sequences, or \code{NULL} for no decoys.}
 
-\item{output_dir}{Directory the FASTA file is written to.}
+\item{output_dir}{Directory the FASTA file is written to; must not be \code{database_dir}, where the next run
+would read the written database as targets.}
 
 \item{make_summary}{If \code{TRUE}, append the output of \code{\link[=make_fasta_summary]{make_fasta_summary()}} to the summary.}
 }
 \value{
-A list with the elements \code{db} (the sequences written), \code{file_path}, \code{summary} (text), \code{call} and
-\code{db_name}.
+A list with the elements \code{db} (the sequences written), \code{file_path}, \code{summary} (text with the argument
+values, the file name and the number of sequences), \code{call} and \code{db_name}.
 }
 \description{
-Reads all FASTA files in \code{database_dir}, adds contaminants and decoys with \code{\link[=create_decoy_db]{create_decoy_db()}}, drops
-duplicated entries and writes the result to \code{output_dir} as \verb{<name>[_d]_<date>.fasta}, where \verb{_d} marks a
-database with decoys. The first line of \code{annotation.txt} in \code{database_dir} becomes the header of the
-dummy source entry.
+Reads all FASTA files in \code{database_dir} (\verb{*.fasta}, \verb{*.fa} or \verb{*.faa}, optionally gzipped), adds
+contaminants and decoys with \code{\link[=create_decoy_db]{create_decoy_db()}}, which drops duplicated entries, and writes the result to
+\code{output_dir} as \verb{<name>[_d]_<date>.fasta}, where \verb{_d} marks a database with decoys. The first line of
+\code{annotation.txt} in \code{database_dir} becomes the header of the dummy source entry.
+}
+\details{
+The whole database, decoys included, is held in memory. Peak memory grows linearly with the database, by about
+4 KB per written sequence or 6 to 7 times the size of the written file: 250,000 target proteins (500,000
+sequences with decoys, a 320 MB file) take 2.2 GB.
 }
 \examples{
 res <- create_fgcz_fasta_db(

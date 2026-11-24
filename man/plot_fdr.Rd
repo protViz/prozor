@@ -16,8 +16,8 @@ A ggplot object.
 }
 \description{
 Two panels on a shared score axis: the histogram of target and decoy scores, and the q-values of both FDR
-estimates in percent. When smaller scores are better, the score axis is logarithmic. See
-\code{vignette("TargetDecoyFDR_Example", package = "prozor")}.
+estimates in percent. When smaller scores are better and all scores are positive, the score axis is
+logarithmic. See \code{vignette("TargetDecoyFDR_Example", package = "prozor")}.
 }
 \examples{
 data(fdr_sample)

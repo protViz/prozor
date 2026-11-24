@@ -17,7 +17,7 @@
 #'
 #' @param set Name of the contaminant set: `"fgcz2019"`, `"fgcz2021"`, `"fgcz2022"`, `"universal2024"` or
 #'   `"special2024"`.
-#' @param no_human If `TRUE`, drop the sequences whose header contains `HUMAN`.
+#' @param no_human If `TRUE`, drop the sequences whose header contains `HUMAN` or `Homo sapiens`.
 #' @return A named list of `SeqFastaAA` objects.
 #' @references Frankenfield AM, Ni J, Ahmed M, Hao L (2022). Protein Contaminants Matter: Building Universal
 #'   Protein Contaminant Libraries for DDA and DIA Proteomics. *Journal of Proteome Research*, 21(9), 2104-2113.
@@ -40,8 +40,8 @@ load_contaminants <- function(set, no_human = FALSE) {
   }
   contaminants <- read_peptide_fasta(system.file("extdata", .contaminant_files[[set]], package = "prozor"))
   if (no_human) {
-    annot <- vapply(contaminants, seqinr::getAnnot, character(1))
-    contaminants <- contaminants[!grepl("HUMAN", annot)]
+    annot <- vapply(contaminants, attr, character(1), "Annot")
+    contaminants <- contaminants[!grepl("HUMAN|Homo sapiens", annot)]
   }
   contaminants
 }

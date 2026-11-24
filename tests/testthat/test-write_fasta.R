@@ -7,11 +7,11 @@ test_that("write_fasta() output reads back unchanged", {
 
   expect_equal(names(back), names(fasta))
   expect_equal(as.character(unlist(back)), as.character(unlist(fasta)))
-  expect_equal(vapply(back, seqinr::getAnnot, character(1)), vapply(fasta, seqinr::getAnnot, character(1)))
+  expect_equal(vapply(back, attr, character(1), "Annot"), vapply(fasta, attr, character(1), "Annot"))
 })
 
 test_that("write_fasta() writes the Annot header and 60 residues per line", {
-  fasta <- list(seqinr::as.SeqFastaAA(strrep("A", 70), name = "x", Annot = ">x some protein"))
+  fasta <- list(seq_fasta_aa(strrep("A", 70), "x", ">x some protein"))
   file <- withr::local_tempfile(fileext = ".fasta")
 
   write_fasta(fasta, file)
@@ -20,10 +20,31 @@ test_that("write_fasta() writes the Annot header and 60 residues per line", {
 })
 
 test_that("write_fasta() keeps a '>' inside the header", {
-  fasta <- list(seqinr::as.SeqFastaAA("AAA", name = "x", Annot = ">x ADP>ATP converter"))
+  fasta <- list(seq_fasta_aa("AAA", "x", ">x ADP>ATP converter"))
   file <- withr::local_tempfile(fileext = ".fasta")
 
   write_fasta(fasta, file)
 
   expect_equal(readLines(file)[1], ">x ADP>ATP converter")
+})
+
+test_that("write_fasta() writes sequences of 0, 60 and 121 residues", {
+  fasta <- list(seq_fasta_aa("", "e"), seq_fasta_aa(strrep("A", 60), "s60"), seq_fasta_aa(strrep("C", 121), "s121"))
+  file <- withr::local_tempfile(fileext = ".fasta")
+
+  write_fasta(fasta, file)
+
+  expect_equal(readLines(file), c(">e", ">s60", strrep("A", 60), ">s121", strrep("C", 60), strrep("C", 60), "C"))
+  expect_equal(unlist(read_peptide_fasta(file), use.names = FALSE), unlist(fasta, use.names = FALSE))
+})
+
+test_that("write_fasta() output reads back unchanged across write chunks", {
+  # write_fasta() writes 20,000 entries at a time
+  n <- 20001
+  fasta <- lapply(seq_len(n), function(i) seq_fasta_aa(strrep("K", i %% 130), paste0("p", i)))
+  file <- withr::local_tempfile(fileext = ".fasta")
+
+  write_fasta(fasta, file)
+
+  expect_equal(unname(read_peptide_fasta(file)), fasta)
 })

@@ -51,7 +51,7 @@ bcd |>
 # Define helper function
 
 ```{r}
-summarizeLevel <- function(data, level = "PSM", score = "e.value", protein = "protein", q_value = 1, decoy = "^REV_") {
+summarizeLevel <- function(data, level = "PSM", score = "e.value", protein = "protein", q_value = 0.01, decoy = "^REV_") {
   fdr <- compute_fdr(data[[score]], grepl(decoy, data[[protein]]), larger_better = FALSE)
   cutoff <- predict_score_fdr(fdr, q_value = q_value, method = "simple_fdr")
 
@@ -111,7 +111,7 @@ summarizeLevel(proteinLevel, score = "min_e.value", level = "Proteins")
 Filter on PSM level and then estimate the FDR on peptide and protein level.
 
 ```{r}
-filtLevel <- function(data, score = "e.value", larger_better = FALSE, protein = "protein", q_value = 1, decoy = "^REV_") {
+filtLevel <- function(data, score = "e.value", larger_better = FALSE, protein = "protein", q_value = 0.01, decoy = "^REV_") {
   fdr <- compute_fdr(data[[score]], grepl(decoy, data[[protein]]), larger_better = larger_better)
   cutoff <- predict_score_fdr(fdr, q_value = q_value, method = "simple_fdr")
   print(cutoff)
@@ -151,7 +151,7 @@ summarizeFDRS <- function(data, filt, psmFdrCutoff, pep = "plain_peptide", prot 
 # psm level FDR
 psmFdrCutoff <- 0.01
 
-filt <- filtLevel(bcd, score = "e.value", larger_better = FALSE, q_value = psmFdrCutoff * 100)
+filt <- filtLevel(bcd, score = "e.value", larger_better = FALSE, q_value = psmFdrCutoff)
 knitr::kable(summarizeFDRS(bcd, filt, psmFdrCutoff))
 ```
 
@@ -162,6 +162,6 @@ knitr::kable(summarizeFDRS(bcd, filt, psmFdrCutoff))
 # psm level FDR
 psmFdrCutoff <- 0.01
 
-filt <- filtLevel(bcd, score = "sp_score", larger_better = TRUE, q_value = psmFdrCutoff * 100)
+filt <- filtLevel(bcd, score = "sp_score", larger_better = TRUE, q_value = psmFdrCutoff)
 knitr::kable(summarizeFDRS(bcd, filt, psmFdrCutoff))
 ```

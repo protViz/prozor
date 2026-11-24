@@ -3,7 +3,7 @@
 \docType{data}
 \name{protpepmetashort}
 \alias{protpepmetashort}
-\title{Peptide-protein assignments, small version}
+\title{Peptide-protein assignments}
 \format{
 A data frame with 423 rows and 7 columns:
 \itemize{
