@@ -6,7 +6,7 @@ test_that("create_fgcz_fasta_db() writes a dated decoy database to output_dir", 
   res <- suppressMessages(create_fgcz_fasta_db(example, output_dir = outdir, make_summary = FALSE))
   back <- read_peptide_fasta(res$file_path)
 
-  expect_equal(dirname(res$file_path), outdir)
+  expect_equal(normalizePath(dirname(res$file_path)), normalizePath(outdir))
   expect_match(basename(res$file_path), "^p1000_db1_example_d_[0-9]{8}\\.fasta$")
   expect_equal(res$db_name, "p1000_db1_example_d")
   expect_length(res$db, 3155)
