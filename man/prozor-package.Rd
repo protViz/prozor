@@ -6,11 +6,12 @@
 \alias{prozor-package}
 \title{prozor: Minimal Protein Set Explaining Peptide Spectrum Matches}
 \description{
-Determine minimal protein set explaining peptide spectrum matches. Utility functions for creating fasta amino acid databases with decoys and contaminants. Peptide false discovery rate estimation for target decoy search results on psm, precursor, peptide and protein level. Computing dynamic swath window sizes based on MS1 or MS2 signal distributions.
+Determine the minimal set of proteins that explains the peptide spectrum matches (PSMs) of a mass spectrometry experiment, using a greedy parsimony algorithm. Annotate peptides with the proteins they match in 'FASTA' sequence databases, and create 'FASTA' databases with reversed decoy sequences and contaminant proteins. Estimate the false discovery rate (FDR) of target-decoy search results at the PSM, precursor, peptide and protein level, following Elias and Gygi (2007) \doi{10.1038/nmeth1019} and Käll et al. (2008) \doi{10.1021/pr700600n}. Compute variable precursor isolation windows for data-independent acquisition (DIA) from the distribution of precursor (MS1) masses.
 }
 \seealso{
 Useful links:
 \itemize{
+  \item \url{https://protviz.github.io/prozor/}
   \item \url{https://github.com/protviz/prozor}
   \item Report bugs at \url{https://github.com/protviz/prozor/issues}
 }
@@ -22,6 +23,13 @@ Useful links:
 Authors:
 \itemize{
   \item Witold Wolski \email{wewolski@gmail.com} (\href{https://orcid.org/0000-0002-6468-120X}{ORCID})
+}
+
+Other contributors:
+\itemize{
+  \item Jonas Grossmann [contributor]
+  \item Functional Genomics Center Zurich (\href{https://ror.org/04tgr1802}{ROR}) [funder]
+  \item University of Zurich (\href{https://ror.org/02crff812}{ROR}) [copyright holder]
 }
 
 }
