@@ -7,11 +7,20 @@
 greedyRes2Matrix(res)
 }
 \arguments{
-\item{res}{result of function prozor::greedy_parsimony}
+\item{res}{result of function prozor::greedy_parsimony; its names must have the form peptide.charge}
 }
 \value{
-matrix of peptide protein assignments
+data.frame of peptide protein assignments with columns Peptide, precursorCharge and Protein
 }
 \description{
 converts result of greedy_parsimony function to a matrix with 3 columns - peptide - charge and protein
+}
+\examples{
+data(protpepmetashort)
+protpepmetashort$precursor <- paste(protpepmetashort$peptideSeq,
+                                    protpepmetashort$precursorCharge, sep = ".")
+xx <- prepareMatrix(protpepmetashort, peptideID = "precursor")
+es <- greedy_parsimony(xx)
+head(greedyRes2Matrix(es))
+
 }

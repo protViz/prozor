@@ -16,10 +16,8 @@ list with contaminant sequences
 load special prot
 }
 \examples{
-#library(prozor)
 cont <- load_special_prot_2024()
 length(cont)
 contNH <- load_special_prot_2024(noHuman = TRUE)
 length(contNH)
-#example how to create a protein db with decoy sequences
 }

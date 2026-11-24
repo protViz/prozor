@@ -10,10 +10,11 @@
 #' @param sep separator for precursor (rownames)
 #' @param proteinID protein ID column
 #' @param peptideID peptide / precursor ID column
+#' @param use.last.ij passed to \code{Matrix::sparseMatrix}; if TRUE, a repeated peptide-protein pair
+#'   keeps a single entry instead of the sum of all entries
 #' @return sparse matrix
 #' @export
 #' @examples
-#' #library(prozor)
 #' data(protpepmetashort)
 #' library(Matrix)
 #' colnames(protpepmetashort)
@@ -21,18 +22,17 @@
 #' dim(protpepmetashort)
 #' count = prepareMatrix( protpepmetashort, peptideID = "peptideSeq" )
 #' dim(count)
-#' inverse = prepareMatrix( protpepmetashort, peptideID = "peptideSeq" , weight = "inverse")
-#' #aa = prepareMatrix(protpepmetashort,  peptideID = "peptideSeq" , weight = "AA")
-#' #xx = prepareMatrix(protpepmetashort,  peptideID = "peptideSeq" , weight = "coverage")
+#' inverse = prepareMatrix( protpepmetashort, peptideID = "peptideSeq" , weighting = "inverse")
 #' image( as.matrix(count) )
 #'
 #' corProt = cor( as.matrix(count) )
-#' par(mfrow =c(1,2))
+#' oldpar <- par(mfrow = c(1, 2))
 #' image(corProt)
 #'
 #' #penalise peptides matching many proteins
 #' corProtn = cor( as.matrix(inverse) )
 #' image(corProtn)
+#' par(oldpar)
 #'
 prepareMatrix <- function(data,
                           proteinID = "proteinID",

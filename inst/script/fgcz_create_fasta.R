@@ -40,7 +40,11 @@ params <- c("\nParameters used:\n\t",
             "   summary: ",   summary <- opt$summary, "\n\t",
             "  contamin: ", contamin <- opt[["--contamin"]], "\n\t",
             "    revLab: ", revLab <- opt[["--revLab"]], "\n\t",
-            "output_dir: ", output_dir <- opt[["--output_dir"]], "\n\n\n\t")
+            "output_dir: ", output_dir <- if (is.null(opt[["--output_dir"]])) {
+              dirname(opt$fasta_dir)
+            } else {
+              opt[["--output_dir"]]
+            }, "\n\n\n\t")
 
 cat(paste(params, collapse = ""))
 

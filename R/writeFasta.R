@@ -9,19 +9,17 @@
 #' @param ... fasta list or single file
 #' @param file where to write
 #' @export
-#' @return writes a file.
+#' @return No return value, called for side effects (writes a FASTA file).
 #' @examples
-#' #example how to create a protein db with decoy sequences
 #' library(seqinr)
-#' #library(prozor)
 #' file = system.file("extdata/fgcz_contaminants2021_20210929.fasta.gz",package = "prozor")
 #' fasta = readPeptideFasta(file = file)
 #' revfasta <- reverseSeq(fasta)
 #' decoyDB <- c(fasta,revfasta)
 #' stopifnot(length(decoyDB) == 2 * length(fasta))
-#' \dontrun{
-#' writeFasta(decoyDB, file="test.fasta")
-#' }
+#' tf <- tempfile(fileext = ".fasta")
+#' writeFasta(tf, decoyDB)
+#' unlink(tf)
 writeFasta <- function(file, ...  ) {
    fasta <- c(...)
   .writeFasta(fasta,file = file)

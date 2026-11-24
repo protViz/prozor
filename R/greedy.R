@@ -4,15 +4,6 @@
     return(y)
 }
 
-#'
-if (FALSE) {
-    data(protpepmetashort)
-    protpepmetashort
-    xx = prepareMatrix(protpepmetashort, peptideID = "peptideModSeq")
-    debug(prozor:::.greedy2)
-    prozor:::.greedy2(xx)
-}
-
 .greedy2 <- function(pepprot){
     ncolX = ncol(pepprot)
     res <- vector(ncolX , mode = "list")
@@ -37,9 +28,9 @@ if (FALSE) {
             # check if disjoint
             mm <- pepprot[,idx]
             find_overlap <- function(mm){
-                ii_x <- mdist(t(as.matrix(mm)), .func = prozor:::inter_x)
-                ii_y <- mdist(t(as.matrix(mm)), .func = prozor:::inter_y)
-                if (!all(na.omit(ii_x == ii_y))) { warning("ii_x and ii_y are not identical.") }
+                ii_x <- mdist(t(as.matrix(mm)), .func = inter_x)
+                ii_y <- mdist(t(as.matrix(mm)), .func = inter_y)
+                if (!all(stats::na.omit(ii_x == ii_y))) { warning("ii_x and ii_y are not identical.") }
                 cS <- mean(colSums(mm))
                 ib <- which( ii_x == cS, arr.ind = TRUE)
                 if (nrow(ib) > 1) {
@@ -66,8 +57,6 @@ if (FALSE) {
 #' @return list of peptide protein assignment
 #' @export
 #' @examples
-#' #library(prozor)
-#'
 #' data(protpepmetashort)
 #' colnames(protpepmetashort)
 #' dim(unique(protpepmetashort[,4]))
@@ -76,7 +65,6 @@ if (FALSE) {
 #' stopifnot(dim(xx)[1] == dim(unique(protpepmetashort[,4]))[1])
 #'
 #' es = greedy_parsimony(xx)
-#' debug(prozor:::.greedy2)
 #' stopifnot(length(unique(names(es))) == dim(unique(protpepmetashort[,4]))[1])
 #'
 greedy_parsimony <- function(pepprot) {
@@ -88,9 +76,16 @@ greedy_parsimony <- function(pepprot) {
     return(ltmp)
 }
 #' converts result of greedy_parsimony function to a matrix with 3 columns - peptide - charge and protein
-#' @return matrix of peptide protein assignments
-#' @param res result of function prozor::greedy_parsimony
+#' @return data.frame of peptide protein assignments with columns Peptide, precursorCharge and Protein
+#' @param res result of function prozor::greedy_parsimony; its names must have the form peptide.charge
 #' @export
+#' @examples
+#' data(protpepmetashort)
+#' protpepmetashort$precursor <- paste(protpepmetashort$peptideSeq,
+#'                                     protpepmetashort$precursorCharge, sep = ".")
+#' xx <- prepareMatrix(protpepmetashort, peptideID = "precursor")
+#' es <- greedy_parsimony(xx)
+#' head(greedyRes2Matrix(es))
 #'
 greedyRes2Matrix <- function(res){
     res <- (cbind(names(res),unlist(res)))

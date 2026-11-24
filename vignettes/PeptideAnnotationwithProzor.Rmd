@@ -23,8 +23,6 @@ This Vignette describes how the `prozor::greedy` function can be used to infer p
 ```{r loadData}
 library(prozor)
 
-rm(list = ls())
-
 file = system.file("extdata/IDResults.txt.gz" , package = "prozor")
 specMeta <- readr::read_tsv(file)
 head(specMeta) |> knitr::kable()
@@ -49,7 +47,6 @@ barplot(c(All = length(resAll), Canonical = length(resCan)))
 ```{r}
 length(unique(specMeta$peptideSeq))
 upeptide <- unique(specMeta$peptideSeq)
-debug( prozor::annotatePeptides)
 annotAll <- prozor::annotatePeptides(upeptide, resAll)
 head(subset(annotAll,select =  -proteinSequence)) |> knitr::kable()
 

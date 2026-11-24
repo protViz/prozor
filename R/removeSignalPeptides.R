@@ -62,6 +62,14 @@ makeID <- function(sequence, id, sp){
 #' @param signal tab delimited file with signals
 #' @param idfun function to generate id's
 #' @return list with sequences with signal peptide removed
+#' @examples
+#' file <- system.file("extdata/fgcz_contaminants2021_20210929.fasta.gz", package = "prozor")
+#' db <- readPeptideFasta(file)[2:3]
+#' entry <- vapply(strsplit(names(db), split = "|", fixed = TRUE), function(x) x[2], character(1))
+#' signal <- data.frame(Entry = entry, Signal.peptide = c("SIGNAL 1 20", ""))
+#' res <- removeSignalPeptide(db, signal)
+#' nchar(db[[1]])
+#' nchar(res[[1]])
 removeSignalPeptide <- function(db, signal, idfun=makeID){
   res <- db
   tmp2 <- as.numeric(gsub("^SIGNAL [0-9]+ ([0-9]+).*"  , "\\1", signal$Signal.peptide))

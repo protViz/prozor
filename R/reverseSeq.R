@@ -17,10 +17,9 @@
 #' @param fasta - an r list with SeqFastaAA
 #' @param revLab - how to label reverse sequences, default = REV_
 #' @export
-#' @return string with reversed sequence
+#' @return list of reversed sequences (\code{SeqFastaAA}), named with the reversed protein names
 #' @examples
 #' library(seqinr)
-#' #library(prozor)
 #'
 #' file = system.file("extdata/fgcz_contaminants2021_20210929.fasta.gz", package="prozor")
 #' fasta = readPeptideFasta(file = file)

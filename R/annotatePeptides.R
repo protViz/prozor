@@ -23,7 +23,6 @@
 #' @param peptide - name of column containing peptide sequences default "peptideSeq"
 #' @param prefix - default "(([RK])|(^)|(^M))"
 #' @param suffix - default ""
-#' @import stringr
 #' @return data.frame with columns "peptideSeq", "proteinID","Offset","proteinSequence","matched", "lengthPeptide","proteinlength"
 #' @export
 #' @examples
@@ -31,7 +30,7 @@
 #' library(dplyr)
 #'
 #' file = system.file("extdata/IDResults.txt.gz" , package = "prozor")
-#' specMeta <- readr::read_tsv(file)
+#' specMeta <- utils::read.delim(file)
 #' upeptide <- unique(specMeta$peptideSeq)
 #' resCan <-
 #'    prozor::readPeptideFasta(
@@ -52,17 +51,15 @@ annotatePeptides <- function(pepinfo,
         pepinfo = data.frame(pepinfo, stringsAsFactors = FALSE)
         colnames(pepinfo) = peptide
     }
-    pepinfo <- dplyr::mutate_at(pepinfo, peptide,
-                                dplyr::funs(as.character))
-    pepinfo <- dplyr::mutate_at(pepinfo, peptide,
-                                .funs = dplyr::funs("lengthPeptide" := nchar))
+    pepinfo[[peptide]] <- as.character(pepinfo[[peptide]])
+    pepinfo$lengthPeptide <- nchar(pepinfo[[peptide]])
 
     pepseq  = unique(as.character(pepinfo[, peptide]))
     restab <- annotateAHO(pepseq, fasta, peptide = peptide)
     if (!is.null(restab)) {
 
         restab <-
-            dplyr::group_by_at(restab, peptide)
+            dplyr::group_by(restab, dplyr::across(dplyr::all_of(peptide)))
         restab <-
             dplyr::mutate(restab,
                 matched = .matchPepsequence(
@@ -89,16 +86,15 @@ annotatePeptides <- function(pepinfo,
 #' peptides which do not have protein assignment drop out
 #' @param pepseq - list of peptides - sequence, optional modified sequence, charge state.
 #' @param fasta - object as created by \code{readPeptideFasta}
+#' @param peptide - name of the result column holding the peptide sequences, default "peptideSeq"
 #' @import AhoCorasickTrie
-#' @import stringr
-#' @importFrom purrr map2_df map_df
 #' @return A data.frame with proteinID, peptideSeq, Offset and proteinSequence
 #' @examples
 #'
 #' library(dplyr)
 #'
 #' file = system.file("extdata/IDResults.txt.gz" , package = "prozor")
-#' specMeta <- readr::read_tsv(file)
+#' specMeta <- utils::read.delim(file)
 #' upeptide <- unique(specMeta$peptideSeq)
 #' resCan <-
 #'    prozor::readPeptideFasta(
@@ -112,9 +108,9 @@ annotateAHO <- function(pepseq, fasta, peptide = "peptideSeq") {
     #100_000 peptides
     #40_000 Proteine
 
-    pepseq <- stringr::str_trim(unique(pepseq))
+    pepseq <- trimws(unique(pepseq))
     proteinIDS <- names(unlist(fasta))
-    fasta <- stringr::str_trim(unlist(fasta))
+    fasta <- trimws(unlist(fasta))
     names(fasta) <- proteinIDS
 
     res <-
@@ -123,22 +119,17 @@ annotateAHO <- function(pepseq, fasta, peptide = "peptideSeq") {
     {
         return(NULL)
     }
-    xx <- purrr::map2_df(
-        names(res),
-        res,
-        .f = function(name, x) {
+    xx <- dplyr::bind_rows(Map(
+        function(name, x) {
             data.frame(
                 proteinID = name,
-                map_df(
-                    x,
-                    .f = function(x) {
-                        x
-                    }
-                ),
+                dplyr::bind_rows(x),
                 stringsAsFactors = FALSE
             )
-        }
-    )
+        },
+        names(res),
+        res
+    ))
     colnames(xx)[colnames(xx) == "Keyword"] <- peptide
     dbframe <- data.frame(
         proteinID = names(fasta),

@@ -5,60 +5,8 @@
 \alias{Cdsw-class}
 \alias{Cdsw}
 \title{Compute dynamic swath windows}
-\arguments{
-\item{list}{of masses}
-
-\item{nbins}{number of bins default 25}
-
-\item{maxwindow}{largest window size}
-
-\item{minwindow}{smallest window size}
-
-\item{digits}{mass precision default 2}
-
-\item{digigits}{mass precision}
-
-\item{max}{number of bins}
-
-\item{plot}{default TRUE}
-
-\item{overlap}{size of window overlap default 1 m/z}
-}
-\value{
-array of masses
-
-array with masses
-
-array with masses
-
-data.frame with columns:
-- from (window start)
-- to (window end)
-- mid (window centre), width (window width)
-- counts expected number of precursors
-
-list with optimization scores
-
-data.frame with optimized windows
-}
 \description{
-initialize
-
-create equidistant breaks
-
-quantile breaks
-
-sampling breaks
-
-barplot showing the number of precursors per window
-
-Table with window boundaries and statistics
-
-summary of the binning process (see objectiveMS1Function for more details)
-
-moves window start and end to region with as few as possible precursor masses
-
-shows the generated DIA cycle
+Compute dynamic swath windows
 }
 \section{Fields}{
 
@@ -75,15 +23,23 @@ shows the generated DIA cycle
 \section{Methods}{
 
 \describe{
-\item{\code{asTable(overlap = 1)}}{make windows}
+\item{\code{asTable(overlap = 1)}}{make windows: data.frame with window start (from), end (to), centre (mid), width and expected number of precursors (counts); overlap in m/z}
 
-\item{\code{error()}}{show error}
+\item{\code{constant_breaks(digits = 2)}}{Equidistant breaks with mass precision digits; returns the breaks invisibly.}
 
-\item{\code{optimizeWindows(digits = 1, maxbin = 15, plot = FALSE, overlap = 0)}}{optimizes the windows}
+\item{\code{error()}}{show error: list with optimization scores of the binning (see objectiveMS1Function)}
+
+\item{\code{initialize(masses, nbins = 25, digits = 1)}}{Create the object from a vector of MS1 masses, with nbins windows and mass precision digits.}
+
+\item{\code{optimizeWindows(digits = 1, maxbin = 15, plot = FALSE, overlap = 0)}}{optimizes the windows: moves window start and end to regions with as few precursor masses as possible; returns a data.frame}
+
+\item{\code{plot()}}{barplot showing the number of precursors per window}
 
 \item{\code{quantile_breaks(digits = 2)}}{same number of MS1 in each window but might violate hard constraints}
 
-\item{\code{sampling_breaks(maxwindow = 150, minwindow = 5, digits = 2, plot = FALSE)}}{starts with quantile breaks but mixes with uniform data to satisfy had constraints}
+\item{\code{sampling_breaks(maxwindow = 150, minwindow = 5, digits = 2, plot = FALSE)}}{starts with quantile breaks but mixes with uniform data to satisfy hard constraints (window widths between minwindow and maxwindow); plot = TRUE draws the breaks}
+
+\item{\code{showCycle(overlap = 1)}}{shows the generated DIA cycle; overlap in m/z}
 }}
 
 \examples{

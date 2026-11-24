@@ -141,7 +141,6 @@ filtLevel <- function(data,
 
 # psm level FDR
 psmFdrCutoff <- 0.01
-#debug(filtLevel)
 
 filt <- filtLevel(bcd, score = "e.value", larger_better = FALSE , qValue = psmFdrCutoff * 100)
 
@@ -188,38 +187,4 @@ res <- summarizeFDRS(bcd , filt)
 knitr::kable(data.frame(res))
 
 ```
-
-
-## Using protViz
-
-```{r}
-knitr::kable(protViz::summary.cometdecoy(bcd,psmFdrCutoff = 0.01))
-
-```
-
-
-# DEBUG
-
-```{r}
-predictScoreFDR_V2 <- function (fdrObj, qValue = 1, method = "SimpleFDR") 
-{
-    if (method == "FPR") {
-        validFDR <- fdrObj$qValue_FPR < qValue/100
-    }
-    else if (method == "SimpleFDR") {
-        validFDR <- fdrObj$qValue_SimpleFDR < qValue/100
-    }
-    else {
-        stop("no such method: ", method, "\n")
-    }
-    invalidScores <- fdrObj$score[!validFDR]
-    if (!fdrObj$larger_better) {
-        min(invalidScores)
-    }
-    else {
-        max(invalidScores)
-    }
-}
-```
-
 

@@ -19,3 +19,12 @@ list with sequences with signal peptide removed
 \description{
 remove signal peptides from main chain
 }
+\examples{
+file <- system.file("extdata/fgcz_contaminants2021_20210929.fasta.gz", package = "prozor")
+db <- readPeptideFasta(file)[2:3]
+entry <- vapply(strsplit(names(db), split = "|", fixed = TRUE), function(x) x[2], character(1))
+signal <- data.frame(Entry = entry, Signal.peptide = c("SIGNAL 1 20", ""))
+res <- removeSignalPeptide(db, signal)
+nchar(db[[1]])
+nchar(res[[1]])
+}

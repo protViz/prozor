@@ -39,12 +39,6 @@ NULL
 NULL
 
 
-#'
-#' @importFrom rlang :=
-#' @importFrom readr read_tsv
-#' @importFrom docopt docopt
-NULL
-
 #' Data frame as produced by COMET-MS search engine
 #'
 #' @name bcd

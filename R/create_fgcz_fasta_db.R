@@ -1,12 +1,14 @@
 #' make db summary which includes number of sequences, and amino acid statistcis
 #' @export
+#' @param resDB list of sequences as returned by \code{readPeptideFasta}
+#' @param old if TRUE, count amino acids by concatenating all sequences (older, slower implementation)
+#' @param as_string if TRUE, return a character vector to pass to \code{cat}; if FALSE, return a list
+#'   with elements \code{nrSequences}, \code{lengthSummary} and \code{aafreq}
 #' @return array of strings which should be passed to the cat function.
 #' @examples
 #' file = system.file("extdata/fgcz_contaminants2022_20220405.fasta.gz",package="prozor")
 #' xx <- prozor::readPeptideFasta(file)
 #' cat(make_fasta_summary(xx))
-#' rbenchmark::benchmark(make_fasta_summary(xx),replications = 10)
-#' rbenchmark::benchmark(make_fasta_summary(xx, old = TRUE), replications = 10)
 #' make_fasta_summary(xx, as_string = FALSE)
 #' make_fasta_summary(xx, old =TRUE, as_string = FALSE)
 make_fasta_summary <- function(resDB, old = FALSE, as_string = TRUE){
@@ -52,19 +54,23 @@ make_fasta_summary <- function(resDB, old = FALSE, as_string = TRUE){
 #' @param databasedirectory directory with fasta files
 #' @param useContaminants contaminants to add
 #' @param revLab reverse label
-#' @param outputdir output directory
+#' @param outputdir output directory the FASTA file is written to
+#' @param make_summary if TRUE, append the output of \code{make_fasta_summary} to the summary
 #' @return list list(resDB, filepath , summary, mcall, dbname)
 #' @examples
-#' print("NO exmple since function also writes the fasta files")
+#' res <- create_fgcz_fasta_db(system.file("p1000_db1_example", package = "prozor"),
+#'                             outputdir = tempdir(), make_summary = FALSE)
+#' basename(res$filepath)
+#' unlink(res$filepath)
 #'
 create_fgcz_fasta_db <- function(databasedirectory ,
                                  useContaminants = loadContaminantsFGCZ2022(),
                                  revLab = "REV_",
-                                 outputdir = NULL,
+                                 outputdir,
                                  make_summary = TRUE){
     mcall <- match.call()
 
-    dir.exists(databasedirectory)
+    stopifnot(dir.exists(databasedirectory))
     dbname <- basename(databasedirectory)
 
     fasta <- grep("fasta", dir(databasedirectory), value = TRUE)
@@ -78,10 +84,6 @@ create_fgcz_fasta_db <- function(databasedirectory ,
                            annot = annotation,
                            revLab = revLab)
     resDB <- resDB[!duplicated(names(resDB))]
-
-    if (is.null(outputdir)) {
-        outputdir <- dirname(databasedirectory)
-    }
 
     if (is.null(revLab)) {
         filepath <- file.path(outputdir, paste(dbname,"_",format(Sys.time(), "%Y%m%d"),".fasta" ,sep = ""))

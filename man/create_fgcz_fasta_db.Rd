@@ -8,7 +8,7 @@ create_fgcz_fasta_db(
   databasedirectory,
   useContaminants = loadContaminantsFGCZ2022(),
   revLab = "REV_",
-  outputdir = NULL,
+  outputdir,
   make_summary = TRUE
 )
 }
@@ -19,7 +19,9 @@ create_fgcz_fasta_db(
 
 \item{revLab}{reverse label}
 
-\item{outputdir}{output directory}
+\item{outputdir}{output directory the FASTA file is written to}
+
+\item{make_summary}{if TRUE, append the output of \code{make_fasta_summary} to the summary}
 }
 \value{
 list list(resDB, filepath , summary, mcall, dbname)
@@ -28,6 +30,9 @@ list list(resDB, filepath , summary, mcall, dbname)
 create fasta db from one or more fasta files
 }
 \examples{
-print("NO exmple since function also writes the fasta files")
+res <- create_fgcz_fasta_db(system.file("p1000_db1_example", package = "prozor"),
+                            outputdir = tempdir(), make_summary = FALSE)
+basename(res$filepath)
+unlink(res$filepath)
 
 }

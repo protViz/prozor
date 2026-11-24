@@ -12,14 +12,13 @@ reverseSeq(fasta, revLab = "REV_")
 \item{revLab}{- how to label reverse sequences, default = REV_}
 }
 \value{
-string with reversed sequence
+list of reversed sequences (\code{SeqFastaAA}), named with the reversed protein names
 }
 \description{
 peptides which do not have protein assignment drop out
 }
 \examples{
 library(seqinr)
-#library(prozor)
 
 file = system.file("extdata/fgcz_contaminants2021_20210929.fasta.gz", package="prozor")
 fasta = readPeptideFasta(file = file)

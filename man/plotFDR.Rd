@@ -10,19 +10,17 @@ plotFDR(data)
 \item{data}{data returned by computeFDR function}
 }
 \value{
-creates a plot
+No return value, called for side effects (draws a plot).
 }
 \description{
 For more details and references see package vignette
 \code{vignette("TargetDecoyFDR_Example", package = "prozor")}
 }
 \examples{
-#library(prozor)
 data(fdrSample)
 fdr1 <- computeFDRwithID(fdrSample$score, fdrSample$proteinID, larger_better = FALSE)
 fdr2 <- computeFDRwithID(fdrSample$score2, fdrSample$proteinID, larger_better = TRUE)
 plotFDR(fdr1)
 plotFDR(fdr2)
-data<-fdr1
 
 }

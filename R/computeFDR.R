@@ -14,11 +14,6 @@
 #' @export
 #' @examples
 #' data(fdrSample)
-#' # call constructor
-#' #nrow(fdrSample)
-#' #fdrSample <- dplyr::slice_sample(fdrSample, n = 40000)
-#'
-#' #usethis::use_data(fdrSample, overwrite = TRUE)
 #' fdr1 <- computeFDRwithID(fdrSample$score, fdrSample$proteinID, larger_better = FALSE)
 #' names(fdr1)
 #' plot(fdr1$score, fdr1$FPR,type="l",xlim=c(0,0.001), ylim=c(0,0.0002))
@@ -91,17 +86,17 @@ computeFDR <- function(score, decoy_hit , larger_better = TRUE){
 #'
 #' @param data data returned by computeFDR function
 #' @export
-#' @return creates a plot
+#' @return No return value, called for side effects (draws a plot).
 #' @examples
-#' #library(prozor)
 #' data(fdrSample)
 #' fdr1 <- computeFDRwithID(fdrSample$score, fdrSample$proteinID, larger_better = FALSE)
 #' fdr2 <- computeFDRwithID(fdrSample$score2, fdrSample$proteinID, larger_better = TRUE)
 #' plotFDR(fdr1)
 #' plotFDR(fdr2)
-#' data<-fdr1
 #'
 plotFDR <- function(data){
+    oldpar <- graphics::par(no.readonly = TRUE)
+    on.exit(graphics::par(oldpar))
     graphics::par(mar = c(4,4,2,4))
     tx <- with(data,graphics::hist(score,plot = FALSE, breaks = 100))
     t1 <- with(data,graphics::hist(score[!decoy_hit],breaks = tx$breaks, xlab = "score",col = 1, border = 1,

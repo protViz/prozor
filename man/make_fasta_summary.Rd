@@ -6,6 +6,14 @@
 \usage{
 make_fasta_summary(resDB, old = FALSE, as_string = TRUE)
 }
+\arguments{
+\item{resDB}{list of sequences as returned by \code{readPeptideFasta}}
+
+\item{old}{if TRUE, count amino acids by concatenating all sequences (older, slower implementation)}
+
+\item{as_string}{if TRUE, return a character vector to pass to \code{cat}; if FALSE, return a list
+with elements \code{nrSequences}, \code{lengthSummary} and \code{aafreq}}
+}
 \value{
 array of strings which should be passed to the cat function.
 }
@@ -16,8 +24,6 @@ make db summary which includes number of sequences, and amino acid statistcis
 file = system.file("extdata/fgcz_contaminants2022_20220405.fasta.gz",package="prozor")
 xx <- prozor::readPeptideFasta(file)
 cat(make_fasta_summary(xx))
-rbenchmark::benchmark(make_fasta_summary(xx),replications = 10)
-rbenchmark::benchmark(make_fasta_summary(xx, old = TRUE), replications = 10)
 make_fasta_summary(xx, as_string = FALSE)
 make_fasta_summary(xx, old =TRUE, as_string = FALSE)
 }

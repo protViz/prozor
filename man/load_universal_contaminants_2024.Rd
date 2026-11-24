@@ -16,10 +16,8 @@ list with contaminant sequences
 These sequences are downloaded from here https://github.com/HaoGroup-ProtContLib/Protein-Contaminant-Libraries-for-DDA-and-DIA-Proteomics
 }
 \examples{
-#library(prozor)
 cont <- load_universal_contaminants_2024()
 length(cont)
 contNH <- load_universal_contaminants_2024(noHuman = TRUE)
 length(contNH)
-#example how to create a protein db with decoy sequences
 }

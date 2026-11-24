@@ -34,7 +34,7 @@ peptides which do not have protein assignment drop out
 library(dplyr)
 
 file = system.file("extdata/IDResults.txt.gz" , package = "prozor")
-specMeta <- readr::read_tsv(file)
+specMeta <- utils::read.delim(file)
 upeptide <- unique(specMeta$peptideSeq)
 resCan <-
    prozor::readPeptideFasta(

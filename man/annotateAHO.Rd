@@ -10,6 +10,8 @@ annotateAHO(pepseq, fasta, peptide = "peptideSeq")
 \item{pepseq}{- list of peptides - sequence, optional modified sequence, charge state.}
 
 \item{fasta}{- object as created by \code{readPeptideFasta}}
+
+\item{peptide}{- name of the result column holding the peptide sequences, default "peptideSeq"}
 }
 \value{
 A data.frame with proteinID, peptideSeq, Offset and proteinSequence
@@ -22,7 +24,7 @@ peptides which do not have protein assignment drop out
 library(dplyr)
 
 file = system.file("extdata/IDResults.txt.gz" , package = "prozor")
-specMeta <- readr::read_tsv(file)
+specMeta <- utils::read.delim(file)
 upeptide <- unique(specMeta$peptideSeq)
 resCan <-
    prozor::readPeptideFasta(

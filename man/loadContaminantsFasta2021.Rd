@@ -16,10 +16,8 @@ list with contaminant sequences
 load list of contaminant sequences FGCZ 2021
 }
 \examples{
-#library(prozor)
 cont <- loadContaminantsFasta2021()
 length(cont)
 contNH <- loadContaminantsFasta2021(noHuman = TRUE)
 length(contNH)
-#example how to create a protein db with decoy sequences
 }
