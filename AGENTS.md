@@ -35,7 +35,7 @@ Guide for coding agents working in prozor. The workspace guide `../AGENTS.md` ap
 - API is snake_case: functions, arguments, `Cdsw` methods, result columns and list elements, default column names, method values and the bundled data sets (except `bcd`, which keeps COMET's column names); renamed in 0.4.0 without aliases, `greedy()` included
 - Plots use ggplot2 and return ggplot objects; no base graphics, no `plot = TRUE` arguments
 - `Depends: R (>= 4.4.0)`
-- The CLI options of `inst/script/fgcz_create_fasta.R` (`--revLab`, `--contamin`, ...) stay as they are: the `inst/script/*.sh` wrappers and FGCZ jobs call them
+- The CLI options of `inst/script/fgcz_create_fasta.R` (`--revLab`, `--contamin`, ...) stay as they are: the FGCZ wrappers (slurmworker `config/prozor/script/`, moved out of prozor in 0.4.0) and FGCZ jobs call them
 - `annotate_aho()` rejects peptides outside `^[A-Z]+$` because AhoCorasickTrie 0.1.3 crashes R on them (upstream fix: chambm/AhoCorasickTrie#5); drop the check once a fixed version is on CRAN
 
 ## Git
