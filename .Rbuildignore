@@ -19,3 +19,6 @@
 ^air\.toml$
 ^\.lintr$
 ^\.git-blame-ignore-revs$
+^cran-comments\.md$
+^CRAN-SUBMISSION$
+^vignettes/PlottingProteinCoverage\.qmd$

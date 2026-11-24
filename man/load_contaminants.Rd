@@ -20,7 +20,8 @@ The sets:
 \itemize{
 \item \code{"fgcz2019"}, \code{"fgcz2021"}, \code{"fgcz2022"}: FGCZ contaminant lists of 2019, 2021 and 2022.
 \item \code{"universal2024"}: universal contaminants from
-\url{https://github.com/HaoGroup-ProtContLib/Protein-Contaminant-Libraries-for-DDA-and-DIA-Proteomics}.
+\url{https://github.com/HaoGroup-ProtContLib/Protein-Contaminant-Libraries-for-DDA-and-DIA-Proteomics},
+described by Frankenfield et al. (2022). See \code{system.file("COPYRIGHTS", package = "prozor")}.
 \item \code{"special2024"}: FGCZ special proteins of 2024.
 }
 }
@@ -28,6 +29,11 @@ The sets:
 cont <- load_contaminants("fgcz2022")
 length(cont)
 length(load_contaminants("fgcz2022", no_human = TRUE))
+}
+\references{
+Frankenfield AM, Ni J, Ahmed M, Hao L (2022). Protein Contaminants Matter: Building Universal
+Protein Contaminant Libraries for DDA and DIA Proteomics. \emph{Journal of Proteome Research}, 21(9), 2104-2113.
+\doi{10.1021/acs.jproteome.2c00145}
 }
 \seealso{
 Other FASTA databases:

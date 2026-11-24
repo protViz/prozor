@@ -11,12 +11,12 @@ vignette: >
 
 
 
-Using the package prozor for creating standardized fasta.
+Using the package prozor for creating standardized FASTA.
 The package can be used to: 
      
-     * merge several fasta files into a single fasta file
-     * add reverse sequences to the fasta file.
-     * add contaminants to the fasta file
+     * merge several FASTA files into a single FASTA file
+     * add reverse sequences to the FASTA file.
+     * add contaminants to the FASTA file
 
 
 # Contaminants
@@ -32,18 +32,18 @@ length(load_contaminants("fgcz2021"))
 length(load_contaminants("fgcz2021", no_human = TRUE))
 ```
 
-# Creating a fasta protein amino acid sequence database for searching.
+# Creating a FASTA protein amino acid sequence database for searching.
 
-To merge several _fasta_ databases into a single file place them into a single folder and give the folder the name of the database.
+To merge several _FASTA_ databases into a single file place them into a single folder and give the folder the name of the database.
 At the [FGCZ](https://fgcz.ch/) the database name starts with the project number e.g. `p1000` a consecutive number e.g. `db1` and descriptive name `example,i.e. `p1000_db1_example`.
 
-Add to the folder also an annotation.txt file. The annotation file should contain a single line formatted like a _fasta_ entry header with the following content:
+Add to the folder also an annotation.txt file. The annotation file should contain a single line formatted like a _FASTA_ entry header with the following content:
 `aa|p<project_number>_<database_name>|<YYYYMMDD> <detailed_description>`.
 
 Example : `AA|p1000_db1_example|20180119_Example https://github.com/protViz/prozor`
 
 
-The package provides an example of such a folder with the fasta files. Based on this folder a database can be created.
+The package provides an example of such a folder with the FASTA files. Based on this folder a database can be created.
 
 ```{r}
 database_dir <- system.file("p1000_db1_example", package = "prozor")
@@ -63,7 +63,7 @@ resDB <- create_decoy_db(files1, contaminants = load_contaminants("fgcz2021"), a
 length(resDB)
 ```
 
-Based on the directory name we build the name of the fasta file adding the current date.
+Based on the directory name we build the name of the FASTA file adding the current date.
 
 ```{r}
 dirname(database_dir)

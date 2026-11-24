@@ -31,7 +31,7 @@ head(specMeta) |> knitr::kable()
 ```
 
 
-Annotate peptide sequences with protein sequences from two fasta files on with reviewed entries only (sp) and the other with reviewed and Trembl entries (sp/tr).
+Annotate peptide sequences with protein sequences from two FASTA files, one with reviewed entries only (sp) and the other with reviewed and Trembl entries (sp/tr).
 
 ```{r fig.cap = "Number of proteins in the All and Canonical database."}
 resAll <- read_peptide_fasta(system.file("p1000_db1_example/Annotation_allSeq.fasta.gz", package = "prozor"))
@@ -63,7 +63,7 @@ ggplot(matches, aes(x = database, y = matches)) +
   labs(x = NULL, y = "peptide protein matches")
 ```
 
-We can see that using the larger fasta database reduces the proportion of proteotypic peptides.
+We can see that using the larger FASTA database reduces the proportion of proteotypic peptides.
 A proteotypic peptide is one which matches only a single protein.
 
 ```{r proteotypicPetides, fig.cap="Proportion of proteotypic peptides."}

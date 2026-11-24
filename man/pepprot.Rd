@@ -4,7 +4,16 @@
 \name{pepprot}
 \alias{pepprot}
 \title{Peptide-protein assignments}
+\format{
+A data frame with 4,938 rows and 4 columns:
+\itemize{
+\item \code{peptide_seq}: peptide sequence (factor).
+\item \code{peptide_mod_seq}: modified peptide sequence (factor).
+\item \code{precursor_charge}: precursor charge (integer).
+\item \code{m}: precursor m/z.
+}
+}
 \description{
-Peptides with the columns \code{peptide_seq}, \code{peptide_mod_seq}, \code{precursor_charge} and \code{m} (precursor m/z).
+Precursors of identified peptides.
 }
 \keyword{data}

@@ -11,13 +11,17 @@
 #' The sets:
 #' * `"fgcz2019"`, `"fgcz2021"`, `"fgcz2022"`: FGCZ contaminant lists of 2019, 2021 and 2022.
 #' * `"universal2024"`: universal contaminants from
-#'   <https://github.com/HaoGroup-ProtContLib/Protein-Contaminant-Libraries-for-DDA-and-DIA-Proteomics>.
+#'   <https://github.com/HaoGroup-ProtContLib/Protein-Contaminant-Libraries-for-DDA-and-DIA-Proteomics>,
+#'   described by Frankenfield et al. (2022). See `system.file("COPYRIGHTS", package = "prozor")`.
 #' * `"special2024"`: FGCZ special proteins of 2024.
 #'
 #' @param set Name of the contaminant set: `"fgcz2019"`, `"fgcz2021"`, `"fgcz2022"`, `"universal2024"` or
 #'   `"special2024"`.
 #' @param no_human If `TRUE`, drop the sequences whose header contains `HUMAN`.
 #' @return A named list of `SeqFastaAA` objects.
+#' @references Frankenfield AM, Ni J, Ahmed M, Hao L (2022). Protein Contaminants Matter: Building Universal
+#'   Protein Contaminant Libraries for DDA and DIA Proteomics. *Journal of Proteome Research*, 21(9), 2104-2113.
+#'   \doi{10.1021/acs.jproteome.2c00145}
 #' @family FASTA databases
 #' @export
 #' @examples

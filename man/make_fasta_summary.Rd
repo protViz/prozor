@@ -2,7 +2,7 @@
 % Please edit documentation in R/create_fgcz_fasta_db.R
 \name{make_fasta_summary}
 \alias{make_fasta_summary}
-\title{Summarise a FASTA database}
+\title{Summarize a FASTA database}
 \usage{
 make_fasta_summary(db, old = FALSE, as_string = TRUE)
 }
@@ -18,7 +18,7 @@ With \code{as_string = TRUE}, a character vector to pass to \code{\link[=cat]{ca
 \code{nr_sequences}, \code{length_summary} and \code{aa_freq} (counts per amino acid).
 }
 \description{
-Counts the sequences and amino acids and summarises the sequence lengths.
+Counts the sequences and amino acids and summarizes the sequence lengths.
 }
 \examples{
 file <- system.file("extdata/fgcz_contaminants2022_20220405.fasta.gz", package = "prozor")

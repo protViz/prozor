@@ -13,7 +13,7 @@ objective_ms1(splits, data)
 }
 \value{
 A list with \code{score1} (Manhattan distance), \code{score2} (Euclidean distance), \code{counts} (observed counts)
-and \code{optimum_n} (optimal counts), both counts normalised.
+and \code{optimum_n} (optimal counts), both counts normalized.
 }
 \description{
 Deviation of a window layout from equal numbers of MS1 masses per window

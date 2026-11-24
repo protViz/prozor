@@ -7,8 +7,7 @@ vignette: >
   %\VignetteIndexEntry{Computing Dynamic SWATH Windows}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
-output: 
-  html_document
+output: rmarkdown::html_vignette
 editor_options: 
   chunk_output_type: console
 ---

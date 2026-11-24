@@ -10,7 +10,7 @@
 #' @param splits The window boundaries.
 #' @param data The MS1 masses.
 #' @return A list with `score1` (Manhattan distance), `score2` (Euclidean distance), `counts` (observed counts)
-#'   and `optimum_n` (optimal counts), both counts normalised.
+#'   and `optimum_n` (optimal counts), both counts normalized.
 #' @keywords internal
 objective_ms1 <- function(splits, data) {
   counts <- graphics::hist(data, breaks = splits, plot = FALSE)$counts
@@ -148,7 +148,7 @@ Cdsw <- setRefClass(
         ggplot2::labs(x = "precursor m/z", y = "precursors per window")
     },
     as_table = function(overlap = 1) {
-      "Windows as a data.frame with start (from), end (to), centre (mid), width and precursor count; overlap in m/z."
+      "Windows as a data.frame with start (from), end (to), center (mid), width and precursor count; overlap in m/z."
       q <- .self$breaks
       idx <- seq_len(length(q) - 1)
       from <- q[idx] - overlap * 0.5

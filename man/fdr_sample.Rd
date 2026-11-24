@@ -4,8 +4,15 @@
 \name{fdr_sample}
 \alias{fdr_sample}
 \title{Search engine scores with protein IDs}
+\format{
+A data frame with 40,000 rows and 3 columns:
+\itemize{
+\item \code{protein_id}: protein ID (factor); decoys start with \code{REV_}.
+\item \code{score}: score where smaller is better.
+\item \code{score2}: score where larger is better.
+}
+}
 \description{
-A data frame with the columns \code{protein_id} (decoys start with \code{REV_}), \code{score} (smaller is better) and
-\code{score2} (larger is better).
+Target and decoy hits with two scores, for the FDR functions.
 }
 \keyword{data}

@@ -84,5 +84,8 @@ test_that("predict_score_fdr() errors when no score reaches the FDR", {
 test_that("predict_score_fdr() rejects unknown methods", {
   res <- compute_fdr(c(2, 1), c(FALSE, FALSE))
 
-  expect_error(predict_score_fdr(res, method = "unknown"), "`method` must be \"simple_fdr\" or \"fpr\", not \"unknown\"")
+  expect_error(
+    predict_score_fdr(res, method = "unknown"),
+    "`method` must be \"simple_fdr\" or \"fpr\", not \"unknown\""
+  )
 })

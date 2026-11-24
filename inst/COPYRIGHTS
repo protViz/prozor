@@ -1,0 +1,10 @@
+prozor bundles the following files that were not written by its authors.
+
+inst/extdata/fgcz_universal_contaminants_github_20241112.fasta.gz
+  Universal protein contaminant library, downloaded on 2024-11-12 from
+  https://github.com/HaoGroup-ProtContLib/Protein-Contaminant-Libraries-for-DDA-and-DIA-Proteomics
+  Copyright: the authors of that repository (Hao lab). The repository states no license;
+  the sequences are taken from UniProt (CC BY 4.0).
+  Reference: Frankenfield AM, Ni J, Ahmed M, Hao L (2022). Protein Contaminants Matter:
+  Building Universal Protein Contaminant Libraries for DDA and DIA Proteomics.
+  Journal of Proteome Research, 21(9), 2104-2113. doi:10.1021/acs.jproteome.2c00145

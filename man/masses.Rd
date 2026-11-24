@@ -4,7 +4,10 @@
 \name{masses}
 \alias{masses}
 \title{MS1 precursor masses}
+\format{
+A numeric vector of 146,009 precursor m/z values.
+}
 \description{
-About 150,000 MS1 precursor masses (m/z).
+Precursor masses, the input of \link{Cdsw} for computing DIA windows.
 }
 \keyword{data}

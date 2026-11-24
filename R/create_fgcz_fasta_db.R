@@ -1,6 +1,6 @@
-#' Summarise a FASTA database
+#' Summarize a FASTA database
 #'
-#' Counts the sequences and amino acids and summarises the sequence lengths.
+#' Counts the sequences and amino acids and summarizes the sequence lengths.
 #'
 #' @param db A list of sequences, as returned by [read_peptide_fasta()].
 #' @param old If `TRUE`, count the amino acids by concatenating all sequences (the older, slower method).
@@ -95,8 +95,6 @@ create_fgcz_fasta_db <- function(
     "Database created with prozor: ",
     paste(utils::capture.output(mcall), collapse = "\n"),
     "\n",
-    "where database_dir was prepared according to ",
-    "https://fgcz-intranet.uzh.ch/tiki-index.php?page=SOPrequestFASTA \n\n",
     "\n      FASTA name : ",
     db_name,
     "\n FASTA file name : ",

@@ -4,7 +4,27 @@
 \name{bcd}
 \alias{bcd}
 \title{COMET search results}
+\format{
+A data frame with 4,557 rows and 18 columns:
+\itemize{
+\item \code{scan}: scan number.
+\item \code{num}: rank of the match for the scan.
+\item \code{charge}: precursor charge.
+\item \code{exp_neutral_mass}, \code{calc_neutral_mass}: experimental and calculated neutral mass.
+\item \code{e.value}: E-value (smaller is better).
+\item \code{xcorr}: cross-correlation score.
+\item \code{delta_cn}: difference to the next best xcorr, normalized.
+\item \code{sp_score}: preliminary score (Sp).
+\item \code{ions_matched}, \code{ions_total}: matched and theoretical fragment ions.
+\item \code{plain_peptide}: peptide sequence.
+\item \code{modified_peptide}: peptide with flanking residues and modification masses.
+\item \code{prev_aa}, \code{next_aa}: residues before and after the peptide.
+\item \code{protein}: comma-separated protein IDs; decoys start with \code{REV_}.
+\item \code{protein_count}: number of proteins.
+\item \code{modifications}: modifications as position, residue and mass.
+}
+}
 \description{
-Peptide-spectrum matches as produced by the COMET search engine.
+Peptide-spectrum matches as produced by the COMET search engine, with its column names.
 }
 \keyword{data}

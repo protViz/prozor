@@ -93,7 +93,5 @@ abline(h = c(0, nrow(xx)), v=c(0, ncol(xx)))
 
 
 xxCAN <- greedy_parsimony(xx)
-protPepAssingments <- prozor:::.greedy2(xx)
-matrixlist <- lapply(protPepAssingments,function(x){ t(cbind(x$peps, rep(x$prot,length(x$peps)))) })
 
 ```

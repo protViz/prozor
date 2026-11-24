@@ -57,6 +57,8 @@
 * `prepare_matrix()` documents only the weightings it implements (`NULL`, `"inverse"` or one numeric weight per row).
 * `load_contaminants("special2024")` works: the bundled `fgcz_special_prot_20241112.fasta.gz` is a plain gzipped FASTA file again instead of a gzipped tar archive (#7).
 * `inst/script/fgcz_create_fasta.R` stops early with a clear message for an unknown `--contamin` value.
+* The summary of `create_fgcz_fasta_db()` no longer contains a link to the FGCZ intranet.
+* `load_contaminants()` cites the source of the `"universal2024"` set; `inst/COPYRIGHTS` lists its origin.
 * Help pages use markdown, link related functions in families, and describe the actual return values (e.g. the elements of `compute_fdr()`'s result).
 * New or runnable examples for `create_fgcz_fasta_db()`, `greedy_to_table()`, `remove_signal_peptide()` and `write_fasta()`; removed debugging code from examples and vignettes.
 * The vignettes use the new names and ggplot2; "Peptide Annotation and Protein Inference" builds again.

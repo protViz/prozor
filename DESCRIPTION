@@ -26,6 +26,7 @@ Description: Determine the minimal set of proteins that explains the peptide
     isolation windows for data-independent acquisition (DIA) from the
     distribution of precursor (MS1) masses.
 License: GPL-3
+Copyright: See file COPYRIGHTS
 Encoding: UTF-8
 Language: en-US
 Imports:

@@ -24,7 +24,7 @@ subject to minimum and maximum window widths.
 \section{Methods}{
 
 \describe{
-\item{\code{as_table(overlap = 1)}}{Windows as a data.frame with start (from), end (to), centre (mid), width and precursor count; overlap in m/z.}
+\item{\code{as_table(overlap = 1)}}{Windows as a data.frame with start (from), end (to), center (mid), width and precursor count; overlap in m/z.}
 
 \item{\code{constant_breaks(digits = 2)}}{Equal-width windows; returns the breaks invisibly.}
 

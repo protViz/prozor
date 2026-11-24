@@ -4,8 +4,19 @@
 \name{protpepmetashort}
 \alias{protpepmetashort}
 \title{Peptide-protein assignments, small version}
+\format{
+A data frame with 423 rows and 7 columns:
+\itemize{
+\item \code{peptide_seq}: peptide sequence.
+\item \code{protein_length}: length of the protein sequence.
+\item \code{protein_id}: UniProt protein ID, e.g. \code{sp|Q62009|POSTN_MOUSE}.
+\item \code{peptide_mod_seq}: modified peptide sequence.
+\item \code{precursor_charge}: precursor charge (integer).
+\item \code{m}: precursor m/z.
+\item \code{peptide_length}: length of the peptide sequence.
+}
+}
 \description{
-Peptide-protein pairs with the columns \code{peptide_seq}, \code{protein_length}, \code{protein_id}, \code{peptide_mod_seq},
-\code{precursor_charge}, \code{m} (precursor m/z) and \code{peptide_length}; small, so the examples stay fast.
+Peptide-protein pairs for 250 mouse proteins; small, so the examples stay fast.
 }
 \keyword{data}
