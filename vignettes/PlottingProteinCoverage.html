@@ -570,9 +570,7 @@ Attaching package: 'Matrix'</code></pre>
 </figure>
 </div>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>xxCAN <span class="ot">&lt;-</span> <span class="fu">greedy_parsimony</span>(xx)</span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>protPepAssingments <span class="ot">&lt;-</span> prozor<span class="sc">:::</span><span class="fu">.greedy2</span>(xx)</span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>matrixlist <span class="ot">&lt;-</span> <span class="fu">lapply</span>(protPepAssingments,<span class="cf">function</span>(x){ <span class="fu">t</span>(<span class="fu">cbind</span>(x<span class="sc">$</span>peps, <span class="fu">rep</span>(x<span class="sc">$</span>prot,<span class="fu">length</span>(x<span class="sc">$</span>peps)))) })</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>xxCAN <span class="ot">&lt;-</span> <span class="fu">greedy_parsimony</span>(xx)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 
 

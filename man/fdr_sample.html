@@ -373,7 +373,22 @@ ul.task-list li input[type="checkbox"] {
 <h2 class="unnumbered anchored" data-anchor-id="search-engine-scores-with-protein-ids">Search engine scores with protein IDs</h2>
 <section id="description" class="level3">
 <h3 class="anchored" data-anchor-id="description">Description</h3>
-<p>A data frame with the columns <code>protein_id</code> (decoys start with <code>REV_</code>), <code>score</code> (smaller is better) and <code>score2</code> (larger is better).</p>
+<p>Target and decoy hits with two scores, for the FDR functions.</p>
+</section>
+<section id="format" class="level3">
+<h3 class="anchored" data-anchor-id="format">Format</h3>
+<p>A data frame with 40,000 rows and 3 columns:</p>
+<ul>
+<li>
+<p><code>protein_id</code>: protein ID (factor); decoys start with <code>REV_</code>.</p>
+</li>
+<li>
+<p><code>score</code>: score where smaller is better.</p>
+</li>
+<li>
+<p><code>score2</code>: score where larger is better.</p>
+</li>
+</ul>
 
 
 </section>

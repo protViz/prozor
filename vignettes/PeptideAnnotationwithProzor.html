@@ -566,7 +566,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 </div>
 </div>
-<p>Annotate peptide sequences with protein sequences from two fasta files on with reviewed entries only (sp) and the other with reviewed and Trembl entries (sp/tr).</p>
+<p>Annotate peptide sequences with protein sequences from two FASTA files, one with reviewed entries only (sp) and the other with reviewed and Trembl entries (sp/tr).</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>resAll <span class="ot">&lt;-</span> <span class="fu">read_peptide_fasta</span>(<span class="fu">system.file</span>(<span class="st">"p1000_db1_example/Annotation_allSeq.fasta.gz"</span>, <span class="at">package =</span> <span class="st">"prozor"</span>))</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>resCan <span class="ot">&lt;-</span> <span class="fu">read_peptide_fasta</span>(<span class="fu">system.file</span>(<span class="st">"p1000_db1_example/Annotation_canSeq.fasta.gz"</span>, <span class="at">package =</span> <span class="st">"prozor"</span>))</span>
@@ -674,7 +674,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<p>We can see that using the larger fasta database reduces the proportion of proteotypic peptides. A proteotypic peptide is one which matches only a single protein.</p>
+<p>We can see that using the larger FASTA database reduces the proportion of proteotypic peptides. A proteotypic peptide is one which matches only a single protein.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>proteotypic <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">database =</span> <span class="fu">c</span>(<span class="st">"All"</span>, <span class="st">"Canonical"</span>),</span>

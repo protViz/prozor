@@ -373,7 +373,58 @@ ul.task-list li input[type="checkbox"] {
 <h2 class="unnumbered anchored" data-anchor-id="comet-search-results">COMET search results</h2>
 <section id="description" class="level3">
 <h3 class="anchored" data-anchor-id="description">Description</h3>
-<p>Peptide-spectrum matches as produced by the COMET search engine.</p>
+<p>Peptide-spectrum matches as produced by the COMET search engine, with its column names.</p>
+</section>
+<section id="format" class="level3">
+<h3 class="anchored" data-anchor-id="format">Format</h3>
+<p>A data frame with 4,557 rows and 18 columns:</p>
+<ul>
+<li>
+<p><code>scan</code>: scan number.</p>
+</li>
+<li>
+<p><code>num</code>: rank of the match for the scan.</p>
+</li>
+<li>
+<p><code>charge</code>: precursor charge.</p>
+</li>
+<li>
+<p><code>exp_neutral_mass</code>, <code>calc_neutral_mass</code>: experimental and calculated neutral mass.</p>
+</li>
+<li>
+<p><code>e.value</code>: E-value (smaller is better).</p>
+</li>
+<li>
+<p><code>xcorr</code>: cross-correlation score.</p>
+</li>
+<li>
+<p><code>delta_cn</code>: difference to the next best xcorr, normalized.</p>
+</li>
+<li>
+<p><code>sp_score</code>: preliminary score (Sp).</p>
+</li>
+<li>
+<p><code>ions_matched</code>, <code>ions_total</code>: matched and theoretical fragment ions.</p>
+</li>
+<li>
+<p><code>plain_peptide</code>: peptide sequence.</p>
+</li>
+<li>
+<p><code>modified_peptide</code>: peptide with flanking residues and modification masses.</p>
+</li>
+<li>
+<p><code>prev_aa</code>, <code>next_aa</code>: residues before and after the peptide.</p>
+</li>
+<li>
+<p><code>protein</code>: comma-separated protein IDs; decoys start with <code>REV_</code>.</p>
+</li>
+<li>
+<p><code>protein_count</code>: number of proteins.</p>
+</li>
+<li>
+<p><code>modifications</code>: modifications as position, residue and mass.</p>
+</li>
+</ul>
 
 
 </section>

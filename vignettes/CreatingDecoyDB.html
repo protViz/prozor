@@ -434,10 +434,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>Using the package prozor for creating standardized fasta. The package can be used to:</p>
-<pre><code> * merge several fasta files into a single fasta file
- * add reverse sequences to the fasta file.
- * add contaminants to the fasta file</code></pre>
+<p>Using the package prozor for creating standardized FASTA. The package can be used to:</p>
+<pre><code> * merge several FASTA files into a single FASTA file
+ * add reverse sequences to the FASTA file.
+ * add contaminants to the FASTA file</code></pre>
 <section id="contaminants" class="level1">
 <h1>Contaminants</h1>
 <p>This package provides several sets of typical contaminant proteins and peptides, which can be loaded with <code>load_contaminants()</code>; <code>no_human = TRUE</code> leaves out the contaminants of human origin. At the <a href="https://fgcz.ch/">FGCZ</a> we always are adding contaminants to the database. To databases already containing human proteins, we add the contaminants without the human ones. The contaminants are easy to distinguish from other entries thanks to the <code>zz|FGCZCont</code> prefix.</p>
@@ -460,11 +460,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </section>
 <section id="creating-a-fasta-protein-amino-acid-sequence-database-for-searching." class="level1">
-<h1>Creating a fasta protein amino acid sequence database for searching.</h1>
-<p>To merge several <em>fasta</em> databases into a single file place them into a single folder and give the folder the name of the database. At the <a href="https://fgcz.ch/">FGCZ</a> the database name starts with the project number e.g.&nbsp;<code>p1000</code> a consecutive number e.g.&nbsp;<code>db1</code> and descriptive name <code>example,i.e.</code>p1000_db1_example`.</p>
-<p>Add to the folder also an annotation.txt file. The annotation file should contain a single line formatted like a <em>fasta</em> entry header with the following content: <code>aa|p&lt;project_number&gt;_&lt;database_name&gt;|&lt;YYYYMMDD&gt; &lt;detailed_description&gt;</code>.</p>
+<h1>Creating a FASTA protein amino acid sequence database for searching.</h1>
+<p>To merge several <em>FASTA</em> databases into a single file place them into a single folder and give the folder the name of the database. At the <a href="https://fgcz.ch/">FGCZ</a> the database name starts with the project number e.g.&nbsp;<code>p1000</code> a consecutive number e.g.&nbsp;<code>db1</code> and descriptive name <code>example,i.e.</code>p1000_db1_example`.</p>
+<p>Add to the folder also an annotation.txt file. The annotation file should contain a single line formatted like a <em>FASTA</em> entry header with the following content: <code>aa|p&lt;project_number&gt;_&lt;database_name&gt;|&lt;YYYYMMDD&gt; &lt;detailed_description&gt;</code>.</p>
 <p>Example : <code>AA|p1000_db1_example|20180119_Example https://github.com/protViz/prozor</code></p>
-<p>The package provides an example of such a folder with the fasta files. Based on this folder a database can be created.</p>
+<p>The package provides an example of such a folder with the FASTA files. Based on this folder a database can be created.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>database_dir <span class="ot">&lt;-</span> <span class="fu">system.file</span>(<span class="st">"p1000_db1_example"</span>, <span class="at">package =</span> <span class="st">"prozor"</span>)</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>dbname <span class="ot">&lt;-</span> <span class="fu">basename</span>(database_dir)</span>
@@ -492,7 +492,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code>[1] 1954</code></pre>
 </div>
 </div>
-<p>Based on the directory name we build the name of the fasta file adding the current date.</p>
+<p>Based on the directory name we build the name of the FASTA file adding the current date.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dirname</span>(database_dir)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">

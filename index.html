@@ -404,46 +404,40 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<p><a href="https://cran.r-project.org/package=prozor"><img src="http://www.r-pkg.org/badges/version/prozor.png" class="img-fluid" alt="CRAN_Status_Badge"></a> <a href="https://cran.r-project.org/package=prozor"><img src="http://cranlogs.r-pkg.org/badges/prozor.png" class="img-fluid"></a> <a href="https://cran.r-project.org/package=prozor"><img src="http://cranlogs.r-pkg.org/badges/grand-total/prozor.png" class="img-fluid"></a></p>
+<p><a href="https://cran.r-project.org/package=prozor"><img src="https://www.r-pkg.org/badges/version/prozor.png" class="img-fluid" alt="CRAN_Status_Badge"></a> <a href="https://cran.r-project.org/package=prozor"><img src="https://cranlogs.r-pkg.org/badges/prozor.png" class="img-fluid"></a> <a href="https://cran.r-project.org/package=prozor"><img src="https://cranlogs.r-pkg.org/badges/grand-total/prozor.png" class="img-fluid"></a></p>
 <section id="prozor" class="level1">
 <h1>prozor</h1>
 <ul>
-<li>Determine minimal protein set explaining peptide spectrum matches.</li>
-<li>Utility functions for creating fasta amino acid databases with decoys and contaminants.</li>
-<li>Peptide false discovery rate estimation for target decoy search results on psm, precursor, peptide and protein level.</li>
-<li>Computing dynamic swath window sizes based on MS1 or MS2 signal distributions.</li>
+<li>Determine the minimal protein set explaining peptide spectrum matches (PSMs).</li>
+<li>Create FASTA amino acid databases with decoys and contaminants.</li>
+<li>Estimate the false discovery rate for target-decoy search results on PSM, precursor, peptide and protein level.</li>
+<li>Compute dynamic SWATH (DIA) window sizes from the distribution of MS1 masses.</li>
 </ul>
 <p>An HTML version of the package documentation can be found here:</p>
 <p>https://protviz.github.io/prozor</p>
 <section id="how-to-install" class="level2">
 <h2 class="anchored" data-anchor-id="how-to-install">How to install:</h2>
-<p>For CRAN version (not the newest). Please use the github version.</p>
+<p>For CRAN version (not the newest). Please use the GitHub version.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"prozor"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>This is how you install the github version.</p>
+<p>This is how you install the GitHub version.</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"remotes"</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"protviz/prozor"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <section id="for-developers" class="level3">
 <h3 class="anchored" data-anchor-id="for-developers">for Developers</h3>
-<p>downlod git repo. Use roxygenize2 to document new functions. Than run these 2 commands to update namespace and Rd files:</p>
+<p>Download the git repo. Document new functions with roxygen2, then run these 2 commands to update NAMESPACE and the Rd files:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(devtools)</span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">document</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>Example for creating a fasta file with the <code>fgcz_create_fasta.R</code> script</p>
-<p>Go to fgcz-r-035.uzh.ch</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ls</span> ./fasta_db/p3071_Chlorella</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">more</span> ./fasta_db/p3071_Chlorella/annotation.txt</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">more</span> ./fasta_db/p3071_Chlorella/uniprot-taxonomy_3071.fasta</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">clear</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="ex">/usr/local/lib/R/site-library/prozor/script/fgcz_create_fasta.R</span> <span class="at">-h</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="ex">/usr/local/lib/R/site-library/prozor/script/fgcz_create_fasta.R</span> ./fasta_db/p3071_Chlorella nodecoy <span class="at">-o</span> /srv/www/htdocs/FASTA/</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="ex">/usr/local/lib/R/site-library/prozor/script/fgcz_create_fasta.R</span> ./fasta_db/p3071_Chlorella <span class="at">-o</span> /srv/www/htdocs/FASTA/</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> p3071_Chlorella_d.txt</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span> p3071_Chlorella_d.txt <span class="kw">|</span> <span class="ex">bfabric_save_fasta.py</span> 3071  /srv/www/htdocs/FASTA/fgcz_3071_Chlorella_d_20200604.fasta</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 3071 is the bfabric project name</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-
-
 </section>
+</section>
+<section id="creating-a-fasta-database-from-the-command-line" class="level2">
+<h2 class="anchored" data-anchor-id="creating-a-fasta-database-from-the-command-line">Creating a FASTA database from the command line</h2>
+<p>prozor installs the script <code>fgcz_create_fasta.R</code> (it needs the docopt package). It reads all FASTA files and the <code>annotation.txt</code> in a directory, adds contaminants and reversed decoy sequences, and writes one FASTA file:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="va">script</span><span class="op">=</span><span class="va">$(</span><span class="ex">Rscript</span> <span class="at">-e</span> <span class="st">'cat(system.file("script", "fgcz_create_fasta.R", package = "prozor"))'</span><span class="va">)</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Rscript</span> <span class="st">"</span><span class="va">$script</span><span class="st">"</span> <span class="at">-h</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="ex">Rscript</span> <span class="st">"</span><span class="va">$script</span><span class="st">"</span> path/to/database_dir <span class="at">-o</span> path/to/output_dir</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="ex">Rscript</span> <span class="st">"</span><span class="va">$script</span><span class="st">"</span> path/to/database_dir nodecoy <span class="at">-c</span> none <span class="at">-o</span> path/to/output_dir</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+
+
 </section>
 </section>
 

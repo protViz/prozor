@@ -373,7 +373,34 @@ ul.task-list li input[type="checkbox"] {
 <h2 class="unnumbered anchored" data-anchor-id="peptide-protein-assignments-small-version">Peptide-protein assignments, small version</h2>
 <section id="description" class="level3">
 <h3 class="anchored" data-anchor-id="description">Description</h3>
-<p>Peptide-protein pairs with the columns <code>peptide_seq</code>, <code>protein_length</code>, <code>protein_id</code>, <code>peptide_mod_seq</code>, <code>precursor_charge</code>, <code>m</code> (precursor m/z) and <code>peptide_length</code>; small, so the examples stay fast.</p>
+<p>Peptide-protein pairs for 250 mouse proteins; small, so the examples stay fast.</p>
+</section>
+<section id="format" class="level3">
+<h3 class="anchored" data-anchor-id="format">Format</h3>
+<p>A data frame with 423 rows and 7 columns:</p>
+<ul>
+<li>
+<p><code>peptide_seq</code>: peptide sequence.</p>
+</li>
+<li>
+<p><code>protein_length</code>: length of the protein sequence.</p>
+</li>
+<li>
+<p><code>protein_id</code>: UniProt protein ID, e.g.&nbsp;<code>sp|Q62009|POSTN_MOUSE</code>.</p>
+</li>
+<li>
+<p><code>peptide_mod_seq</code>: modified peptide sequence.</p>
+</li>
+<li>
+<p><code>precursor_charge</code>: precursor charge (integer).</p>
+</li>
+<li>
+<p><code>m</code>: precursor m/z.</p>
+</li>
+<li>
+<p><code>peptide_length</code>: length of the peptide sequence.</p>
+</li>
+</ul>
 
 
 </section>

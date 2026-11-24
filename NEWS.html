@@ -483,6 +483,8 @@ ul.task-list li input[type="checkbox"] {
 <li><code>prepare_matrix()</code> documents only the weightings it implements (<code>NULL</code>, <code>"inverse"</code> or one numeric weight per row).</li>
 <li><code>load_contaminants("special2024")</code> works: the bundled <code>fgcz_special_prot_20241112.fasta.gz</code> is a plain gzipped FASTA file again instead of a gzipped tar archive (<a href="https://github.com/protviz/prozor/issues/7">#7</a>).</li>
 <li><code>inst/script/fgcz_create_fasta.R</code> stops early with a clear message for an unknown <code>--contamin</code> value.</li>
+<li>The summary of <code>create_fgcz_fasta_db()</code> no longer contains a link to the FGCZ intranet.</li>
+<li><code>load_contaminants()</code> cites the source of the <code>"universal2024"</code> set; <code>inst/COPYRIGHTS</code> lists its origin.</li>
 <li>Help pages use markdown, link related functions in families, and describe the actual return values (e.g.&nbsp;the elements of <code>compute_fdr()</code>’s result).</li>
 <li>New or runnable examples for <code>create_fgcz_fasta_db()</code>, <code>greedy_to_table()</code>, <code>remove_signal_peptide()</code> and <code>write_fasta()</code>; removed debugging code from examples and vignettes.</li>
 <li>The vignettes use the new names and ggplot2; “Peptide Annotation and Protein Inference” builds again.</li>
