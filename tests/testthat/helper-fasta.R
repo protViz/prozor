@@ -18,19 +18,29 @@ bundled_fasta_files <- function() {
   )
 }
 
-# Toy target database (x, y) written to a temporary FASTA file for createDecoyDB()
+# Toy target database (x, y) written to a temporary FASTA file for create_decoy_db()
 toy_db_file <- function(env = parent.frame()) {
   file <- withr::local_tempfile(fileext = ".fasta", .local_envir = env)
-  writeFasta(
-    file,
+  write_fasta(
     list(
       seqinr::as.SeqFastaAA("ABCD", name = "x", Annot = ">x"),
       seqinr::as.SeqFastaAA("EFG", name = "y", Annot = ">y")
-    )
+    ),
+    file
   )
   file
 }
 
 toy_contaminants <- function() {
   list(c1 = seqinr::as.SeqFastaAA("HIK", name = "c1", Annot = ">c1"))
+}
+
+# Bundled contaminant entries and their UniProt accessions for remove_signal_peptide()
+contaminant_entries <- function(rows) {
+  file <- system.file("extdata/fgcz_contaminants2021_20210929.fasta.gz", package = "prozor")
+  read_peptide_fasta(file)[rows]
+}
+
+accessions <- function(db) {
+  vapply(strsplit(names(db), split = "|", fixed = TRUE), function(x) x[2], character(1))
 }

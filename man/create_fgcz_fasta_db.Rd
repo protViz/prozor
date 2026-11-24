@@ -2,37 +2,56 @@
 % Please edit documentation in R/create_fgcz_fasta_db.R
 \name{create_fgcz_fasta_db}
 \alias{create_fgcz_fasta_db}
-\title{create fasta db from one or more fasta files}
+\title{Create an FGCZ FASTA database from a directory of FASTA files}
 \usage{
 create_fgcz_fasta_db(
-  databasedirectory,
-  useContaminants = loadContaminantsFGCZ2022(),
-  revLab = "REV_",
-  outputdir,
+  database_dir,
+  contaminants = load_contaminants("fgcz2022"),
+  rev_lab = "REV_",
+  output_dir,
   make_summary = TRUE
 )
 }
 \arguments{
-\item{databasedirectory}{directory with fasta files}
+\item{database_dir}{Directory with the FASTA files and \code{annotation.txt}.}
 
-\item{useContaminants}{contaminants to add}
+\item{contaminants}{Contaminant sequences to add, e.g. from \code{\link[=load_contaminants]{load_contaminants()}}, or \code{NULL} for none.}
 
-\item{revLab}{reverse label}
+\item{rev_lab}{Prefix of the reversed decoy sequences, or \code{NULL} for no decoys.}
 
-\item{outputdir}{output directory the FASTA file is written to}
+\item{output_dir}{Directory the FASTA file is written to.}
 
-\item{make_summary}{if TRUE, append the output of \code{make_fasta_summary} to the summary}
+\item{make_summary}{If \code{TRUE}, append the output of \code{\link[=make_fasta_summary]{make_fasta_summary()}} to the summary.}
 }
 \value{
-list list(resDB, filepath , summary, mcall, dbname)
+A list with the elements \code{resDB} (the sequences written), \code{filepath}, \code{summary} (text), \code{mcall} (the
+call) and \code{dbname}.
 }
 \description{
-create fasta db from one or more fasta files
+Reads all FASTA files in \code{database_dir}, adds contaminants and decoys with \code{\link[=create_decoy_db]{create_decoy_db()}}, drops
+duplicated entries and writes the result to \code{output_dir} as \verb{<name>[_d]_<date>.fasta}, where \verb{_d} marks a
+database with decoys. The first line of \code{annotation.txt} in \code{database_dir} becomes the header of the
+dummy source entry.
 }
 \examples{
-res <- create_fgcz_fasta_db(system.file("p1000_db1_example", package = "prozor"),
-                            outputdir = tempdir(), make_summary = FALSE)
+res <- create_fgcz_fasta_db(
+  system.file("p1000_db1_example", package = "prozor"),
+  output_dir = tempdir(),
+  make_summary = FALSE
+)
 basename(res$filepath)
 unlink(res$filepath)
-
 }
+\seealso{
+Other FASTA databases:
+\code{\link[=create_decoy_db]{create_decoy_db()}},
+\code{\link[=load_contaminants]{load_contaminants()}},
+\code{\link[=make_chain_id]{make_chain_id()}},
+\code{\link[=make_chain_id_uniprot]{make_chain_id_uniprot()}},
+\code{\link[=make_fasta_summary]{make_fasta_summary()}},
+\code{\link[=read_peptide_fasta]{read_peptide_fasta()}},
+\code{\link[=remove_signal_peptide]{remove_signal_peptide()}},
+\code{\link[=reverse_seq]{reverse_seq()}},
+\code{\link[=write_fasta]{write_fasta()}}
+}
+\concept{FASTA databases}

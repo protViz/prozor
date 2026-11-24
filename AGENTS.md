@@ -19,7 +19,8 @@ Guide for coding agents working in prozor. The workspace guide `../AGENTS.md` ap
 
 ## Conventions
 
-- Edit roxygen comments in `R/`, never `NAMESPACE` or `man/` by hand
+- Edit roxygen comments in `R/` (markdown is on), never `NAMESPACE` or `man/` by hand
+- Format with `make format` (air, `air.toml`: 120 columns, 2 spaces); `.lintr` configures `make lint`. The air reformat is listed in `.git-blame-ignore-revs`
 - Every user-visible change gets a `NEWS.md` bullet under the heading of the current DESCRIPTION version; tests and tooling do not
 - Vignettes live in `vignettes/`; `vignettes/PlottingProteinCoverage.qmd` is a draft under the maintainer's review: do not edit its content
 - No `debug()`, `browser()`, `:::` to prozor itself, or commented-out code in examples and vignettes
@@ -31,7 +32,11 @@ Guide for coding agents working in prozor. The workspace guide `../AGENTS.md` ap
 
 - Maintainer address stays `wewolski@gmail.com`
 - Next CRAN version is 0.4.0: bump with `usethis::use_version("minor")`, not `make new-version` (which bumps the patch, tags and pushes before CRAN acceptance)
-- `greedy()` returns as a deprecated alias of `greedy_parsimony()` in 0.4.0 and becomes defunct in 0.5.0
+- API is snake_case (functions, arguments, `Cdsw` methods); renamed in 0.4.0 without aliases, `greedy()` included. Result column and element names (`proteinID`, `qValue_FPR`, ...) keep their old spelling
+- Plots use ggplot2 and return ggplot objects; no base graphics, no `plot = TRUE` arguments
+- `Depends: R (>= 4.4.0)`
+- The CLI options of `inst/script/fgcz_create_fasta.R` (`--revLab`, `--contamin`, ...) stay as they are: the `inst/script/*.sh` wrappers and FGCZ jobs call them
+- `annotate_aho()` rejects peptides outside `^[A-Z]+$` because AhoCorasickTrie 0.1.3 crashes R on them (upstream fix: chambm/AhoCorasickTrie#5); drop the check once a fixed version is on CRAN
 
 ## Git
 

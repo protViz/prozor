@@ -22,27 +22,27 @@ Function optimizes Extraction windows for DIA/SWATH so we have the same number o
 
 ```{r echo=FALSE}
 library(prozor)
-
+library(ggplot2)
+set.seed(1)
 ```
 
-# Constant with method
+# Constant width method
 
 
 ```{r fig.retina=3}
 data("masses")
-cdsw <- Cdsw(masses , nbins = 25, digits = 1)
+cdsw <- Cdsw(masses, nbins = 25, digits = 1)
 cdsw$plot()
-
 ```
 
 
 ```{r, results='markup'}
-knitr::kable(cdsw$asTable())
+knitr::kable(cdsw$as_table())
 ```
 
 
 ```{r}
-constError <- cdsw$error()
+const_error <- cdsw$error()
 ```
 
 # Classical Method based on `quantile`
@@ -58,34 +58,35 @@ cdsw$plot()
 ```
 
 ```{r, results='markup'}
-knitr::kable(cdsw$asTable())
+knitr::kable(cdsw$as_table())
 ```
 
 
 ```{r}
-quantileError <- cdsw$error()
+quantile_error <- cdsw$error()
 ```
 
 # Adjust windows
 
 Using this method the window start and end is shifted to a mass range with as few MS1 peaks as possible.
 
-```{r, }
-knitr::kable(cdsw$optimizeWindows(maxbin = 10, plot = TRUE) )
+```{r fig.retina=3, fig.width=7, fig.height=4}
+optimized <- cdsw$optimize_windows(maxbin = 10)
+knitr::kable(optimized)
+plot_windows(optimized, masses)
 ```
 
 # Dynamic Swath Windows with Constraints.
 
-
-- Mass range can be specified (*mass\_range*)
-- Maximal window size can be specified (*max\_window\_size*). This is because windows should not be to large because of optimal collision energy (personal communication by Bernd R.).
-- Minimal window size can be specified (*min\_window\_size*).
-- target number of windows can be specified (*nr\_windows*).
-- boundaries between windows are placed in regions were no precursors are observed.
+- Maximal window width (`maxwindow`). Windows should not be too large because of optimal collision energy (personal communication by Bernd R.).
+- Minimal window width (`minwindow`).
+- Number of windows (`nbins`, set in `Cdsw()`).
+- Window boundaries can then be moved to regions with few precursors (`optimize_windows()`).
 
 
 ```{r fig.retina=3}
-cdsw$sampling_breaks(maxwindow = 100,plot = TRUE)
+cdsw$sampling_breaks(maxwindow = 100)
+cdsw$plot_breaks()
 ```
 
 ```{r fig.retina=3}
@@ -93,15 +94,17 @@ cdsw$plot()
 ```
 
 ```{r, results='markup'}
-knitr::kable(cdsw$asTable())
+knitr::kable(cdsw$as_table())
+```
+
+```{r fig.retina=3, fig.width=7, fig.height=4}
+optimized <- cdsw$optimize_windows(maxbin = 10)
+knitr::kable(optimized)
+plot_windows(optimized, masses)
 ```
 
 ```{r}
-knitr::kable(cdsw$optimizeWindows(maxbin = 10, plot = TRUE) )
-```
-
-```{r}
-mixedError <- cdsw$error()
+mixed_error <- cdsw$error()
 ```
 
 
@@ -109,12 +112,23 @@ mixedError <- cdsw$error()
 
 We compare the optimal number of MS1 peaks per SWATH window (same in each window) with the numbers obtained by using all of the 3 methods implemented.  
 
-```{r fig.retina=3}
-barplot(c(const = constError$score1, quantile = quantileError$score1, mixed = mixedError$score1),ylab = "Manhattan distance")
-barplot(c(const = constError$score2, quantile = quantileError$score2, mixed = mixedError$score2),ylab = "Euclidean distance")
-
+```{r fig.retina=3, fig.width=6, fig.height=3}
+errors <- data.frame(
+  method = factor(rep(c("const", "quantile", "mixed"), 2), levels = c("const", "quantile", "mixed")),
+  metric = rep(c("Manhattan distance", "Euclidean distance"), each = 3),
+  value = c(
+    const_error$score1, quantile_error$score1, mixed_error$score1,
+    const_error$score2, quantile_error$score2, mixed_error$score2
+  )
+)
+ggplot(errors, aes(x = method, y = value)) +
+  geom_col(fill = "#0072B2") +
+  geom_text(aes(label = signif(value, 2)), vjust = -0.3, size = 3) +
+  facet_wrap(~metric, scales = "free_y") +
+  labs(x = NULL, y = "deviation from equal counts")
 ```
-We can see that Method 3 has a relatively small error although it is able to fulfill constraints such as maximum window size.
+
+The mixed method has a relatively small error although it is able to fulfill constraints such as maximum window size.
 
 # Session info
 
@@ -122,8 +136,3 @@ We can see that Method 3 has a relatively small error although it is able to ful
 ```{r sessionInfo, echo=FALSE}
 sessionInfo()
 ```
-
-
-
-
-

@@ -13,69 +13,72 @@ editor_options:
 
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, message = FALSE)
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, fig.width = 6, fig.height = 4)
 ```
 
 # Introduction
 
-This Vignette describes how the `prozor::greedy` function can be used to infer proteins form peptide identifications using the Occam's razor principle. The method tries to find a minimal set of porteins which can explain all the peptides identified.
+This Vignette describes how the `greedy_parsimony()` function can be used to infer proteins from peptide identifications using the Occam's razor principle. The method tries to find a minimal set of proteins which can explain all the peptides identified.
 
 ```{r loadData}
 library(prozor)
+library(dplyr)
+library(ggplot2)
 
-file = system.file("extdata/IDResults.txt.gz" , package = "prozor")
+file <- system.file("extdata/IDResults.txt.gz", package = "prozor")
 specMeta <- readr::read_tsv(file)
 head(specMeta) |> knitr::kable()
-
 ```
 
 
 Annotate peptide sequences with protein sequences from two fasta files on with reviewed entries only (sp) and the other with reviewed and Trembl entries (sp/tr).
 
 ```{r fig.cap = "Number of proteins in the All and Canonical database."}
-resAll <-
-    prozor::readPeptideFasta(
-        system.file("p1000_db1_example/Annotation_allSeq.fasta.gz" , package = "prozor"))
+resAll <- read_peptide_fasta(system.file("p1000_db1_example/Annotation_allSeq.fasta.gz", package = "prozor"))
+resCan <- read_peptide_fasta(system.file("p1000_db1_example/Annotation_canSeq.fasta.gz", package = "prozor"))
 
-resCan <-
-    prozor::readPeptideFasta(
-        system.file("p1000_db1_example/Annotation_canSeq.fasta.gz" , package = "prozor"))
-
-barplot(c(All = length(resAll), Canonical = length(resCan)))
+db_sizes <- data.frame(database = c("All", "Canonical"), proteins = c(length(resAll), length(resCan)))
+ggplot(db_sizes, aes(x = database, y = proteins)) +
+  geom_col(fill = "#0072B2") +
+  geom_text(aes(label = proteins), vjust = -0.3) +
+  labs(x = NULL, y = "proteins")
 ```
 
 ```{r}
 length(unique(specMeta$peptideSeq))
 upeptide <- unique(specMeta$peptideSeq)
-annotAll <- prozor::annotatePeptides(upeptide, resAll)
-head(subset(annotAll,select =  -proteinSequence)) |> knitr::kable()
+annotAll <- annotate_peptides(upeptide, resAll)
+head(select(annotAll, !proteinSequence)) |> knitr::kable()
 
-annotCan <- prozor::annotatePeptides(upeptide, resCan)
-
-
+annotCan <- annotate_peptides(upeptide, resCan)
 ```
 
 
 
-```{r fig.cap="Number of unique peptide protein pairs  for the All and Canonical database."}
-barplot(c(All = nrow(annotAll), Canonical = nrow(annotCan)), ylab = "# peptide protein matches.")
+```{r fig.cap="Number of peptide protein matches for the All and Canonical database."}
+matches <- data.frame(database = c("All", "Canonical"), matches = c(nrow(annotAll), nrow(annotCan)))
+ggplot(matches, aes(x = database, y = matches)) +
+  geom_col(fill = "#0072B2") +
+  geom_text(aes(label = matches), vjust = -0.3) +
+  labs(x = NULL, y = "peptide protein matches")
 ```
 
 We can see that using the larger fasta database reduces the proportion of proteotypic peptides.
 A proteotypic peptide is one which matches only a single protein.
 
 ```{r proteotypicPetides, fig.cap="Proportion of proteotypic peptides."}
-PCProteotypic_all <-
-    sum(table(annotAll$peptideSeq) == 1) / length(table(annotAll$peptideSeq)) * 100
-PCProteotypic_canonical <-
+proteotypic <- data.frame(
+  database = c("All", "Canonical"),
+  percent = c(
+    sum(table(annotAll$peptideSeq) == 1) / length(table(annotAll$peptideSeq)) * 100,
     sum(table(annotCan$peptideSeq) == 1) / length(table(annotCan$peptideSeq)) * 100
-
-barplot(
-    c(All = PCProteotypic_all, Canonical =  PCProteotypic_canonical),
-    las = 2,
-    ylab = "% proteotypic"
+  )
 )
-
+ggplot(proteotypic, aes(x = database, y = percent)) +
+  geom_col(fill = "#0072B2") +
+  geom_text(aes(label = sprintf("%.1f %%", percent)), vjust = -0.3) +
+  scale_y_continuous(limits = c(0, 100)) +
+  labs(x = NULL, y = "% proteotypic peptides")
 ```
 
 
@@ -85,67 +88,71 @@ barplot(
 We can now identify a minimal set of proteins explaining all the peptides observed for both databases
 
 ```{r}
-library(Matrix)
-precursors <-
-    unique(subset(specMeta, select = c(
-        peptideModSeq, precursorCharge, peptideSeq
-    )))
+precursors <- distinct(specMeta, peptideModSeq, precursorCharge, peptideSeq)
 
+# peptide protein matches as points; rows and columns sorted by their number of matches
+plot_matches <- function(pepprot) {
+  peptide_rank <- rank(-Matrix::rowSums(pepprot > 0), ties.method = "first")
+  protein_rank <- rank(-Matrix::colSums(pepprot > 0), ties.method = "first")
+  nonzero <- Matrix::summary(pepprot)
+  ggplot(data.frame(peptide = peptide_rank[nonzero$i], protein = protein_rank[nonzero$j])) +
+    geom_point(aes(x = protein, y = peptide), shape = 15, size = 0.5) +
+    scale_y_reverse() +
+    labs(x = "proteins, most peptides first", y = "peptides, most proteins first")
+}
 ```
 
 ## Protein Inference for database with Trembl identifiers
 
-```{r greedyTrembl, fig.cap="Peptide protein machtes for the All database. Rows - peptides, Columns - proteins, black - peptide protein match."}
-library(Matrix)
-annotatedPrecursors <- merge(precursors ,
-                             subset(annotAll, select = c(peptideSeq, proteinID)),
-                             by.x = "peptideSeq",
-                             by.y = "peptideSeq")
+```{r greedyTrembl, fig.cap="Peptide protein matches for the All database. Rows - peptides, columns - proteins, point - peptide protein match."}
+annotatedPrecursors <- inner_join(
+  precursors,
+  select(annotAll, peptideSeq, proteinID),
+  by = join_by(peptideSeq),
+  relationship = "many-to-many"
+)
 
-
-xx <-
-    prepareMatrix(annotatedPrecursors,
-                  proteinID = "proteinID",
-                  peptideID = "peptideSeq")
-
-image(xx)
+xx <- prepare_matrix(annotatedPrecursors, protein_id = "proteinID", peptide_id = "peptideSeq")
+plot_matches(xx)
 dim(xx)
 xx[1:10, 1:100]
 xxAll <- greedy_parsimony(xx)
-
 ```
 
 ## Protein Inference for Reviewed/Canonical database
 
-```{r greedyCanonical, fig.cap="Peptide protein machtes for the Canonical database. Rows - peptides, Columns - proteins, black - peptide protein match."}
-annotatedPrecursors <-
-    merge(precursors ,
-          subset(annotCan, select = c(peptideSeq, proteinID)),
-          by.x = "peptideSeq",
-          by.y = "peptideSeq")
+```{r greedyCanonical, fig.cap="Peptide protein matches for the Canonical database. Rows - peptides, columns - proteins, point - peptide protein match."}
+annotatedPrecursors <- inner_join(
+  precursors,
+  select(annotCan, peptideSeq, proteinID),
+  by = join_by(peptideSeq),
+  relationship = "many-to-many"
+)
 
-
-xx <-
-    prepareMatrix(annotatedPrecursors ,
-                  proteinID = "proteinID",
-                  peptideID = "peptideSeq")
-image(xx)
-xx[80:100,1:10]
+xx <- prepare_matrix(annotatedPrecursors, protein_id = "proteinID", peptide_id = "peptideSeq")
+plot_matches(xx)
+xx[80:100, 1:10]
 xxCAN <- greedy_parsimony(xx)
-
 ```
 
 # Conclusion
 
-We see that the number of proteins needed to explain all the peptides is practically identical for both databases. Also in practice using a database with more entries does not lead to more identified proteins. On the contrary, it might even reduce the number of porteins identified.
+We see that the number of proteins needed to explain all the peptides is practically identical for both databases. Also in practice using a database with more entries does not lead to more identified proteins. On the contrary, it might even reduce the number of proteins identified.
 
 ```{r fig.cap="Number of proteins before and after protein inference."}
-barplot(c(All_before = length(unique(annotAll$proteinID)), All_after = length(unique(unlist(
-    xxAll
-))) , Canonical_before =  length(unique(annotCan$proteinID)), Canonical_after = length(unique(unlist(
-    xxCAN
-)))))
-
+inference <- data.frame(
+  database = rep(c("All", "Canonical"), each = 2),
+  stage = factor(rep(c("before", "after"), 2), levels = c("before", "after")),
+  proteins = c(
+    length(unique(annotAll$proteinID)), length(unique(unlist(xxAll))),
+    length(unique(annotCan$proteinID)), length(unique(unlist(xxCAN)))
+  )
+)
+ggplot(inference, aes(x = stage, y = proteins)) +
+  geom_col(fill = "#0072B2") +
+  geom_text(aes(label = proteins), vjust = -0.3) +
+  facet_wrap(~database) +
+  labs(x = "protein inference", y = "proteins")
 ```
 
 

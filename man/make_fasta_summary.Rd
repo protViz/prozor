@@ -2,28 +2,40 @@
 % Please edit documentation in R/create_fgcz_fasta_db.R
 \name{make_fasta_summary}
 \alias{make_fasta_summary}
-\title{make db summary which includes number of sequences, and amino acid statistcis}
+\title{Summarise a FASTA database}
 \usage{
-make_fasta_summary(resDB, old = FALSE, as_string = TRUE)
+make_fasta_summary(db, old = FALSE, as_string = TRUE)
 }
 \arguments{
-\item{resDB}{list of sequences as returned by \code{readPeptideFasta}}
+\item{db}{A list of sequences, as returned by \code{\link[=read_peptide_fasta]{read_peptide_fasta()}}.}
 
-\item{old}{if TRUE, count amino acids by concatenating all sequences (older, slower implementation)}
+\item{old}{If \code{TRUE}, count the amino acids by concatenating all sequences (the older, slower method).}
 
-\item{as_string}{if TRUE, return a character vector to pass to \code{cat}; if FALSE, return a list
-with elements \code{nrSequences}, \code{lengthSummary} and \code{aafreq}}
+\item{as_string}{If \code{TRUE}, return text to pass to \code{\link[=cat]{cat()}}; if \code{FALSE}, a list.}
 }
 \value{
-array of strings which should be passed to the cat function.
+With \code{as_string = TRUE}, a character vector to pass to \code{\link[=cat]{cat()}}. Otherwise a list with the elements
+\code{nrSequences}, \code{lengthSummary} and \code{aafreq} (counts per amino acid).
 }
 \description{
-make db summary which includes number of sequences, and amino acid statistcis
+Counts the sequences and amino acids and summarises the sequence lengths.
 }
 \examples{
-file = system.file("extdata/fgcz_contaminants2022_20220405.fasta.gz",package="prozor")
-xx <- prozor::readPeptideFasta(file)
-cat(make_fasta_summary(xx))
-make_fasta_summary(xx, as_string = FALSE)
-make_fasta_summary(xx, old =TRUE, as_string = FALSE)
+file <- system.file("extdata/fgcz_contaminants2022_20220405.fasta.gz", package = "prozor")
+db <- read_peptide_fasta(file)
+cat(make_fasta_summary(db))
+make_fasta_summary(db, as_string = FALSE)
 }
+\seealso{
+Other FASTA databases:
+\code{\link[=create_decoy_db]{create_decoy_db()}},
+\code{\link[=create_fgcz_fasta_db]{create_fgcz_fasta_db()}},
+\code{\link[=load_contaminants]{load_contaminants()}},
+\code{\link[=make_chain_id]{make_chain_id()}},
+\code{\link[=make_chain_id_uniprot]{make_chain_id_uniprot()}},
+\code{\link[=read_peptide_fasta]{read_peptide_fasta()}},
+\code{\link[=remove_signal_peptide]{remove_signal_peptide()}},
+\code{\link[=reverse_seq]{reverse_seq()}},
+\code{\link[=write_fasta]{write_fasta()}}
+}
+\concept{FASTA databases}

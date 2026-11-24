@@ -4,51 +4,61 @@
 \name{Cdsw-class}
 \alias{Cdsw-class}
 \alias{Cdsw}
-\title{Compute dynamic swath windows}
+\title{Compute dynamic SWATH (DIA) windows}
 \description{
-Compute dynamic swath windows
+A reference class that splits the MS1 mass range into windows with about equal numbers of precursors,
+subject to minimum and maximum window widths.
 }
 \section{Fields}{
 
 \describe{
-\item{\code{masses}}{MS1 masses}
+\item{\code{masses}}{MS1 masses.}
 
-\item{\code{breaks}}{the breaks}
+\item{\code{breaks}}{The window boundaries.}
 
-\item{\code{nbins}}{number of bins}
+\item{\code{nbins}}{Number of windows.}
 
-\item{\code{digits}}{mass accuracy in result}
+\item{\code{digits}}{Mass accuracy of the result.}
 }}
 
 \section{Methods}{
 
 \describe{
-\item{\code{asTable(overlap = 1)}}{make windows: data.frame with window start (from), end (to), centre (mid), width and expected number of precursors (counts); overlap in m/z}
+\item{\code{as_table(overlap = 1)}}{Windows as a data.frame with start (from), end (to), centre (mid), width and precursor count; overlap in m/z.}
 
-\item{\code{constant_breaks(digits = 2)}}{Equidistant breaks with mass precision digits; returns the breaks invisibly.}
+\item{\code{constant_breaks(digits = 2)}}{Equal-width windows; returns the breaks invisibly.}
 
-\item{\code{error()}}{show error: list with optimization scores of the binning (see objectiveMS1Function)}
+\item{\code{error()}}{Deviation of the windows from equal counts: a list, see objectiveMS1Function().}
 
-\item{\code{initialize(masses, nbins = 25, digits = 1)}}{Create the object from a vector of MS1 masses, with nbins windows and mass precision digits.}
+\item{\code{initialize(masses, nbins = 25, digits = 1)}}{Create the object from a vector of MS1 masses, with nbins windows of equal width and mass accuracy digits.}
 
-\item{\code{optimizeWindows(digits = 1, maxbin = 15, plot = FALSE, overlap = 0)}}{optimizes the windows: moves window start and end to regions with as few precursor masses as possible; returns a data.frame}
+\item{\code{optimize_windows(digits = 1, maxbin = 15, overlap = 0)}}{Move window starts and ends to regions with few precursor masses; returns a data.frame.}
 
-\item{\code{plot()}}{barplot showing the number of precursors per window}
+\item{\code{plot()}}{ggplot of the precursors per window; the dashed line marks equal counts.}
 
-\item{\code{quantile_breaks(digits = 2)}}{same number of MS1 in each window but might violate hard constraints}
+\item{\code{plot_breaks()}}{ggplot of the current breaks against equal-width and quantile breaks.}
 
-\item{\code{sampling_breaks(maxwindow = 150, minwindow = 5, digits = 2, plot = FALSE)}}{starts with quantile breaks but mixes with uniform data to satisfy hard constraints (window widths between minwindow and maxwindow); stops with an error if even equal-width windows violate them; plot = TRUE draws the breaks}
+\item{\code{quantile_breaks(digits = 2)}}{Windows with equal numbers of MS1 masses; widths may violate the limits of sampling_breaks().}
 
-\item{\code{showCycle(overlap = 1)}}{shows the generated DIA cycle; overlap in m/z}
+\item{\code{sampling_breaks(maxwindow = 150, minwindow = 5, digits = 2)}}{Quantile windows, mixed with uniform data until all widths lie within [minwindow, maxwindow].
+Stops if even equal-width windows violate the limits; returns the breaks invisibly.}
+
+\item{\code{show_cycle(overlap = 1)}}{ggplot of the DIA cycle, one window per step; overlap in m/z.}
 }}
 
 \examples{
 data(masses)
 cdsw <- Cdsw(masses)
-tmp <- cdsw$sampling_breaks(maxwindow=100,plot=TRUE)
+breaks <- cdsw$sampling_breaks(maxwindow = 100)
+cdsw$plot_breaks()
 cdsw$plot()
-cdsw$asTable()
-cdsw$breaks
-cdsw$optimizeWindows()
-cdsw$showCycle()
+cdsw$as_table()
+cdsw$optimize_windows()
+cdsw$show_cycle()
 }
+\seealso{
+Other DIA windows:
+\code{\link[=plot_windows]{plot_windows()}},
+\code{\link[=readjust_windows]{readjust_windows()}}
+}
+\concept{DIA windows}

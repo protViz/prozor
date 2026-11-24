@@ -1,123 +1,118 @@
-#' make db summary which includes number of sequences, and amino acid statistcis
+#' Summarise a FASTA database
+#'
+#' Counts the sequences and amino acids and summarises the sequence lengths.
+#'
+#' @param db A list of sequences, as returned by [read_peptide_fasta()].
+#' @param old If `TRUE`, count the amino acids by concatenating all sequences (the older, slower method).
+#' @param as_string If `TRUE`, return text to pass to [cat()]; if `FALSE`, a list.
+#' @return With `as_string = TRUE`, a character vector to pass to [cat()]. Otherwise a list with the elements
+#'   `nrSequences`, `lengthSummary` and `aafreq` (counts per amino acid).
+#' @family FASTA databases
 #' @export
-#' @param resDB list of sequences as returned by \code{readPeptideFasta}
-#' @param old if TRUE, count amino acids by concatenating all sequences (older, slower implementation)
-#' @param as_string if TRUE, return a character vector to pass to \code{cat}; if FALSE, return a list
-#'   with elements \code{nrSequences}, \code{lengthSummary} and \code{aafreq}
-#' @return array of strings which should be passed to the cat function.
 #' @examples
-#' file = system.file("extdata/fgcz_contaminants2022_20220405.fasta.gz",package="prozor")
-#' xx <- prozor::readPeptideFasta(file)
-#' cat(make_fasta_summary(xx))
-#' make_fasta_summary(xx, as_string = FALSE)
-#' make_fasta_summary(xx, old =TRUE, as_string = FALSE)
-make_fasta_summary <- function(resDB, old = FALSE, as_string = TRUE) {
+#' file <- system.file("extdata/fgcz_contaminants2022_20220405.fasta.gz", package = "prozor")
+#' db <- read_peptide_fasta(file)
+#' cat(make_fasta_summary(db))
+#' make_fasta_summary(db, as_string = FALSE)
+make_fasta_summary <- function(db, old = FALSE, as_string = TRUE) {
   if (old) {
-    bigstr <- paste(resDB, collapse = "")
-    vec <- strsplit(bigstr, split = "")[[1]]
-    aafreq <- table(vec)
+    aafreq <- table(strsplit(paste(db, collapse = ""), split = "")[[1]])
   } else {
-    res <- list()
-    tmp <- lapply(resDB, function(x) {
-      table(strsplit(x, split = "")[[1]])
-    })
-    for (i in seq_along(tmp)) {
-      x <- tmp[[i]]
-      for (j in names(x)) {
-        if (is.null(res[[j]])) {
-          res[[j]] <- as.numeric(x[j])
-        } else {
-          res[[j]] <- res[[j]] + as.numeric(x[j])
-        }
-      }
-    }
-    aafreq <- unlist(res)
-    aafreq <- aafreq[order(names(aafreq))]
+    counts <- unlist(unname(lapply(db, function(x) table(strsplit(x, split = "")[[1]]))))
+    aafreq <- vapply(split(as.numeric(counts), names(counts)), sum, numeric(1))
   }
-  length_s <- summary(vapply(resDB, seqinr::getLength, numeric(1)))
+  length_summary <- summary(vapply(db, seqinr::getLength, numeric(1)))
 
   if (as_string) {
-    aafreq <- paste(utils::capture.output(as.matrix(aafreq)), "\n", sep = "")
-    length_s <- paste(utils::capture.output(length_s), "\n", sep = "")
-    summaryRes <- c("nr sequences:\n", length(resDB), "\n length summary:\n", length_s, "AA frequencies:\n", aafreq)
+    c(
+      "nr sequences:\n",
+      length(db),
+      "\n length summary:\n",
+      paste0(utils::capture.output(length_summary), "\n"),
+      "AA frequencies:\n",
+      paste0(utils::capture.output(as.matrix(aafreq)), "\n")
+    )
   } else {
-    summaryRes <- list()
-    summaryRes$nrSequences <- length(resDB)
-    summaryRes$lengthSummary <- length_s
-    summaryRes$aafreq <- aafreq
+    list(nrSequences = length(db), lengthSummary = length_summary, aafreq = aafreq)
   }
-  return(summaryRes)
 }
 
 
-#' create fasta db from one or more fasta files
+#' Create an FGCZ FASTA database from a directory of FASTA files
+#'
+#' Reads all FASTA files in `database_dir`, adds contaminants and decoys with [create_decoy_db()], drops
+#' duplicated entries and writes the result to `output_dir` as `<name>[_d]_<date>.fasta`, where `_d` marks a
+#' database with decoys. The first line of `annotation.txt` in `database_dir` becomes the header of the
+#' dummy source entry.
+#'
+#' @param database_dir Directory with the FASTA files and `annotation.txt`.
+#' @param contaminants Contaminant sequences to add, e.g. from [load_contaminants()], or `NULL` for none.
+#' @param rev_lab Prefix of the reversed decoy sequences, or `NULL` for no decoys.
+#' @param output_dir Directory the FASTA file is written to.
+#' @param make_summary If `TRUE`, append the output of [make_fasta_summary()] to the summary.
+#' @return A list with the elements `resDB` (the sequences written), `filepath`, `summary` (text), `mcall` (the
+#'   call) and `dbname`.
+#' @family FASTA databases
 #' @export
-#' @param databasedirectory directory with fasta files
-#' @param useContaminants contaminants to add
-#' @param revLab reverse label
-#' @param outputdir output directory the FASTA file is written to
-#' @param make_summary if TRUE, append the output of \code{make_fasta_summary} to the summary
-#' @return list list(resDB, filepath , summary, mcall, dbname)
 #' @examples
-#' res <- create_fgcz_fasta_db(system.file("p1000_db1_example", package = "prozor"),
-#'                             outputdir = tempdir(), make_summary = FALSE)
+#' res <- create_fgcz_fasta_db(
+#'   system.file("p1000_db1_example", package = "prozor"),
+#'   output_dir = tempdir(),
+#'   make_summary = FALSE
+#' )
 #' basename(res$filepath)
 #' unlink(res$filepath)
-#'
 create_fgcz_fasta_db <- function(
-  databasedirectory,
-  useContaminants = loadContaminantsFGCZ2022(),
-  revLab = "REV_",
-  outputdir,
+  database_dir,
+  contaminants = load_contaminants("fgcz2022"),
+  rev_lab = "REV_",
+  output_dir,
   make_summary = TRUE
 ) {
   mcall <- match.call()
 
-  stopifnot(dir.exists(databasedirectory))
-  dbname <- basename(databasedirectory)
-
-  fasta <- grep("fasta", dir(databasedirectory), value = TRUE)
-  files1 <- file.path(databasedirectory, fasta)
-  annot <- grep("annotation.txt", dir(databasedirectory), value = TRUE)
-  if (length(annot) == 0) {
-    stop("NO annotation file found.")
+  if (!dir.exists(database_dir)) {
+    stop("`database_dir` must be an existing directory, not \"", database_dir, "\".")
   }
-  annotation <- readLines(file.path(databasedirectory, annot))[1]
+  dbname <- basename(database_dir)
+  files <- file.path(database_dir, grep("fasta", dir(database_dir), value = TRUE))
+  annot_file <- grep("annotation.txt", dir(database_dir), value = TRUE)
+  if (length(annot_file) == 0) {
+    stop("Can't find an annotation file (annotation.txt) in `database_dir` \"", database_dir, "\".")
+  }
+  annotation <- readLines(file.path(database_dir, annot_file))[1]
 
-  resDB <- createDecoyDB(files1, useContaminants = useContaminants, annot = annotation, revLab = revLab)
-  resDB <- resDB[!duplicated(names(resDB))]
+  db <- create_decoy_db(files, contaminants = contaminants, annot = annotation, rev_lab = rev_lab)
+  db <- db[!duplicated(names(db))]
 
-  if (is.null(revLab)) {
-    filepath <- file.path(outputdir, paste(dbname, "_", format(Sys.time(), "%Y%m%d"), ".fasta", sep = ""))
-  } else {
+  if (!is.null(rev_lab)) {
     dbname <- paste0(dbname, "_d")
-    filepath <- file.path(outputdir, paste(dbname, "_", format(Sys.time(), "%Y%m%d"), ".fasta", sep = ""))
   }
-
-  message("writing db to : ", filepath)
-  writeFasta(resDB, file = filepath)
-  summaryStr <- paste0(
+  filepath <- file.path(output_dir, paste0(dbname, "_", format(Sys.time(), "%Y%m%d"), ".fasta"))
+  message("Writing database to ", filepath, ".")
+  write_fasta(db, file = filepath)
+  summary_str <- paste0(
     "Database created with prozor: ",
     paste(utils::capture.output(mcall), collapse = "\n"),
     "\n",
-    "where databasedirectory was prepared according to https://fgcz-intranet.uzh.ch/tiki-index.php?page=SOPrequestFASTA \n\n",
+    "where database_dir was prepared according to ",
+    "https://fgcz-intranet.uzh.ch/tiki-index.php?page=SOPrequestFASTA \n\n",
     "\n      FASTA name : ",
     dbname,
     "\n FASTA file name : ",
     basename(filepath),
     "\n  written to dir : ",
-    outputdir,
+    output_dir,
     "\n       annotation:\n",
     annotation,
     "\n",
     "\n      nr sequences: ",
-    length(resDB),
+    length(db),
     "\n"
   )
 
   if (make_summary) {
-    addSR <- make_fasta_summary(resDB, old = FALSE, as_string = TRUE)
-    summaryStr <- c(summaryStr, addSR)
+    summary_str <- c(summary_str, make_fasta_summary(db, as_string = TRUE))
   }
-  return(list(resDB = resDB, filepath = filepath, summary = summaryStr, mcall = mcall, dbname = dbname))
+  list(resDB = db, filepath = filepath, summary = summary_str, mcall = mcall, dbname = dbname)
 }

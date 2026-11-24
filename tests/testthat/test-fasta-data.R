@@ -5,9 +5,9 @@ test_that("all bundled FASTA files are present", {
 
 test_that("every bundled FASTA file is a plain gzipped FASTA of amino-acid sequences", {
   for (file in bundled_fasta_files()) {
-    # a tar archive starts with a tar header instead of ">" and makes readPeptideFasta() warn
+    # a tar archive starts with a tar header instead of ">" and makes read_peptide_fasta() warn
     expect_match(readLines(file, n = 1), "^>", label = paste(basename(file), "first line"))
-    expect_no_warning(fasta <- readPeptideFasta(file))
+    expect_no_warning(fasta <- read_peptide_fasta(file))
     seqs <- unlist(fasta)
     expect_gt(length(fasta), 0)
     expect_false(anyDuplicated(names(fasta)) > 0, label = paste(basename(file), "has duplicated names"))
@@ -16,20 +16,17 @@ test_that("every bundled FASTA file is a plain gzipped FASTA of amino-acid seque
   }
 })
 
-test_that("contaminant loaders return sequences and noHuman removes human entries", {
-  loaders <- list(
-    loadContaminantsFasta2019 = loadContaminantsFasta2019,
-    loadContaminantsFasta2021 = loadContaminantsFasta2021,
-    loadContaminantsFGCZ2022 = loadContaminantsFGCZ2022,
-    load_universal_contaminants_2024 = load_universal_contaminants_2024,
-    load_special_prot_2024 = load_special_prot_2024
-  )
-  for (name in names(loaders)) {
-    all_entries <- loaders[[name]]()
-    no_human <- loaders[[name]](noHuman = TRUE)
+test_that("load_contaminants() returns each set and no_human removes human entries", {
+  for (set in c("fgcz2019", "fgcz2021", "fgcz2022", "universal2024", "special2024")) {
+    all_entries <- load_contaminants(set)
+    no_human <- load_contaminants(set, no_human = TRUE)
     annot <- vapply(no_human, seqinr::getAnnot, character(1))
     expect_gt(length(all_entries), 0)
     expect_lt(length(no_human), length(all_entries))
-    expect_false(any(grepl("HUMAN", annot)), label = paste(name, "(noHuman = TRUE) has HUMAN entries"))
+    expect_false(any(grepl("HUMAN", annot)), label = paste(set, "(no_human = TRUE) has HUMAN entries"))
   }
+})
+
+test_that("load_contaminants() rejects unknown sets", {
+  expect_error(load_contaminants("fgcz2023"), "`set` must be one of .* not \"fgcz2023\"")
 })

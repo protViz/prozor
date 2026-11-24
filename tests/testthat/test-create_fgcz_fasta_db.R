@@ -1,10 +1,10 @@
-test_that("create_fgcz_fasta_db() writes a dated decoy database to outputdir", {
+test_that("create_fgcz_fasta_db() writes a dated decoy database to output_dir", {
   outdir <- withr::local_tempdir()
   example <- system.file("p1000_db1_example", package = "prozor")
 
   # progress messages for each file read and written
-  res <- suppressMessages(create_fgcz_fasta_db(example, outputdir = outdir, make_summary = FALSE))
-  back <- readPeptideFasta(res$filepath)
+  res <- suppressMessages(create_fgcz_fasta_db(example, output_dir = outdir, make_summary = FALSE))
+  back <- read_peptide_fasta(res$filepath)
 
   expect_equal(dirname(res$filepath), outdir)
   expect_match(basename(res$filepath), "^p1000_db1_example_d_[0-9]{8}\\.fasta$")
@@ -14,11 +14,11 @@ test_that("create_fgcz_fasta_db() writes a dated decoy database to outputdir", {
   expect_false(anyDuplicated(names(back)) > 0)
 })
 
-test_that("create_fgcz_fasta_db() without revLab writes targets and contaminants only", {
+test_that("create_fgcz_fasta_db() without rev_lab writes targets and contaminants only", {
   outdir <- withr::local_tempdir()
   example <- system.file("p1000_db1_example", package = "prozor")
 
-  res <- suppressMessages(create_fgcz_fasta_db(example, revLab = NULL, outputdir = outdir, make_summary = FALSE))
+  res <- suppressMessages(create_fgcz_fasta_db(example, rev_lab = NULL, output_dir = outdir, make_summary = FALSE))
 
   expect_match(basename(res$filepath), "^p1000_db1_example_[0-9]{8}\\.fasta$")
   expect_length(res$resDB, 1578)
@@ -29,20 +29,20 @@ test_that("create_fgcz_fasta_db() appends the FASTA summary when make_summary = 
   outdir <- withr::local_tempdir()
   example <- system.file("p1000_db1_example", package = "prozor")
 
-  res <- suppressMessages(create_fgcz_fasta_db(example, outputdir = outdir, make_summary = TRUE))
+  res <- suppressMessages(create_fgcz_fasta_db(example, output_dir = outdir, make_summary = TRUE))
 
   expect_true(any(grepl("AA frequencies", res$summary)))
 })
 
-test_that("create_fgcz_fasta_db() requires outputdir, an existing directory and an annotation file", {
+test_that("create_fgcz_fasta_db() requires output_dir, an existing directory and an annotation file", {
   outdir <- withr::local_tempdir()
   example <- system.file("p1000_db1_example", package = "prozor")
   no_annotation <- withr::local_tempdir()
   file.copy(file.path(example, "Annotation_canSeq.fasta.gz"), no_annotation)
 
-  expect_error(suppressMessages(create_fgcz_fasta_db(example)), "outputdir")
-  expect_error(create_fgcz_fasta_db(file.path(outdir, "missing"), outputdir = outdir), "dir.exists")
-  expect_error(create_fgcz_fasta_db(no_annotation, outputdir = outdir), "NO annotation file")
+  expect_error(suppressMessages(create_fgcz_fasta_db(example)), "output_dir")
+  expect_error(create_fgcz_fasta_db(file.path(outdir, "missing"), output_dir = outdir), "must be an existing directory")
+  expect_error(create_fgcz_fasta_db(no_annotation, output_dir = outdir), "Can't find an annotation file")
 })
 
 test_that("make_fasta_summary() counts sequences and amino acids", {

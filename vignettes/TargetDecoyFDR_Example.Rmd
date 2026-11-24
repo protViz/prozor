@@ -26,29 +26,40 @@ Here we describe how you can estimate the false discovery rate (FDR) when matchi
 ## The data
 
 The data needs to have two columns, one with a label, to distinguish targets and decoys, the other with a score. Then you also need to know if a larger score or a smaller score is better.
-In our example data, we have two scores: `score` and `score2`. While the `score` is better if it smaller (e.g, posterior erro probability), `score2` is better if it is larger.
+In our example data, we have two scores: `score` and `score2`. While the `score` is better if it is smaller (e.g., posterior error probability), `score2` is better if it is larger.
 
 
-```{r  targetdecoy, fig.cap = "Black line - Score distribution of decoy hits. Green line - Score distribution of vorward hits. TN - true netagive, FN - false negative, FP - false postitive, TP - true positive", echo = FALSE, fig.width=5, fig.height=5}
-x <- seq(0,10,by = 0.1)
-y1 <- dnorm(x,mean = 3, sd = 1)
-y2 <- dnorm(x,mean = 5, sd = 1)
-plot(x, y1, type = "l", xlab = 'score')
-lines(x, y2, col = 3)
-abline(v = 3.5, col = 2)
-text(c(2,4.2) , y = c(.2,.2), labels = c("TN","FP"))
-text(c(3,7) , y = c(.1,.1), labels = c("FN","TP"), col = 3)
-legend("topright", legend = c("Forward", "Decoys"), lty = c(1,1), col = c(3,1))
-
+```{r  targetdecoy, fig.cap = "Score distributions of decoy (black line) and forward (blue line) hits; the dashed line is the score threshold. TN true negative, FP false positive, FN false negative, TP true positive.", echo = FALSE, fig.width=6, fig.height=4}
+library(ggplot2)
+threshold <- 3.5
+regions <- function(hits, mean) {
+  below <- seq(0, threshold, by = 0.05)
+  above <- seq(threshold, 10, by = 0.05)
+  data.frame(
+    hits = hits,
+    score = c(below, above),
+    density = dnorm(c(below, above), mean = mean, sd = 1),
+    side = rep(c("below", "above"), c(length(below), length(above)))
+  )
+}
+dens <- rbind(regions("decoy", 3), regions("forward", 5))
+classes <- c(decoy.below = "TN", decoy.above = "FP", forward.below = "FN", forward.above = "TP")
+dens$class <- factor(classes[paste(dens$hits, dens$side, sep = ".")], levels = c("TN", "FP", "FN", "TP"))
+ggplot(dens, aes(x = score, y = density)) +
+  geom_area(aes(fill = class, group = interaction(hits, side)), position = "identity", alpha = 0.5) +
+  geom_line(aes(colour = hits, group = hits)) +
+  geom_vline(xintercept = threshold, linetype = "dashed") +
+  scale_fill_manual(values = c(TN = "grey80", FP = "#D55E00", FN = "#56B4E9", TP = "#0072B2")) +
+  scale_colour_manual(values = c(decoy = "black", forward = "#0072B2")) +
+  labs(x = "score (larger is better)", y = "density", fill = NULL, colour = NULL)
 ```
 
 
 ```{r}
 library(dplyr)
 library(prozor)
-data(fdrSample)
-x <- dplyr::arrange(fdrSample, score2)
-knitr::kable(head(fdrSample))
+data(fdr_sample)
+knitr::kable(head(fdr_sample))
 
 ```
 
@@ -57,18 +68,16 @@ What is also required is that the number of Targets and Decoys are the same. Thi
 
 
 ```{r}
-table(grepl("REV_",fdrSample$proteinID))
+table(grepl("^REV_", fdr_sample$proteinID))
 ```
 
 In our example, we will use the package to filter the data further for a 1% FDR.
 
-Computing the FDR can be done by calling the function `computeFDR`. `plotFDR` than shows the score distribution for the targets (black) and decoys (red) as well as the FDR for the two scores implemented (x axis).
+Computing the FDR can be done by calling the function `compute_fdr()`. `plot_fdr()` then shows the score distributions of targets and decoys (top) and the q-values of the two FDR estimates (bottom). The score axis is logarithmic because smaller scores are better.
 
-```{r fig.width=7, fig.height=7}
-fdr1 <- computeFDR(fdrSample$score, grepl("REV_",fdrSample$proteinID),larger_better = FALSE)
-plotFDR(fdr1)
-legend("topright", legend = c("FPR", "qValue/FDR"), lty = c(1,1), col = c(4,3))
-
+```{r fig.width=7, fig.height=6}
+fdr1 <- compute_fdr(fdr_sample$score, grepl("^REV_", fdr_sample$proteinID), larger_better = FALSE)
+plot_fdr(fdr1)
 ```
 
 The output is a named list which can be easily converted into a data frame. We next will briefly discuss the elements of the output.
@@ -82,10 +91,10 @@ knitr::kable(head(data.frame(fdr1)))
 
 We define 
 
-     * false postivies (FP) as the number of passing decoy assignments
+     * false positives (FP) as the number of passing decoy assignments
      * true positives (TP) as the number of passing forward hits.
 
-### False postive rate
+### False positive rate
 
 Which is the "Fraction of incorrect assignments above score threshold". The multiplier 2 is needed here since we assume that also the forward sequences have false assignments.
 
@@ -105,7 +114,7 @@ _accepted PSM_ is one that scores above the threshold (Many
 proteomics papers incorrectly refer to this quantity as the _false positive rate_)." ([@Kaell2007])
 
 
-The Simple FDR intrudced by ([@Kaell2007]) is defined by :
+The Simple FDR introduced by ([@Kaell2007]) is defined by :
     
 
 $$
@@ -118,11 +127,17 @@ number of target PSMs above the threshold. We can now estimate the FDR by simply
 
 
 
-```{r fig.width=7, fig.height=7}
-plot(fdr1$score, fdr1$SimpleFDR, type = "l", xlim = c(0,0.002), ylim = c(0,0.0005))
-lines(fdr1$score, fdr1$qValue_SimpleFDR, col = 3, type = "l", xlim = c(0,0.002), ylim = c(-0.002,0))
-legend("topleft", legend = c("FDR", "qValue"), lty = c(1,1), col = c(1,3))
-
+```{r fig.width=7, fig.height=4}
+fdr_curves <- data.frame(
+  score = rep(fdr1$score, 2),
+  fdr = 100 * c(fdr1$SimpleFDR, fdr1$qValue_SimpleFDR),
+  curve = rep(c("SimpleFDR", "q-value"), each = length(fdr1$score))
+)
+ggplot(fdr_curves, aes(x = score, y = fdr, colour = curve)) +
+  geom_line() +
+  coord_cartesian(xlim = c(0, 0.002), ylim = c(0, 0.05)) +
+  scale_colour_manual(values = c(SimpleFDR = "black", "q-value" = "#E69F00")) +
+  labs(x = "score (smaller is better)", y = "FDR (%)", colour = NULL)
 ```
 
 Although the score is getting better (smaller) the FDR may increase since the number of TP in the denominator decreases while the number of FP stays the same. Therefore Storey and Tibshirani proposed the _q-value_, "which in our case is defined as the minimal FDR threshold at which a given PSM is accepted"[@Kaell2007].
@@ -133,14 +148,14 @@ Most frequently you will need to get the score for an FDR in order to filter you
 
 ```{r}
 
-(score01G <- predictScoreFDR(fdr1,qValue = 5,method = "FPR"))
-dim(dplyr::filter(fdrSample, score < score01G))
+(score05G <- predict_score_fdr(fdr1, q_value = 5, method = "FPR"))
+dim(filter(fdr_sample, score <= score05G))
 
-(score01G <- predictScoreFDR(fdr1,qValue = 1,method = "FPR"))
-dim(dplyr::filter(fdrSample, score < score01G))
+(score01G <- predict_score_fdr(fdr1, q_value = 1, method = "FPR"))
+dim(filter(fdr_sample, score <= score01G))
 
-(score01K <- predictScoreFDR(fdr1,qValue = 1,method = "SimpleFDR"))
-dim(dplyr::filter(fdrSample, score < score01K))
+(score01K <- predict_score_fdr(fdr1, q_value = 1, method = "SimpleFDR"))
+dim(filter(fdr_sample, score <= score01K))
 
 ```
 
@@ -150,13 +165,13 @@ Since the scores are sorted to compute the FDR, we return also the _order_ colum
 This column can be used to align the ID's with the scores.
 
 ```{r}
-knitr::kable(head(data.frame(ID = fdrSample$proteinID[fdr1$order], fdr1)))
+knitr::kable(head(data.frame(ID = fdr_sample$proteinID[fdr1$order], fdr1)))
 ```
 
-For convenience we provide the function `computeFDRwithID` which integrates the reordering of the ID's.
+For convenience we provide the function `compute_fdr_with_id()` which integrates the reordering of the ID's.
 
 ```{r}
-fdr1 <- computeFDRwithID(fdrSample$score,fdrSample$proteinID, decoy = "REV_",larger_better = FALSE)
+fdr1 <- compute_fdr_with_id(fdr_sample$score, fdr_sample$proteinID, decoy = "^REV_", larger_better = FALSE)
 knitr::kable(head(data.frame(fdr1)))
 ```
 

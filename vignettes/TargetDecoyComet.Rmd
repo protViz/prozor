@@ -25,20 +25,25 @@ Here we describe how you can estimate the false discovery rate (FDR) when matchi
 
 ## The data
 
-Comet's E-value significantly outperforms SEQUEST'sprob-. ability score and Comet's cross-correlation score performs.
+Comet's E-value significantly outperforms SEQUEST's probability score and Comet's cross-correlation score.
 
 
-```{r}
+```{r fig.width=6, fig.height=4}
 library(dplyr)
 library(prozor)
 library(ggplot2)
-#path <- "/Users/witoldwolski/__checkout/HeCaTos/data/autoQC4L/FUSION_1.20180713_005_autoQC4L.HCD.lowres.comet.txt"
-#bcd <- read.table(file = path, header= TRUE, skip=1 , fill = TRUE)
 
 data(bcd)
-bcd |> ggplot(aes(x = -log10(e.value), y = sp_score)) + geom_point()
-bcd |> select(scan , plain_peptide, protein, e.value, sp_score) |> head() |> knitr::kable()
-
+bcd |>
+  mutate(hit = if_else(grepl("^REV_", protein), "decoy", "target")) |>
+  ggplot(aes(x = -log10(e.value), y = sp_score, colour = hit)) +
+  geom_point(alpha = 0.3, size = 0.8) +
+  scale_colour_manual(values = c(target = "#0072B2", decoy = "#D55E00")) +
+  labs(x = "-log10(E-value)", y = "Sp score", colour = NULL)
+bcd |>
+  select(scan, plain_peptide, protein, e.value, sp_score) |>
+  head() |>
+  knitr::kable()
 ```
 
 
@@ -46,35 +51,30 @@ bcd |> select(scan , plain_peptide, protein, e.value, sp_score) |> head() |> kni
 # Define helper function
 
 ```{r}
-summarizeLevel <- function(data,
-                           level = "PSM",
-                           score = "e.value",
-                           protein = "protein",
-                           qValue = 1,
-                           rev = "REV_"){
-    fdr1 <- prozor::computeFDR((data[[score]]), grepl(rev,data[[protein]]),larger_better = FALSE)
-    score01K <- prozor::predictScoreFDR(fdr1,qValue = qValue, method = "SimpleFDR")
-    
-    filt <- dplyr::filter(data, !!sym(score) < score01K)
-    nDecoy = sum(grepl(rev, filt[[protein]]))
-    nConfident = nrow(filt) - nDecoy
-    
-    res <- data.frame(n = nrow(data),
-               nConfident = nConfident,
-               nDecoy = nDecoy,
-               fdr = nDecoy / nConfident,
-               assignmentRate = nrow(filt)/nrow(data) * 100)
-    colnames(res) <- paste0(colnames(res), level)
-    return(res)
-}
+summarizeLevel <- function(data, level = "PSM", score = "e.value", protein = "protein", q_value = 1, decoy = "^REV_") {
+  fdr <- compute_fdr(data[[score]], grepl(decoy, data[[protein]]), larger_better = FALSE)
+  cutoff <- predict_score_fdr(fdr, q_value = q_value, method = "SimpleFDR")
 
+  filt <- filter(data, .data[[score]] <= .env$cutoff)
+  nDecoy <- sum(grepl(decoy, filt[[protein]]))
+  nConfident <- nrow(filt) - nDecoy
+
+  res <- data.frame(
+    n = nrow(data),
+    nConfident = nConfident,
+    nDecoy = nDecoy,
+    fdr = nDecoy / nConfident,
+    assignmentRate = nrow(filt) / nrow(data) * 100
+  )
+  colnames(res) <- paste0(colnames(res), level)
+  res
+}
 ```
 
 # PSM level
 
 ```{r}
 summarizeLevel(bcd)
-
 ```
 
 
@@ -83,14 +83,13 @@ summarizeLevel(bcd)
 Use minimum of e.value of all PSMs matching a peptide as new score for the peptide.
 
 ```{r}
-peptideLevel <-  bcd |> dplyr::group_by(plain_peptide,protein ) |>
-    summarize(n = n(), min_e.value = min(e.value))
+peptideLevel <- bcd |>
+  summarise(n = n(), min_e.value = min(e.value), .by = c(plain_peptide, protein))
 ```
 
 ```{r}
 table(peptideLevel$n)
 summarizeLevel(peptideLevel, score = "min_e.value", level = "Peptides")
-
 ```
 
 # Protein FDR
@@ -98,14 +97,13 @@ summarizeLevel(peptideLevel, score = "min_e.value", level = "Peptides")
 Use minimum of e.value of all PSMs matching a protein as new score for the protein.
 
 ```{r}
-proteinLevel <-  bcd |> dplyr::group_by(protein ) |> 
-    summarize(n = n(), min_e.value = min(e.value))
+proteinLevel <- bcd |>
+  summarise(n = n(), min_e.value = min(e.value), .by = protein)
 ```
 
 ```{r}
 table(proteinLevel$n)
-summarizeLevel(proteinLevel, score = "min_e.value",level="Proteins")
-
+summarizeLevel(proteinLevel, score = "min_e.value", level = "Proteins")
 ```
 
 # Filter on PSM level only
@@ -113,78 +111,57 @@ summarizeLevel(proteinLevel, score = "min_e.value",level="Proteins")
 Filter on PSM level and then estimate the FDR on peptide and protein level.
 
 ```{r}
-filtLevel <- function(data,
-                      level = "PSM",
-                      score = "e.value",
-                      larger_better = FALSE,
-                      protein = "protein",
-                      qValue = 1,
-                      rev = "REV_"){
-    fdr1 <- prozor::computeFDR((data[[score]]), grepl(rev,data[[protein]]),larger_better = larger_better)
-    score01K <- prozor::predictScoreFDR(fdr1,qValue = qValue, method = "SimpleFDR")
-    print(score01K)
-    if(larger_better){
-        filt <- dplyr::filter(data, !!sym(score) > score01K)
-    } else {
-        filt <- dplyr::filter(data, !!sym(score) < score01K)
-    }
-    return(filt)
+filtLevel <- function(data, score = "e.value", larger_better = FALSE, protein = "protein", q_value = 1, decoy = "^REV_") {
+  fdr <- compute_fdr(data[[score]], grepl(decoy, data[[protein]]), larger_better = larger_better)
+  cutoff <- predict_score_fdr(fdr, q_value = q_value, method = "SimpleFDR")
+  print(cutoff)
+  if (larger_better) {
+    filter(data, .data[[score]] >= .env$cutoff)
+  } else {
+    filter(data, .data[[score]] <= .env$cutoff)
+  }
 }
 
+summarizeFDRS <- function(data, filt, psmFdrCutoff, pep = "plain_peptide", prot = "protein", decoy = "^REV_") {
+  res <- list()
+  res$nPSM <- nrow(data)
+  res$psmFdrCutoff <- psmFdrCutoff
+  res$nDecoyPSM <- sum(grepl(decoy, filt[[prot]]))
+  res$nConfidentPSM <- nrow(filt) - res$nDecoyPSM
+  res$fdrPSM <- res$nDecoyPSM / res$nConfidentPSM
 
+  # peptide level FDR
+  filtPep <- filt |> select(all_of(c(pep, prot))) |> distinct()
+  res$nDecoyPeptide <- sum(grepl(decoy, filtPep[[prot]]))
+  res$nConfidentPeptide <- nrow(filtPep) - res$nDecoyPeptide
+  res$fdrPeptide <- res$nDecoyPeptide / res$nConfidentPeptide
+
+  # protein level FDR
+  filtProt <- filt |> select(all_of(prot)) |> distinct()
+  res$nDecoyProtein <- sum(grepl(decoy, filtProt[[prot]]))
+  res$nConfidentProtein <- nrow(filtProt) - res$nDecoyProtein
+  res$fdrProtein <- res$nDecoyProtein / res$nConfidentProtein
+  data.frame(res)
+}
 ```
 
 ## Use e-value
 
 ```{r}
-
-
 # psm level FDR
 psmFdrCutoff <- 0.01
 
-filt <- filtLevel(bcd, score = "e.value", larger_better = FALSE , qValue = psmFdrCutoff * 100)
-
-summarizeFDRS <- function(bcd, filt, pep = "plain_peptide", prot = "protein"){
-    res <- list()
-    res$nPSM <- nrow(bcd)
-    res$psmFdrCutoff <- psmFdrCutoff
-    res$nDecoyPSM <- sum(grepl("REV_",filt$protein))
-    res$nConfidentPSM <- nrow(filt) - res$nDecoyPSM
-    res$fdrPSM <- res$nDecoyPSM / res$nConfidentPSM
-    
-    # peptide level FDR
-    filtPep <- filt |> select(!!sym(pep), !!sym(prot)) |> distinct()
-    res$nDecoyPeptide <- sum(grepl("REV_",filtPep[[prot]]))
-    res$nConfidentPeptide <- nrow(filtPep) - res$nDecoyPeptide
-    res$fdrPeptide <- res$nDecoyPeptide / res$nConfidentPeptide
-    
-    # protein level FDR
-    filtProt <- filt |> select( !!sym(prot)) |> distinct()
-    
-    res$nDecoyProtein <- sum( grepl("REV_", filtProt[[prot]] ))
-    res$nConfidentProtein <- nrow(filtProt) - res$nDecoyProtein
-    res$fdrProtein <- res$nDecoyProtein / res$nConfidentProtein
-    return(data.frame(res))
-}
-
-res <- summarizeFDRS(bcd, filt)
-
-knitr::kable(data.frame(res))
-
+filt <- filtLevel(bcd, score = "e.value", larger_better = FALSE, q_value = psmFdrCutoff * 100)
+knitr::kable(summarizeFDRS(bcd, filt, psmFdrCutoff))
 ```
 
 
 ## Use sp_score
 
 ```{r}
-
 # psm level FDR
 psmFdrCutoff <- 0.01
 
-filt <- filtLevel(bcd, score = "sp_score", larger_better = TRUE, qValue = psmFdrCutoff * 100)
-res <- summarizeFDRS(bcd , filt)
-
-knitr::kable(data.frame(res))
-
+filt <- filtLevel(bcd, score = "sp_score", larger_better = TRUE, q_value = psmFdrCutoff * 100)
+knitr::kable(summarizeFDRS(bcd, filt, psmFdrCutoff))
 ```
-

@@ -14,17 +14,17 @@ License: GPL-3
 Encoding: UTF-8
 Imports:
     AhoCorasickTrie,
+    dplyr (>= 1.1.0),
+    ggplot2,
     graphics,
     Matrix,
     methods,
     seqinr,
     stats,
-    utils,
-    dplyr
+    utils
 Suggests:
     altdoc,
     docopt,
-    ggplot2,
     knitr,
     readr,
     rmarkdown,
@@ -33,25 +33,28 @@ Suggests:
 URL: https://github.com/protviz/prozor
 BugReports: https://github.com/protviz/prozor/issues
 Repository: CRAN
-Depends: R (>= 3.1.0)
+Depends: R (>= 4.4.0)
 VignetteBuilder: knitr
-Collate: 
-    'annotatePeptides.R'
-    'readjustWindow.R'
-    'cdsw.R'
-    'computeFDR.R'
-    'createDecoyDB.R'
-    'create_fgcz_fasta_db.R'
-    'greedy.R'
-    'hello.R'
-    'loadContaminantsFasta.R'
-    'prepareMatrix.R'
-    'readFasta.R'
-    'removeSignalPeptides.R'
-    'reverseSeq.R'
-    'writeFasta.R'
-    'zzz.R'
 biocViews: Software, MassSpectrometry, Proteomics, ExperimentHubSoftware, 
 LazyData: true
 Config/roxygen2/version: 8.1.1
+Roxygen: list(markdown = TRUE)
 Config/testthat/edition: 3
+Collate: 
+    'annotate_peptides.R'
+    'readjust_windows.R'
+    'cdsw.R'
+    'compute_fdr.R'
+    'create_decoy_db.R'
+    'create_fgcz_fasta_db.R'
+    'data.R'
+    'greedy_parsimony.R'
+    'load_contaminants.R'
+    'plot_fdr.R'
+    'prepare_matrix.R'
+    'prozor-package.R'
+    'read_peptide_fasta.R'
+    'remove_signal_peptide.R'
+    'reverse_seq.R'
+    'write_fasta.R'
+    'zzz.R'

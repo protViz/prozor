@@ -2,18 +2,20 @@
 % Please edit documentation in R/cdsw.R
 \name{objectiveMS1Function}
 \alias{objectiveMS1Function}
-\title{compute the deviation from optimum: equal number of MS1 per bin}
+\title{Deviation of a window layout from equal numbers of MS1 masses per window}
 \usage{
 objectiveMS1Function(splits, data)
 }
 \arguments{
-\item{splits}{the new window boundaries}
+\item{splits}{The window boundaries.}
 
-\item{data}{the data}
+\item{data}{The MS1 masses.}
 }
 \value{
-list with score1 - manhattan distance, score2 - euclidean distance, counts - observed counts, optimumN - optimum counts
+A list with \code{score1} (Manhattan distance), \code{score2} (Euclidean distance), \code{counts} (observed counts)
+and \code{optimumN} (optimal counts), both counts normalised.
 }
 \description{
-compute the deviation from optimum: equal number of MS1 per bin
+Deviation of a window layout from equal numbers of MS1 masses per window
 }
+\keyword{internal}
