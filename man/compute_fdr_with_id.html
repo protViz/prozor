@@ -423,7 +423,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <code id="score">score</code>
 </td>
 <td>
-Search engine scores.
+Search engine scores, without <code>NA</code>.
 </td>
 </tr>
 <tr>
@@ -469,20 +469,20 @@ Regular expression that matches decoy IDs; the default matches IDs that start wi
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>fdr <span class="ot">&lt;-</span> <span class="fu">compute_fdr_with_id</span>(fdr_sample<span class="sc">$</span>score2, fdr_sample<span class="sc">$</span>protein_id, <span class="at">larger_better =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">as.data.frame</span>(fdr))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>  larger_better order decoy_hit    score fpr simple_fdr q_value_fpr
-1          TRUE   287     FALSE 20.06491   0          0           0
-2          TRUE  3581     FALSE 18.20030   0          0           0
-3          TRUE 29584     FALSE 16.75679   0          0           0
-4          TRUE 26559     FALSE 15.51130   0          0           0
-5          TRUE 15524     FALSE 15.41620   0          0           0
-6          TRUE 30840     FALSE 15.41500   0          0           0
-  q_value_simple_fdr                   id
-1                  0 sp|P04264|K2C1_HUMAN
-2                  0 sp|P04264|K2C1_HUMAN
-3                  0 sp|P35527|K1C9_HUMAN
-4                  0 sp|P04264|K2C1_HUMAN
-5                  0 sp|P02768|ALBU_HUMAN
-6                  0 sp|P04264|K2C1_HUMAN</code></pre>
+<pre><code>  larger_better order decoy_hit    score fdr_concatenated simple_fdr
+1          TRUE   287     FALSE 20.06491                0          0
+2          TRUE  3581     FALSE 18.20030                0          0
+3          TRUE 29584     FALSE 16.75679                0          0
+4          TRUE 26559     FALSE 15.51130                0          0
+5          TRUE 15524     FALSE 15.41620                0          0
+6          TRUE 30840     FALSE 15.41500                0          0
+  q_value_fdr_concatenated q_value_simple_fdr                   id
+1                        0                  0 sp|P04264|K2C1_HUMAN
+2                        0                  0 sp|P04264|K2C1_HUMAN
+3                        0                  0 sp|P35527|K1C9_HUMAN
+4                        0                  0 sp|P04264|K2C1_HUMAN
+5                        0                  0 sp|P02768|ALBU_HUMAN
+6                        0                  0 sp|P04264|K2C1_HUMAN</code></pre>
 </div>
 </div>
 

@@ -445,7 +445,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h1>Constant width method</h1>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"masses"</span>)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>cdsw <span class="ot">&lt;-</span> <span class="fu">Cdsw</span>(masses, <span class="at">nbins =</span> <span class="dv">25</span>, <span class="at">digits =</span> <span class="dv">1</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>cdsw <span class="ot">&lt;-</span> <span class="fu">Cdsw</span>(masses, <span class="at">nbins =</span> <span class="dv">25</span>)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>cdsw<span class="sc">$</span><span class="fu">plot</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
@@ -674,7 +674,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <table class="caption-top table table-sm table-striped small">
 <thead>
 <tr class="header">
-<th style="text-align: left;"></th>
 <th style="text-align: right;">from</th>
 <th style="text-align: right;">to</th>
 <th style="text-align: right;">mid</th>
@@ -684,7 +683,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">0%</td>
 <td style="text-align: right;">349.63</td>
 <td style="text-align: right;">381.03</td>
 <td style="text-align: right;">365.330</td>
@@ -692,7 +690,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td style="text-align: right;">5956</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">4%</td>
 <td style="text-align: right;">380.03</td>
 <td style="text-align: right;">406.71</td>
 <td style="text-align: right;">393.370</td>
@@ -700,7 +697,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td style="text-align: right;">6131</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">8%</td>
 <td style="text-align: right;">405.71</td>
 <td style="text-align: right;">429.24</td>
 <td style="text-align: right;">417.475</td>
@@ -708,7 +704,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td style="text-align: right;">6070</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">12%</td>
 <td style="text-align: right;">428.24</td>
 <td style="text-align: right;">450.05</td>
 <td style="text-align: right;">439.145</td>
@@ -716,7 +711,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td style="text-align: right;">6086</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">16%</td>
 <td style="text-align: right;">449.05</td>
 <td style="text-align: right;">470.06</td>
 <td style="text-align: right;">459.555</td>
@@ -724,7 +718,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td style="text-align: right;">6095</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">20%</td>
 <td style="text-align: right;">469.06</td>
 <td style="text-align: right;">488.80</td>
 <td style="text-align: right;">478.930</td>
@@ -732,7 +725,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td style="text-align: right;">6107</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">24%</td>
 <td style="text-align: right;">487.80</td>
 <td style="text-align: right;">508.12</td>
 <td style="text-align: right;">497.960</td>
@@ -740,7 +732,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td style="text-align: right;">6173</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">28%</td>
 <td style="text-align: right;">507.12</td>
 <td style="text-align: right;">526.81</td>
 <td style="text-align: right;">516.965</td>
@@ -748,7 +739,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td style="text-align: right;">6150</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">32%</td>
 <td style="text-align: right;">525.81</td>
 <td style="text-align: right;">545.79</td>
 <td style="text-align: right;">535.800</td>
@@ -756,7 +746,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td style="text-align: right;">6166</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">36%</td>
 <td style="text-align: right;">544.79</td>
 <td style="text-align: right;">565.29</td>
 <td style="text-align: right;">555.040</td>
@@ -764,7 +753,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td style="text-align: right;">6123</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">40%</td>
 <td style="text-align: right;">564.29</td>
 <td style="text-align: right;">584.80</td>
 <td style="text-align: right;">574.545</td>
@@ -772,7 +760,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td style="text-align: right;">6139</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">44%</td>
 <td style="text-align: right;">583.80</td>
 <td style="text-align: right;">605.12</td>
 <td style="text-align: right;">594.460</td>
@@ -780,7 +767,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td style="text-align: right;">6121</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">48%</td>
 <td style="text-align: right;">604.12</td>
 <td style="text-align: right;">626.34</td>
 <td style="text-align: right;">615.230</td>
@@ -788,7 +774,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td style="text-align: right;">6113</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">52%</td>
 <td style="text-align: right;">625.34</td>
 <td style="text-align: right;">648.36</td>
 <td style="text-align: right;">636.850</td>
@@ -796,7 +781,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td style="text-align: right;">6108</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">56%</td>
 <td style="text-align: right;">647.36</td>
 <td style="text-align: right;">672.34</td>
 <td style="text-align: right;">659.850</td>
@@ -804,7 +788,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td style="text-align: right;">6074</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">60%</td>
 <td style="text-align: right;">671.34</td>
 <td style="text-align: right;">696.53</td>
 <td style="text-align: right;">683.935</td>
@@ -812,7 +795,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td style="text-align: right;">6082</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">64%</td>
 <td style="text-align: right;">695.53</td>
 <td style="text-align: right;">722.89</td>
 <td style="text-align: right;">709.210</td>
@@ -820,7 +802,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td style="text-align: right;">6054</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">68%</td>
 <td style="text-align: right;">721.89</td>
 <td style="text-align: right;">751.40</td>
 <td style="text-align: right;">736.645</td>
@@ -828,7 +809,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td style="text-align: right;">6053</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">72%</td>
 <td style="text-align: right;">750.40</td>
 <td style="text-align: right;">782.43</td>
 <td style="text-align: right;">766.415</td>
@@ -836,7 +816,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td style="text-align: right;">6023</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">76%</td>
 <td style="text-align: right;">781.43</td>
 <td style="text-align: right;">817.40</td>
 <td style="text-align: right;">799.415</td>
@@ -844,7 +823,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td style="text-align: right;">5982</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">80%</td>
 <td style="text-align: right;">816.40</td>
 <td style="text-align: right;">857.96</td>
 <td style="text-align: right;">837.180</td>
@@ -852,7 +830,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td style="text-align: right;">6026</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">84%</td>
 <td style="text-align: right;">856.96</td>
 <td style="text-align: right;">905.62</td>
 <td style="text-align: right;">881.290</td>
@@ -860,7 +837,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td style="text-align: right;">5971</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">88%</td>
 <td style="text-align: right;">904.62</td>
 <td style="text-align: right;">964.93</td>
 <td style="text-align: right;">934.775</td>
@@ -868,7 +844,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td style="text-align: right;">5943</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">92%</td>
 <td style="text-align: right;">963.93</td>
 <td style="text-align: right;">1049.48</td>
 <td style="text-align: right;">1006.705</td>
@@ -876,7 +851,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td style="text-align: right;">5903</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">96%</td>
 <td style="text-align: right;">1048.48</td>
 <td style="text-align: right;">1200.48</td>
 <td style="text-align: right;">1124.480</td>
@@ -910,178 +884,178 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: right;">350.13</td>
+<td style="text-align: right;">350.05</td>
 <td style="text-align: right;">380.95</td>
-<td style="text-align: right;">365.54</td>
-<td style="text-align: right;">30.82</td>
+<td style="text-align: right;">365.50</td>
+<td style="text-align: right;">30.9</td>
 <td style="text-align: right;">5952</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">380.45</td>
 <td style="text-align: right;">406.35</td>
 <td style="text-align: right;">393.40</td>
-<td style="text-align: right;">25.90</td>
+<td style="text-align: right;">25.9</td>
 <td style="text-align: right;">5932</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">406.05</td>
 <td style="text-align: right;">429.05</td>
 <td style="text-align: right;">417.55</td>
-<td style="text-align: right;">23.00</td>
+<td style="text-align: right;">23.0</td>
 <td style="text-align: right;">5948</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">428.65</td>
 <td style="text-align: right;">449.65</td>
 <td style="text-align: right;">439.15</td>
-<td style="text-align: right;">21.00</td>
+<td style="text-align: right;">21.0</td>
 <td style="text-align: right;">5891</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">449.45</td>
 <td style="text-align: right;">469.65</td>
 <td style="text-align: right;">459.55</td>
-<td style="text-align: right;">20.20</td>
+<td style="text-align: right;">20.2</td>
 <td style="text-align: right;">5872</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">469.45</td>
 <td style="text-align: right;">488.35</td>
 <td style="text-align: right;">478.90</td>
-<td style="text-align: right;">18.90</td>
+<td style="text-align: right;">18.9</td>
 <td style="text-align: right;">5860</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">488.15</td>
 <td style="text-align: right;">508.05</td>
 <td style="text-align: right;">498.10</td>
-<td style="text-align: right;">19.90</td>
+<td style="text-align: right;">19.9</td>
 <td style="text-align: right;">6137</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">507.45</td>
 <td style="text-align: right;">526.45</td>
 <td style="text-align: right;">516.95</td>
-<td style="text-align: right;">19.00</td>
+<td style="text-align: right;">19.0</td>
 <td style="text-align: right;">5892</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">526.15</td>
 <td style="text-align: right;">545.45</td>
 <td style="text-align: right;">535.80</td>
-<td style="text-align: right;">19.30</td>
+<td style="text-align: right;">19.3</td>
 <td style="text-align: right;">6022</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">545.15</td>
 <td style="text-align: right;">565.05</td>
 <td style="text-align: right;">555.10</td>
-<td style="text-align: right;">19.90</td>
+<td style="text-align: right;">19.9</td>
 <td style="text-align: right;">5992</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">564.55</td>
 <td style="text-align: right;">584.45</td>
 <td style="text-align: right;">574.50</td>
-<td style="text-align: right;">19.90</td>
+<td style="text-align: right;">19.9</td>
 <td style="text-align: right;">5976</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">584.15</td>
 <td style="text-align: right;">605.05</td>
 <td style="text-align: right;">594.60</td>
-<td style="text-align: right;">20.90</td>
+<td style="text-align: right;">20.9</td>
 <td style="text-align: right;">6035</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">604.55</td>
 <td style="text-align: right;">626.05</td>
 <td style="text-align: right;">615.30</td>
-<td style="text-align: right;">21.50</td>
+<td style="text-align: right;">21.5</td>
 <td style="text-align: right;">5893</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">625.55</td>
 <td style="text-align: right;">648.15</td>
 <td style="text-align: right;">636.85</td>
-<td style="text-align: right;">22.60</td>
+<td style="text-align: right;">22.6</td>
 <td style="text-align: right;">5987</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">647.55</td>
 <td style="text-align: right;">672.15</td>
 <td style="text-align: right;">659.85</td>
-<td style="text-align: right;">24.60</td>
+<td style="text-align: right;">24.6</td>
 <td style="text-align: right;">6023</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">671.75</td>
 <td style="text-align: right;">696.15</td>
 <td style="text-align: right;">683.95</td>
-<td style="text-align: right;">24.40</td>
+<td style="text-align: right;">24.4</td>
 <td style="text-align: right;">5890</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">695.55</td>
 <td style="text-align: right;">722.55</td>
 <td style="text-align: right;">709.05</td>
-<td style="text-align: right;">27.00</td>
+<td style="text-align: right;">27.0</td>
 <td style="text-align: right;">5981</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">722.25</td>
 <td style="text-align: right;">751.15</td>
 <td style="text-align: right;">736.70</td>
-<td style="text-align: right;">28.90</td>
+<td style="text-align: right;">28.9</td>
 <td style="text-align: right;">5932</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">750.65</td>
 <td style="text-align: right;">782.15</td>
 <td style="text-align: right;">766.40</td>
-<td style="text-align: right;">31.50</td>
+<td style="text-align: right;">31.5</td>
 <td style="text-align: right;">5927</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">781.65</td>
 <td style="text-align: right;">817.15</td>
 <td style="text-align: right;">799.40</td>
-<td style="text-align: right;">35.50</td>
+<td style="text-align: right;">35.5</td>
 <td style="text-align: right;">5944</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">816.65</td>
 <td style="text-align: right;">857.55</td>
 <td style="text-align: right;">837.10</td>
-<td style="text-align: right;">40.90</td>
+<td style="text-align: right;">40.9</td>
 <td style="text-align: right;">5901</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">857.35</td>
 <td style="text-align: right;">905.25</td>
 <td style="text-align: right;">881.30</td>
-<td style="text-align: right;">47.90</td>
+<td style="text-align: right;">47.9</td>
 <td style="text-align: right;">5904</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">905.05</td>
 <td style="text-align: right;">964.65</td>
 <td style="text-align: right;">934.85</td>
-<td style="text-align: right;">59.60</td>
+<td style="text-align: right;">59.6</td>
 <td style="text-align: right;">5881</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">964.35</td>
 <td style="text-align: right;">1049.15</td>
 <td style="text-align: right;">1006.75</td>
-<td style="text-align: right;">84.80</td>
+<td style="text-align: right;">84.8</td>
 <td style="text-align: right;">5864</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">1048.95</td>
 <td style="text-align: right;">1200.05</td>
 <td style="text-align: right;">1124.50</td>
-<td style="text-align: right;">151.10</td>
+<td style="text-align: right;">151.1</td>
 <td style="text-align: right;">5843</td>
 </tr>
 </tbody>
@@ -1105,6 +1079,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Number of windows (<code>nbins</code>, set in <code>Cdsw()</code>).</li>
 <li>Window boundaries can then be moved to regions with few precursors (<code>optimize_windows()</code>).</li>
 </ul>
+<p><code>sampling_breaks()</code> mixes the masses with uniformly spread data and takes the quantile breaks of the mixture, with the smallest share of uniform data for which all windows lie within <code>minwindow</code> and <code>maxwindow</code>.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>cdsw<span class="sc">$</span><span class="fu">sampling_breaks</span>(<span class="at">maxwindow =</span> <span class="dv">100</span>)</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>cdsw<span class="sc">$</span><span class="fu">plot_breaks</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -1132,7 +1107,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <table class="caption-top table table-sm table-striped small">
 <thead>
 <tr class="header">
-<th style="text-align: left;"></th>
 <th style="text-align: right;">from</th>
 <th style="text-align: right;">to</th>
 <th style="text-align: right;">mid</th>
@@ -1142,204 +1116,179 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">0%</td>
 <td style="text-align: right;">349.63</td>
-<td style="text-align: right;">381.41</td>
-<td style="text-align: right;">365.520</td>
-<td style="text-align: right;">31.78</td>
-<td style="text-align: right;">6054</td>
+<td style="text-align: right;">381.69</td>
+<td style="text-align: right;">365.660</td>
+<td style="text-align: right;">32.06</td>
+<td style="text-align: right;">6098</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">4%</td>
-<td style="text-align: right;">380.41</td>
-<td style="text-align: right;">408.39</td>
-<td style="text-align: right;">394.400</td>
-<td style="text-align: right;">27.98</td>
-<td style="text-align: right;">6431</td>
+<td style="text-align: right;">380.69</td>
+<td style="text-align: right;">408.26</td>
+<td style="text-align: right;">394.475</td>
+<td style="text-align: right;">27.57</td>
+<td style="text-align: right;">6377</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">8%</td>
-<td style="text-align: right;">407.39</td>
-<td style="text-align: right;">432.23</td>
-<td style="text-align: right;">419.810</td>
-<td style="text-align: right;">24.84</td>
-<td style="text-align: right;">6524</td>
+<td style="text-align: right;">407.26</td>
+<td style="text-align: right;">432.22</td>
+<td style="text-align: right;">419.740</td>
+<td style="text-align: right;">24.96</td>
+<td style="text-align: right;">6531</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">12%</td>
-<td style="text-align: right;">431.23</td>
-<td style="text-align: right;">454.73</td>
-<td style="text-align: right;">442.980</td>
-<td style="text-align: right;">23.50</td>
-<td style="text-align: right;">6585</td>
+<td style="text-align: right;">431.22</td>
+<td style="text-align: right;">454.62</td>
+<td style="text-align: right;">442.920</td>
+<td style="text-align: right;">23.40</td>
+<td style="text-align: right;">6588</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">16%</td>
-<td style="text-align: right;">453.73</td>
-<td style="text-align: right;">476.25</td>
-<td style="text-align: right;">464.990</td>
-<td style="text-align: right;">22.52</td>
-<td style="text-align: right;">6657</td>
+<td style="text-align: right;">453.62</td>
+<td style="text-align: right;">476.03</td>
+<td style="text-align: right;">464.825</td>
+<td style="text-align: right;">22.41</td>
+<td style="text-align: right;">6627</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">20%</td>
-<td style="text-align: right;">475.25</td>
-<td style="text-align: right;">496.79</td>
-<td style="text-align: right;">486.020</td>
-<td style="text-align: right;">21.54</td>
-<td style="text-align: right;">6712</td>
+<td style="text-align: right;">475.03</td>
+<td style="text-align: right;">496.74</td>
+<td style="text-align: right;">485.885</td>
+<td style="text-align: right;">21.71</td>
+<td style="text-align: right;">6715</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">24%</td>
-<td style="text-align: right;">495.79</td>
-<td style="text-align: right;">517.79</td>
-<td style="text-align: right;">506.790</td>
+<td style="text-align: right;">495.74</td>
+<td style="text-align: right;">517.43</td>
+<td style="text-align: right;">506.585</td>
+<td style="text-align: right;">21.69</td>
+<td style="text-align: right;">6717</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">516.43</td>
+<td style="text-align: right;">538.27</td>
+<td style="text-align: right;">527.350</td>
+<td style="text-align: right;">21.84</td>
+<td style="text-align: right;">6709</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">537.27</td>
+<td style="text-align: right;">559.27</td>
+<td style="text-align: right;">548.270</td>
 <td style="text-align: right;">22.00</td>
-<td style="text-align: right;">6742</td>
+<td style="text-align: right;">6689</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">28%</td>
-<td style="text-align: right;">516.79</td>
-<td style="text-align: right;">538.77</td>
-<td style="text-align: right;">527.780</td>
-<td style="text-align: right;">21.98</td>
-<td style="text-align: right;">6766</td>
+<td style="text-align: right;">558.27</td>
+<td style="text-align: right;">580.35</td>
+<td style="text-align: right;">569.310</td>
+<td style="text-align: right;">22.08</td>
+<td style="text-align: right;">6720</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">32%</td>
-<td style="text-align: right;">537.77</td>
-<td style="text-align: right;">559.78</td>
-<td style="text-align: right;">548.775</td>
-<td style="text-align: right;">22.01</td>
-<td style="text-align: right;">6686</td>
+<td style="text-align: right;">579.35</td>
+<td style="text-align: right;">602.32</td>
+<td style="text-align: right;">590.835</td>
+<td style="text-align: right;">22.97</td>
+<td style="text-align: right;">6682</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">36%</td>
-<td style="text-align: right;">558.78</td>
-<td style="text-align: right;">580.81</td>
-<td style="text-align: right;">569.795</td>
-<td style="text-align: right;">22.03</td>
-<td style="text-align: right;">6648</td>
+<td style="text-align: right;">601.32</td>
+<td style="text-align: right;">625.27</td>
+<td style="text-align: right;">613.295</td>
+<td style="text-align: right;">23.95</td>
+<td style="text-align: right;">6538</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">40%</td>
-<td style="text-align: right;">579.81</td>
-<td style="text-align: right;">602.79</td>
-<td style="text-align: right;">591.300</td>
-<td style="text-align: right;">22.98</td>
-<td style="text-align: right;">6663</td>
+<td style="text-align: right;">624.27</td>
+<td style="text-align: right;">648.83</td>
+<td style="text-align: right;">636.550</td>
+<td style="text-align: right;">24.56</td>
+<td style="text-align: right;">6568</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">44%</td>
-<td style="text-align: right;">601.79</td>
-<td style="text-align: right;">625.84</td>
-<td style="text-align: right;">613.815</td>
-<td style="text-align: right;">24.05</td>
-<td style="text-align: right;">6681</td>
+<td style="text-align: right;">647.83</td>
+<td style="text-align: right;">674.14</td>
+<td style="text-align: right;">660.985</td>
+<td style="text-align: right;">26.31</td>
+<td style="text-align: right;">6467</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">48%</td>
-<td style="text-align: right;">624.84</td>
-<td style="text-align: right;">649.38</td>
-<td style="text-align: right;">637.110</td>
-<td style="text-align: right;">24.54</td>
-<td style="text-align: right;">6504</td>
+<td style="text-align: right;">673.14</td>
+<td style="text-align: right;">699.88</td>
+<td style="text-align: right;">686.510</td>
+<td style="text-align: right;">26.74</td>
+<td style="text-align: right;">6406</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">52%</td>
-<td style="text-align: right;">648.38</td>
-<td style="text-align: right;">674.84</td>
-<td style="text-align: right;">661.610</td>
-<td style="text-align: right;">26.46</td>
-<td style="text-align: right;">6458</td>
+<td style="text-align: right;">698.88</td>
+<td style="text-align: right;">727.76</td>
+<td style="text-align: right;">713.320</td>
+<td style="text-align: right;">28.88</td>
+<td style="text-align: right;">6319</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">56%</td>
-<td style="text-align: right;">673.84</td>
-<td style="text-align: right;">700.84</td>
-<td style="text-align: right;">687.340</td>
-<td style="text-align: right;">27.00</td>
-<td style="text-align: right;">6404</td>
+<td style="text-align: right;">726.76</td>
+<td style="text-align: right;">757.52</td>
+<td style="text-align: right;">742.140</td>
+<td style="text-align: right;">30.76</td>
+<td style="text-align: right;">6238</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">60%</td>
-<td style="text-align: right;">699.84</td>
-<td style="text-align: right;">728.42</td>
-<td style="text-align: right;">714.130</td>
-<td style="text-align: right;">28.58</td>
-<td style="text-align: right;">6325</td>
+<td style="text-align: right;">756.52</td>
+<td style="text-align: right;">789.86</td>
+<td style="text-align: right;">773.190</td>
+<td style="text-align: right;">33.34</td>
+<td style="text-align: right;">6123</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">64%</td>
-<td style="text-align: right;">727.42</td>
-<td style="text-align: right;">758.40</td>
-<td style="text-align: right;">742.910</td>
-<td style="text-align: right;">30.98</td>
-<td style="text-align: right;">6209</td>
+<td style="text-align: right;">788.86</td>
+<td style="text-align: right;">825.37</td>
+<td style="text-align: right;">807.115</td>
+<td style="text-align: right;">36.51</td>
+<td style="text-align: right;">5932</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">68%</td>
-<td style="text-align: right;">757.40</td>
-<td style="text-align: right;">790.87</td>
-<td style="text-align: right;">774.135</td>
-<td style="text-align: right;">33.47</td>
-<td style="text-align: right;">6105</td>
+<td style="text-align: right;">824.37</td>
+<td style="text-align: right;">865.27</td>
+<td style="text-align: right;">844.820</td>
+<td style="text-align: right;">40.90</td>
+<td style="text-align: right;">5730</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">72%</td>
-<td style="text-align: right;">789.87</td>
-<td style="text-align: right;">826.46</td>
-<td style="text-align: right;">808.165</td>
-<td style="text-align: right;">36.59</td>
-<td style="text-align: right;">5955</td>
+<td style="text-align: right;">864.27</td>
+<td style="text-align: right;">910.48</td>
+<td style="text-align: right;">887.375</td>
+<td style="text-align: right;">46.21</td>
+<td style="text-align: right;">5526</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">76%</td>
-<td style="text-align: right;">825.46</td>
-<td style="text-align: right;">866.65</td>
-<td style="text-align: right;">846.055</td>
-<td style="text-align: right;">41.19</td>
-<td style="text-align: right;">5737</td>
+<td style="text-align: right;">909.48</td>
+<td style="text-align: right;">962.36</td>
+<td style="text-align: right;">935.920</td>
+<td style="text-align: right;">52.88</td>
+<td style="text-align: right;">5195</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">80%</td>
-<td style="text-align: right;">865.65</td>
-<td style="text-align: right;">912.22</td>
-<td style="text-align: right;">888.935</td>
-<td style="text-align: right;">46.57</td>
-<td style="text-align: right;">5507</td>
+<td style="text-align: right;">961.36</td>
+<td style="text-align: right;">1025.02</td>
+<td style="text-align: right;">993.190</td>
+<td style="text-align: right;">63.66</td>
+<td style="text-align: right;">4737</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">84%</td>
-<td style="text-align: right;">911.22</td>
-<td style="text-align: right;">963.97</td>
-<td style="text-align: right;">937.595</td>
-<td style="text-align: right;">52.75</td>
-<td style="text-align: right;">5155</td>
+<td style="text-align: right;">1024.02</td>
+<td style="text-align: right;">1100.47</td>
+<td style="text-align: right;">1062.245</td>
+<td style="text-align: right;">76.45</td>
+<td style="text-align: right;">4191</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">88%</td>
-<td style="text-align: right;">962.97</td>
-<td style="text-align: right;">1026.97</td>
-<td style="text-align: right;">994.970</td>
-<td style="text-align: right;">64.00</td>
-<td style="text-align: right;">4647</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">92%</td>
-<td style="text-align: right;">1025.97</td>
-<td style="text-align: right;">1101.69</td>
-<td style="text-align: right;">1063.830</td>
-<td style="text-align: right;">75.72</td>
-<td style="text-align: right;">4177</td>
-</tr>
-<tr class="odd">
-<td style="text-align: left;">96%</td>
-<td style="text-align: right;">1100.69</td>
+<td style="text-align: right;">1099.47</td>
 <td style="text-align: right;">1200.48</td>
-<td style="text-align: right;">1150.585</td>
-<td style="text-align: right;">99.79</td>
-<td style="text-align: right;">3071</td>
+<td style="text-align: right;">1149.975</td>
+<td style="text-align: right;">101.01</td>
+<td style="text-align: right;">3142</td>
 </tr>
 </tbody>
 </table>
@@ -1361,179 +1310,179 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: right;">350.13</td>
-<td style="text-align: right;">380.95</td>
-<td style="text-align: right;">365.54</td>
-<td style="text-align: right;">30.82</td>
-<td style="text-align: right;">5952</td>
+<td style="text-align: right;">350.05</td>
+<td style="text-align: right;">381.35</td>
+<td style="text-align: right;">365.70</td>
+<td style="text-align: right;">31.3</td>
+<td style="text-align: right;">6053</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">380.45</td>
+<td style="text-align: right;">381.05</td>
 <td style="text-align: right;">408.05</td>
-<td style="text-align: right;">394.25</td>
-<td style="text-align: right;">27.60</td>
-<td style="text-align: right;">6318</td>
+<td style="text-align: right;">394.55</td>
+<td style="text-align: right;">27.0</td>
+<td style="text-align: right;">6191</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">407.65</td>
 <td style="text-align: right;">432.05</td>
 <td style="text-align: right;">419.85</td>
-<td style="text-align: right;">24.40</td>
+<td style="text-align: right;">24.4</td>
 <td style="text-align: right;">6448</td>
 </tr>
 <tr class="even">
 <td style="text-align: right;">431.65</td>
-<td style="text-align: right;">454.35</td>
-<td style="text-align: right;">443.00</td>
-<td style="text-align: right;">22.70</td>
-<td style="text-align: right;">6447</td>
+<td style="text-align: right;">454.15</td>
+<td style="text-align: right;">442.90</td>
+<td style="text-align: right;">22.5</td>
+<td style="text-align: right;">6334</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">454.15</td>
-<td style="text-align: right;">475.85</td>
-<td style="text-align: right;">465.00</td>
-<td style="text-align: right;">21.70</td>
-<td style="text-align: right;">6474</td>
+<td style="text-align: right;">454.05</td>
+<td style="text-align: right;">475.65</td>
+<td style="text-align: right;">464.85</td>
+<td style="text-align: right;">21.6</td>
+<td style="text-align: right;">6387</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">475.65</td>
+<td style="text-align: right;">475.45</td>
 <td style="text-align: right;">496.35</td>
-<td style="text-align: right;">486.00</td>
-<td style="text-align: right;">20.70</td>
-<td style="text-align: right;">6467</td>
+<td style="text-align: right;">485.90</td>
+<td style="text-align: right;">20.9</td>
+<td style="text-align: right;">6504</td>
 </tr>
 <tr class="odd">
 <td style="text-align: right;">496.15</td>
-<td style="text-align: right;">517.45</td>
-<td style="text-align: right;">506.80</td>
-<td style="text-align: right;">21.30</td>
-<td style="text-align: right;">6578</td>
+<td style="text-align: right;">517.05</td>
+<td style="text-align: right;">506.60</td>
+<td style="text-align: right;">20.9</td>
+<td style="text-align: right;">6442</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">517.15</td>
-<td style="text-align: right;">538.45</td>
-<td style="text-align: right;">527.80</td>
-<td style="text-align: right;">21.30</td>
-<td style="text-align: right;">6627</td>
+<td style="text-align: right;">516.45</td>
+<td style="text-align: right;">538.05</td>
+<td style="text-align: right;">527.25</td>
+<td style="text-align: right;">21.6</td>
+<td style="text-align: right;">6668</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">538.15</td>
-<td style="text-align: right;">559.45</td>
-<td style="text-align: right;">548.80</td>
-<td style="text-align: right;">21.30</td>
-<td style="text-align: right;">6508</td>
+<td style="text-align: right;">537.45</td>
+<td style="text-align: right;">559.05</td>
+<td style="text-align: right;">548.25</td>
+<td style="text-align: right;">21.6</td>
+<td style="text-align: right;">6542</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">559.15</td>
-<td style="text-align: right;">580.45</td>
-<td style="text-align: right;">569.80</td>
-<td style="text-align: right;">21.30</td>
-<td style="text-align: right;">6448</td>
+<td style="text-align: right;">558.55</td>
+<td style="text-align: right;">580.05</td>
+<td style="text-align: right;">569.30</td>
+<td style="text-align: right;">21.5</td>
+<td style="text-align: right;">6458</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">580.15</td>
-<td style="text-align: right;">602.45</td>
-<td style="text-align: right;">591.30</td>
-<td style="text-align: right;">22.30</td>
-<td style="text-align: right;">6526</td>
-</tr>
-<tr class="even">
+<td style="text-align: right;">579.55</td>
 <td style="text-align: right;">602.15</td>
-<td style="text-align: right;">625.45</td>
-<td style="text-align: right;">613.80</td>
-<td style="text-align: right;">23.30</td>
-<td style="text-align: right;">6450</td>
+<td style="text-align: right;">590.85</td>
+<td style="text-align: right;">22.6</td>
+<td style="text-align: right;">6581</td>
 </tr>
-<tr class="odd">
+<tr class="even">
+<td style="text-align: right;">601.55</td>
 <td style="text-align: right;">625.15</td>
-<td style="text-align: right;">649.15</td>
-<td style="text-align: right;">637.15</td>
-<td style="text-align: right;">24.00</td>
-<td style="text-align: right;">6357</td>
-</tr>
-<tr class="even">
-<td style="text-align: right;">648.55</td>
-<td style="text-align: right;">674.45</td>
-<td style="text-align: right;">661.50</td>
-<td style="text-align: right;">25.90</td>
-<td style="text-align: right;">6387</td>
+<td style="text-align: right;">613.35</td>
+<td style="text-align: right;">23.6</td>
+<td style="text-align: right;">6480</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">674.25</td>
-<td style="text-align: right;">700.55</td>
-<td style="text-align: right;">687.40</td>
-<td style="text-align: right;">26.30</td>
-<td style="text-align: right;">6277</td>
+<td style="text-align: right;">624.55</td>
+<td style="text-align: right;">648.45</td>
+<td style="text-align: right;">636.50</td>
+<td style="text-align: right;">23.9</td>
+<td style="text-align: right;">6370</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">700.25</td>
-<td style="text-align: right;">728.15</td>
-<td style="text-align: right;">714.20</td>
-<td style="text-align: right;">27.90</td>
-<td style="text-align: right;">6163</td>
+<td style="text-align: right;">648.15</td>
+<td style="text-align: right;">673.95</td>
+<td style="text-align: right;">661.05</td>
+<td style="text-align: right;">25.8</td>
+<td style="text-align: right;">6351</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">727.65</td>
-<td style="text-align: right;">758.15</td>
-<td style="text-align: right;">742.90</td>
-<td style="text-align: right;">30.50</td>
-<td style="text-align: right;">6133</td>
+<td style="text-align: right;">673.55</td>
+<td style="text-align: right;">699.55</td>
+<td style="text-align: right;">686.55</td>
+<td style="text-align: right;">26.0</td>
+<td style="text-align: right;">6201</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">757.65</td>
-<td style="text-align: right;">790.55</td>
-<td style="text-align: right;">774.10</td>
-<td style="text-align: right;">32.90</td>
-<td style="text-align: right;">6047</td>
+<td style="text-align: right;">699.25</td>
+<td style="text-align: right;">727.55</td>
+<td style="text-align: right;">713.40</td>
+<td style="text-align: right;">28.3</td>
+<td style="text-align: right;">6262</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">790.25</td>
-<td style="text-align: right;">826.25</td>
-<td style="text-align: right;">808.25</td>
-<td style="text-align: right;">36.00</td>
-<td style="text-align: right;">5820</td>
+<td style="text-align: right;">727.25</td>
+<td style="text-align: right;">757.25</td>
+<td style="text-align: right;">742.25</td>
+<td style="text-align: right;">30.0</td>
+<td style="text-align: right;">6049</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">825.65</td>
-<td style="text-align: right;">866.25</td>
-<td style="text-align: right;">845.95</td>
-<td style="text-align: right;">40.60</td>
-<td style="text-align: right;">5666</td>
+<td style="text-align: right;">756.65</td>
+<td style="text-align: right;">789.55</td>
+<td style="text-align: right;">773.10</td>
+<td style="text-align: right;">32.9</td>
+<td style="text-align: right;">6081</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">866.05</td>
-<td style="text-align: right;">911.75</td>
-<td style="text-align: right;">888.90</td>
-<td style="text-align: right;">45.70</td>
-<td style="text-align: right;">5383</td>
+<td style="text-align: right;">789.25</td>
+<td style="text-align: right;">825.25</td>
+<td style="text-align: right;">807.25</td>
+<td style="text-align: right;">36.0</td>
+<td style="text-align: right;">5850</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">911.65</td>
-<td style="text-align: right;">963.65</td>
-<td style="text-align: right;">937.65</td>
-<td style="text-align: right;">52.00</td>
-<td style="text-align: right;">5104</td>
+<td style="text-align: right;">824.65</td>
+<td style="text-align: right;">864.85</td>
+<td style="text-align: right;">844.75</td>
+<td style="text-align: right;">40.2</td>
+<td style="text-align: right;">5623</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">963.35</td>
-<td style="text-align: right;">1026.65</td>
-<td style="text-align: right;">995.00</td>
-<td style="text-align: right;">63.30</td>
-<td style="text-align: right;">4612</td>
+<td style="text-align: right;">864.75</td>
+<td style="text-align: right;">910.05</td>
+<td style="text-align: right;">887.40</td>
+<td style="text-align: right;">45.3</td>
+<td style="text-align: right;">5389</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">1026.35</td>
-<td style="text-align: right;">1101.25</td>
-<td style="text-align: right;">1063.80</td>
-<td style="text-align: right;">74.90</td>
-<td style="text-align: right;">4130</td>
+<td style="text-align: right;">909.85</td>
+<td style="text-align: right;">962.15</td>
+<td style="text-align: right;">936.00</td>
+<td style="text-align: right;">52.3</td>
+<td style="text-align: right;">5172</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">1101.15</td>
+<td style="text-align: right;">961.85</td>
+<td style="text-align: right;">1024.55</td>
+<td style="text-align: right;">993.20</td>
+<td style="text-align: right;">62.7</td>
+<td style="text-align: right;">4665</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">1024.45</td>
+<td style="text-align: right;">1100.15</td>
+<td style="text-align: right;">1062.30</td>
+<td style="text-align: right;">75.7</td>
+<td style="text-align: right;">4162</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">1099.95</td>
 <td style="text-align: right;">1200.05</td>
-<td style="text-align: right;">1150.60</td>
-<td style="text-align: right;">98.90</td>
-<td style="text-align: right;">3054</td>
+<td style="text-align: right;">1150.00</td>
+<td style="text-align: right;">100.1</td>
+<td style="text-align: right;">3120</td>
 </tr>
 </tbody>
 </table>
@@ -1576,7 +1525,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<p>The mixed method has a relatively small error although it is able to fulfill constraints such as maximum window size.</p>
+<p>The error of the mixed method lies between the two others: it is smaller than that of the equal-width windows, and unlike the quantile windows the mixed windows meet the width limits.</p>
 </section>
 <section id="session-info" class="level1">
 <h1>Session info</h1>
@@ -1608,14 +1557,13 @@ other attached packages:
 loaded via a namespace (and not attached):
  [1] vctrs_0.7.3        cli_3.6.6          knitr_1.52         rlang_1.3.0       
  [5] xfun_0.62          otel_0.3.0         generics_0.1.4     S7_1.0.0          
- [9] seqinr_4.2-44      jsonlite_2.0.0     labeling_0.4.3     glue_1.8.1        
-[13] htmltools_0.5.9    scales_1.4.0       rmarkdown_2.32     grid_4.6.2        
-[17] tibble_3.3.1       evaluate_1.0.5     MASS_7.3-66        fastmap_1.2.0     
-[21] yaml_2.3.12        lifecycle_1.0.5    compiler_4.6.2     dplyr_1.2.1       
-[25] RColorBrewer_1.1-3 pkgconfig_2.0.3    Rcpp_1.1.2         farver_2.1.2      
-[29] lattice_0.23-1     digest_0.6.39      R6_2.6.1           tidyselect_1.2.1  
-[33] pillar_1.11.1      magrittr_2.0.5     Matrix_1.7-6       withr_3.0.3       
-[37] tools_4.6.2        gtable_0.3.6       bspm_0.6.0         ade4_1.7-24       </code></pre>
+ [9] jsonlite_2.0.0     labeling_0.4.3     glue_1.8.1         htmltools_0.5.9   
+[13] scales_1.4.0       rmarkdown_2.32     grid_4.6.2         tibble_3.3.1      
+[17] evaluate_1.0.5     fastmap_1.2.0      yaml_2.3.12        lifecycle_1.0.5   
+[21] compiler_4.6.2     dplyr_1.2.1        RColorBrewer_1.1-3 pkgconfig_2.0.3   
+[25] farver_2.1.2       lattice_0.23-1     digest_0.6.39      R6_2.6.1          
+[29] tidyselect_1.2.1   pillar_1.11.1      magrittr_2.0.5     Matrix_1.7-6      
+[33] withr_3.0.3        tools_4.6.2        gtable_0.3.6       bspm_0.6.0        </code></pre>
 </div>
 </div>
 

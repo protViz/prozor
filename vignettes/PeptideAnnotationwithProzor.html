@@ -443,7 +443,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>file <span class="ot">&lt;-</span> <span class="fu">system.file</span>(<span class="st">"extdata/IDResults.txt.gz"</span>, <span class="at">package =</span> <span class="st">"prozor"</span>)</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>specMeta <span class="ot">&lt;-</span> readr<span class="sc">::</span><span class="fu">read_tsv</span>(file)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>specMeta <span class="ot">&lt;-</span> utils<span class="sc">::</span><span class="fu">read.delim</span>(file)</span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(specMeta) <span class="sc">|&gt;</span> knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
@@ -904,22 +904,19 @@ other attached packages:
 [1] ggplot2_4.0.4 dplyr_1.2.1   prozor_0.4.0 
 
 loaded via a namespace (and not attached):
- [1] bit_4.6.0             ade4_1.7-24           Matrix_1.7-6         
- [4] gtable_0.3.6          jsonlite_2.0.0        crayon_1.5.3         
- [7] compiler_4.6.2        tidyselect_1.2.1      Rcpp_1.1.2           
-[10] bspm_0.6.0            seqinr_4.2-44         parallel_4.6.2       
-[13] scales_1.4.0          yaml_2.3.12           fastmap_1.2.0        
-[16] lattice_0.23-1        readr_2.2.0           R6_2.6.1             
-[19] labeling_0.4.3        generics_0.1.4        knitr_1.52           
-[22] MASS_7.3-66           tibble_3.3.1          AhoCorasickTrie_0.1.3
-[25] tzdb_0.5.0            pillar_1.11.1         RColorBrewer_1.1-3   
-[28] rlang_1.3.0           xfun_0.62             S7_1.0.0             
-[31] bit64_4.8.6           otel_0.3.0            cli_3.6.6            
-[34] withr_3.0.3           magrittr_2.0.5        digest_0.6.39        
-[37] grid_4.6.2            vroom_1.7.1           hms_1.1.4            
-[40] lifecycle_1.0.5       vctrs_0.7.3           evaluate_1.0.5       
-[43] glue_1.8.1            farver_2.1.2          rmarkdown_2.32       
-[46] tools_4.6.2           pkgconfig_2.0.3       htmltools_0.5.9      </code></pre>
+ [1] vctrs_0.7.3           cli_3.6.6             knitr_1.52           
+ [4] rlang_1.3.0           xfun_0.62             otel_0.3.0           
+ [7] generics_0.1.4        S7_1.0.0              jsonlite_2.0.0       
+[10] AhoCorasickTrie_0.1.3 labeling_0.4.3        glue_1.8.1           
+[13] htmltools_0.5.9       scales_1.4.0          rmarkdown_2.32       
+[16] grid_4.6.2            tibble_3.3.1          evaluate_1.0.5       
+[19] fastmap_1.2.0         yaml_2.3.12           lifecycle_1.0.5      
+[22] compiler_4.6.2        RColorBrewer_1.1-3    Rcpp_1.1.2           
+[25] pkgconfig_2.0.3       farver_2.1.2          lattice_0.23-1       
+[28] digest_0.6.39         R6_2.6.1              tidyselect_1.2.1     
+[31] pillar_1.11.1         magrittr_2.0.5        Matrix_1.7-6         
+[34] withr_3.0.3           tools_4.6.2           gtable_0.3.6         
+[37] bspm_0.6.0           </code></pre>
 </div>
 </div>
 

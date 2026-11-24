@@ -423,7 +423,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <code id="db">db</code>
 </td>
 <td>
-A list of UniProt protein sequences, as returned by <code>read_peptide_fasta()</code>.
+A list of UniProt protein sequences, as returned by <code>read_peptide_fasta()</code>, named with UniProt IDs such as <code>“sp|P30443|1A01_HUMAN”</code> (the accession follows the first <code>|</code>).
 </td>
 </tr>
 <tr>
@@ -446,7 +446,7 @@ Function that makes the ID of the remaining chain, e.g.&nbsp;<code>make_chain_id
 </section>
 <section id="value" class="level3">
 <h3 class="anchored" data-anchor-id="value">Value</h3>
-<p><code>db</code> with the signal peptides removed and the IDs of the shortened sequences changed by <code>id_fun</code>.</p>
+<p><code>db</code> with the signal peptides removed. A shortened sequence gets the ID made by <code>id_fun</code> as its list name, its <code>name</code> and the first word of its header; the rest of the header is kept.</p>
 </section>
 <section id="see-also" class="level3">
 <h3 class="anchored" data-anchor-id="see-also">See Also</h3>

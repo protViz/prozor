@@ -408,7 +408,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="unnumbered anchored" data-anchor-id="create-a-database-with-contaminants-and-decoys">Create a database with contaminants and decoys</h2>
 <section id="description" class="level3">
 <h3 class="anchored" data-anchor-id="description">Description</h3>
-<p>Reads one or more FASTA files, adds contaminants and reversed decoy sequences, and puts first a dummy entry <code>CRAPCRAPCRAP</code> whose header records the source of the database. See <code>vignette(“CreatingDecoyDB”, package = “prozor”)</code>.</p>
+<p>Reads one or more FASTA files, adds contaminants and reversed decoy sequences, and puts first a dummy entry <code>CRAPCRAPCRAP</code> whose header records the source of the database. Of entries with the same name, only the first is kept. See <code>vignette(“CreatingDecoyDB”, package = “prozor”)</code>.</p>
 </section>
 <section id="usage" class="level3">
 <h3 class="anchored" data-anchor-id="usage">Usage</h3>
@@ -452,14 +452,14 @@ Prefix of the reversed decoy sequences, or <code>NULL</code> for no decoys.
 <code id="annot">annot</code>
 </td>
 <td>
-Header of the dummy entry that records the source of the database.
+Header of the dummy entry that records the source of the database, with or without the leading <code>&gt;</code>.
 </td>
 </tr>
 </tbody></table>
 </section>
 <section id="value" class="level3">
 <h3 class="anchored" data-anchor-id="value">Value</h3>
-<p>A list of <code>SeqFastaAA</code> objects: the dummy entry, the targets, the contaminants and, unless <code>rev_lab</code> is <code>NULL</code>, the reversed decoys of the targets and contaminants.</p>
+<p>A list of <code>SeqFastaAA</code> objects with unique names: the dummy entry, the targets, the contaminants and, unless <code>rev_lab</code> is <code>NULL</code>, the reversed decoys of the targets and contaminants.</p>
 </section>
 <section id="see-also" class="level3">
 <h3 class="anchored" data-anchor-id="see-also">See Also</h3>
@@ -474,11 +474,12 @@ Header of the dummy entry that records the source of the database.
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>targets <span class="ot">&lt;-</span> <span class="fu">read_peptide_fasta</span>(file)</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>cont <span class="ot">&lt;-</span> <span class="fu">load_contaminants</span>(<span class="st">"fgcz2022"</span>)</span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>db <span class="ot">&lt;-</span> <span class="fu">create_decoy_db</span>(<span class="fu">c</span>(file, file))</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">stopifnot</span>(<span class="fu">length</span>(db) <span class="sc">==</span> <span class="dv">1</span> <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> (<span class="dv">2</span> <span class="sc">*</span> <span class="fu">length</span>(targets) <span class="sc">+</span> <span class="fu">length</span>(cont)))</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>db <span class="ot">&lt;-</span> <span class="fu">create_decoy_db</span>(file, <span class="at">rev_lab =</span> <span class="cn">NULL</span>, <span class="at">contaminants =</span> <span class="cn">NULL</span>)</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">stopifnot</span>(<span class="fu">length</span>(db) <span class="sc">==</span> <span class="dv">1</span> <span class="sc">+</span> <span class="fu">length</span>(targets))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># the file, read twice, holds the same entries as the default contaminants: each is kept once</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>db <span class="ot">&lt;-</span> <span class="fu">create_decoy_db</span>(<span class="fu">c</span>(file, file))</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">stopifnot</span>(<span class="fu">length</span>(db) <span class="sc">==</span> <span class="dv">1</span> <span class="sc">+</span> <span class="dv">2</span> <span class="sc">*</span> <span class="fu">length</span>(targets), <span class="fu">identical</span>(<span class="fu">names</span>(targets), <span class="fu">names</span>(cont)))</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>db <span class="ot">&lt;-</span> <span class="fu">create_decoy_db</span>(file, <span class="at">rev_lab =</span> <span class="cn">NULL</span>, <span class="at">contaminants =</span> <span class="cn">NULL</span>)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">stopifnot</span>(<span class="fu">length</span>(db) <span class="sc">==</span> <span class="dv">1</span> <span class="sc">+</span> <span class="fu">length</span>(targets))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 
 

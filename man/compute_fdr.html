@@ -423,7 +423,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <code id="score">score</code>
 </td>
 <td>
-Search engine scores.
+Search engine scores, without <code>NA</code>.
 </td>
 </tr>
 <tr>
@@ -431,7 +431,7 @@ Search engine scores.
 <code id="decoy_hit">decoy_hit</code>
 </td>
 <td>
-Logical, <code>TRUE</code> for decoy hits, one per score.
+Logical, <code>TRUE</code> for decoy hits, one per score, without <code>NA</code>.
 </td>
 </tr>
 <tr>
@@ -458,13 +458,13 @@ Logical, <code>TRUE</code> for decoy hits, one per score.
 <p><code>decoy_hit</code>, <code>score</code>: the sorted input.</p>
 </li>
 <li>
-<p><code>fpr</code>: the FDR estimated as 2 * decoys / all hits (Elias and Gygi).</p>
+<p><code>fdr_concatenated</code>: the FDR of a concatenated target-decoy search, estimated as 2 * decoys / all hits (Elias and Gygi).</p>
 </li>
 <li>
 <p><code>simple_fdr</code>: the FDR estimated as decoys / targets (Kaell).</p>
 </li>
 <li>
-<p><code>q_value_fpr</code>, <code>q_value_simple_fdr</code>: the q-values of both estimates.</p>
+<p><code>q_value_fdr_concatenated</code>, <code>q_value_simple_fdr</code>: the q-values of both estimates, as fractions.</p>
 </li>
 </ul>
 </section>
@@ -481,20 +481,20 @@ Logical, <code>TRUE</code> for decoy hits, one per score.
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>fdr <span class="ot">&lt;-</span> <span class="fu">compute_fdr</span>(fdr_sample<span class="sc">$</span>score, <span class="fu">grepl</span>(<span class="st">"^REV_"</span>, fdr_sample<span class="sc">$</span>protein_id), <span class="at">larger_better =</span> <span class="cn">FALSE</span>)</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">as.data.frame</span>(fdr))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>  larger_better order decoy_hit        score fpr simple_fdr q_value_fpr
-1         FALSE   287     FALSE 8.611747e-21   0          0           0
-2         FALSE  3581     FALSE 6.305185e-19   0          0           0
-3         FALSE 29584     FALSE 1.750698e-17   0          0           0
-4         FALSE 26559     FALSE 3.081044e-16   0          0           0
-5         FALSE 15524     FALSE 3.835269e-16   0          0           0
-6         FALSE 30840     FALSE 3.845918e-16   0          0           0
-  q_value_simple_fdr
-1                  0
-2                  0
-3                  0
-4                  0
-5                  0
-6                  0</code></pre>
+<pre><code>  larger_better order decoy_hit        score fdr_concatenated simple_fdr
+1         FALSE   287     FALSE 8.611747e-21                0          0
+2         FALSE  3581     FALSE 6.305185e-19                0          0
+3         FALSE 29584     FALSE 1.750698e-17                0          0
+4         FALSE 26559     FALSE 3.081044e-16                0          0
+5         FALSE 15524     FALSE 3.835269e-16                0          0
+6         FALSE 30840     FALSE 3.845918e-16                0          0
+  q_value_fdr_concatenated q_value_simple_fdr
+1                        0                  0
+2                        0                  0
+3                        0                  0
+4                        0                  0
+5                        0                  0
+6                        0                  0</code></pre>
 </div>
 </div>
 

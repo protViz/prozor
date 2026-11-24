@@ -408,7 +408,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="unnumbered anchored" data-anchor-id="create-an-fgcz-fasta-database-from-a-directory-of-fasta-files">Create an FGCZ FASTA database from a directory of FASTA files</h2>
 <section id="description" class="level3">
 <h3 class="anchored" data-anchor-id="description">Description</h3>
-<p>Reads all FASTA files in <code>database_dir</code>, adds contaminants and decoys with <code>create_decoy_db()</code>, drops duplicated entries and writes the result to <code>output_dir</code> as <code style="white-space: pre;">&lt;name&gt;[_d]_&lt;date&gt;.fasta</code>, where <code style="white-space: pre;">_d</code> marks a database with decoys. The first line of <code>annotation.txt</code> in <code>database_dir</code> becomes the header of the dummy source entry.</p>
+<p>Reads all FASTA files in <code>database_dir</code> (<code style="white-space: pre;"><em>.fasta</em></code><em>, <code style="white-space: pre;"></code></em><code style="white-space: pre;">.fa</code> or <code style="white-space: pre;">*.faa</code>, optionally gzipped), adds contaminants and decoys with <code>create_decoy_db()</code>, which drops duplicated entries, and writes the result to <code>output_dir</code> as <code style="white-space: pre;">&lt;name&gt;[_d]_&lt;date&gt;.fasta</code>, where <code style="white-space: pre;">_d</code> marks a database with decoys. The first line of <code>annotation.txt</code> in <code>database_dir</code> becomes the header of the dummy source entry.</p>
 </section>
 <section id="usage" class="level3">
 <h3 class="anchored" data-anchor-id="usage">Usage</h3>
@@ -453,7 +453,7 @@ Prefix of the reversed decoy sequences, or <code>NULL</code> for no decoys.
 <code id="output_dir">output_dir</code>
 </td>
 <td>
-Directory the FASTA file is written to.
+Directory the FASTA file is written to; must not be <code>database_dir</code>, where the next run would read the written database as targets.
 </td>
 </tr>
 <tr>
@@ -466,9 +466,13 @@ If <code>TRUE</code>, append the output of <code>make_fasta_summary()</code> to 
 </tr>
 </tbody></table>
 </section>
+<section id="details" class="level3">
+<h3 class="anchored" data-anchor-id="details">Details</h3>
+<p>The whole database, decoys included, is held in memory. Peak memory grows linearly with the database, by about 4 KB per written sequence or 6 to 7 times the size of the written file: 250,000 target proteins (500,000 sequences with decoys, a 320 MB file) take 2.2 GB.</p>
+</section>
 <section id="value" class="level3">
 <h3 class="anchored" data-anchor-id="value">Value</h3>
-<p>A list with the elements <code>db</code> (the sequences written), <code>file_path</code>, <code>summary</code> (text), <code>call</code> and <code>db_name</code>.</p>
+<p>A list with the elements <code>db</code> (the sequences written), <code>file_path</code>, <code>summary</code> (text with the argument values, the file name and the number of sequences), <code>call</code> and <code>db_name</code>.</p>
 </section>
 <section id="see-also" class="level3">
 <h3 class="anchored" data-anchor-id="see-also">See Also</h3>

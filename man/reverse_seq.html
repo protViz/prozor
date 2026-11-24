@@ -457,8 +457,14 @@ Prefix added to the names and headers of the reversed sequences.
 <pre><code>[1] "REV_zz|fgczContaminants2021|" "REV_zz|Y-FGCZCont00001|"     
 [3] "REV_zz|Y-FGCZCont00002|"     </code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>tag <span class="ot">&lt;-</span> <span class="fu">list</span>(seqinr<span class="sc">::</span><span class="fu">as.SeqFastaAA</span>(<span class="st">"DYKDDDDK"</span>, <span class="at">name =</span> <span class="st">"Flag|FLAG|p2079"</span>, <span class="at">Annot =</span> <span class="st">"&gt;Flag|FLAG|p2079"</span>))</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">reverse_seq</span>(tag, <span class="at">rev_lab =</span> <span class="st">"DECOY_"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># an entry as read_peptide_fasta() returns it</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>tag <span class="ot">&lt;-</span> <span class="fu">structure</span>(</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">"DYKDDDDK"</span>,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">name =</span> <span class="st">"Flag|FLAG|p2079"</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">Annot =</span> <span class="st">"&gt;Flag|FLAG|p2079"</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">class =</span> <span class="st">"SeqFastaAA"</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="fu">reverse_seq</span>(<span class="fu">list</span>(tag), <span class="at">rev_lab =</span> <span class="st">"DECOY_"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$`DECOY_Flag|FLAG|p2079`
 [1] "KDDDDKYD"

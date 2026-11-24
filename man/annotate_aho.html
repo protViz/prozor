@@ -423,7 +423,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <code id="pepseq">pepseq</code>
 </td>
 <td>
-Peptide sequences, upper-case letters only.
+Peptide sequences: upper-case letters only, without whitespace or modifications. <code>annotate_peptides()</code> removes surrounding whitespace before it calls this function.
 </td>
 </tr>
 <tr>
@@ -444,9 +444,13 @@ Name of the result column that holds the peptide sequences.
 </tr>
 </tbody></table>
 </section>
+<section id="details" class="level3">
+<h3 class="anchored" data-anchor-id="details">Details</h3>
+<p>The protein sequences are searched in upper case, with each character other than a letter, such as the stop codon <code>*</code> of a translated database, replaced by <code>X</code>. The offsets are those of the sequences in <code>fasta</code>.</p>
+</section>
 <section id="value" class="level3">
 <h3 class="anchored" data-anchor-id="value">Value</h3>
-<p>A data frame with one row per occurrence and the columns <code>protein_id</code>, <code>peptide</code> (named by the argument), <code>offset</code> (1-based start of the peptide) and <code>protein_sequence</code>; <code>NULL</code> if no peptide occurs.</p>
+<p>A data frame with one row per occurrence and the columns <code>protein_id</code>, <code>peptide</code> (named by the argument), <code>offset</code> (1-based start of the peptide) and <code>protein_sequence</code> (the sequence as searched); <code>NULL</code> if no peptide occurs.</p>
 </section>
 <section id="see-also" class="level3">
 <h3 class="anchored" data-anchor-id="see-also">See Also</h3>

@@ -431,12 +431,6 @@ The window boundaries.
 <dd>
 Number of windows.
 </dd>
-<dt>
-<code>digits</code>
-</dt>
-<dd>
-Mass accuracy of the result.
-</dd>
 </dl>
 </section>
 <section id="methods" class="level3">
@@ -446,7 +440,7 @@ Mass accuracy of the result.
 <code>as_table(overlap = 1)</code>
 </dt>
 <dd>
-Windows as a data.frame with start (from), end (to), center (mid), width and precursor count; overlap in m/z.
+Windows as a data.frame with start (from), end (to), center (mid), width and the number of precursors with from &lt; m/z &lt;= to (counts); overlap in m/z.
 </dd>
 <dt>
 <code>constant_breaks(digits = 2)</code>
@@ -461,10 +455,10 @@ Equal-width windows; returns the breaks invisibly.
 Deviation of the windows from equal counts: a list, see objective_ms1().
 </dd>
 <dt>
-<code>initialize(masses, nbins = 25, digits = 1)</code>
+<code>initialize(masses, nbins = 25)</code>
 </dt>
 <dd>
-Create the object from a vector of MS1 masses, with nbins windows of equal width and mass accuracy digits.
+Create the object from a vector of MS1 masses, with nbins windows of equal width.
 </dd>
 <dt>
 <code>optimize_windows(digits = 1, maxbin = 15, overlap = 0)</code>
@@ -476,7 +470,7 @@ Move window starts and ends to regions with few precursor masses; returns a data
 <code>plot()</code>
 </dt>
 <dd>
-ggplot of the precursors per window; the dashed line marks equal counts.
+ggplot of the precursors per window (from &lt; m/z &lt;= to); the dashed line marks equal counts.
 </dd>
 <dt>
 <code>plot_breaks()</code>
@@ -494,7 +488,7 @@ Windows with equal numbers of MS1 masses; widths may violate the limits of sampl
 <code>sampling_breaks(maxwindow = 150, minwindow = 5, digits = 2)</code>
 </dt>
 <dd>
-Quantile windows, mixed with uniform data until all widths lie within [minwindow, maxwindow]. Stops if even equal-width windows violate the limits; returns the breaks invisibly.
+Quantile breaks of the masses mixed with uniformly spread data, with the smallest share of uniform data that keeps all widths within [minwindow, maxwindow]. Stops if even equal-width windows violate the limits; returns the breaks invisibly.
 </dd>
 <dt>
 <code>show_cycle(overlap = 1)</code>
@@ -534,61 +528,61 @@ ggplot of the DIA cycle, one window per step; overlap in m/z.
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>cdsw<span class="sc">$</span><span class="fu">as_table</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>       from      to      mid  width counts
-0%   349.63  381.62  365.625  31.99   6095
-4%   380.62  408.24  394.430  27.62   6354
-8%   407.24  432.23  419.735  24.99   6568
-12%  431.23  454.73  442.980  23.50   6585
-16%  453.73  476.25  464.990  22.52   6657
-20%  475.25  496.79  486.020  21.54   6712
-24%  495.79  517.80  506.795  22.01   6761
-28%  516.80  538.78  527.790  21.98   6769
-32%  537.78  559.80  548.790  22.02   6701
-36%  558.80  581.14  569.970  22.34   6706
-40%  580.14  603.12  591.630  22.98   6673
-44%  602.12  626.17  614.145  24.05   6607
-48%  625.17  649.86  637.515  24.69   6565
-52%  648.86  675.16  662.010  26.30   6433
-56%  674.16  701.39  687.775  27.23   6481
-60%  700.39  728.90  714.645  28.51   6246
-64%  727.90  758.91  743.405  31.01   6232
-68%  757.91  791.40  774.655  33.49   6105
-72%  790.40  826.86  808.630  36.46   5862
-76%  825.86  866.95  846.405  41.09   5750
-80%  865.95  912.97  889.460  47.02   5542
-84%  911.97  964.68  938.325  52.71   5142
-88%  963.68 1028.19  995.935  64.51   4679
-92% 1027.19 1101.35 1064.270  74.16   4070
-96% 1100.35 1200.48 1150.415 100.13   3091</code></pre>
+<pre><code>      from      to      mid  width counts
+1   349.63  381.69  365.660  32.06   6098
+2   380.69  408.26  394.475  27.57   6377
+3   407.26  432.22  419.740  24.96   6531
+4   431.22  454.62  442.920  23.40   6588
+5   453.62  476.03  464.825  22.41   6627
+6   475.03  496.74  485.885  21.71   6715
+7   495.74  517.43  506.585  21.69   6717
+8   516.43  538.27  527.350  21.84   6709
+9   537.27  559.27  548.270  22.00   6689
+10  558.27  580.35  569.310  22.08   6720
+11  579.35  602.32  590.835  22.97   6682
+12  601.32  625.27  613.295  23.95   6538
+13  624.27  648.83  636.550  24.56   6568
+14  647.83  674.14  660.985  26.31   6467
+15  673.14  699.88  686.510  26.74   6406
+16  698.88  727.76  713.320  28.88   6319
+17  726.76  757.52  742.140  30.76   6238
+18  756.52  789.86  773.190  33.34   6123
+19  788.86  825.37  807.115  36.51   5932
+20  824.37  865.27  844.820  40.90   5730
+21  864.27  910.48  887.375  46.21   5526
+22  909.48  962.36  935.920  52.88   5195
+23  961.36 1025.02  993.190  63.66   4737
+24 1024.02 1100.47 1062.245  76.45   4191
+25 1099.47 1200.48 1149.975 101.01   3142</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>cdsw<span class="sc">$</span><span class="fu">optimize_windows</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>      from      to     mid width counts
-1   350.13  381.35  365.74 31.22   6053
-2   381.05  407.95  394.50 26.90   6189
-3   407.65  431.85  419.75 24.20   6425
-4   431.65  454.35  443.00 22.70   6447
-5   454.15  475.85  465.00 21.70   6474
-6   475.65  496.35  486.00 20.70   6467
-7   496.15  517.45  506.80 21.30   6578
-8   517.15  538.45  527.80 21.30   6627
-9   538.15  559.45  548.80 21.30   6508
-10  559.15  581.05  570.10 21.90   6628
-11  580.55  603.05  591.80 22.50   6526
-12  602.55  626.05  614.30 23.50   6452
-13  625.55  649.45  637.50 23.90   6335
-14  649.25  674.75  662.00 25.50   6281
-15  674.55  700.95  687.75 26.40   6261
-16  700.75  728.45  714.60 27.70   6139
-17  728.25  758.55  743.40 30.30   6119
-18  758.25  791.15  774.70 32.90   6035
-19  790.75  826.55  808.65 35.80   5804
-20  826.25  866.55  846.40 40.30   5622
-21  866.35  912.55  889.45 46.20   5475
-22  912.35  964.25  938.30 51.90   5083
-23  964.15 1027.75  995.95 63.60   4607
-24 1027.65 1100.85 1064.25 73.20   4015
-25 1100.75 1200.05 1150.40 99.30   3071</code></pre>
+1   350.05  381.35  365.70  31.3   6053
+2   381.05  407.95  394.50  26.9   6189
+3   407.65  431.85  419.75  24.2   6425
+4   431.65  454.15  442.90  22.5   6334
+5   454.05  475.65  464.85  21.6   6387
+6   475.45  496.35  485.90  20.9   6504
+7   496.15  517.05  506.60  20.9   6442
+8   516.85  538.05  527.45  21.2   6516
+9   537.45  559.05  548.25  21.6   6542
+10  558.55  580.05  569.30  21.5   6458
+11  579.55  602.05  590.80  22.5   6576
+12  601.55  624.95  613.25  23.4   6446
+13  624.55  648.45  636.50  23.9   6370
+14  648.25  673.75  661.00  25.5   6261
+15  673.55  699.45  686.50  25.9   6201
+16  699.25  727.45  713.35  28.2   6261
+17  727.25  757.15  742.20  29.9   6045
+18  756.65  789.55  773.10  32.9   6081
+19  789.25  825.15  807.20  35.9   5846
+20  824.85  864.85  844.85  40.0   5603
+21  864.75  910.05  887.40  45.3   5389
+22  909.85  962.05  935.95  52.2   5167
+23  961.85 1024.55  993.20  62.7   4665
+24 1024.45 1100.15 1062.30  75.7   4162
+25 1099.95 1200.05 1150.00 100.1   3120</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>cdsw<span class="sc">$</span><span class="fu">show_cycle</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">

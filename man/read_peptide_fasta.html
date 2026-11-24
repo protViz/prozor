@@ -408,7 +408,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="unnumbered anchored" data-anchor-id="read-a-fasta-file-of-protein-sequences">Read a FASTA file of protein sequences</h2>
 <section id="description" class="level3">
 <h3 class="anchored" data-anchor-id="description">Description</h3>
-<p>Reads amino-acid sequences with <code>seqinr::read.fasta()</code>, each sequence as one string.</p>
+<p>Reads amino-acid sequences, each sequence as one string. Lines starting with <code style="white-space: pre;">;</code> and lines before the first header are skipped; an entry without sequence lines gets the empty string.</p>
 </section>
 <section id="usage" class="level3">
 <h3 class="anchored" data-anchor-id="usage">Usage</h3>
@@ -430,7 +430,7 @@ Path to a FASTA file, optionally gzip-compressed.
 </section>
 <section id="value" class="level3">
 <h3 class="anchored" data-anchor-id="value">Value</h3>
-<p>A named list of <code>SeqFastaAA</code> objects, one per sequence.</p>
+<p>A named list with one <code>SeqFastaAA</code> object per sequence: the sequence as a string, with the attributes <code>name</code> (the first word of the header, without <code>&gt;</code>, also the list name) and <code>Annot</code> (the header line).</p>
 </section>
 <section id="see-also" class="level3">
 <h3 class="anchored" data-anchor-id="see-also">See Also</h3>
@@ -446,6 +446,17 @@ Path to a FASTA file, optionally gzip-compressed.
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(fasta)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 499</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">attributes</span>(fasta[[<span class="dv">1</span>]])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$name
+[1] "zz|fgczContaminants2021|"
+
+$Annot
+[1] "&gt;zz|fgczContaminants2021| jg: 2021-09-29 updated list of important MS contaminants, incl Preomics LysC, BioID, APEX2 domain compiled by FGCZ protInf"
+
+$class
+[1] "SeqFastaAA"</code></pre>
 </div>
 </div>
 

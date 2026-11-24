@@ -442,7 +442,7 @@ Name of the contaminant set: <code>“fgcz2019”</code>, <code>“fgcz2021”</
 <code id="no_human">no_human</code>
 </td>
 <td>
-If <code>TRUE</code>, drop the sequences whose header contains <code>HUMAN</code>.
+If <code>TRUE</code>, drop the sequences whose header contains <code>HUMAN</code> or <code style="white-space: pre;">Homo sapiens</code>.
 </td>
 </tr>
 </tbody></table>
@@ -471,7 +471,7 @@ If <code>TRUE</code>, drop the sequences whose header contains <code>HUMAN</code
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(<span class="fu">load_contaminants</span>(<span class="st">"fgcz2022"</span>, <span class="at">no_human =</span> <span class="cn">TRUE</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 356</code></pre>
+<pre><code>[1] 349</code></pre>
 </div>
 </div>
 

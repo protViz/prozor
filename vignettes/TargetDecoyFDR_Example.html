@@ -580,14 +580,14 @@ FALSE  TRUE
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <colgroup>
-<col style="width: 17%">
-<col style="width: 7%">
 <col style="width: 12%">
-<col style="width: 7%">
-<col style="width: 4%">
-<col style="width: 13%">
-<col style="width: 14%">
+<col style="width: 5%">
+<col style="width: 9%">
+<col style="width: 5%">
+<col style="width: 15%">
+<col style="width: 10%">
 <col style="width: 23%">
+<col style="width: 17%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -595,9 +595,9 @@ FALSE  TRUE
 <th style="text-align: right;">order</th>
 <th style="text-align: left;">decoy_hit</th>
 <th style="text-align: right;">score</th>
-<th style="text-align: right;">fpr</th>
+<th style="text-align: right;">fdr_concatenated</th>
 <th style="text-align: right;">simple_fdr</th>
-<th style="text-align: right;">q_value_fpr</th>
+<th style="text-align: right;">q_value_fdr_concatenated</th>
 <th style="text-align: right;">q_value_simple_fdr</th>
 </tr>
 </thead>
@@ -672,13 +672,13 @@ FALSE  TRUE
 <p>We define</p>
 <pre><code> * false positives (FP) as the number of passing decoy assignments
  * true positives (TP) as the number of passing forward hits.</code></pre>
-<section id="false-positive-rate" class="level3">
-<h3 class="anchored" data-anchor-id="false-positive-rate">False positive rate</h3>
+<section id="fdr-of-a-concatenated-target-decoy-search" class="level3">
+<h3 class="anchored" data-anchor-id="fdr-of-a-concatenated-target-decoy-search">FDR of a concatenated target-decoy search</h3>
 <p>Which is the “Fraction of incorrect assignments above score threshold”. The multiplier 2 is needed here since we assume that also the forward sequences have false assignments.</p>
 <p><span class="math display">\[
-FPR = \frac{2 \cdot FP}{TP + FP}
+FDR_{concatenated} = \frac{2 \cdot FP}{TP + FP}
 \]</span></p>
-<p>This is taken from the reference by <span class="citation" data-cites="Elias2007">(<a href="#ref-Elias2007" role="doc-biblioref">Elias and Gygi 2007</a>)</span>. <span class="citation" data-cites="Storey2003">(<a href="#ref-Storey2003" role="doc-biblioref">Storey and Tibshirani 2003</a>)</span> defines FPR differently. Kaell points out that the FPR here actually should be named FDR and that “Many proteomics papers incorrectly refer to this quantity as the <em>false positive rate</em>.”</p>
+<p>This is taken from the reference by <span class="citation" data-cites="Elias2007">(<a href="#ref-Elias2007" role="doc-biblioref">Elias and Gygi 2007</a>)</span>. It is often called the false positive rate (FPR), which <span class="citation" data-cites="Storey2003">(<a href="#ref-Storey2003" role="doc-biblioref">Storey and Tibshirani 2003</a>)</span> defines differently. Kaell points out that this quantity actually should be named FDR and that “Many proteomics papers incorrectly refer to this quantity as the <em>false positive rate</em>.” <code>compute_fdr()</code> therefore returns it as <code>fdr_concatenated</code>.</p>
 </section>
 <section id="simple-fdr" class="level3">
 <h3 class="anchored" data-anchor-id="simple-fdr">Simple FDR</h3>
@@ -714,7 +714,7 @@ SimpleFDR =  \frac{FP}{TP}
 <h2 class="anchored" data-anchor-id="getting-the-score-for-an-fdr.">Getting the score for an FDR.</h2>
 <p>Most frequently you will need to get the score for an FDR in order to filter your data. To report your data with an FDR of 1% instead of 5% you can execute this code:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>(score05G <span class="ot">&lt;-</span> <span class="fu">predict_score_fdr</span>(fdr1, <span class="at">q_value =</span> <span class="dv">5</span>, <span class="at">method =</span> <span class="st">"fpr"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>(score05G <span class="ot">&lt;-</span> <span class="fu">predict_score_fdr</span>(fdr1, <span class="at">q_value =</span> <span class="fl">0.05</span>, <span class="at">method =</span> <span class="st">"fdr_concatenated"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.09991592</code></pre>
 </div>
@@ -722,7 +722,7 @@ SimpleFDR =  \frac{FP}{TP}
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 40000     3</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>(score01G <span class="ot">&lt;-</span> <span class="fu">predict_score_fdr</span>(fdr1, <span class="at">q_value =</span> <span class="dv">1</span>, <span class="at">method =</span> <span class="st">"fpr"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>(score01G <span class="ot">&lt;-</span> <span class="fu">predict_score_fdr</span>(fdr1, <span class="at">q_value =</span> <span class="fl">0.01</span>, <span class="at">method =</span> <span class="st">"fdr_concatenated"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.008509834</code></pre>
 </div>
@@ -730,7 +730,7 @@ SimpleFDR =  \frac{FP}{TP}
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 29180     3</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>(score01K <span class="ot">&lt;-</span> <span class="fu">predict_score_fdr</span>(fdr1, <span class="at">q_value =</span> <span class="dv">1</span>, <span class="at">method =</span> <span class="st">"simple_fdr"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>(score01K <span class="ot">&lt;-</span> <span class="fu">predict_score_fdr</span>(fdr1, <span class="at">q_value =</span> <span class="fl">0.01</span>, <span class="at">method =</span> <span class="st">"simple_fdr"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.03394749</code></pre>
 </div>
@@ -748,15 +748,15 @@ SimpleFDR =  \frac{FP}{TP}
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <colgroup>
-<col style="width: 27%">
-<col style="width: 12%">
-<col style="width: 5%">
-<col style="width: 8%">
-<col style="width: 5%">
-<col style="width: 3%">
-<col style="width: 9%">
+<col style="width: 22%">
 <col style="width: 10%">
-<col style="width: 16%">
+<col style="width: 4%">
+<col style="width: 7%">
+<col style="width: 4%">
+<col style="width: 12%">
+<col style="width: 7%">
+<col style="width: 17%">
+<col style="width: 13%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -765,9 +765,9 @@ SimpleFDR =  \frac{FP}{TP}
 <th style="text-align: right;">order</th>
 <th style="text-align: left;">decoy_hit</th>
 <th style="text-align: right;">score</th>
-<th style="text-align: right;">fpr</th>
+<th style="text-align: right;">fdr_concatenated</th>
 <th style="text-align: right;">simple_fdr</th>
-<th style="text-align: right;">q_value_fpr</th>
+<th style="text-align: right;">q_value_fdr_concatenated</th>
 <th style="text-align: right;">q_value_simple_fdr</th>
 </tr>
 </thead>
@@ -849,15 +849,15 @@ SimpleFDR =  \frac{FP}{TP}
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <colgroup>
-<col style="width: 12%">
-<col style="width: 5%">
-<col style="width: 8%">
-<col style="width: 5%">
-<col style="width: 3%">
-<col style="width: 9%">
 <col style="width: 10%">
-<col style="width: 16%">
-<col style="width: 27%">
+<col style="width: 4%">
+<col style="width: 7%">
+<col style="width: 4%">
+<col style="width: 12%">
+<col style="width: 7%">
+<col style="width: 17%">
+<col style="width: 13%">
+<col style="width: 22%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -865,9 +865,9 @@ SimpleFDR =  \frac{FP}{TP}
 <th style="text-align: right;">order</th>
 <th style="text-align: left;">decoy_hit</th>
 <th style="text-align: right;">score</th>
-<th style="text-align: right;">fpr</th>
+<th style="text-align: right;">fdr_concatenated</th>
 <th style="text-align: right;">simple_fdr</th>
-<th style="text-align: right;">q_value_fpr</th>
+<th style="text-align: right;">q_value_fdr_concatenated</th>
 <th style="text-align: right;">q_value_simple_fdr</th>
 <th style="text-align: left;">id</th>
 </tr>
@@ -973,16 +973,15 @@ other attached packages:
 [1] prozor_0.4.0  dplyr_1.2.1   ggplot2_4.0.4
 
 loaded via a namespace (and not attached):
- [1] ade4_1.7-24        Matrix_1.7-6       gtable_0.3.6       jsonlite_2.0.0    
- [5] compiler_4.6.2     Rcpp_1.1.2         tidyselect_1.2.1   bspm_0.6.0        
- [9] seqinr_4.2-44      scales_1.4.0       yaml_2.3.12        fastmap_1.2.0     
-[13] lattice_0.23-1     R6_2.6.1           labeling_0.4.3     generics_0.1.4    
-[17] knitr_1.52         MASS_7.3-66        tibble_3.3.1       pillar_1.11.1     
-[21] RColorBrewer_1.1-3 rlang_1.3.0        xfun_0.62          S7_1.0.0          
-[25] otel_0.3.0         cli_3.6.6          withr_3.0.3        magrittr_2.0.5    
-[29] digest_0.6.39      grid_4.6.2         lifecycle_1.0.5    vctrs_0.7.3       
-[33] evaluate_1.0.5     glue_1.8.1         farver_2.1.2       rmarkdown_2.32    
-[37] tools_4.6.2        pkgconfig_2.0.3    htmltools_0.5.9   </code></pre>
+ [1] vctrs_0.7.3        cli_3.6.6          knitr_1.52         rlang_1.3.0       
+ [5] xfun_0.62          otel_0.3.0         generics_0.1.4     S7_1.0.0          
+ [9] jsonlite_2.0.0     labeling_0.4.3     glue_1.8.1         htmltools_0.5.9   
+[13] scales_1.4.0       rmarkdown_2.32     grid_4.6.2         tibble_3.3.1      
+[17] evaluate_1.0.5     fastmap_1.2.0      yaml_2.3.12        lifecycle_1.0.5   
+[21] compiler_4.6.2     RColorBrewer_1.1-3 pkgconfig_2.0.3    lattice_0.23-1    
+[25] farver_2.1.2       digest_0.6.39      R6_2.6.1           tidyselect_1.2.1  
+[29] pillar_1.11.1      magrittr_2.0.5     Matrix_1.7-6       withr_3.0.3       
+[33] tools_4.6.2        gtable_0.3.6       bspm_0.6.0        </code></pre>
 </div>
 </div>
 </section>

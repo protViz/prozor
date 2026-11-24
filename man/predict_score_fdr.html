@@ -412,7 +412,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="usage" class="level3">
 <h3 class="anchored" data-anchor-id="usage">Usage</h3>
-<pre><code class="language-R">predict_score_fdr(fdr, q_value = 1, method = "simple_fdr")
+<pre><code class="language-R">predict_score_fdr(fdr, q_value = 0.01, method = "simple_fdr")
 </code></pre>
 </section>
 <section id="arguments" class="level3">
@@ -431,7 +431,7 @@ A result of <code>compute_fdr()</code> or <code>compute_fdr_with_id()</code>.
 <code id="q_value">q_value</code>
 </td>
 <td>
-The FDR in percent.
+The FDR as a fraction, like the q-values in <code>fdr</code>: <code>0.01</code> for 1 %.
 </td>
 </tr>
 <tr>
@@ -439,14 +439,14 @@ The FDR in percent.
 <code id="method">method</code>
 </td>
 <td>
-The FDR estimate to use: <code>“simple_fdr”</code> or <code>“fpr”</code>.
+The FDR estimate to use: <code>“simple_fdr”</code> or <code>“fdr_concatenated”</code>.
 </td>
 </tr>
 </tbody></table>
 </section>
 <section id="value" class="level3">
 <h3 class="anchored" data-anchor-id="value">Value</h3>
-<p>The least strict score whose q-value is at most <code>q_value</code> percent. An error if no score reaches it.</p>
+<p>The least strict score whose q-value is at most <code>q_value</code>. An error if no score reaches it.</p>
 </section>
 <section id="see-also" class="level3">
 <h3 class="anchored" data-anchor-id="see-also">See Also</h3>
@@ -459,14 +459,14 @@ The FDR estimate to use: <code>“simple_fdr”</code> or <code>“fpr”</code>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(fdr_sample)</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>fdr <span class="ot">&lt;-</span> <span class="fu">compute_fdr_with_id</span>(fdr_sample<span class="sc">$</span>score, fdr_sample<span class="sc">$</span>protein_id, <span class="at">larger_better =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">predict_score_fdr</span>(fdr, <span class="at">q_value =</span> <span class="dv">5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">predict_score_fdr</span>(fdr, <span class="at">q_value =</span> <span class="fl">0.01</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.09991592</code></pre>
+<pre><code>[1] 0.03394749</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>fdr2 <span class="ot">&lt;-</span> <span class="fu">compute_fdr_with_id</span>(fdr_sample<span class="sc">$</span>score2, fdr_sample<span class="sc">$</span>protein_id, <span class="at">larger_better =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">predict_score_fdr</span>(fdr2, <span class="at">q_value =</span> <span class="dv">5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">predict_score_fdr</span>(fdr2, <span class="at">q_value =</span> <span class="fl">0.01</span>, <span class="at">method =</span> <span class="st">"fdr_concatenated"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 1.000365</code></pre>
+<pre><code>[1] 2.070079</code></pre>
 </div>
 </div>
 

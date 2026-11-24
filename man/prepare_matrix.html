@@ -417,7 +417,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   protein_id = "protein_id",
   peptide_id = "peptide_seq",
   weighting = NULL,
-  sep = "|",
   use.last.ij = TRUE
 )
 </code></pre>
@@ -438,7 +437,7 @@ A data frame (or tibble) of peptide-protein pairs, e.g.&nbsp;from <code>annotate
 <code id="protein_id">protein_id</code>
 </td>
 <td>
-Name of the protein ID column.
+Name of the protein ID column (character or factor; unused factor levels are dropped).
 </td>
 </tr>
 <tr>
@@ -446,7 +445,7 @@ Name of the protein ID column.
 <code id="peptide_id">peptide_id</code>
 </td>
 <td>
-Name of the peptide or precursor ID column.
+Name of the peptide or precursor ID column (character or factor; unused factor levels are dropped).
 </td>
 </tr>
 <tr>
@@ -459,18 +458,10 @@ Name of the peptide or precursor ID column.
 </tr>
 <tr>
 <td style="white-space: collapse; font-family: monospace; vertical-align: top">
-<code id="sep">sep</code>
-</td>
-<td>
-Not used.
-</td>
-</tr>
-<tr>
-<td style="white-space: collapse; font-family: monospace; vertical-align: top">
 <code id="use.last.ij">use.last.ij</code>
 </td>
 <td>
-Passed to <code>Matrix::sparseMatrix()</code>; if <code>TRUE</code>, a repeated peptide-protein pair keeps a single entry instead of the sum of its entries.
+Passed to <code>Matrix::sparseMatrix()</code>; if <code>TRUE</code>, a repeated peptide-protein pair keeps the weight of its last row, if <code>FALSE</code> the sum of the weights of its rows. Applies to every <code>weighting</code>.
 </td>
 </tr>
 </tbody></table>
