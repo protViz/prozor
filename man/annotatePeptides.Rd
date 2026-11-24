@@ -29,6 +29,11 @@ data.frame with columns "peptideSeq", "proteinID","Offset","proteinSequence","ma
 \description{
 peptides which do not have protein assignment drop out
 }
+\details{
+Each occurrence of a peptide in a protein is one row. \code{matched} is TRUE when the residues before
+that occurrence match \code{prefix} and the residues after it match \code{suffix}; by default, when the
+occurrence follows K or R, starts the protein, or follows its initial methionine.
+}
 \examples{
 
 library(dplyr)

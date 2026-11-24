@@ -20,7 +20,8 @@ prepareMatrix(
 
 \item{peptideID}{peptide / precursor ID column}
 
-\item{weighting}{weight type to use. Options are "one" , "AA" - amino acids, "coverage" - coverage , "inverse" - inverse peptide frequencies}
+\item{weighting}{NULL (default) gives each peptide-protein pair weight 1; "inverse" divides each peptide's
+weights by the number of proteins it matches; a numeric vector with one weight per row of \code{data}}
 
 \item{sep}{separator for precursor (rownames)}
 

@@ -1,15 +1,43 @@
-test_that("createDecoyDB() adds contaminants, decoys and one source entry", {
-  file <- system.file("extdata/fgcz_contaminants2021_20210929.fasta.gz", package = "prozor")
-  n_db <- length(readPeptideFasta(file))
-  cont <- loadContaminantsFGCZ2022()
+test_that("createDecoyDB() puts the source entry first, then targets, contaminants and decoys", {
+  file <- toy_db_file()
 
-  # createDecoyDB() reports each file it reads as a message
-  full <- suppressMessages(createDecoyDB(file, useContaminants = cont))
-  no_decoy <- suppressMessages(createDecoyDB(file, useContaminants = cont, revLab = NULL))
-  db_only <- suppressMessages(createDecoyDB(file, useContaminants = NULL, revLab = NULL))
+  expect_message(res <- createDecoyDB(file, useContaminants = toy_contaminants(), annot = "zz|src|x"), "reading db")
 
-  expect_length(full, 1 + 2 * (n_db + length(cont)))
-  expect_equal(sum(grepl("^REV_", names(full))), n_db + length(cont))
-  expect_length(no_decoy, 1 + n_db + length(cont))
-  expect_length(db_only, 1 + n_db)
+  expect_equal(as.character(res[[1]]), "CRAPCRAPCRAP")
+  expect_equal(seqinr::getAnnot(res[[1]]), "zz|src|x")
+  expect_equal(names(res)[-1], c("x", "y", "c1", "REV_x", "REV_y", "REV_c1"))
+  expect_equal(as.character(res$REV_x), "DCBA")
+  expect_equal(as.character(res$REV_c1), "KIH")
+})
+
+test_that("createDecoyDB() labels decoys with revLab", {
+  file <- toy_db_file()
+
+  res <- suppressMessages(createDecoyDB(file, useContaminants = NULL, revLab = "DECOY_"))
+
+  expect_equal(names(res)[-1], c("x", "y", "DECOY_x", "DECOY_y"))
+})
+
+test_that("createDecoyDB() skips decoys with revLab = NULL", {
+  file <- toy_db_file()
+
+  res <- suppressMessages(createDecoyDB(file, useContaminants = toy_contaminants(), revLab = NULL))
+
+  expect_equal(names(res)[-1], c("x", "y", "c1"))
+})
+
+test_that("createDecoyDB() skips contaminants with useContaminants = NULL", {
+  file <- toy_db_file()
+
+  res <- suppressMessages(createDecoyDB(file, useContaminants = NULL, revLab = NULL))
+
+  expect_equal(names(res)[-1], c("x", "y"))
+})
+
+test_that("createDecoyDB() reads every file given", {
+  file <- toy_db_file()
+
+  res <- suppressMessages(createDecoyDB(c(file, file), useContaminants = NULL, revLab = NULL))
+
+  expect_equal(names(res)[-1], c("x", "y", "x", "y"))
 })

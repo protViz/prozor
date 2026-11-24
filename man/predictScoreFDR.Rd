@@ -14,7 +14,7 @@ predictScoreFDR(fdrObj, qValue = 1, method = "SimpleFDR")
 \item{method}{either FPR or SimpleFDR, default is SimpleFDR}
 }
 \value{
-score for a given FDR
+score for a given FDR; an error if no score reaches it
 }
 \description{
 For more details and references see package vignette

@@ -75,7 +75,7 @@ removeSignalPeptide <- function(db, signal, idfun=makeID){
   tmp2 <- as.numeric(gsub("^SIGNAL [0-9]+ ([0-9]+).*"  , "\\1", signal$Signal.peptide))
 
   cnamessplit <- strsplit(as.character(names(db)),split = "\\|")
-  protnam <- Reduce(rbind,cnamessplit)
+  protnam <- do.call(rbind, cnamessplit)
 
   stopifnot(sum(protnam[,2] == signal$Entry) == length(signal$Entry))
 

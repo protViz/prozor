@@ -1,9 +1,3 @@
-.removeZeroRows <- function(x){
-    tmp <- rowSums(x)
-    y = x[tmp > 0,, drop = FALSE ]
-    return(y)
-}
-
 .greedy2 <- function(pepprot){
     ncolX = ncol(pepprot)
     res <- vector(ncolX , mode = "list")
@@ -64,23 +58,24 @@ greedy_parsimony <- function(pepprot) {
 }
 #' converts result of greedy_parsimony function to a matrix with 3 columns - peptide - charge and protein
 #' @return data.frame of peptide protein assignments with columns Peptide, precursorCharge and Protein
-#' @param res result of function prozor::greedy_parsimony; its names must have the form peptide.charge
+#' @param res result of function prozor::greedy_parsimony; its names must have the form peptide.charge.
+#'   The charge is taken after the last dot, so modified peptides such as \code{"AC[+57.0]K.2"} are supported.
 #' @export
 #' @examples
 #' data(protpepmetashort)
-#' protpepmetashort$precursor <- paste(protpepmetashort$peptideSeq,
+#' protpepmetashort$precursor <- paste(protpepmetashort$peptideModSeq,
 #'                                     protpepmetashort$precursorCharge, sep = ".")
 #' xx <- prepareMatrix(protpepmetashort, peptideID = "precursor")
 #' es <- greedy_parsimony(xx)
 #' head(greedyRes2Matrix(es))
 #'
 greedyRes2Matrix <- function(res){
-    res <- (cbind(names(res),unlist(res)))
-    cnamessplit <- strsplit(as.character(res[,1]),split = "\\.")
-    protnam <- do.call("rbind",cnamessplit)
-    res <- cbind(protnam,res[,2])
-    colnames(res) <- c("Peptide", "precursorCharge", "Protein")
-    res <- as.data.frame(res)
-    return(res)
+    precursor <- names(res)
+    data.frame(
+        Peptide = sub("\\.[^.]*$", "", precursor),
+        precursorCharge = sub("^.*\\.", "", precursor),
+        Protein = unlist(res, use.names = FALSE),
+        row.names = precursor
+    )
 }
 

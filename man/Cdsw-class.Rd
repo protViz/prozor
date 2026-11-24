@@ -37,7 +37,7 @@ Compute dynamic swath windows
 
 \item{\code{quantile_breaks(digits = 2)}}{same number of MS1 in each window but might violate hard constraints}
 
-\item{\code{sampling_breaks(maxwindow = 150, minwindow = 5, digits = 2, plot = FALSE)}}{starts with quantile breaks but mixes with uniform data to satisfy hard constraints (window widths between minwindow and maxwindow); plot = TRUE draws the breaks}
+\item{\code{sampling_breaks(maxwindow = 150, minwindow = 5, digits = 2, plot = FALSE)}}{starts with quantile breaks but mixes with uniform data to satisfy hard constraints (window widths between minwindow and maxwindow); stops with an error if even equal-width windows violate them; plot = TRUE draws the breaks}
 
 \item{\code{showCycle(overlap = 1)}}{shows the generated DIA cycle; overlap in m/z}
 }}

@@ -1,22 +1,11 @@
 
-
-
-.matchPepsequence <- function(peptideSeq,
-                              proteinSeq ,
-                              proteinID,
-                              prefix = "(([RK])|(^)|(^M))",
-                              suffix = "")
-{
-    seqpattern <- paste(prefix, peptideSeq, suffix, sep = "")
-    idx2 <- grepl(seqpattern, proteinSeq, fixed = FALSE)
-    return(idx2)
-}
-
-
-
 #' Annotate peptides with protein ids
 #'
 #' peptides which do not have protein assignment drop out
+#'
+#' Each occurrence of a peptide in a protein is one row. \code{matched} is TRUE when the residues before
+#' that occurrence match \code{prefix} and the residues after it match \code{suffix}; by default, when the
+#' occurrence follows K or R, starts the protein, or follows its initial methionine.
 #'
 #' @param pepinfo - list of peptides - sequence, optional modified sequence, charge state.
 #' @param fasta - object as created by readPeptideFasta
@@ -58,18 +47,9 @@ annotatePeptides <- function(pepinfo,
     restab <- annotateAHO(pepseq, fasta, peptide = peptide)
     if (!is.null(restab)) {
 
-        restab <-
-            dplyr::group_by(restab, dplyr::across(dplyr::all_of(peptide)))
-        restab <-
-            dplyr::mutate(restab,
-                matched = .matchPepsequence(
-                    dplyr::first(!!dplyr::sym(peptide)),
-                    !!dplyr::sym("proteinSequence") ,
-                    !!dplyr::sym("proteinID"),
-                    prefix = prefix,
-                    suffix = suffix
-                )
-            )
+        before <- substr(restab$proteinSequence, 1, restab$Offset - 1)
+        after <- substring(restab$proteinSequence, restab$Offset + nchar(restab[[peptide]]))
+        restab$matched <- grepl(paste0("(", prefix, ")$"), before) & grepl(paste0("^(", suffix, ")"), after)
         res = merge(restab, pepinfo, by.x = peptide, by.y = peptide)
         return(res)
 
@@ -136,6 +116,6 @@ annotateAHO <- function(pepseq, fasta, peptide = "peptideSeq") {
         proteinSequence = as.character(unlist(fasta)),
         stringsAsFactors = FALSE
     )
-    matches <- dplyr::inner_join(xx, dbframe)
+    matches <- dplyr::inner_join(xx, dbframe, by = "proteinID")
     return(matches)
 }

@@ -4,14 +4,14 @@
 \alias{computeFDRwithID}
 \title{Compute FDR given a score}
 \usage{
-computeFDRwithID(score, ID, decoy = "REV_", larger_better = TRUE)
+computeFDRwithID(score, ID, decoy = "^REV_", larger_better = TRUE)
 }
 \arguments{
 \item{score}{a vector with scores}
 
 \item{ID}{- list with protein id's}
 
-\item{decoy}{decoy pattern, default "REV_"}
+\item{decoy}{regular expression matching decoy IDs, default "^REV_" (IDs starting with REV_)}
 
 \item{larger_better}{if larger score better than small (default TRUE), If small score better set FALSE}
 }

@@ -106,7 +106,7 @@ Cdsw <- setRefClass(
                                    digits = 2,
                                    plot = FALSE)
         {
-            "starts with quantile breaks but mixes with uniform data to satisfy hard constraints (window widths between minwindow and maxwindow); plot = TRUE draws the breaks"
+            "starts with quantile breaks but mixes with uniform data to satisfy hard constraints (window widths between minwindow and maxwindow); stops with an error if even equal-width windows violate them; plot = TRUE draws the breaks"
             nrbreaks <- nbins + 1
             qqs <-
                 stats::quantile(masses, probs = seq(0, 1, by = 1 / (nbins)))
@@ -124,14 +124,10 @@ Cdsw <- setRefClass(
             }
 
             if (!hardconstrain(unif, minwindow = minwindow, maxwindow)) {
-                warning(
-                    "there is no way to generate bins given this number of bins " ,
-                    nbins,
-                    "and minwindow size :",
-                    minwindow,
-                    " , maxwindow size ",
-                    maxwindow,
-                    "\n"
+                stop(
+                    "no windows satisfy the constraints: ", nbins, " windows of equal width are ",
+                    round(diff(unif)[1], digits = 2), " wide, outside [minwindow, maxwindow] = [",
+                    minwindow, ", ", maxwindow, "]"
                 )
             }
 

@@ -1,19 +1,13 @@
-bundled_fasta_files <- function() {
-  c(
-    list.files(system.file("extdata", package = "prozor"),
-               pattern = "\\.fasta\\.gz$", full.names = TRUE),
-    list.files(system.file("p1000_db1_example", package = "prozor"),
-               pattern = "\\.fasta\\.gz$", full.names = TRUE)
-  )
-}
-
 test_that("all bundled FASTA files are present", {
+  # 5 contaminant files in inst/extdata, 2 in inst/p1000_db1_example
   expect_length(bundled_fasta_files(), 7)
 })
 
-test_that("every bundled FASTA file reads as amino-acid sequences", {
+test_that("every bundled FASTA file is a plain gzipped FASTA of amino-acid sequences", {
   for (file in bundled_fasta_files()) {
-    fasta <- readPeptideFasta(file)
+    # a tar archive starts with a tar header instead of ">" and makes readPeptideFasta() warn
+    expect_match(readLines(file, n = 1), "^>", label = paste(basename(file), "first line"))
+    expect_no_warning(fasta <- readPeptideFasta(file))
     seqs <- unlist(fasta)
     expect_gt(length(fasta), 0)
     expect_false(anyDuplicated(names(fasta)) > 0, label = paste(basename(file), "has duplicated names"))

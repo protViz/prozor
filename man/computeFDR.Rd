@@ -19,6 +19,8 @@ FDR1 false discovery rate estimated using the method of Gygi, SimpleFDR - estima
 }
 \description{
 Same as computeFDRwithID but works with decoy_hit boolean vector.
+Within tied scores, decoy hits are ranked before target hits, so the result does not depend on the
+input order and tied targets get the conservative FDR.
 For more details and references see package vignette
 \code{vignette("TargetDecoyFDR_Example", package = "prozor")}
 }
