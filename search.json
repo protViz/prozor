@@ -1,0 +1,864 @@
+[
+  {
+    "objectID": "vignettes/PeptideAnnotationwithProzor.html",
+    "href": "vignettes/PeptideAnnotationwithProzor.html",
+    "title": "Peptide Annotation and Protein Inference",
+    "section": "",
+    "text": "This Vignette describes how the greedy_parsimony() function can be used to infer proteins from peptide identifications using the Occam’s razor principle. The method tries to find a minimal set of proteins which can explain all the peptides identified.\n\nlibrary(prozor)\nlibrary(dplyr)\nlibrary(ggplot2)\n\nfile &lt;- system.file(\"extdata/IDResults.txt.gz\", package = \"prozor\")\nspecMeta &lt;- readr::read_tsv(file)\nhead(specMeta) |&gt; knitr::kable()\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nRefSpectraId\nnumPeaks\npeptideSeq\nprecursorCharge\nprecursorMZ\nretentionTime\ncopies\npeptideModSeq\nscore\nlengthPepSeq\nfileName\nSpecIDinFile\n\n\n\n\n9908\n57\nGPDVLTATVSGK\n2\n572.8143\n73.61667\n1\nGPDVLTATVSGK\n0.0000015\n12\n2\n80138\n\n\n36028\n70\nVPQVSTPTLVEVSR\n3\n504.6196\n93.26667\n1\nVPQVSTPTLVEVSR\n0.0000868\n14\n5\n176230\n\n\n74786\n177\nEVQLVETGGGLIQPGGSLR\n3\n637.3509\n120.60000\n1\nEVQLVETGGGLIQPGGSLR\n0.0062764\n19\n10\n285759\n\n\n53362\n184\nAQPVQVAEGSEPDGFWEALGGK\n3\n758.0356\n129.11670\n1\nAQPVQVAEGSEPDGFWEALGGK\n0.0000001\n22\n7\n350198\n\n\n48668\n157\nKYLYEIAR\n2\n528.2979\n69.81667\n1\nKYLYEIAR\n0.0742509\n8\n7\n59857\n\n\n90153\n158\nAQLVPLPPSTYVEFTVSGTDCVAK\n3\n860.4459\n136.73330\n1\nAQLVPLPPSTYVEFTVSGTDC[+57.0]VAK\n0.0000023\n24\n12\n385011\n\n\n\n\n\nAnnotate peptide sequences with protein sequences from two fasta files on with reviewed entries only (sp) and the other with reviewed and Trembl entries (sp/tr).\n\nresAll &lt;- read_peptide_fasta(system.file(\"p1000_db1_example/Annotation_allSeq.fasta.gz\", package = \"prozor\"))\nresCan &lt;- read_peptide_fasta(system.file(\"p1000_db1_example/Annotation_canSeq.fasta.gz\", package = \"prozor\"))\n\ndb_sizes &lt;- data.frame(database = c(\"All\", \"Canonical\"), proteins = c(length(resAll), length(resCan)))\nggplot(db_sizes, aes(x = database, y = proteins)) +\n  geom_col(fill = \"#0072B2\") +\n  geom_text(aes(label = proteins), vjust = -0.3) +\n  labs(x = NULL, y = \"proteins\")\n\n\n\n\nNumber of proteins in the All and Canonical database.\n\n\n\n\n\nlength(unique(specMeta$peptideSeq))\n\n[1] 1520\n\nupeptide &lt;- unique(specMeta$peptideSeq)\nannotAll &lt;- annotate_peptides(upeptide, resAll)\nhead(select(annotAll, !protein_sequence)) |&gt; knitr::kable()\n\n\n\n\n\n\n\n\n\n\n\npeptide_seq\nprotein_id\noffset\nmatched\npeptide_length\n\n\n\n\nAACAQLNDFLQEYGTQGCQV\nsp|P0C0L4-2|CO4A_HUMAN\n1679\nTRUE\n20\n\n\nAACAQLNDFLQEYGTQGCQV\ntr|A0A140TA49|A0A140TA49_HUMAN\n1679\nTRUE\n20\n\n\nAACAQLNDFLQEYGTQGCQV\ntr|A0A140TA29|A0A140TA29_HUMAN\n1679\nTRUE\n20\n\n\nAACAQLNDFLQEYGTQGCQV\ntr|F5GXS0|F5GXS0_HUMAN\n1679\nTRUE\n20\n\n\nAACAQLNDFLQEYGTQGCQV\ntr|A0A140TA44|A0A140TA44_HUMAN\n1679\nTRUE\n20\n\n\nAACAQLNDFLQEYGTQGCQV\ntr|A0A0G2JPR0|A0A0G2JPR0_HUMAN\n1725\nTRUE\n20\n\n\n\n\nannotCan &lt;- annotate_peptides(upeptide, resCan)\n\n\nmatches &lt;- data.frame(database = c(\"All\", \"Canonical\"), matches = c(nrow(annotAll), nrow(annotCan)))\nggplot(matches, aes(x = database, y = matches)) +\n  geom_col(fill = \"#0072B2\") +\n  geom_text(aes(label = matches), vjust = -0.3) +\n  labs(x = NULL, y = \"peptide protein matches\")\n\n\n\n\nNumber of peptide protein matches for the All and Canonical database.\n\n\n\n\nWe can see that using the larger fasta database reduces the proportion of proteotypic peptides. A proteotypic peptide is one which matches only a single protein.\n\nproteotypic &lt;- data.frame(\n  database = c(\"All\", \"Canonical\"),\n  percent = c(\n    sum(table(annotAll$peptide_seq) == 1) / length(table(annotAll$peptide_seq)) * 100,\n    sum(table(annotCan$peptide_seq) == 1) / length(table(annotCan$peptide_seq)) * 100\n  )\n)\nggplot(proteotypic, aes(x = database, y = percent)) +\n  geom_col(fill = \"#0072B2\") +\n  geom_text(aes(label = sprintf(\"%.1f %%\", percent)), vjust = -0.3) +\n  scale_y_continuous(limits = c(0, 100)) +\n  labs(x = NULL, y = \"% proteotypic peptides\")\n\n\n\n\nProportion of proteotypic peptides.",
+    "crumbs": [
+      "Articles",
+      "Peptide Annotation and Protein Inference"
+    ]
+  },
+  {
+    "objectID": "vignettes/PeptideAnnotationwithProzor.html#protein-inference-for-database-with-trembl-identifiers",
+    "href": "vignettes/PeptideAnnotationwithProzor.html#protein-inference-for-database-with-trembl-identifiers",
+    "title": "Peptide Annotation and Protein Inference",
+    "section": "Protein Inference for database with Trembl identifiers",
+    "text": "Protein Inference for database with Trembl identifiers\n\nannotatedPrecursors &lt;- inner_join(\n  precursors,\n  select(annotAll, peptide_seq, protein_id),\n  by = join_by(peptideSeq == peptide_seq),\n  relationship = \"many-to-many\"\n)\n\nxx &lt;- prepare_matrix(annotatedPrecursors, peptide_id = \"peptideSeq\")\nplot_matches(xx)\n\n\n\n\nPeptide protein matches for the All database. Rows - peptides, columns - proteins, point - peptide protein match.\n\n\n\ndim(xx)\n\n[1] 1433 1072\n\nxx[1:10, 1:100]\n\n10 x 100 sparse Matrix of class \"dgCMatrix\"\n\n\n                                                                              \nAACAQLNDFLQEYGTQGCQV . . . . . . . . . . . . . . . . . . . . . . . . . . . . .\nAAFTECCQAADK         . . . . . . . . . . . . . . . . . . . . . . . . . . . . .\nAAFTECCQAADKAACLLPK  . . . . . . . . . . . . . . . . . . . . . . . . . . . . .\nAAIQALR              . . . . . . . . . . . . . . . . . . . . . . . . . . . . .\nAAISGENAGLVR         . . . . . . . . . . . . . . . . . . . . . . . . . . . . .\nAAPSVTLFPPSSEELQANK  . . . . . . . . . . . . . . . . . . . . . . . . . . 1 . .\nAAQVTIQSSGTFSSK      . . . . . . . . . . . . . . . . . . . . . . . . . . . . .\nAASGTQNNVLR          . . . . . . . . . . . . . . . . . . . . . . . . . . . . .\nAATGECTATVGK         . . . . . . . . . . . . . . . . . . . . . . . . . . . . .\nAATGECTATVGKR        . . . . . . . . . . . . . . . . . . . . . . . . . . . . .\n                                                                              \nAACAQLNDFLQEYGTQGCQV . . . . . . . . . . . . . . . . . . . . . . . . . . . . .\nAAFTECCQAADK         . . . . . . . . . . . . . . . . . . . . . . . . . . . . .\nAAFTECCQAADKAACLLPK  . . . . . . . . . . . . . . . . . . . . . . . . . . . . .\nAAIQALR              . . . . . . . . . . . . . . . . . . . . . . . . . . . . .\nAAISGENAGLVR         . . . . . . . . . . . . . . . . . . . . . . . . . . . . .\nAAPSVTLFPPSSEELQANK  . . . . . . . . . . . . . . . . . . . . . . . . . . . . .\nAAQVTIQSSGTFSSK      . . . . . . . . . . . . . . . . . . . . . . . . . . . . .\nAASGTQNNVLR          . . . . . . . . . . . . . . . . . . . . . . . . . . . . .\nAATGECTATVGK         . . . . . . . . . . . . . . . . . . . . . . . . . . . . .\nAATGECTATVGKR        . . . . . . . . . . . . . . . . . . . . . . . . . . . . .\n                                                                              \nAACAQLNDFLQEYGTQGCQV . . . . . . . . . . . . . . . . . . . . . . . . . . . . .\nAAFTECCQAADK         . . . . . . . . . . . . . . . . . . . . . . . . . . . . .\nAAFTECCQAADKAACLLPK  . . . . . . . . . . . . . . . . . . . . . . . . . . . . .\nAAIQALR              . . . . . . . . . . . . . . . . . . . . . . . . . . . . .\nAAISGENAGLVR         . . . . . . . . . . . . . . . . . . . . . . . . . . . . .\nAAPSVTLFPPSSEELQANK  . . . . . . . . . . . . . . . . . . . . . . . . . . . . .\nAAQVTIQSSGTFSSK      . . . . . . . . . . . . . . . . . . . . . . . . . . . . .\nAASGTQNNVLR          . . . . . . . . . . . . . . . . . . . . . . . . . . . . .\nAATGECTATVGK         . . . . . . . . . . . . . . . . . . . . . . . . . . . . .\nAATGECTATVGKR        . . . . . . . . . . . . . . . . . . . . . . . . . . . . .\n                                              \nAACAQLNDFLQEYGTQGCQV . . . . . . . . . . . . .\nAAFTECCQAADK         . . . . . . . . . . . . .\nAAFTECCQAADKAACLLPK  . . . . . . . . . . . . .\nAAIQALR              . . . . . . . . . . . . .\nAAISGENAGLVR         . . . . . . . . . . . . .\nAAPSVTLFPPSSEELQANK  . . . . . . . . . . . . .\nAAQVTIQSSGTFSSK      . . . . . . . . . . . . .\nAASGTQNNVLR          . . . . . . . . . . . . .\nAATGECTATVGK         . . . . . . . . . . . . .\nAATGECTATVGKR        . . . . . . . . . . . . .\n\nxxAll &lt;- greedy_parsimony(xx)",
+    "crumbs": [
+      "Articles",
+      "Peptide Annotation and Protein Inference"
+    ]
+  },
+  {
+    "objectID": "vignettes/PeptideAnnotationwithProzor.html#protein-inference-for-reviewedcanonical-database",
+    "href": "vignettes/PeptideAnnotationwithProzor.html#protein-inference-for-reviewedcanonical-database",
+    "title": "Peptide Annotation and Protein Inference",
+    "section": "Protein Inference for Reviewed/Canonical database",
+    "text": "Protein Inference for Reviewed/Canonical database\n\nannotatedPrecursors &lt;- inner_join(\n  precursors,\n  select(annotCan, peptide_seq, protein_id),\n  by = join_by(peptideSeq == peptide_seq),\n  relationship = \"many-to-many\"\n)\n\nxx &lt;- prepare_matrix(annotatedPrecursors, peptide_id = \"peptideSeq\")\nplot_matches(xx)\n\n\n\n\nPeptide protein matches for the Canonical database. Rows - peptides, columns - proteins, point - peptide protein match.\n\n\n\nxx[80:100, 1:10]\n\n21 x 10 sparse Matrix of class \"dgCMatrix\"\n\n\n                                                                 \nASFTCTCKPGWQGEK                               . . . . . . . . . .\nASLENSLEETKGR                                 . . . . . . . . . .\nASPAFLASQNTK                                  . . . . . . . . . .\nASSIIDELFQDR                                  . . . . . . . . . .\nASSLESGVPSR                                   . . . . . . . . . .\nASVGQDSPEPR                                   . . . . . . . . . .\nASYLDCIR                                      . . . . . . . . . .\nATEDEGSEQKIPEATNR                             . . . . . . . . . .\nATEHLSTLSEK                                   . . . . . . . . . .\nATFGCHDGYSLDGPEEIECTK                         . . . . . . . . . .\nATGIPAR                                       . . . . . 1 1 . . .\nATGIPDRFSGSGSGTDFTLTISR                       . . . . . . . . . .\nATGVLYDYVNK                                   . . . . . . . . . .\nATLDVDEAGTEAAAATSFAIK                         . . . . . . . . . .\nATLYALSHAVNNYHK                               . . . . . . . . . .\nATMQNLNDR                                     . . . . . . . . . .\nATTVTGTPCQDWAAQEPHR                           . . . . . . . . . .\nATVLNYLPK                                     . . . . . . . . . .\nATVVYQGER                                     . . . . . . . . . .\nATWSGAVLAGR                                   . . . . . . . . . .\nAVANFFSGSCAPCADGTDFPQLCQLCPGCGCSTLNQYFGYSGAFK . . . . . . . . . .\n\nxxCAN &lt;- greedy_parsimony(xx)",
+    "crumbs": [
+      "Articles",
+      "Peptide Annotation and Protein Inference"
+    ]
+  },
+  {
+    "objectID": "vignettes/TargetDecoyComet.html",
+    "href": "vignettes/TargetDecoyComet.html",
+    "title": "Target Decoy FDR from COMET search results",
+    "section": "",
+    "text": "Here we describe how you can estimate the false discovery rate (FDR) when matching your spectra against a FASTA sequence database using spectra search engines such as Mascot or Comet. The sequence database contains forward sequences and the same number of reverse sequences.",
+    "crumbs": [
+      "Articles",
+      "Target Decoy FDR from COMET search results"
+    ]
+  },
+  {
+    "objectID": "vignettes/TargetDecoyComet.html#the-data",
+    "href": "vignettes/TargetDecoyComet.html#the-data",
+    "title": "Target Decoy FDR from COMET search results",
+    "section": "The data",
+    "text": "The data\nComet’s E-value significantly outperforms SEQUEST’s probability score and Comet’s cross-correlation score.\n\nlibrary(dplyr)\nlibrary(prozor)\nlibrary(ggplot2)\n\ndata(bcd)\nbcd |&gt;\n  mutate(hit = if_else(grepl(\"^REV_\", protein), \"decoy\", \"target\")) |&gt;\n  ggplot(aes(x = -log10(e.value), y = sp_score, colour = hit)) +\n  geom_point(alpha = 0.3, size = 0.8) +\n  scale_colour_manual(values = c(target = \"#0072B2\", decoy = \"#D55E00\")) +\n  labs(x = \"-log10(E-value)\", y = \"Sp score\", colour = NULL)\n\n\n\n\n\n\n\nbcd |&gt;\n  select(scan, plain_peptide, protein, e.value, sp_score) |&gt;\n  head() |&gt;\n  knitr::kable()\n\n\n\n\n\n\n\n\n\n\n\nscan\nplain_peptide\nprotein\ne.value\nsp_score\n\n\n\n\n1085\nIWKHGECAQTIR\ntr|E5RIM3|E5RIM3_HUMAN,sp|Q9Y263|PLAP_HUMAN\n11.50\n187.3\n\n\n1117\nDQEASRGSVPSGSKMDR\ntr|A0A0C4DG22|A0A0C4DG22_HUMAN,sp|Q9GZR2|REXO4_HUMAN\n21.40\n460.4\n\n\n1128\nQYDFSFTVNGVSEDSK\nREV_tr|C9J114|C9J114_HUMAN,REV_sp|P17181|INAR1_HUMAN\n5.99\n207.7\n\n\n1134\nCQAEFTALEDFVQHK\ntr|H3BUJ7|H3BUJ7_HUMAN,tr|H3BSL4|H3BSL4_HUMAN,tr|H3BN24|H3BN24_HUMAN,sp|Q66K89|E4F1_HUMAN\n30.60\n394.7\n\n\n1159\nRMMRGLMGR\nREV_sp|A6NH11|GLTD2_HUMAN\n8.65\n114.7\n\n\n1168\nHSGCRACVLGK\ntr|I3L0P5|I3L0P5_HUMAN,sp|O95838|GLP2R_HUMAN\n5.91\n412.2",
+    "crumbs": [
+      "Articles",
+      "Target Decoy FDR from COMET search results"
+    ]
+  },
+  {
+    "objectID": "vignettes/TargetDecoyComet.html#use-e-value",
+    "href": "vignettes/TargetDecoyComet.html#use-e-value",
+    "title": "Target Decoy FDR from COMET search results",
+    "section": "Use e-value",
+    "text": "Use e-value\n\n# psm level FDR\npsmFdrCutoff &lt;- 0.01\n\nfilt &lt;- filtLevel(bcd, score = \"e.value\", larger_better = FALSE, q_value = psmFdrCutoff * 100)\n\n[1] 0.491\n\nknitr::kable(summarizeFDRS(bcd, filt, psmFdrCutoff))\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nnPSM\npsmFdrCutoff\nnDecoyPSM\nnConfidentPSM\nfdrPSM\nnDecoyPeptide\nnConfidentPeptide\nfdrPeptide\nnDecoyProtein\nnConfidentProtein\nfdrProtein\n\n\n\n\n4557\n0.01\n33\n3367\n0.009801\n33\n3197\n0.0103222\n33\n1642\n0.0200974",
+    "crumbs": [
+      "Articles",
+      "Target Decoy FDR from COMET search results"
+    ]
+  },
+  {
+    "objectID": "vignettes/TargetDecoyComet.html#use-sp_score",
+    "href": "vignettes/TargetDecoyComet.html#use-sp_score",
+    "title": "Target Decoy FDR from COMET search results",
+    "section": "Use sp_score",
+    "text": "Use sp_score\n\n# psm level FDR\npsmFdrCutoff &lt;- 0.01\n\nfilt &lt;- filtLevel(bcd, score = \"sp_score\", larger_better = TRUE, q_value = psmFdrCutoff * 100)\n\n[1] 466.8\n\nknitr::kable(summarizeFDRS(bcd, filt, psmFdrCutoff))\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nnPSM\npsmFdrCutoff\nnDecoyPSM\nnConfidentPSM\nfdrPSM\nnDecoyPeptide\nnConfidentPeptide\nfdrPeptide\nnDecoyProtein\nnConfidentProtein\nfdrProtein\n\n\n\n\n4557\n0.01\n30\n3046\n0.009849\n30\n2882\n0.0104094\n30\n1551\n0.0193424",
+    "crumbs": [
+      "Articles",
+      "Target Decoy FDR from COMET search results"
+    ]
+  },
+  {
+    "objectID": "vignettes/CreatingDecoyDB.html",
+    "href": "vignettes/CreatingDecoyDB.html",
+    "title": "Creating Target Decoy Databases",
+    "section": "",
+    "text": "Using the package prozor for creating standardized fasta. The package can be used to:",
+    "crumbs": [
+      "Articles",
+      "Creating Target Decoy Databases"
+    ]
+  },
+  {
+    "objectID": "vignettes/CreatingDecoyDB.html#create-non-decoy-database",
+    "href": "vignettes/CreatingDecoyDB.html#create-non-decoy-database",
+    "title": "Creating Target Decoy Databases",
+    "section": "Create non decoy database",
+    "text": "Create non decoy database\n\nresDB &lt;- create_decoy_db(files1, contaminants = load_contaminants(\"fgcz2021\"), annot = annotation, rev_lab = NULL)\n\nReading database /usr/local/lib/R/site-library/prozor/p1000_db1_example/Annotation_allSeq.fasta.gz.\n\n\nReading database /usr/local/lib/R/site-library/prozor/p1000_db1_example/Annotation_canSeq.fasta.gz.\n\nlength(resDB)\n\n[1] 1954\n\n\nBased on the directory name we build the name of the fasta file adding the current date.\n\ndirname(database_dir)\n\n[1] \"/usr/local/lib/R/site-library/prozor\"\n\nxx &lt;- file.path(dirname(database_dir), paste0(dbname, \"_\", format(Sys.time(), \"%Y%m%d\"), \".fasta\"))\nprint(xx)\n\n[1] \"/usr/local/lib/R/site-library/prozor/p1000_db1_example_20261124.fasta\"\n\n\n\nwrite_fasta(resDB, file = xx)",
+    "crumbs": [
+      "Articles",
+      "Creating Target Decoy Databases"
+    ]
+  },
+  {
+    "objectID": "vignettes/CreatingDecoyDB.html#create-decoy-database",
+    "href": "vignettes/CreatingDecoyDB.html#create-decoy-database",
+    "title": "Creating Target Decoy Databases",
+    "section": "Create decoy database",
+    "text": "Create decoy database\nTo add a decoy database, using reverse sequences specify the rev_lab parameter in the create_decoy_db() function. The resulting database will be twice as long as the non-decoy database.\n\nresDBDecoy &lt;- create_decoy_db(files1, contaminants = load_contaminants(\"fgcz2021\"), annot = annotation, rev_lab = \"REV_\")\n\nReading database /usr/local/lib/R/site-library/prozor/p1000_db1_example/Annotation_allSeq.fasta.gz.\n\n\nReading database /usr/local/lib/R/site-library/prozor/p1000_db1_example/Annotation_canSeq.fasta.gz.\n\nresDBDecoy[[length(resDBDecoy) - 1]]\n\n[1] \"ADAFGLESLKQHAEAYDAFFADEDAAYKDVLPRFVPDSLLAKDSPLQLLGEKEGSLLETFYSNDFILPNSTWPGEFGSREKHAAGITHGGSLAVIDQDTLGMAKGFVDRLHDSGKTADPLRGEPPPEPKDERGPHFPVEPGGTVEVAVVGALQYFDAYSLIPFEAKLPELLRVAIDLGNNASHALEAPHKITGFPGGTKTGKDFTGASHWALRLMLPACRKEAIIGRLKKKAKEVAKQYDASVTPYSKGM\"\nattr(,\"name\")\n[1] \"REV_zz|Y-FGCZCont00497|\"\nattr(,\"Annot\")\n[1] \"&gt;REV_zz|Y-FGCZCont00497|  tr|A0A445I1L0|A0A445I1L0_GLYSO L-ascorbate peroxidase OS=Glycine soja OX=3848 GN=D0Y65_029960 PE=3 SV=1\"\nattr(,\"class\")\n[1] \"SeqFastaAA\"\n\nlength(resDBDecoy)\n\n[1] 3907\n\nsum(duplicated(names(resDBDecoy)))\n\n[1] 764\n\nsum(duplicated(resDBDecoy))\n\n[1] 764\n\ndbname_decoy &lt;- unlist(strsplit(dbname, \"_\"))\ndbname_decoy &lt;- paste(c(dbname_decoy[1], \"d\", dbname_decoy[2:length(dbname_decoy)]), collapse = \"_\")\ndbname_decoy\n\n[1] \"p1000_d_db1_example\"\n\nxx &lt;- file.path(dirname(database_dir), paste0(dbname_decoy, \"_\", format(Sys.time(), \"%Y%m%d\"), \".fasta\"))\nprint(xx)\n\n[1] \"/usr/local/lib/R/site-library/prozor/p1000_d_db1_example_20261124.fasta\"\n\n\n\nwrite_fasta(resDBDecoy, file = xx)",
+    "crumbs": [
+      "Articles",
+      "Creating Target Decoy Databases"
+    ]
+  },
+  {
+    "objectID": "index.html#how-to-install",
+    "href": "index.html#how-to-install",
+    "title": "prozor",
+    "section": "How to install:",
+    "text": "How to install:\nFor CRAN version (not the newest). Please use the github version.\ninstall.packages(\"prozor\")\nThis is how you install the github version.\ninstall.packages(\"remotes\")\nremotes::install_github(\"protviz/prozor\")\n\nfor Developers\ndownlod git repo. Use roxygenize2 to document new functions. Than run these 2 commands to update namespace and Rd files:\nlibrary(devtools)\ndocument()\nExample for creating a fasta file with the fgcz_create_fasta.R script\nGo to fgcz-r-035.uzh.ch\nls ./fasta_db/p3071_Chlorella\nmore ./fasta_db/p3071_Chlorella/annotation.txt\nmore ./fasta_db/p3071_Chlorella/uniprot-taxonomy_3071.fasta\nclear\n/usr/local/lib/R/site-library/prozor/script/fgcz_create_fasta.R -h\n\n/usr/local/lib/R/site-library/prozor/script/fgcz_create_fasta.R ./fasta_db/p3071_Chlorella nodecoy -o /srv/www/htdocs/FASTA/\n/usr/local/lib/R/site-library/prozor/script/fgcz_create_fasta.R ./fasta_db/p3071_Chlorella -o /srv/www/htdocs/FASTA/\n\ncat p3071_Chlorella_d.txt\ncat p3071_Chlorella_d.txt | bfabric_save_fasta.py 3071  /srv/www/htdocs/FASTA/fgcz_3071_Chlorella_d_20200604.fasta\n# 3071 is the bfabric project name",
+    "crumbs": [
+      "Home"
+    ]
+  },
+  {
+    "objectID": "NEWS.html",
+    "href": "NEWS.html",
+    "title": "prozor 0.4.0",
+    "section": "",
+    "text": "All exported functions and their arguments use snake_case. The old names are gone, without aliases:\n\n\n\n\n\n\n\n\nOld\nNew\n\n\n\n\nannotateAHO(), annotatePeptides()\nannotate_aho(), annotate_peptides()\n\n\ncomputeFDR(), computeFDRwithID()\ncompute_fdr(), compute_fdr_with_id()\n\n\nplotFDR(), predictScoreFDR()\nplot_fdr(), predict_score_fdr()\n\n\ncreateDecoyDB(), reverseSeq()\ncreate_decoy_db(), reverse_seq()\n\n\nreadPeptideFasta(), writeFasta()\nread_peptide_fasta(), write_fasta()\n\n\nloadContaminantsFasta2019(), loadContaminantsFasta2021(), loadContaminantsFGCZ2022(), load_universal_contaminants_2024(), load_special_prot_2024()\nload_contaminants(\"fgcz2019\"), \"fgcz2021\", \"fgcz2022\", \"universal2024\", \"special2024\"\n\n\nprepareMatrix(), greedyRes2Matrix()\nprepare_matrix(), greedy_to_table()\n\n\nremoveSignalPeptide(), makeID(), makeIDUnip()\nremove_signal_peptide(), make_chain_id(), make_chain_id_uniprot()\n\n\nreadjustWindows()\nreadjust_windows()\n\n\nCdsw methods asTable(), showCycle(), optimizeWindows()\nas_table(), show_cycle(), optimize_windows()\n\n\narguments useContaminants, revLab, noHuman, databasedirectory, outputdir, resDB, fdrObj, qValue, proteinID, peptideID, idfun, ID\ncontaminants, rev_lab, no_human, database_dir, output_dir, db, fdr, q_value, protein_id, peptide_id, id_fun, id\n\n\ndata set fdrSample\nfdr_sample\n\n\n\n\nResult columns and list elements are snake_case too:\n\nannotate_aho(), annotate_peptides(): protein_id, offset, protein_sequence, peptide_length, and peptide_seq for vector input (was proteinID, Offset, proteinSequence, lengthPeptide, peptideSeq)\ncompute_fdr(): fpr, simple_fdr, q_value_fpr, q_value_simple_fdr; compute_fdr_with_id() adds id (was FPR, SimpleFDR, qValue_FPR, qValue_SimpleFDR, ID)\ngreedy_to_table(): peptide, precursor_charge, protein (was Peptide, precursorCharge, Protein)\nmake_fasta_summary(as_string = FALSE): nr_sequences, length_summary, aa_freq; create_fgcz_fasta_db(): db, file_path, summary, call, db_name\n\npredict_score_fdr(method = ) takes \"simple_fdr\" (default) or \"fpr\" (was \"SimpleFDR\", \"FPR\").\nDefault column names follow the results: annotate_peptides(peptide = \"peptide_seq\"), prepare_matrix(protein_id = \"protein_id\", peptide_id = \"peptide_seq\") (was \"peptideSeq\", \"proteinID\", \"strippedSequence\").\nThe data sets fdr_sample, protpepmetashort and pepprot have snake_case columns (protein_id, peptide_seq, peptide_mod_seq, precursor_charge, protein_length, peptide_length); bcd keeps COMET’s column names.\ngreedy(), last on CRAN in 0.3.1, has no alias; use greedy_parsimony().\nwrite_fasta(fasta, file) takes one list of sequences, data first (was writeFasta(file, ...)); combine several lists with c().\nPlots use ggplot2, which moved from Suggests to Imports. plot_fdr(), Cdsw$plot() and Cdsw$show_cycle() return ggplot objects and draw nothing themselves. The plot argument of Cdsw$sampling_breaks(), Cdsw$optimize_windows() and readjust_windows() is gone; use Cdsw$plot_breaks() and plot_windows().\nannotate_peptides() sets matched for each occurrence of a peptide in a protein. It used to give every occurrence in a protein the same value, so a second, non-tryptic occurrence was flagged as tryptic.\nannotate_aho() and annotate_peptides() stop for peptides with characters other than upper-case letters (AhoCorasickTrie 0.1.3 crashed R on them) and for duplicated protein names in fasta (they multiplied the result rows).\ncompute_fdr() and compute_fdr_with_id() rank decoys before targets within tied scores, so q-values no longer depend on the input order.\nThe default decoy pattern of compute_fdr_with_id() is \"^REV_\": only IDs starting with REV_ count as decoys. Pass decoy = \"REV_\" for the old matching anywhere in the ID.\npredict_score_fdr() stops with an error when no score reaches the requested FDR, instead of returning Inf with a warning.\ncreate_fgcz_fasta_db() requires output_dir (it used to write next to the database directory by default). inst/script/fgcz_create_fasta.R still writes next to the FASTA directory when -o is not given.\ngreedy_parsimony() no longer prints its run time.\nprozor requires R 4.4.0 or later.\n\n\n\n\n\nload_contaminants(set, no_human) loads any of the bundled contaminant sets.\nplot_windows() shows the precursor masses with the DIA window boundaries; Cdsw$plot_breaks() compares the current breaks with equal-width and quantile breaks.\n\n\n\n\n\ngreedy_parsimony() assigns every peptide again. When several proteins tie, only those explaining exactly the same peptides are reported together (\"A;B\"); the others compete in later rounds. Since 2023 (GitHub only, not on CRAN), unrelated tied proteins were merged into one group and their remaining peptides were left without a protein.\ngreedy_to_table() works with modified peptides: the charge is taken after the last dot, so \"AC[+57.0]K.2\" gives peptide AC[+57.0]K and charge 2. Such names used to fail with “length of ‘dimnames’ [2] not equal to array extent”.\nannotate_peptides() and prepare_matrix() accept tibbles; a tibble used to crash R or fail with “cannot xtfrm data frames”.\nwrite_fasta() keeps a &gt; inside a header (ADP&gt;ATP used to become ADPATP).\nremove_signal_peptide() reads UniProt’s current signal peptide format SIGNAL 1..20, and works on a database with a single entry.\nCdsw$sampling_breaks() stops with an error when even equal-width windows violate minwindow or maxwindow; it used to warn and then never return.\nannotate_aho() and annotate_peptides() no longer print dplyr’s “Joining with by = join_by(proteinID)” message, nor dplyr’s funs() deprecation warning.\nError messages name the argument and the offending value, e.g. for an unknown method of predict_score_fdr() or weighting of prepare_matrix().\nprepare_matrix() documents only the weightings it implements (NULL, \"inverse\" or one numeric weight per row).\nload_contaminants(\"special2024\") works: the bundled fgcz_special_prot_20241112.fasta.gz is a plain gzipped FASTA file again instead of a gzipped tar archive (#7).\ninst/script/fgcz_create_fasta.R stops early with a clear message for an unknown --contamin value.\nHelp pages use markdown, link related functions in families, and describe the actual return values (e.g. the elements of compute_fdr()’s result).\nNew or runnable examples for create_fgcz_fasta_db(), greedy_to_table(), remove_signal_peptide() and write_fasta(); removed debugging code from examples and vignettes.\nThe vignettes use the new names and ggplot2; “Peptide Annotation and Protein Inference” builds again.\nThe Cdsw help page no longer documents method arguments without a usage section (r-devel NOTE).\nRemoved the undocumented debug dataset mm.\nFewer dependencies: protViz, purrr, rlang and stringr are no longer needed; readr and docopt moved to Suggests (docopt is only needed by inst/script/fgcz_create_fasta.R).",
+    "crumbs": [
+      "News"
+    ]
+  },
+  {
+    "objectID": "NEWS.html#breaking-changes",
+    "href": "NEWS.html#breaking-changes",
+    "title": "prozor 0.4.0",
+    "section": "",
+    "text": "All exported functions and their arguments use snake_case. The old names are gone, without aliases:\n\n\n\n\n\n\n\n\nOld\nNew\n\n\n\n\nannotateAHO(), annotatePeptides()\nannotate_aho(), annotate_peptides()\n\n\ncomputeFDR(), computeFDRwithID()\ncompute_fdr(), compute_fdr_with_id()\n\n\nplotFDR(), predictScoreFDR()\nplot_fdr(), predict_score_fdr()\n\n\ncreateDecoyDB(), reverseSeq()\ncreate_decoy_db(), reverse_seq()\n\n\nreadPeptideFasta(), writeFasta()\nread_peptide_fasta(), write_fasta()\n\n\nloadContaminantsFasta2019(), loadContaminantsFasta2021(), loadContaminantsFGCZ2022(), load_universal_contaminants_2024(), load_special_prot_2024()\nload_contaminants(\"fgcz2019\"), \"fgcz2021\", \"fgcz2022\", \"universal2024\", \"special2024\"\n\n\nprepareMatrix(), greedyRes2Matrix()\nprepare_matrix(), greedy_to_table()\n\n\nremoveSignalPeptide(), makeID(), makeIDUnip()\nremove_signal_peptide(), make_chain_id(), make_chain_id_uniprot()\n\n\nreadjustWindows()\nreadjust_windows()\n\n\nCdsw methods asTable(), showCycle(), optimizeWindows()\nas_table(), show_cycle(), optimize_windows()\n\n\narguments useContaminants, revLab, noHuman, databasedirectory, outputdir, resDB, fdrObj, qValue, proteinID, peptideID, idfun, ID\ncontaminants, rev_lab, no_human, database_dir, output_dir, db, fdr, q_value, protein_id, peptide_id, id_fun, id\n\n\ndata set fdrSample\nfdr_sample\n\n\n\n\nResult columns and list elements are snake_case too:\n\nannotate_aho(), annotate_peptides(): protein_id, offset, protein_sequence, peptide_length, and peptide_seq for vector input (was proteinID, Offset, proteinSequence, lengthPeptide, peptideSeq)\ncompute_fdr(): fpr, simple_fdr, q_value_fpr, q_value_simple_fdr; compute_fdr_with_id() adds id (was FPR, SimpleFDR, qValue_FPR, qValue_SimpleFDR, ID)\ngreedy_to_table(): peptide, precursor_charge, protein (was Peptide, precursorCharge, Protein)\nmake_fasta_summary(as_string = FALSE): nr_sequences, length_summary, aa_freq; create_fgcz_fasta_db(): db, file_path, summary, call, db_name\n\npredict_score_fdr(method = ) takes \"simple_fdr\" (default) or \"fpr\" (was \"SimpleFDR\", \"FPR\").\nDefault column names follow the results: annotate_peptides(peptide = \"peptide_seq\"), prepare_matrix(protein_id = \"protein_id\", peptide_id = \"peptide_seq\") (was \"peptideSeq\", \"proteinID\", \"strippedSequence\").\nThe data sets fdr_sample, protpepmetashort and pepprot have snake_case columns (protein_id, peptide_seq, peptide_mod_seq, precursor_charge, protein_length, peptide_length); bcd keeps COMET’s column names.\ngreedy(), last on CRAN in 0.3.1, has no alias; use greedy_parsimony().\nwrite_fasta(fasta, file) takes one list of sequences, data first (was writeFasta(file, ...)); combine several lists with c().\nPlots use ggplot2, which moved from Suggests to Imports. plot_fdr(), Cdsw$plot() and Cdsw$show_cycle() return ggplot objects and draw nothing themselves. The plot argument of Cdsw$sampling_breaks(), Cdsw$optimize_windows() and readjust_windows() is gone; use Cdsw$plot_breaks() and plot_windows().\nannotate_peptides() sets matched for each occurrence of a peptide in a protein. It used to give every occurrence in a protein the same value, so a second, non-tryptic occurrence was flagged as tryptic.\nannotate_aho() and annotate_peptides() stop for peptides with characters other than upper-case letters (AhoCorasickTrie 0.1.3 crashed R on them) and for duplicated protein names in fasta (they multiplied the result rows).\ncompute_fdr() and compute_fdr_with_id() rank decoys before targets within tied scores, so q-values no longer depend on the input order.\nThe default decoy pattern of compute_fdr_with_id() is \"^REV_\": only IDs starting with REV_ count as decoys. Pass decoy = \"REV_\" for the old matching anywhere in the ID.\npredict_score_fdr() stops with an error when no score reaches the requested FDR, instead of returning Inf with a warning.\ncreate_fgcz_fasta_db() requires output_dir (it used to write next to the database directory by default). inst/script/fgcz_create_fasta.R still writes next to the FASTA directory when -o is not given.\ngreedy_parsimony() no longer prints its run time.\nprozor requires R 4.4.0 or later.",
+    "crumbs": [
+      "News"
+    ]
+  },
+  {
+    "objectID": "NEWS.html#new-features",
+    "href": "NEWS.html#new-features",
+    "title": "prozor 0.4.0",
+    "section": "",
+    "text": "load_contaminants(set, no_human) loads any of the bundled contaminant sets.\nplot_windows() shows the precursor masses with the DIA window boundaries; Cdsw$plot_breaks() compares the current breaks with equal-width and quantile breaks.",
+    "crumbs": [
+      "News"
+    ]
+  },
+  {
+    "objectID": "NEWS.html#minor-improvements-and-fixes",
+    "href": "NEWS.html#minor-improvements-and-fixes",
+    "title": "prozor 0.4.0",
+    "section": "",
+    "text": "greedy_parsimony() assigns every peptide again. When several proteins tie, only those explaining exactly the same peptides are reported together (\"A;B\"); the others compete in later rounds. Since 2023 (GitHub only, not on CRAN), unrelated tied proteins were merged into one group and their remaining peptides were left without a protein.\ngreedy_to_table() works with modified peptides: the charge is taken after the last dot, so \"AC[+57.0]K.2\" gives peptide AC[+57.0]K and charge 2. Such names used to fail with “length of ‘dimnames’ [2] not equal to array extent”.\nannotate_peptides() and prepare_matrix() accept tibbles; a tibble used to crash R or fail with “cannot xtfrm data frames”.\nwrite_fasta() keeps a &gt; inside a header (ADP&gt;ATP used to become ADPATP).\nremove_signal_peptide() reads UniProt’s current signal peptide format SIGNAL 1..20, and works on a database with a single entry.\nCdsw$sampling_breaks() stops with an error when even equal-width windows violate minwindow or maxwindow; it used to warn and then never return.\nannotate_aho() and annotate_peptides() no longer print dplyr’s “Joining with by = join_by(proteinID)” message, nor dplyr’s funs() deprecation warning.\nError messages name the argument and the offending value, e.g. for an unknown method of predict_score_fdr() or weighting of prepare_matrix().\nprepare_matrix() documents only the weightings it implements (NULL, \"inverse\" or one numeric weight per row).\nload_contaminants(\"special2024\") works: the bundled fgcz_special_prot_20241112.fasta.gz is a plain gzipped FASTA file again instead of a gzipped tar archive (#7).\ninst/script/fgcz_create_fasta.R stops early with a clear message for an unknown --contamin value.\nHelp pages use markdown, link related functions in families, and describe the actual return values (e.g. the elements of compute_fdr()’s result).\nNew or runnable examples for create_fgcz_fasta_db(), greedy_to_table(), remove_signal_peptide() and write_fasta(); removed debugging code from examples and vignettes.\nThe vignettes use the new names and ggplot2; “Peptide Annotation and Protein Inference” builds again.\nThe Cdsw help page no longer documents method arguments without a usage section (r-devel NOTE).\nRemoved the undocumented debug dataset mm.\nFewer dependencies: protViz, purrr, rlang and stringr are no longer needed; readr and docopt moved to Suggests (docopt is only needed by inst/script/fgcz_create_fasta.R).",
+    "crumbs": [
+      "News"
+    ]
+  },
+  {
+    "objectID": "NEWS.html#prepare-submission-to-bioconductor",
+    "href": "NEWS.html#prepare-submission-to-bioconductor",
+    "title": "prozor 0.4.0",
+    "section": "Prepare submission to Bioconductor",
+    "text": "Prepare submission to Bioconductor\n\naddress warnings and notes from BiocCheck tool.",
+    "crumbs": [
+      "News"
+    ]
+  },
+  {
+    "objectID": "man/create_decoy_db.html",
+    "href": "man/create_decoy_db.html",
+    "title": "prozor",
+    "section": "",
+    "text": "Reads one or more FASTA files, adds contaminants and reversed decoy sequences, and puts first a dummy entry CRAPCRAPCRAP whose header records the source of the database. See vignette(“CreatingDecoyDB”, package = “prozor”).\n\n\n\ncreate_decoy_db(\n  dbs,\n  contaminants = load_contaminants(\"fgcz2022\"),\n  rev_lab = \"REV_\",\n  annot = \"zz|sourceOf|database\"\n)\n\n\n\n\n\n\n\ndbs\n\n\nPaths to one or more FASTA files.\n\n\n\n\ncontaminants\n\n\nA list of contaminant sequences, e.g. from load_contaminants(), or NULL for none.\n\n\n\n\nrev_lab\n\n\nPrefix of the reversed decoy sequences, or NULL for no decoys.\n\n\n\n\nannot\n\n\nHeader of the dummy entry that records the source of the database.\n\n\n\n\n\n\nA list of SeqFastaAA objects: the dummy entry, the targets, the contaminants and, unless rev_lab is NULL, the reversed decoys of the targets and contaminants.\n\n\n\nOther FASTA databases: create_fgcz_fasta_db(), load_contaminants(), make_chain_id(), make_chain_id_uniprot(), make_fasta_summary(), read_peptide_fasta(), remove_signal_peptide(), reverse_seq(), write_fasta()\n\n\n\n\nlibrary(\"prozor\")\n\nfile &lt;- system.file(\"extdata/fgcz_contaminants2022_20220405.fasta.gz\", package = \"prozor\")\ntargets &lt;- read_peptide_fasta(file)\ncont &lt;- load_contaminants(\"fgcz2022\")\n\ndb &lt;- create_decoy_db(c(file, file))\nstopifnot(length(db) == 1 + 2 * (2 * length(targets) + length(cont)))\n\ndb &lt;- create_decoy_db(file, rev_lab = NULL, contaminants = NULL)\nstopifnot(length(db) == 1 + length(targets))",
+    "crumbs": [
+      "Reference",
+      "create_decoy_db"
+    ]
+  },
+  {
+    "objectID": "man/create_decoy_db.html#create-a-database-with-contaminants-and-decoys",
+    "href": "man/create_decoy_db.html#create-a-database-with-contaminants-and-decoys",
+    "title": "prozor",
+    "section": "",
+    "text": "Reads one or more FASTA files, adds contaminants and reversed decoy sequences, and puts first a dummy entry CRAPCRAPCRAP whose header records the source of the database. See vignette(“CreatingDecoyDB”, package = “prozor”).\n\n\n\ncreate_decoy_db(\n  dbs,\n  contaminants = load_contaminants(\"fgcz2022\"),\n  rev_lab = \"REV_\",\n  annot = \"zz|sourceOf|database\"\n)\n\n\n\n\n\n\n\ndbs\n\n\nPaths to one or more FASTA files.\n\n\n\n\ncontaminants\n\n\nA list of contaminant sequences, e.g. from load_contaminants(), or NULL for none.\n\n\n\n\nrev_lab\n\n\nPrefix of the reversed decoy sequences, or NULL for no decoys.\n\n\n\n\nannot\n\n\nHeader of the dummy entry that records the source of the database.\n\n\n\n\n\n\nA list of SeqFastaAA objects: the dummy entry, the targets, the contaminants and, unless rev_lab is NULL, the reversed decoys of the targets and contaminants.\n\n\n\nOther FASTA databases: create_fgcz_fasta_db(), load_contaminants(), make_chain_id(), make_chain_id_uniprot(), make_fasta_summary(), read_peptide_fasta(), remove_signal_peptide(), reverse_seq(), write_fasta()\n\n\n\n\nlibrary(\"prozor\")\n\nfile &lt;- system.file(\"extdata/fgcz_contaminants2022_20220405.fasta.gz\", package = \"prozor\")\ntargets &lt;- read_peptide_fasta(file)\ncont &lt;- load_contaminants(\"fgcz2022\")\n\ndb &lt;- create_decoy_db(c(file, file))\nstopifnot(length(db) == 1 + 2 * (2 * length(targets) + length(cont)))\n\ndb &lt;- create_decoy_db(file, rev_lab = NULL, contaminants = NULL)\nstopifnot(length(db) == 1 + length(targets))",
+    "crumbs": [
+      "Reference",
+      "create_decoy_db"
+    ]
+  },
+  {
+    "objectID": "man/readjust_windows.html",
+    "href": "man/readjust_windows.html",
+    "title": "prozor",
+    "section": "",
+    "text": "Move DIA window boundaries to regions with few precursors\n\n\n\nreadjust_windows(wind, ms1data, digits = 1, maxbin = 15)\n\n\n\n\n\n\n\nwind\n\n\nA data frame or list with the columns from and to, e.g. from Cdsw$as_table().\n\n\n\n\nms1data\n\n\nPrecursor masses (m/z).\n\n\n\n\ndigits\n\n\nMass accuracy: the masses are binned into bins of width 1 / 10^digits.\n\n\n\n\nmaxbin\n\n\nBins with fewer than maxbin precursors count as empty.\n\n\n\n\n\n\nA list with the elements from, to, mid, width and counts (precursors per window).\n\n\n\nOther DIA windows: Cdsw-class, plot_windows()\n\n\n\n\nlibrary(\"prozor\")\n\ndata(masses)\ncdsw &lt;- Cdsw(masses)\nbreaks &lt;- cdsw$sampling_breaks(maxwindow = 100)\nwindows &lt;- cdsw$as_table()\nhead(data.frame(readjust_windows(windows, masses, maxbin = 10)))\n\n    from     to    mid width counts\n1 349.63 381.95 365.79 32.32   6177\n2 380.45 409.05 394.75 28.60   6576\n3 407.65 433.05 420.35 25.40   6709\n4 431.45 455.15 443.30 23.70   6612\n5 453.65 476.45 465.05 22.80   6746\n6 475.35 497.15 486.25 21.80   6678",
+    "crumbs": [
+      "Reference",
+      "readjust_windows"
+    ]
+  },
+  {
+    "objectID": "man/readjust_windows.html#move-dia-window-boundaries-to-regions-with-few-precursors",
+    "href": "man/readjust_windows.html#move-dia-window-boundaries-to-regions-with-few-precursors",
+    "title": "prozor",
+    "section": "",
+    "text": "Move DIA window boundaries to regions with few precursors\n\n\n\nreadjust_windows(wind, ms1data, digits = 1, maxbin = 15)\n\n\n\n\n\n\n\nwind\n\n\nA data frame or list with the columns from and to, e.g. from Cdsw$as_table().\n\n\n\n\nms1data\n\n\nPrecursor masses (m/z).\n\n\n\n\ndigits\n\n\nMass accuracy: the masses are binned into bins of width 1 / 10^digits.\n\n\n\n\nmaxbin\n\n\nBins with fewer than maxbin precursors count as empty.\n\n\n\n\n\n\nA list with the elements from, to, mid, width and counts (precursors per window).\n\n\n\nOther DIA windows: Cdsw-class, plot_windows()\n\n\n\n\nlibrary(\"prozor\")\n\ndata(masses)\ncdsw &lt;- Cdsw(masses)\nbreaks &lt;- cdsw$sampling_breaks(maxwindow = 100)\nwindows &lt;- cdsw$as_table()\nhead(data.frame(readjust_windows(windows, masses, maxbin = 10)))\n\n    from     to    mid width counts\n1 349.63 381.95 365.79 32.32   6177\n2 380.45 409.05 394.75 28.60   6576\n3 407.65 433.05 420.35 25.40   6709\n4 431.45 455.15 443.30 23.70   6612\n5 453.65 476.45 465.05 22.80   6746\n6 475.35 497.15 486.25 21.80   6678",
+    "crumbs": [
+      "Reference",
+      "readjust_windows"
+    ]
+  },
+  {
+    "objectID": "man/prepare_matrix.html",
+    "href": "man/prepare_matrix.html",
+    "title": "prozor",
+    "section": "",
+    "text": "Build a sparse peptide-by-protein matrix\n\n\n\nprepare_matrix(\n  data,\n  protein_id = \"protein_id\",\n  peptide_id = \"peptide_seq\",\n  weighting = NULL,\n  sep = \"|\",\n  use.last.ij = TRUE\n)\n\n\n\n\n\n\n\ndata\n\n\nA data frame (or tibble) of peptide-protein pairs, e.g. from annotate_peptides().\n\n\n\n\nprotein_id\n\n\nName of the protein ID column.\n\n\n\n\npeptide_id\n\n\nName of the peptide or precursor ID column.\n\n\n\n\nweighting\n\n\nNULL (default) gives each peptide-protein pair the weight 1. “inverse” divides the weights of each peptide by the number of proteins it matches. A numeric vector gives one weight per row of data.\n\n\n\n\nsep\n\n\nNot used.\n\n\n\n\nuse.last.ij\n\n\nPassed to Matrix::sparseMatrix(); if TRUE, a repeated peptide-protein pair keeps a single entry instead of the sum of its entries.\n\n\n\n\n\n\nA sparse matrix with peptides in rows and proteins in columns.\n\n\n\nOther protein inference: annotate_aho(), annotate_peptides(), greedy_parsimony(), greedy_to_table()\n\n\n\n\nlibrary(\"prozor\")\n\ndata(protpepmetashort)\ncount &lt;- prepare_matrix(protpepmetashort)\ndim(count)\n\n[1] 149 250\n\ninverse &lt;- prepare_matrix(protpepmetashort, weighting = \"inverse\")\n# a peptide shared by n proteins gets the weight 1/n in each of them\ntable(round(as.vector(inverse[inverse &gt; 0]), 2))\n\n\n0.05 0.08 0.11 0.12 0.17  0.2 0.25 0.33  0.5    1 \n  21   12   18   16   12   15   24   42  112   62",
+    "crumbs": [
+      "Reference",
+      "prepare_matrix"
+    ]
+  },
+  {
+    "objectID": "man/prepare_matrix.html#build-a-sparse-peptide-by-protein-matrix",
+    "href": "man/prepare_matrix.html#build-a-sparse-peptide-by-protein-matrix",
+    "title": "prozor",
+    "section": "",
+    "text": "Build a sparse peptide-by-protein matrix\n\n\n\nprepare_matrix(\n  data,\n  protein_id = \"protein_id\",\n  peptide_id = \"peptide_seq\",\n  weighting = NULL,\n  sep = \"|\",\n  use.last.ij = TRUE\n)\n\n\n\n\n\n\n\ndata\n\n\nA data frame (or tibble) of peptide-protein pairs, e.g. from annotate_peptides().\n\n\n\n\nprotein_id\n\n\nName of the protein ID column.\n\n\n\n\npeptide_id\n\n\nName of the peptide or precursor ID column.\n\n\n\n\nweighting\n\n\nNULL (default) gives each peptide-protein pair the weight 1. “inverse” divides the weights of each peptide by the number of proteins it matches. A numeric vector gives one weight per row of data.\n\n\n\n\nsep\n\n\nNot used.\n\n\n\n\nuse.last.ij\n\n\nPassed to Matrix::sparseMatrix(); if TRUE, a repeated peptide-protein pair keeps a single entry instead of the sum of its entries.\n\n\n\n\n\n\nA sparse matrix with peptides in rows and proteins in columns.\n\n\n\nOther protein inference: annotate_aho(), annotate_peptides(), greedy_parsimony(), greedy_to_table()\n\n\n\n\nlibrary(\"prozor\")\n\ndata(protpepmetashort)\ncount &lt;- prepare_matrix(protpepmetashort)\ndim(count)\n\n[1] 149 250\n\ninverse &lt;- prepare_matrix(protpepmetashort, weighting = \"inverse\")\n# a peptide shared by n proteins gets the weight 1/n in each of them\ntable(round(as.vector(inverse[inverse &gt; 0]), 2))\n\n\n0.05 0.08 0.11 0.12 0.17  0.2 0.25 0.33  0.5    1 \n  21   12   18   16   12   15   24   42  112   62",
+    "crumbs": [
+      "Reference",
+      "prepare_matrix"
+    ]
+  },
+  {
+    "objectID": "man/protpepmetashort.html",
+    "href": "man/protpepmetashort.html",
+    "title": "prozor",
+    "section": "",
+    "text": "Peptide-protein pairs with the columns peptide_seq, protein_length, protein_id, peptide_mod_seq, precursor_charge, m (precursor m/z) and peptide_length; small, so the examples stay fast.",
+    "crumbs": [
+      "Reference",
+      "protpepmetashort"
+    ]
+  },
+  {
+    "objectID": "man/protpepmetashort.html#peptide-protein-assignments-small-version",
+    "href": "man/protpepmetashort.html#peptide-protein-assignments-small-version",
+    "title": "prozor",
+    "section": "",
+    "text": "Peptide-protein pairs with the columns peptide_seq, protein_length, protein_id, peptide_mod_seq, precursor_charge, m (precursor m/z) and peptide_length; small, so the examples stay fast.",
+    "crumbs": [
+      "Reference",
+      "protpepmetashort"
+    ]
+  },
+  {
+    "objectID": "man/fdr_sample.html",
+    "href": "man/fdr_sample.html",
+    "title": "prozor",
+    "section": "",
+    "text": "A data frame with the columns protein_id (decoys start with REV_), score (smaller is better) and score2 (larger is better).",
+    "crumbs": [
+      "Reference",
+      "fdr_sample"
+    ]
+  },
+  {
+    "objectID": "man/fdr_sample.html#search-engine-scores-with-protein-ids",
+    "href": "man/fdr_sample.html#search-engine-scores-with-protein-ids",
+    "title": "prozor",
+    "section": "",
+    "text": "A data frame with the columns protein_id (decoys start with REV_), score (smaller is better) and score2 (larger is better).",
+    "crumbs": [
+      "Reference",
+      "fdr_sample"
+    ]
+  },
+  {
+    "objectID": "man/annotate_aho.html",
+    "href": "man/annotate_aho.html",
+    "title": "prozor",
+    "section": "",
+    "text": "Searches all peptides at once with AhoCorasickTrie::AhoCorasickSearch(). Peptides that occur in no protein are dropped.\n\n\n\nannotate_aho(pepseq, fasta, peptide = \"peptide_seq\")\n\n\n\n\n\n\n\npepseq\n\n\nPeptide sequences, upper-case letters only.\n\n\n\n\nfasta\n\n\nA list of protein sequences with unique names, as returned by read_peptide_fasta().\n\n\n\n\npeptide\n\n\nName of the result column that holds the peptide sequences.\n\n\n\n\n\n\nA data frame with one row per occurrence and the columns protein_id, peptide (named by the argument), offset (1-based start of the peptide) and protein_sequence; NULL if no peptide occurs.\n\n\n\nOther protein inference: annotate_peptides(), greedy_parsimony(), greedy_to_table(), prepare_matrix()\n\n\n\n\nlibrary(\"prozor\")\n\nfile &lt;- system.file(\"extdata/IDResults.txt.gz\", package = \"prozor\")\npeptides &lt;- unique(utils::read.delim(file)$peptideSeq)\nfasta_file &lt;- system.file(\"p1000_db1_example/Annotation_canSeq.fasta.gz\", package = \"prozor\")\nfasta &lt;- read_peptide_fasta(fasta_file)\nhits &lt;- annotate_aho(peptides[1:20], fasta)\ndim(hits)\n\n[1] 20  4",
+    "crumbs": [
+      "Reference",
+      "annotate_aho"
+    ]
+  },
+  {
+    "objectID": "man/annotate_aho.html#find-peptides-in-protein-sequences-with-the-aho-corasick-algorithm",
+    "href": "man/annotate_aho.html#find-peptides-in-protein-sequences-with-the-aho-corasick-algorithm",
+    "title": "prozor",
+    "section": "",
+    "text": "Searches all peptides at once with AhoCorasickTrie::AhoCorasickSearch(). Peptides that occur in no protein are dropped.\n\n\n\nannotate_aho(pepseq, fasta, peptide = \"peptide_seq\")\n\n\n\n\n\n\n\npepseq\n\n\nPeptide sequences, upper-case letters only.\n\n\n\n\nfasta\n\n\nA list of protein sequences with unique names, as returned by read_peptide_fasta().\n\n\n\n\npeptide\n\n\nName of the result column that holds the peptide sequences.\n\n\n\n\n\n\nA data frame with one row per occurrence and the columns protein_id, peptide (named by the argument), offset (1-based start of the peptide) and protein_sequence; NULL if no peptide occurs.\n\n\n\nOther protein inference: annotate_peptides(), greedy_parsimony(), greedy_to_table(), prepare_matrix()\n\n\n\n\nlibrary(\"prozor\")\n\nfile &lt;- system.file(\"extdata/IDResults.txt.gz\", package = \"prozor\")\npeptides &lt;- unique(utils::read.delim(file)$peptideSeq)\nfasta_file &lt;- system.file(\"p1000_db1_example/Annotation_canSeq.fasta.gz\", package = \"prozor\")\nfasta &lt;- read_peptide_fasta(fasta_file)\nhits &lt;- annotate_aho(peptides[1:20], fasta)\ndim(hits)\n\n[1] 20  4",
+    "crumbs": [
+      "Reference",
+      "annotate_aho"
+    ]
+  },
+  {
+    "objectID": "man/remove_signal_peptide.html",
+    "href": "man/remove_signal_peptide.html",
+    "title": "prozor",
+    "section": "",
+    "text": "Remove signal peptides from protein sequences\n\n\n\nremove_signal_peptide(db, signal, id_fun = make_chain_id)\n\n\n\n\n\n\n\ndb\n\n\nA list of UniProt protein sequences, as returned by read_peptide_fasta().\n\n\n\n\nsignal\n\n\nA data frame with one row per entry of db, in the same order, and the columns Entry (the UniProt accession) and Signal.peptide (UniProt’s signal peptide feature, e.g. “SIGNAL 1 20” or “SIGNAL 1..20; /evidence=…”; empty if there is none).\n\n\n\n\nid_fun\n\n\nFunction that makes the ID of the remaining chain, e.g. make_chain_id() or make_chain_id_uniprot().\n\n\n\n\n\n\ndb with the signal peptides removed and the IDs of the shortened sequences changed by id_fun.\n\n\n\nOther FASTA databases: create_decoy_db(), create_fgcz_fasta_db(), load_contaminants(), make_chain_id(), make_chain_id_uniprot(), make_fasta_summary(), read_peptide_fasta(), reverse_seq(), write_fasta()\n\n\n\n\nlibrary(\"prozor\")\n\nfile &lt;- system.file(\"extdata/fgcz_contaminants2021_20210929.fasta.gz\", package = \"prozor\")\ndb &lt;- read_peptide_fasta(file)[2:3]\nentry &lt;- vapply(strsplit(names(db), split = \"|\", fixed = TRUE), function(x) x[2], character(1))\nsignal &lt;- data.frame(Entry = entry, Signal.peptide = c(\"SIGNAL 1 20\", \"\"))\nres &lt;- remove_signal_peptide(db, signal)\nnchar(db[[1]])\n\n[1] 148\n\nnchar(res[[1]])\n\n[1] 128",
+    "crumbs": [
+      "Reference",
+      "remove_signal_peptide"
+    ]
+  },
+  {
+    "objectID": "man/remove_signal_peptide.html#remove-signal-peptides-from-protein-sequences",
+    "href": "man/remove_signal_peptide.html#remove-signal-peptides-from-protein-sequences",
+    "title": "prozor",
+    "section": "",
+    "text": "Remove signal peptides from protein sequences\n\n\n\nremove_signal_peptide(db, signal, id_fun = make_chain_id)\n\n\n\n\n\n\n\ndb\n\n\nA list of UniProt protein sequences, as returned by read_peptide_fasta().\n\n\n\n\nsignal\n\n\nA data frame with one row per entry of db, in the same order, and the columns Entry (the UniProt accession) and Signal.peptide (UniProt’s signal peptide feature, e.g. “SIGNAL 1 20” or “SIGNAL 1..20; /evidence=…”; empty if there is none).\n\n\n\n\nid_fun\n\n\nFunction that makes the ID of the remaining chain, e.g. make_chain_id() or make_chain_id_uniprot().\n\n\n\n\n\n\ndb with the signal peptides removed and the IDs of the shortened sequences changed by id_fun.\n\n\n\nOther FASTA databases: create_decoy_db(), create_fgcz_fasta_db(), load_contaminants(), make_chain_id(), make_chain_id_uniprot(), make_fasta_summary(), read_peptide_fasta(), reverse_seq(), write_fasta()\n\n\n\n\nlibrary(\"prozor\")\n\nfile &lt;- system.file(\"extdata/fgcz_contaminants2021_20210929.fasta.gz\", package = \"prozor\")\ndb &lt;- read_peptide_fasta(file)[2:3]\nentry &lt;- vapply(strsplit(names(db), split = \"|\", fixed = TRUE), function(x) x[2], character(1))\nsignal &lt;- data.frame(Entry = entry, Signal.peptide = c(\"SIGNAL 1 20\", \"\"))\nres &lt;- remove_signal_peptide(db, signal)\nnchar(db[[1]])\n\n[1] 148\n\nnchar(res[[1]])\n\n[1] 128",
+    "crumbs": [
+      "Reference",
+      "remove_signal_peptide"
+    ]
+  },
+  {
+    "objectID": "man/create_fgcz_fasta_db.html",
+    "href": "man/create_fgcz_fasta_db.html",
+    "title": "prozor",
+    "section": "",
+    "text": "Reads all FASTA files in database_dir, adds contaminants and decoys with create_decoy_db(), drops duplicated entries and writes the result to output_dir as &lt;name&gt;[_d]_&lt;date&gt;.fasta, where _d marks a database with decoys. The first line of annotation.txt in database_dir becomes the header of the dummy source entry.\n\n\n\ncreate_fgcz_fasta_db(\n  database_dir,\n  contaminants = load_contaminants(\"fgcz2022\"),\n  rev_lab = \"REV_\",\n  output_dir,\n  make_summary = TRUE\n)\n\n\n\n\n\n\n\ndatabase_dir\n\n\nDirectory with the FASTA files and annotation.txt.\n\n\n\n\ncontaminants\n\n\nContaminant sequences to add, e.g. from load_contaminants(), or NULL for none.\n\n\n\n\nrev_lab\n\n\nPrefix of the reversed decoy sequences, or NULL for no decoys.\n\n\n\n\noutput_dir\n\n\nDirectory the FASTA file is written to.\n\n\n\n\nmake_summary\n\n\nIf TRUE, append the output of make_fasta_summary() to the summary.\n\n\n\n\n\n\nA list with the elements db (the sequences written), file_path, summary (text), call and db_name.\n\n\n\nOther FASTA databases: create_decoy_db(), load_contaminants(), make_chain_id(), make_chain_id_uniprot(), make_fasta_summary(), read_peptide_fasta(), remove_signal_peptide(), reverse_seq(), write_fasta()\n\n\n\n\nlibrary(\"prozor\")\n\nres &lt;- create_fgcz_fasta_db(\n  system.file(\"p1000_db1_example\", package = \"prozor\"),\n  output_dir = tempdir(),\n  make_summary = FALSE\n)\nbasename(res$file_path)\n\n[1] \"p1000_db1_example_d_20261124.fasta\"\n\nunlink(res$file_path)",
+    "crumbs": [
+      "Reference",
+      "create_fgcz_fasta_db"
+    ]
+  },
+  {
+    "objectID": "man/create_fgcz_fasta_db.html#create-an-fgcz-fasta-database-from-a-directory-of-fasta-files",
+    "href": "man/create_fgcz_fasta_db.html#create-an-fgcz-fasta-database-from-a-directory-of-fasta-files",
+    "title": "prozor",
+    "section": "",
+    "text": "Reads all FASTA files in database_dir, adds contaminants and decoys with create_decoy_db(), drops duplicated entries and writes the result to output_dir as &lt;name&gt;[_d]_&lt;date&gt;.fasta, where _d marks a database with decoys. The first line of annotation.txt in database_dir becomes the header of the dummy source entry.\n\n\n\ncreate_fgcz_fasta_db(\n  database_dir,\n  contaminants = load_contaminants(\"fgcz2022\"),\n  rev_lab = \"REV_\",\n  output_dir,\n  make_summary = TRUE\n)\n\n\n\n\n\n\n\ndatabase_dir\n\n\nDirectory with the FASTA files and annotation.txt.\n\n\n\n\ncontaminants\n\n\nContaminant sequences to add, e.g. from load_contaminants(), or NULL for none.\n\n\n\n\nrev_lab\n\n\nPrefix of the reversed decoy sequences, or NULL for no decoys.\n\n\n\n\noutput_dir\n\n\nDirectory the FASTA file is written to.\n\n\n\n\nmake_summary\n\n\nIf TRUE, append the output of make_fasta_summary() to the summary.\n\n\n\n\n\n\nA list with the elements db (the sequences written), file_path, summary (text), call and db_name.\n\n\n\nOther FASTA databases: create_decoy_db(), load_contaminants(), make_chain_id(), make_chain_id_uniprot(), make_fasta_summary(), read_peptide_fasta(), remove_signal_peptide(), reverse_seq(), write_fasta()\n\n\n\n\nlibrary(\"prozor\")\n\nres &lt;- create_fgcz_fasta_db(\n  system.file(\"p1000_db1_example\", package = \"prozor\"),\n  output_dir = tempdir(),\n  make_summary = FALSE\n)\nbasename(res$file_path)\n\n[1] \"p1000_db1_example_d_20261124.fasta\"\n\nunlink(res$file_path)",
+    "crumbs": [
+      "Reference",
+      "create_fgcz_fasta_db"
+    ]
+  },
+  {
+    "objectID": "man/make_chain_id_uniprot.html",
+    "href": "man/make_chain_id_uniprot.html",
+    "title": "prozor",
+    "section": "",
+    "text": "Make a UniProt-style ID for a protein chain\n\n\n\nmake_chain_id_uniprot(sequence, id, sp)\n\n\n\n\n\n\n\nsequence\n\n\nThe chain sequence, as one string.\n\n\n\n\nid\n\n\nThe UniProt ID of the protein, e.g. “sp|P30443|1A01_HUMAN”.\n\n\n\n\nsp\n\n\nStart position of the chain.\n\n\n\n\n\n\nThe first two fields of id, followed by sp, - and the length of sequence, e.g. “sp|P30443|24-5”.\n\n\n\nOther FASTA databases: create_decoy_db(), create_fgcz_fasta_db(), load_contaminants(), make_chain_id(), make_fasta_summary(), read_peptide_fasta(), remove_signal_peptide(), reverse_seq(), write_fasta()\n\n\n\n\nlibrary(\"prozor\")\n\nmake_chain_id_uniprot(\"ABCDE\", \"sp|P30443|1A01_HUMAN\", 24)\n\n[1] \"sp|P30443|24-5\"",
+    "crumbs": [
+      "Reference",
+      "make_chain_id_uniprot"
+    ]
+  },
+  {
+    "objectID": "man/make_chain_id_uniprot.html#make-a-uniprot-style-id-for-a-protein-chain",
+    "href": "man/make_chain_id_uniprot.html#make-a-uniprot-style-id-for-a-protein-chain",
+    "title": "prozor",
+    "section": "",
+    "text": "Make a UniProt-style ID for a protein chain\n\n\n\nmake_chain_id_uniprot(sequence, id, sp)\n\n\n\n\n\n\n\nsequence\n\n\nThe chain sequence, as one string.\n\n\n\n\nid\n\n\nThe UniProt ID of the protein, e.g. “sp|P30443|1A01_HUMAN”.\n\n\n\n\nsp\n\n\nStart position of the chain.\n\n\n\n\n\n\nThe first two fields of id, followed by sp, - and the length of sequence, e.g. “sp|P30443|24-5”.\n\n\n\nOther FASTA databases: create_decoy_db(), create_fgcz_fasta_db(), load_contaminants(), make_chain_id(), make_fasta_summary(), read_peptide_fasta(), remove_signal_peptide(), reverse_seq(), write_fasta()\n\n\n\n\nlibrary(\"prozor\")\n\nmake_chain_id_uniprot(\"ABCDE\", \"sp|P30443|1A01_HUMAN\", 24)\n\n[1] \"sp|P30443|24-5\"",
+    "crumbs": [
+      "Reference",
+      "make_chain_id_uniprot"
+    ]
+  },
+  {
+    "objectID": "man/write_fasta.html",
+    "href": "man/write_fasta.html",
+    "title": "prozor",
+    "section": "",
+    "text": "Writes each sequence with its Annot header and 60 residues per line.\n\n\n\nwrite_fasta(fasta, file)\n\n\n\n\n\n\n\nfasta\n\n\nA list of SeqFastaAA objects, e.g. from read_peptide_fasta() or create_decoy_db().\n\n\n\n\nfile\n\n\nPath of the FASTA file to write.\n\n\n\n\n\n\nNo return value, called for side effects (writes a FASTA file).\n\n\n\nOther FASTA databases: create_decoy_db(), create_fgcz_fasta_db(), load_contaminants(), make_chain_id(), make_chain_id_uniprot(), make_fasta_summary(), read_peptide_fasta(), remove_signal_peptide(), reverse_seq()\n\n\n\n\nlibrary(\"prozor\")\n\nfile &lt;- system.file(\"extdata/fgcz_contaminants2021_20210929.fasta.gz\", package = \"prozor\")\nfasta &lt;- read_peptide_fasta(file)\ndecoy_db &lt;- c(fasta, reverse_seq(fasta))\nout &lt;- tempfile(fileext = \".fasta\")\nwrite_fasta(decoy_db, out)\nlength(read_peptide_fasta(out))\n\n[1] 998\n\nunlink(out)",
+    "crumbs": [
+      "Reference",
+      "write_fasta"
+    ]
+  },
+  {
+    "objectID": "man/write_fasta.html#write-protein-sequences-to-a-fasta-file",
+    "href": "man/write_fasta.html#write-protein-sequences-to-a-fasta-file",
+    "title": "prozor",
+    "section": "",
+    "text": "Writes each sequence with its Annot header and 60 residues per line.\n\n\n\nwrite_fasta(fasta, file)\n\n\n\n\n\n\n\nfasta\n\n\nA list of SeqFastaAA objects, e.g. from read_peptide_fasta() or create_decoy_db().\n\n\n\n\nfile\n\n\nPath of the FASTA file to write.\n\n\n\n\n\n\nNo return value, called for side effects (writes a FASTA file).\n\n\n\nOther FASTA databases: create_decoy_db(), create_fgcz_fasta_db(), load_contaminants(), make_chain_id(), make_chain_id_uniprot(), make_fasta_summary(), read_peptide_fasta(), remove_signal_peptide(), reverse_seq()\n\n\n\n\nlibrary(\"prozor\")\n\nfile &lt;- system.file(\"extdata/fgcz_contaminants2021_20210929.fasta.gz\", package = \"prozor\")\nfasta &lt;- read_peptide_fasta(file)\ndecoy_db &lt;- c(fasta, reverse_seq(fasta))\nout &lt;- tempfile(fileext = \".fasta\")\nwrite_fasta(decoy_db, out)\nlength(read_peptide_fasta(out))\n\n[1] 998\n\nunlink(out)",
+    "crumbs": [
+      "Reference",
+      "write_fasta"
+    ]
+  },
+  {
+    "objectID": "man/greedy_to_table.html",
+    "href": "man/greedy_to_table.html",
+    "title": "prozor",
+    "section": "",
+    "text": "Convert a greedy_parsimony() result to a table\n\n\n\ngreedy_to_table(res)\n\n\n\n\n\n\n\nres\n\n\nA result of greedy_parsimony() whose names have the form peptide.charge. The charge is taken after the last dot, so modified peptides such as “AC[+57.0]K.2” work.\n\n\n\n\n\n\nA data frame with the columns peptide, precursor_charge and protein, and the precursor IDs as row names.\n\n\n\nOther protein inference: annotate_aho(), annotate_peptides(), greedy_parsimony(), prepare_matrix()\n\n\n\n\nlibrary(\"prozor\")\n\ndata(protpepmetashort)\nprotpepmetashort$precursor &lt;- paste(\n  protpepmetashort$peptide_mod_seq,\n  protpepmetashort$precursor_charge,\n  sep = \".\"\n)\npepprot &lt;- prepare_matrix(protpepmetashort, peptide_id = \"precursor\")\nhead(greedy_to_table(greedy_parsimony(pepprot)))\n\n                                              peptide precursor_charge\nAADKDTC[+57.0]FSTEGPNLVTR.2 AADKDTC[+57.0]FSTEGPNLVTR                2\nAADKDTC[+57.0]FSTEGPNLVTR.3 AADKDTC[+57.0]FSTEGPNLVTR                3\nAADKDTC[+57.0]FSTEGPNLVTR.4 AADKDTC[+57.0]FSTEGPNLVTR                4\nAETFTFHSDIC[+57.0]TLPEK.2     AETFTFHSDIC[+57.0]TLPEK                2\nAETFTFHSDIC[+57.0]TLPEK.3     AETFTFHSDIC[+57.0]TLPEK                3\nAETFTFHSDIC[+57.0]TLPEKEK.2 AETFTFHSDIC[+57.0]TLPEKEK                2\n                                         protein\nAADKDTC[+57.0]FSTEGPNLVTR.2 sp|P07724|ALBU_MOUSE\nAADKDTC[+57.0]FSTEGPNLVTR.3 sp|P07724|ALBU_MOUSE\nAADKDTC[+57.0]FSTEGPNLVTR.4 sp|P07724|ALBU_MOUSE\nAETFTFHSDIC[+57.0]TLPEK.2   sp|P07724|ALBU_MOUSE\nAETFTFHSDIC[+57.0]TLPEK.3   sp|P07724|ALBU_MOUSE\nAETFTFHSDIC[+57.0]TLPEKEK.2 sp|P07724|ALBU_MOUSE",
+    "crumbs": [
+      "Reference",
+      "greedy_to_table"
+    ]
+  },
+  {
+    "objectID": "man/greedy_to_table.html#convert-a-greedy_parsimony-result-to-a-table",
+    "href": "man/greedy_to_table.html#convert-a-greedy_parsimony-result-to-a-table",
+    "title": "prozor",
+    "section": "",
+    "text": "Convert a greedy_parsimony() result to a table\n\n\n\ngreedy_to_table(res)\n\n\n\n\n\n\n\nres\n\n\nA result of greedy_parsimony() whose names have the form peptide.charge. The charge is taken after the last dot, so modified peptides such as “AC[+57.0]K.2” work.\n\n\n\n\n\n\nA data frame with the columns peptide, precursor_charge and protein, and the precursor IDs as row names.\n\n\n\nOther protein inference: annotate_aho(), annotate_peptides(), greedy_parsimony(), prepare_matrix()\n\n\n\n\nlibrary(\"prozor\")\n\ndata(protpepmetashort)\nprotpepmetashort$precursor &lt;- paste(\n  protpepmetashort$peptide_mod_seq,\n  protpepmetashort$precursor_charge,\n  sep = \".\"\n)\npepprot &lt;- prepare_matrix(protpepmetashort, peptide_id = \"precursor\")\nhead(greedy_to_table(greedy_parsimony(pepprot)))\n\n                                              peptide precursor_charge\nAADKDTC[+57.0]FSTEGPNLVTR.2 AADKDTC[+57.0]FSTEGPNLVTR                2\nAADKDTC[+57.0]FSTEGPNLVTR.3 AADKDTC[+57.0]FSTEGPNLVTR                3\nAADKDTC[+57.0]FSTEGPNLVTR.4 AADKDTC[+57.0]FSTEGPNLVTR                4\nAETFTFHSDIC[+57.0]TLPEK.2     AETFTFHSDIC[+57.0]TLPEK                2\nAETFTFHSDIC[+57.0]TLPEK.3     AETFTFHSDIC[+57.0]TLPEK                3\nAETFTFHSDIC[+57.0]TLPEKEK.2 AETFTFHSDIC[+57.0]TLPEKEK                2\n                                         protein\nAADKDTC[+57.0]FSTEGPNLVTR.2 sp|P07724|ALBU_MOUSE\nAADKDTC[+57.0]FSTEGPNLVTR.3 sp|P07724|ALBU_MOUSE\nAADKDTC[+57.0]FSTEGPNLVTR.4 sp|P07724|ALBU_MOUSE\nAETFTFHSDIC[+57.0]TLPEK.2   sp|P07724|ALBU_MOUSE\nAETFTFHSDIC[+57.0]TLPEK.3   sp|P07724|ALBU_MOUSE\nAETFTFHSDIC[+57.0]TLPEKEK.2 sp|P07724|ALBU_MOUSE",
+    "crumbs": [
+      "Reference",
+      "greedy_to_table"
+    ]
+  },
+  {
+    "objectID": "man/pepprot.html",
+    "href": "man/pepprot.html",
+    "title": "prozor",
+    "section": "",
+    "text": "Peptides with the columns peptide_seq, peptide_mod_seq, precursor_charge and m (precursor m/z).",
+    "crumbs": [
+      "Reference",
+      "pepprot"
+    ]
+  },
+  {
+    "objectID": "man/pepprot.html#peptide-protein-assignments",
+    "href": "man/pepprot.html#peptide-protein-assignments",
+    "title": "prozor",
+    "section": "",
+    "text": "Peptides with the columns peptide_seq, peptide_mod_seq, precursor_charge and m (precursor m/z).",
+    "crumbs": [
+      "Reference",
+      "pepprot"
+    ]
+  },
+  {
+    "objectID": "man/load_contaminants.html",
+    "href": "man/load_contaminants.html",
+    "title": "prozor",
+    "section": "",
+    "text": "The sets:\n\n\n“fgcz2019”, “fgcz2021”, “fgcz2022”: FGCZ contaminant lists of 2019, 2021 and 2022.\n\n\n“universal2024”: universal contaminants from https://github.com/HaoGroup-ProtContLib/Protein-Contaminant-Libraries-for-DDA-and-DIA-Proteomics.\n\n\n“special2024”: FGCZ special proteins of 2024.\n\n\n\n\n\nload_contaminants(set, no_human = FALSE)\n\n\n\n\n\n\n\nset\n\n\nName of the contaminant set: “fgcz2019”, “fgcz2021”, “fgcz2022”, “universal2024” or “special2024”.\n\n\n\n\nno_human\n\n\nIf TRUE, drop the sequences whose header contains HUMAN.\n\n\n\n\n\n\nA named list of SeqFastaAA objects.\n\n\n\nOther FASTA databases: create_decoy_db(), create_fgcz_fasta_db(), make_chain_id(), make_chain_id_uniprot(), make_fasta_summary(), read_peptide_fasta(), remove_signal_peptide(), reverse_seq(), write_fasta()\n\n\n\n\nlibrary(\"prozor\")\n\ncont &lt;- load_contaminants(\"fgcz2022\")\nlength(cont)\n\n[1] 505\n\nlength(load_contaminants(\"fgcz2022\", no_human = TRUE))\n\n[1] 356",
+    "crumbs": [
+      "Reference",
+      "load_contaminants"
+    ]
+  },
+  {
+    "objectID": "man/load_contaminants.html#load-a-bundled-set-of-contaminant-sequences",
+    "href": "man/load_contaminants.html#load-a-bundled-set-of-contaminant-sequences",
+    "title": "prozor",
+    "section": "",
+    "text": "The sets:\n\n\n“fgcz2019”, “fgcz2021”, “fgcz2022”: FGCZ contaminant lists of 2019, 2021 and 2022.\n\n\n“universal2024”: universal contaminants from https://github.com/HaoGroup-ProtContLib/Protein-Contaminant-Libraries-for-DDA-and-DIA-Proteomics.\n\n\n“special2024”: FGCZ special proteins of 2024.\n\n\n\n\n\nload_contaminants(set, no_human = FALSE)\n\n\n\n\n\n\n\nset\n\n\nName of the contaminant set: “fgcz2019”, “fgcz2021”, “fgcz2022”, “universal2024” or “special2024”.\n\n\n\n\nno_human\n\n\nIf TRUE, drop the sequences whose header contains HUMAN.\n\n\n\n\n\n\nA named list of SeqFastaAA objects.\n\n\n\nOther FASTA databases: create_decoy_db(), create_fgcz_fasta_db(), make_chain_id(), make_chain_id_uniprot(), make_fasta_summary(), read_peptide_fasta(), remove_signal_peptide(), reverse_seq(), write_fasta()\n\n\n\n\nlibrary(\"prozor\")\n\ncont &lt;- load_contaminants(\"fgcz2022\")\nlength(cont)\n\n[1] 505\n\nlength(load_contaminants(\"fgcz2022\", no_human = TRUE))\n\n[1] 356",
+    "crumbs": [
+      "Reference",
+      "load_contaminants"
+    ]
+  },
+  {
+    "objectID": "man/Cdsw-class.html",
+    "href": "man/Cdsw-class.html",
+    "title": "prozor",
+    "section": "",
+    "text": "A reference class that splits the MS1 mass range into windows with about equal numbers of precursors, subject to minimum and maximum window widths.\n\n\n\n\n\nmasses\n\n\nMS1 masses.\n\n\nbreaks\n\n\nThe window boundaries.\n\n\nnbins\n\n\nNumber of windows.\n\n\ndigits\n\n\nMass accuracy of the result.\n\n\n\n\n\n\n\nas_table(overlap = 1)\n\n\nWindows as a data.frame with start (from), end (to), centre (mid), width and precursor count; overlap in m/z.\n\n\nconstant_breaks(digits = 2)\n\n\nEqual-width windows; returns the breaks invisibly.\n\n\nerror()\n\n\nDeviation of the windows from equal counts: a list, see objective_ms1().\n\n\ninitialize(masses, nbins = 25, digits = 1)\n\n\nCreate the object from a vector of MS1 masses, with nbins windows of equal width and mass accuracy digits.\n\n\noptimize_windows(digits = 1, maxbin = 15, overlap = 0)\n\n\nMove window starts and ends to regions with few precursor masses; returns a data.frame.\n\n\nplot()\n\n\nggplot of the precursors per window; the dashed line marks equal counts.\n\n\nplot_breaks()\n\n\nggplot of the current breaks against equal-width and quantile breaks.\n\n\nquantile_breaks(digits = 2)\n\n\nWindows with equal numbers of MS1 masses; widths may violate the limits of sampling_breaks().\n\n\nsampling_breaks(maxwindow = 150, minwindow = 5, digits = 2)\n\n\nQuantile windows, mixed with uniform data until all widths lie within [minwindow, maxwindow]. Stops if even equal-width windows violate the limits; returns the breaks invisibly.\n\n\nshow_cycle(overlap = 1)\n\n\nggplot of the DIA cycle, one window per step; overlap in m/z.\n\n\n\n\n\nOther DIA windows: plot_windows(), readjust_windows()\n\n\n\n\nlibrary(\"prozor\")\n\ndata(masses)\ncdsw &lt;- Cdsw(masses)\nbreaks &lt;- cdsw$sampling_breaks(maxwindow = 100)\ncdsw$plot_breaks()\n\n\n\n\n\n\n\ncdsw$plot()\n\n\n\n\n\n\n\ncdsw$as_table()\n\n       from      to      mid  width counts\n0%   349.63  381.70  365.665  32.07   6104\n4%   380.70  408.40  394.550  27.70   6382\n8%   407.40  432.23  419.815  24.83   6524\n12%  431.23  454.74  442.985  23.51   6592\n16%  453.74  476.25  464.995  22.51   6638\n20%  475.25  496.80  486.025  21.55   6722\n24%  495.80  517.79  506.795  21.99   6739\n28%  516.79  538.78  527.785  21.99   6780\n32%  537.78  559.80  548.790  22.02   6701\n36%  558.80  581.28  570.040  22.48   6731\n40%  580.28  602.85  591.565  22.57   6623\n44%  601.85  625.84  613.845  23.99   6597\n48%  624.84  649.84  637.340  25.00   6595\n52%  648.84  675.33  662.085  26.49   6485\n56%  674.33  701.37  687.850  27.04   6432\n60%  700.37  728.86  714.615  28.49   6246\n64%  727.86  758.44  743.150  30.58   6194\n68%  757.44  790.92  774.180  33.48   6106\n72%  789.92  826.90  808.410  36.98   5950\n76%  825.90  866.96  846.430  41.06   5736\n80%  865.96  912.49  889.225  46.53   5494\n84%  911.49  963.44  937.465  51.95   5085\n88%  962.44 1026.34  994.390  63.90   4684\n92% 1025.34 1100.71 1063.025  75.37   4149\n96% 1099.71 1200.48 1150.095 100.77   3121\n\ncdsw$optimize_windows()\n\n      from      to     mid width counts\n1   350.13  381.35  365.74 31.22   6053\n2   381.05  407.95  394.50 26.90   6189\n3   407.65  431.85  419.75 24.20   6425\n4   431.65  454.35  443.00 22.70   6447\n5   454.15  475.85  465.00 21.70   6474\n6   475.65  496.35  486.00 20.70   6467\n7   496.15  517.45  506.80 21.30   6578\n8   517.15  538.45  527.80 21.30   6627\n9   538.15  559.45  548.80 21.30   6508\n10  559.15  581.05  570.10 21.90   6628\n11  580.55  602.45  591.50 21.90   6383\n12  602.15  625.45  613.80 23.30   6450\n13  625.15  649.45  637.30 24.30   6463\n14  649.25  675.15  662.20 25.90   6392\n15  674.75  700.95  687.85 26.20   6228\n16  700.75  728.45  714.60 27.70   6139\n17  728.25  758.15  743.20 29.90   6018\n18  757.75  790.55  774.15 32.80   6035\n19  790.25  826.55  808.40 36.30   5881\n20  826.25  866.55  846.40 40.30   5622\n21  866.35  912.05  889.20 45.70   5408\n22  911.85  963.05  937.45 51.20   5049\n23  962.85 1025.85  994.35 63.00   4600\n24 1025.75 1100.25 1063.00 74.50   4105\n25 1100.15 1200.05 1150.10 99.90   3101\n\ncdsw$show_cycle()",
+    "crumbs": [
+      "Reference",
+      "Cdsw-class"
+    ]
+  },
+  {
+    "objectID": "man/Cdsw-class.html#compute-dynamic-swath-dia-windows",
+    "href": "man/Cdsw-class.html#compute-dynamic-swath-dia-windows",
+    "title": "prozor",
+    "section": "",
+    "text": "A reference class that splits the MS1 mass range into windows with about equal numbers of precursors, subject to minimum and maximum window widths.\n\n\n\n\n\nmasses\n\n\nMS1 masses.\n\n\nbreaks\n\n\nThe window boundaries.\n\n\nnbins\n\n\nNumber of windows.\n\n\ndigits\n\n\nMass accuracy of the result.\n\n\n\n\n\n\n\nas_table(overlap = 1)\n\n\nWindows as a data.frame with start (from), end (to), centre (mid), width and precursor count; overlap in m/z.\n\n\nconstant_breaks(digits = 2)\n\n\nEqual-width windows; returns the breaks invisibly.\n\n\nerror()\n\n\nDeviation of the windows from equal counts: a list, see objective_ms1().\n\n\ninitialize(masses, nbins = 25, digits = 1)\n\n\nCreate the object from a vector of MS1 masses, with nbins windows of equal width and mass accuracy digits.\n\n\noptimize_windows(digits = 1, maxbin = 15, overlap = 0)\n\n\nMove window starts and ends to regions with few precursor masses; returns a data.frame.\n\n\nplot()\n\n\nggplot of the precursors per window; the dashed line marks equal counts.\n\n\nplot_breaks()\n\n\nggplot of the current breaks against equal-width and quantile breaks.\n\n\nquantile_breaks(digits = 2)\n\n\nWindows with equal numbers of MS1 masses; widths may violate the limits of sampling_breaks().\n\n\nsampling_breaks(maxwindow = 150, minwindow = 5, digits = 2)\n\n\nQuantile windows, mixed with uniform data until all widths lie within [minwindow, maxwindow]. Stops if even equal-width windows violate the limits; returns the breaks invisibly.\n\n\nshow_cycle(overlap = 1)\n\n\nggplot of the DIA cycle, one window per step; overlap in m/z.\n\n\n\n\n\nOther DIA windows: plot_windows(), readjust_windows()\n\n\n\n\nlibrary(\"prozor\")\n\ndata(masses)\ncdsw &lt;- Cdsw(masses)\nbreaks &lt;- cdsw$sampling_breaks(maxwindow = 100)\ncdsw$plot_breaks()\n\n\n\n\n\n\n\ncdsw$plot()\n\n\n\n\n\n\n\ncdsw$as_table()\n\n       from      to      mid  width counts\n0%   349.63  381.70  365.665  32.07   6104\n4%   380.70  408.40  394.550  27.70   6382\n8%   407.40  432.23  419.815  24.83   6524\n12%  431.23  454.74  442.985  23.51   6592\n16%  453.74  476.25  464.995  22.51   6638\n20%  475.25  496.80  486.025  21.55   6722\n24%  495.80  517.79  506.795  21.99   6739\n28%  516.79  538.78  527.785  21.99   6780\n32%  537.78  559.80  548.790  22.02   6701\n36%  558.80  581.28  570.040  22.48   6731\n40%  580.28  602.85  591.565  22.57   6623\n44%  601.85  625.84  613.845  23.99   6597\n48%  624.84  649.84  637.340  25.00   6595\n52%  648.84  675.33  662.085  26.49   6485\n56%  674.33  701.37  687.850  27.04   6432\n60%  700.37  728.86  714.615  28.49   6246\n64%  727.86  758.44  743.150  30.58   6194\n68%  757.44  790.92  774.180  33.48   6106\n72%  789.92  826.90  808.410  36.98   5950\n76%  825.90  866.96  846.430  41.06   5736\n80%  865.96  912.49  889.225  46.53   5494\n84%  911.49  963.44  937.465  51.95   5085\n88%  962.44 1026.34  994.390  63.90   4684\n92% 1025.34 1100.71 1063.025  75.37   4149\n96% 1099.71 1200.48 1150.095 100.77   3121\n\ncdsw$optimize_windows()\n\n      from      to     mid width counts\n1   350.13  381.35  365.74 31.22   6053\n2   381.05  407.95  394.50 26.90   6189\n3   407.65  431.85  419.75 24.20   6425\n4   431.65  454.35  443.00 22.70   6447\n5   454.15  475.85  465.00 21.70   6474\n6   475.65  496.35  486.00 20.70   6467\n7   496.15  517.45  506.80 21.30   6578\n8   517.15  538.45  527.80 21.30   6627\n9   538.15  559.45  548.80 21.30   6508\n10  559.15  581.05  570.10 21.90   6628\n11  580.55  602.45  591.50 21.90   6383\n12  602.15  625.45  613.80 23.30   6450\n13  625.15  649.45  637.30 24.30   6463\n14  649.25  675.15  662.20 25.90   6392\n15  674.75  700.95  687.85 26.20   6228\n16  700.75  728.45  714.60 27.70   6139\n17  728.25  758.15  743.20 29.90   6018\n18  757.75  790.55  774.15 32.80   6035\n19  790.25  826.55  808.40 36.30   5881\n20  826.25  866.55  846.40 40.30   5622\n21  866.35  912.05  889.20 45.70   5408\n22  911.85  963.05  937.45 51.20   5049\n23  962.85 1025.85  994.35 63.00   4600\n24 1025.75 1100.25 1063.00 74.50   4105\n25 1100.15 1200.05 1150.10 99.90   3101\n\ncdsw$show_cycle()",
+    "crumbs": [
+      "Reference",
+      "Cdsw-class"
+    ]
+  },
+  {
+    "objectID": "man/reverse_seq.html",
+    "href": "man/reverse_seq.html",
+    "title": "prozor",
+    "section": "",
+    "text": "Reverse protein sequences to create decoys\n\n\n\nreverse_seq(fasta, rev_lab = \"REV_\")\n\n\n\n\n\n\n\nfasta\n\n\nA list of SeqFastaAA objects.\n\n\n\n\nrev_lab\n\n\nPrefix added to the names and headers of the reversed sequences.\n\n\n\n\n\n\nA list of reversed SeqFastaAA objects, named with the prefixed protein names.\n\n\n\nOther FASTA databases: create_decoy_db(), create_fgcz_fasta_db(), load_contaminants(), make_chain_id(), make_chain_id_uniprot(), make_fasta_summary(), read_peptide_fasta(), remove_signal_peptide(), write_fasta()\n\n\n\n\nlibrary(\"prozor\")\n\nfile &lt;- system.file(\"extdata/fgcz_contaminants2021_20210929.fasta.gz\", package = \"prozor\")\nfasta &lt;- read_peptide_fasta(file)\ndecoys &lt;- reverse_seq(fasta)\nnames(decoys)[1:3]\n\n[1] \"REV_zz|fgczContaminants2021|\" \"REV_zz|Y-FGCZCont00001|\"     \n[3] \"REV_zz|Y-FGCZCont00002|\"     \n\ntag &lt;- list(seqinr::as.SeqFastaAA(\"DYKDDDDK\", name = \"Flag|FLAG|p2079\", Annot = \"&gt;Flag|FLAG|p2079\"))\nreverse_seq(tag, rev_lab = \"DECOY_\")\n\n$`DECOY_Flag|FLAG|p2079`\n[1] \"KDDDDKYD\"\nattr(,\"name\")\n[1] \"DECOY_Flag|FLAG|p2079\"\nattr(,\"Annot\")\n[1] \"&gt;DECOY_Flag|FLAG|p2079\"\nattr(,\"class\")\n[1] \"SeqFastaAA\"",
+    "crumbs": [
+      "Reference",
+      "reverse_seq"
+    ]
+  },
+  {
+    "objectID": "man/reverse_seq.html#reverse-protein-sequences-to-create-decoys",
+    "href": "man/reverse_seq.html#reverse-protein-sequences-to-create-decoys",
+    "title": "prozor",
+    "section": "",
+    "text": "Reverse protein sequences to create decoys\n\n\n\nreverse_seq(fasta, rev_lab = \"REV_\")\n\n\n\n\n\n\n\nfasta\n\n\nA list of SeqFastaAA objects.\n\n\n\n\nrev_lab\n\n\nPrefix added to the names and headers of the reversed sequences.\n\n\n\n\n\n\nA list of reversed SeqFastaAA objects, named with the prefixed protein names.\n\n\n\nOther FASTA databases: create_decoy_db(), create_fgcz_fasta_db(), load_contaminants(), make_chain_id(), make_chain_id_uniprot(), make_fasta_summary(), read_peptide_fasta(), remove_signal_peptide(), write_fasta()\n\n\n\n\nlibrary(\"prozor\")\n\nfile &lt;- system.file(\"extdata/fgcz_contaminants2021_20210929.fasta.gz\", package = \"prozor\")\nfasta &lt;- read_peptide_fasta(file)\ndecoys &lt;- reverse_seq(fasta)\nnames(decoys)[1:3]\n\n[1] \"REV_zz|fgczContaminants2021|\" \"REV_zz|Y-FGCZCont00001|\"     \n[3] \"REV_zz|Y-FGCZCont00002|\"     \n\ntag &lt;- list(seqinr::as.SeqFastaAA(\"DYKDDDDK\", name = \"Flag|FLAG|p2079\", Annot = \"&gt;Flag|FLAG|p2079\"))\nreverse_seq(tag, rev_lab = \"DECOY_\")\n\n$`DECOY_Flag|FLAG|p2079`\n[1] \"KDDDDKYD\"\nattr(,\"name\")\n[1] \"DECOY_Flag|FLAG|p2079\"\nattr(,\"Annot\")\n[1] \"&gt;DECOY_Flag|FLAG|p2079\"\nattr(,\"class\")\n[1] \"SeqFastaAA\"",
+    "crumbs": [
+      "Reference",
+      "reverse_seq"
+    ]
+  },
+  {
+    "objectID": "man/greedy_parsimony.html",
+    "href": "man/greedy_parsimony.html",
+    "title": "prozor",
+    "section": "",
+    "text": "Repeatedly assigns all unexplained peptides of the protein that explains the most of them. Proteins that explain exactly the same peptides are reported together, separated by ;.\n\n\n\ngreedy_parsimony(pepprot)\n\n\n\n\n\n\n\npepprot\n\n\nA peptide-by-protein matrix, as returned by prepare_matrix().\n\n\n\n\n\n\nA named list with one element per peptide (row of pepprot): the protein, or ;-separated protein group, it is assigned to.\n\n\n\nOther protein inference: annotate_aho(), annotate_peptides(), greedy_to_table(), prepare_matrix()\n\n\n\n\nlibrary(\"prozor\")\n\ndata(protpepmetashort)\npepprot &lt;- prepare_matrix(protpepmetashort, peptide_id = \"peptide_mod_seq\")\ngroups &lt;- greedy_parsimony(pepprot)\n# every precursor is assigned to exactly one protein group\nstopifnot(setequal(names(groups), rownames(pepprot)))\nhead(unlist(groups))\n\n            AAVFNHFISDGVK        AC[+57.0]EPGVDYVYK        ADIGC[+57.0]TPGSGK \n    \"sp|P01027|CO3_MOUSE\"     \"sp|P01027|CO3_MOUSE\"     \"sp|P01027|CO3_MOUSE\" \n       ADLEC[+57.0]TKPAAR AFIDC[+57.0]C[+57.0]NHITK                  AFYEHAPK \n    \"sp|P01027|CO3_MOUSE\"     \"sp|P01027|CO3_MOUSE\"     \"sp|P01027|CO3_MOUSE\"",
+    "crumbs": [
+      "Reference",
+      "greedy_parsimony"
+    ]
+  },
+  {
+    "objectID": "man/greedy_parsimony.html#find-a-minimal-protein-set-with-a-greedy-algorithm",
+    "href": "man/greedy_parsimony.html#find-a-minimal-protein-set-with-a-greedy-algorithm",
+    "title": "prozor",
+    "section": "",
+    "text": "Repeatedly assigns all unexplained peptides of the protein that explains the most of them. Proteins that explain exactly the same peptides are reported together, separated by ;.\n\n\n\ngreedy_parsimony(pepprot)\n\n\n\n\n\n\n\npepprot\n\n\nA peptide-by-protein matrix, as returned by prepare_matrix().\n\n\n\n\n\n\nA named list with one element per peptide (row of pepprot): the protein, or ;-separated protein group, it is assigned to.\n\n\n\nOther protein inference: annotate_aho(), annotate_peptides(), greedy_to_table(), prepare_matrix()\n\n\n\n\nlibrary(\"prozor\")\n\ndata(protpepmetashort)\npepprot &lt;- prepare_matrix(protpepmetashort, peptide_id = \"peptide_mod_seq\")\ngroups &lt;- greedy_parsimony(pepprot)\n# every precursor is assigned to exactly one protein group\nstopifnot(setequal(names(groups), rownames(pepprot)))\nhead(unlist(groups))\n\n            AAVFNHFISDGVK        AC[+57.0]EPGVDYVYK        ADIGC[+57.0]TPGSGK \n    \"sp|P01027|CO3_MOUSE\"     \"sp|P01027|CO3_MOUSE\"     \"sp|P01027|CO3_MOUSE\" \n       ADLEC[+57.0]TKPAAR AFIDC[+57.0]C[+57.0]NHITK                  AFYEHAPK \n    \"sp|P01027|CO3_MOUSE\"     \"sp|P01027|CO3_MOUSE\"     \"sp|P01027|CO3_MOUSE\"",
+    "crumbs": [
+      "Reference",
+      "greedy_parsimony"
+    ]
+  },
+  {
+    "objectID": "man/predict_score_fdr.html",
+    "href": "man/predict_score_fdr.html",
+    "title": "prozor",
+    "section": "",
+    "text": "See vignette(“TargetDecoyFDR_Example”, package = “prozor”).\n\n\n\npredict_score_fdr(fdr, q_value = 1, method = \"simple_fdr\")\n\n\n\n\n\n\n\nfdr\n\n\nA result of compute_fdr() or compute_fdr_with_id().\n\n\n\n\nq_value\n\n\nThe FDR in percent.\n\n\n\n\nmethod\n\n\nThe FDR estimate to use: “simple_fdr” or “fpr”.\n\n\n\n\n\n\nThe least strict score whose q-value is at most q_value percent. An error if no score reaches it.\n\n\n\nOther FDR: compute_fdr(), compute_fdr_with_id(), plot_fdr()\n\n\n\n\nlibrary(\"prozor\")\n\ndata(fdr_sample)\nfdr &lt;- compute_fdr_with_id(fdr_sample$score, fdr_sample$protein_id, larger_better = FALSE)\npredict_score_fdr(fdr, q_value = 5)\n\n[1] 0.09991592\n\nfdr2 &lt;- compute_fdr_with_id(fdr_sample$score2, fdr_sample$protein_id, larger_better = TRUE)\npredict_score_fdr(fdr2, q_value = 5)\n\n[1] 1.000365",
+    "crumbs": [
+      "Reference",
+      "predict_score_fdr"
+    ]
+  },
+  {
+    "objectID": "man/predict_score_fdr.html#find-the-score-cut-off-for-a-given-fdr",
+    "href": "man/predict_score_fdr.html#find-the-score-cut-off-for-a-given-fdr",
+    "title": "prozor",
+    "section": "",
+    "text": "See vignette(“TargetDecoyFDR_Example”, package = “prozor”).\n\n\n\npredict_score_fdr(fdr, q_value = 1, method = \"simple_fdr\")\n\n\n\n\n\n\n\nfdr\n\n\nA result of compute_fdr() or compute_fdr_with_id().\n\n\n\n\nq_value\n\n\nThe FDR in percent.\n\n\n\n\nmethod\n\n\nThe FDR estimate to use: “simple_fdr” or “fpr”.\n\n\n\n\n\n\nThe least strict score whose q-value is at most q_value percent. An error if no score reaches it.\n\n\n\nOther FDR: compute_fdr(), compute_fdr_with_id(), plot_fdr()\n\n\n\n\nlibrary(\"prozor\")\n\ndata(fdr_sample)\nfdr &lt;- compute_fdr_with_id(fdr_sample$score, fdr_sample$protein_id, larger_better = FALSE)\npredict_score_fdr(fdr, q_value = 5)\n\n[1] 0.09991592\n\nfdr2 &lt;- compute_fdr_with_id(fdr_sample$score2, fdr_sample$protein_id, larger_better = TRUE)\npredict_score_fdr(fdr2, q_value = 5)\n\n[1] 1.000365",
+    "crumbs": [
+      "Reference",
+      "predict_score_fdr"
+    ]
+  },
+  {
+    "objectID": "man/compute_fdr.html",
+    "href": "man/compute_fdr.html",
+    "title": "prozor",
+    "section": "",
+    "text": "Sorts the hits from best to worst score and estimates the false discovery rate at each score. Within tied scores, decoys are ranked before targets, so the result does not depend on the input order and tied targets get the conservative FDR. See vignette(“TargetDecoyFDR_Example”, package = “prozor”).\n\n\n\ncompute_fdr(score, decoy_hit, larger_better = TRUE)\n\n\n\n\n\n\n\nscore\n\n\nSearch engine scores.\n\n\n\n\ndecoy_hit\n\n\nLogical, TRUE for decoy hits, one per score.\n\n\n\n\nlarger_better\n\n\nTRUE if a larger score is better, FALSE if a smaller score is better.\n\n\n\n\n\n\nA list of vectors in the sorted order:\n\n\nlarger_better: the argument.\n\n\norder: the positions of the sorted hits in the input.\n\n\ndecoy_hit, score: the sorted input.\n\n\nfpr: the FDR estimated as 2 * decoys / all hits (Elias and Gygi).\n\n\nsimple_fdr: the FDR estimated as decoys / targets (Kaell).\n\n\nq_value_fpr, q_value_simple_fdr: the q-values of both estimates.\n\n\n\n\n\nOther FDR: compute_fdr_with_id(), plot_fdr(), predict_score_fdr()\n\n\n\n\nlibrary(\"prozor\")\n\ndata(fdr_sample)\nfdr &lt;- compute_fdr(fdr_sample$score, grepl(\"^REV_\", fdr_sample$protein_id), larger_better = FALSE)\nhead(as.data.frame(fdr))\n\n  larger_better order decoy_hit        score fpr simple_fdr q_value_fpr\n1         FALSE   287     FALSE 8.611747e-21   0          0           0\n2         FALSE  3581     FALSE 6.305185e-19   0          0           0\n3         FALSE 29584     FALSE 1.750698e-17   0          0           0\n4         FALSE 26559     FALSE 3.081044e-16   0          0           0\n5         FALSE 15524     FALSE 3.835269e-16   0          0           0\n6         FALSE 30840     FALSE 3.845918e-16   0          0           0\n  q_value_simple_fdr\n1                  0\n2                  0\n3                  0\n4                  0\n5                  0\n6                  0",
+    "crumbs": [
+      "Reference",
+      "compute_fdr"
+    ]
+  },
+  {
+    "objectID": "man/compute_fdr.html#compute-the-fdr-of-target-decoy-search-results",
+    "href": "man/compute_fdr.html#compute-the-fdr-of-target-decoy-search-results",
+    "title": "prozor",
+    "section": "",
+    "text": "Sorts the hits from best to worst score and estimates the false discovery rate at each score. Within tied scores, decoys are ranked before targets, so the result does not depend on the input order and tied targets get the conservative FDR. See vignette(“TargetDecoyFDR_Example”, package = “prozor”).\n\n\n\ncompute_fdr(score, decoy_hit, larger_better = TRUE)\n\n\n\n\n\n\n\nscore\n\n\nSearch engine scores.\n\n\n\n\ndecoy_hit\n\n\nLogical, TRUE for decoy hits, one per score.\n\n\n\n\nlarger_better\n\n\nTRUE if a larger score is better, FALSE if a smaller score is better.\n\n\n\n\n\n\nA list of vectors in the sorted order:\n\n\nlarger_better: the argument.\n\n\norder: the positions of the sorted hits in the input.\n\n\ndecoy_hit, score: the sorted input.\n\n\nfpr: the FDR estimated as 2 * decoys / all hits (Elias and Gygi).\n\n\nsimple_fdr: the FDR estimated as decoys / targets (Kaell).\n\n\nq_value_fpr, q_value_simple_fdr: the q-values of both estimates.\n\n\n\n\n\nOther FDR: compute_fdr_with_id(), plot_fdr(), predict_score_fdr()\n\n\n\n\nlibrary(\"prozor\")\n\ndata(fdr_sample)\nfdr &lt;- compute_fdr(fdr_sample$score, grepl(\"^REV_\", fdr_sample$protein_id), larger_better = FALSE)\nhead(as.data.frame(fdr))\n\n  larger_better order decoy_hit        score fpr simple_fdr q_value_fpr\n1         FALSE   287     FALSE 8.611747e-21   0          0           0\n2         FALSE  3581     FALSE 6.305185e-19   0          0           0\n3         FALSE 29584     FALSE 1.750698e-17   0          0           0\n4         FALSE 26559     FALSE 3.081044e-16   0          0           0\n5         FALSE 15524     FALSE 3.835269e-16   0          0           0\n6         FALSE 30840     FALSE 3.845918e-16   0          0           0\n  q_value_simple_fdr\n1                  0\n2                  0\n3                  0\n4                  0\n5                  0\n6                  0",
+    "crumbs": [
+      "Reference",
+      "compute_fdr"
+    ]
+  },
+  {
+    "objectID": "man/read_peptide_fasta.html",
+    "href": "man/read_peptide_fasta.html",
+    "title": "prozor",
+    "section": "",
+    "text": "Reads amino-acid sequences with seqinr::read.fasta(), each sequence as one string.\n\n\n\nread_peptide_fasta(file)\n\n\n\n\n\n\n\nfile\n\n\nPath to a FASTA file, optionally gzip-compressed.\n\n\n\n\n\n\nA named list of SeqFastaAA objects, one per sequence.\n\n\n\nOther FASTA databases: create_decoy_db(), create_fgcz_fasta_db(), load_contaminants(), make_chain_id(), make_chain_id_uniprot(), make_fasta_summary(), remove_signal_peptide(), reverse_seq(), write_fasta()\n\n\n\n\nlibrary(\"prozor\")\n\nfile &lt;- system.file(\"extdata/fgcz_contaminants2021_20210929.fasta.gz\", package = \"prozor\")\nfasta &lt;- read_peptide_fasta(file)\nlength(fasta)\n\n[1] 499",
+    "crumbs": [
+      "Reference",
+      "read_peptide_fasta"
+    ]
+  },
+  {
+    "objectID": "man/read_peptide_fasta.html#read-a-fasta-file-of-protein-sequences",
+    "href": "man/read_peptide_fasta.html#read-a-fasta-file-of-protein-sequences",
+    "title": "prozor",
+    "section": "",
+    "text": "Reads amino-acid sequences with seqinr::read.fasta(), each sequence as one string.\n\n\n\nread_peptide_fasta(file)\n\n\n\n\n\n\n\nfile\n\n\nPath to a FASTA file, optionally gzip-compressed.\n\n\n\n\n\n\nA named list of SeqFastaAA objects, one per sequence.\n\n\n\nOther FASTA databases: create_decoy_db(), create_fgcz_fasta_db(), load_contaminants(), make_chain_id(), make_chain_id_uniprot(), make_fasta_summary(), remove_signal_peptide(), reverse_seq(), write_fasta()\n\n\n\n\nlibrary(\"prozor\")\n\nfile &lt;- system.file(\"extdata/fgcz_contaminants2021_20210929.fasta.gz\", package = \"prozor\")\nfasta &lt;- read_peptide_fasta(file)\nlength(fasta)\n\n[1] 499",
+    "crumbs": [
+      "Reference",
+      "read_peptide_fasta"
+    ]
+  },
+  {
+    "objectID": "man/make_chain_id.html",
+    "href": "man/make_chain_id.html",
+    "title": "prozor",
+    "section": "",
+    "text": "Make an ID for a protein chain\n\n\n\nmake_chain_id(sequence, id, sp)\n\n\n\n\n\n\n\nsequence\n\n\nThe chain sequence, as one string; not used.\n\n\n\n\nid\n\n\nThe ID of the protein, e.g. “sp|P30443|1A01_HUMAN”.\n\n\n\n\nsp\n\n\nStart position of the chain.\n\n\n\n\n\n\nid followed by s and sp, e.g. “sp|P30443|1A01_HUMANs24”.\n\n\n\nOther FASTA databases: create_decoy_db(), create_fgcz_fasta_db(), load_contaminants(), make_chain_id_uniprot(), make_fasta_summary(), read_peptide_fasta(), remove_signal_peptide(), reverse_seq(), write_fasta()\n\n\n\n\nlibrary(\"prozor\")\n\nmake_chain_id(\"ABCDE\", \"sp|P30443|1A01_HUMAN\", 24)\n\n[1] \"sp|P30443|1A01_HUMANs24\"",
+    "crumbs": [
+      "Reference",
+      "make_chain_id"
+    ]
+  },
+  {
+    "objectID": "man/make_chain_id.html#make-an-id-for-a-protein-chain",
+    "href": "man/make_chain_id.html#make-an-id-for-a-protein-chain",
+    "title": "prozor",
+    "section": "",
+    "text": "Make an ID for a protein chain\n\n\n\nmake_chain_id(sequence, id, sp)\n\n\n\n\n\n\n\nsequence\n\n\nThe chain sequence, as one string; not used.\n\n\n\n\nid\n\n\nThe ID of the protein, e.g. “sp|P30443|1A01_HUMAN”.\n\n\n\n\nsp\n\n\nStart position of the chain.\n\n\n\n\n\n\nid followed by s and sp, e.g. “sp|P30443|1A01_HUMANs24”.\n\n\n\nOther FASTA databases: create_decoy_db(), create_fgcz_fasta_db(), load_contaminants(), make_chain_id_uniprot(), make_fasta_summary(), read_peptide_fasta(), remove_signal_peptide(), reverse_seq(), write_fasta()\n\n\n\n\nlibrary(\"prozor\")\n\nmake_chain_id(\"ABCDE\", \"sp|P30443|1A01_HUMAN\", 24)\n\n[1] \"sp|P30443|1A01_HUMANs24\"",
+    "crumbs": [
+      "Reference",
+      "make_chain_id"
+    ]
+  },
+  {
+    "objectID": "man/masses.html",
+    "href": "man/masses.html",
+    "title": "prozor",
+    "section": "",
+    "text": "About 150,000 MS1 precursor masses (m/z).",
+    "crumbs": [
+      "Reference",
+      "masses"
+    ]
+  },
+  {
+    "objectID": "man/masses.html#ms1-precursor-masses",
+    "href": "man/masses.html#ms1-precursor-masses",
+    "title": "prozor",
+    "section": "",
+    "text": "About 150,000 MS1 precursor masses (m/z).",
+    "crumbs": [
+      "Reference",
+      "masses"
+    ]
+  },
+  {
+    "objectID": "man/compute_fdr_with_id.html",
+    "href": "man/compute_fdr_with_id.html",
+    "title": "prozor",
+    "section": "",
+    "text": "Same as compute_fdr(), but takes protein IDs and finds the decoys with the decoy pattern. See vignette(“TargetDecoyFDR_Example”, package = “prozor”).\n\n\n\ncompute_fdr_with_id(score, id, decoy = \"^REV_\", larger_better = TRUE)\n\n\n\n\n\n\n\nscore\n\n\nSearch engine scores.\n\n\n\n\nid\n\n\nProtein IDs, one per score.\n\n\n\n\ndecoy\n\n\nRegular expression that matches decoy IDs; the default matches IDs that start with REV_.\n\n\n\n\nlarger_better\n\n\nTRUE if a larger score is better, FALSE if a smaller score is better.\n\n\n\n\n\n\nThe list returned by compute_fdr(), plus the element id: the protein IDs in the sorted order.\n\n\n\nOther FDR: compute_fdr(), plot_fdr(), predict_score_fdr()\n\n\n\n\nlibrary(\"prozor\")\n\ndata(fdr_sample)\nfdr &lt;- compute_fdr_with_id(fdr_sample$score2, fdr_sample$protein_id, larger_better = TRUE)\nhead(as.data.frame(fdr))\n\n  larger_better order decoy_hit    score fpr simple_fdr q_value_fpr\n1          TRUE   287     FALSE 20.06491   0          0           0\n2          TRUE  3581     FALSE 18.20030   0          0           0\n3          TRUE 29584     FALSE 16.75679   0          0           0\n4          TRUE 26559     FALSE 15.51130   0          0           0\n5          TRUE 15524     FALSE 15.41620   0          0           0\n6          TRUE 30840     FALSE 15.41500   0          0           0\n  q_value_simple_fdr                   id\n1                  0 sp|P04264|K2C1_HUMAN\n2                  0 sp|P04264|K2C1_HUMAN\n3                  0 sp|P35527|K1C9_HUMAN\n4                  0 sp|P04264|K2C1_HUMAN\n5                  0 sp|P02768|ALBU_HUMAN\n6                  0 sp|P04264|K2C1_HUMAN",
+    "crumbs": [
+      "Reference",
+      "compute_fdr_with_id"
+    ]
+  },
+  {
+    "objectID": "man/compute_fdr_with_id.html#compute-the-fdr-of-target-decoy-search-results-from-protein-ids",
+    "href": "man/compute_fdr_with_id.html#compute-the-fdr-of-target-decoy-search-results-from-protein-ids",
+    "title": "prozor",
+    "section": "",
+    "text": "Same as compute_fdr(), but takes protein IDs and finds the decoys with the decoy pattern. See vignette(“TargetDecoyFDR_Example”, package = “prozor”).\n\n\n\ncompute_fdr_with_id(score, id, decoy = \"^REV_\", larger_better = TRUE)\n\n\n\n\n\n\n\nscore\n\n\nSearch engine scores.\n\n\n\n\nid\n\n\nProtein IDs, one per score.\n\n\n\n\ndecoy\n\n\nRegular expression that matches decoy IDs; the default matches IDs that start with REV_.\n\n\n\n\nlarger_better\n\n\nTRUE if a larger score is better, FALSE if a smaller score is better.\n\n\n\n\n\n\nThe list returned by compute_fdr(), plus the element id: the protein IDs in the sorted order.\n\n\n\nOther FDR: compute_fdr(), plot_fdr(), predict_score_fdr()\n\n\n\n\nlibrary(\"prozor\")\n\ndata(fdr_sample)\nfdr &lt;- compute_fdr_with_id(fdr_sample$score2, fdr_sample$protein_id, larger_better = TRUE)\nhead(as.data.frame(fdr))\n\n  larger_better order decoy_hit    score fpr simple_fdr q_value_fpr\n1          TRUE   287     FALSE 20.06491   0          0           0\n2          TRUE  3581     FALSE 18.20030   0          0           0\n3          TRUE 29584     FALSE 16.75679   0          0           0\n4          TRUE 26559     FALSE 15.51130   0          0           0\n5          TRUE 15524     FALSE 15.41620   0          0           0\n6          TRUE 30840     FALSE 15.41500   0          0           0\n  q_value_simple_fdr                   id\n1                  0 sp|P04264|K2C1_HUMAN\n2                  0 sp|P04264|K2C1_HUMAN\n3                  0 sp|P35527|K1C9_HUMAN\n4                  0 sp|P04264|K2C1_HUMAN\n5                  0 sp|P02768|ALBU_HUMAN\n6                  0 sp|P04264|K2C1_HUMAN",
+    "crumbs": [
+      "Reference",
+      "compute_fdr_with_id"
+    ]
+  },
+  {
+    "objectID": "man/bcd.html",
+    "href": "man/bcd.html",
+    "title": "prozor",
+    "section": "",
+    "text": "Peptide-spectrum matches as produced by the COMET search engine.",
+    "crumbs": [
+      "Reference",
+      "bcd"
+    ]
+  },
+  {
+    "objectID": "man/bcd.html#comet-search-results",
+    "href": "man/bcd.html#comet-search-results",
+    "title": "prozor",
+    "section": "",
+    "text": "Peptide-spectrum matches as produced by the COMET search engine.",
+    "crumbs": [
+      "Reference",
+      "bcd"
+    ]
+  },
+  {
+    "objectID": "man/make_fasta_summary.html",
+    "href": "man/make_fasta_summary.html",
+    "title": "prozor",
+    "section": "",
+    "text": "Counts the sequences and amino acids and summarises the sequence lengths.\n\n\n\nmake_fasta_summary(db, old = FALSE, as_string = TRUE)\n\n\n\n\n\n\n\ndb\n\n\nA list of sequences, as returned by read_peptide_fasta().\n\n\n\n\nold\n\n\nIf TRUE, count the amino acids by concatenating all sequences (the older, slower method).\n\n\n\n\nas_string\n\n\nIf TRUE, return text to pass to cat(); if FALSE, a list.\n\n\n\n\n\n\nWith as_string = TRUE, a character vector to pass to cat(). Otherwise a list with the elements nr_sequences, length_summary and aa_freq (counts per amino acid).\n\n\n\nOther FASTA databases: create_decoy_db(), create_fgcz_fasta_db(), load_contaminants(), make_chain_id(), make_chain_id_uniprot(), read_peptide_fasta(), remove_signal_peptide(), reverse_seq(), write_fasta()\n\n\n\n\nlibrary(\"prozor\")\n\nfile &lt;- system.file(\"extdata/fgcz_contaminants2022_20220405.fasta.gz\", package = \"prozor\")\ndb &lt;- read_peptide_fasta(file)\ncat(make_fasta_summary(db))\n\nnr sequences:\n 505 \n length summary:\n    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. \n     6.0   167.0   404.0   394.9   508.0  4061.0 \n AA frequencies:\n    [,1]\n A 13294\n B     5\n C  5640\n D  9463\n E 14735\n F  6332\n G 19192\n H  4128\n I  8134\n K 10679\n L 17753\n M  3362\n N  8431\n P  7989\n Q 10450\n R 10845\n S 19726\n T 10337\n V 11299\n W  1693\n X    11\n Y  5935\n Z     3\n\nmake_fasta_summary(db, as_string = FALSE)\n\n$nr_sequences\n[1] 505\n\n$length_summary\n   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. \n    6.0   167.0   404.0   394.9   508.0  4061.0 \n\n$aa_freq\n    A     B     C     D     E     F     G     H     I     K     L     M     N \n13294     5  5640  9463 14735  6332 19192  4128  8134 10679 17753  3362  8431 \n    P     Q     R     S     T     V     W     X     Y     Z \n 7989 10450 10845 19726 10337 11299  1693    11  5935     3",
+    "crumbs": [
+      "Reference",
+      "make_fasta_summary"
+    ]
+  },
+  {
+    "objectID": "man/make_fasta_summary.html#summarise-a-fasta-database",
+    "href": "man/make_fasta_summary.html#summarise-a-fasta-database",
+    "title": "prozor",
+    "section": "",
+    "text": "Counts the sequences and amino acids and summarises the sequence lengths.\n\n\n\nmake_fasta_summary(db, old = FALSE, as_string = TRUE)\n\n\n\n\n\n\n\ndb\n\n\nA list of sequences, as returned by read_peptide_fasta().\n\n\n\n\nold\n\n\nIf TRUE, count the amino acids by concatenating all sequences (the older, slower method).\n\n\n\n\nas_string\n\n\nIf TRUE, return text to pass to cat(); if FALSE, a list.\n\n\n\n\n\n\nWith as_string = TRUE, a character vector to pass to cat(). Otherwise a list with the elements nr_sequences, length_summary and aa_freq (counts per amino acid).\n\n\n\nOther FASTA databases: create_decoy_db(), create_fgcz_fasta_db(), load_contaminants(), make_chain_id(), make_chain_id_uniprot(), read_peptide_fasta(), remove_signal_peptide(), reverse_seq(), write_fasta()\n\n\n\n\nlibrary(\"prozor\")\n\nfile &lt;- system.file(\"extdata/fgcz_contaminants2022_20220405.fasta.gz\", package = \"prozor\")\ndb &lt;- read_peptide_fasta(file)\ncat(make_fasta_summary(db))\n\nnr sequences:\n 505 \n length summary:\n    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. \n     6.0   167.0   404.0   394.9   508.0  4061.0 \n AA frequencies:\n    [,1]\n A 13294\n B     5\n C  5640\n D  9463\n E 14735\n F  6332\n G 19192\n H  4128\n I  8134\n K 10679\n L 17753\n M  3362\n N  8431\n P  7989\n Q 10450\n R 10845\n S 19726\n T 10337\n V 11299\n W  1693\n X    11\n Y  5935\n Z     3\n\nmake_fasta_summary(db, as_string = FALSE)\n\n$nr_sequences\n[1] 505\n\n$length_summary\n   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. \n    6.0   167.0   404.0   394.9   508.0  4061.0 \n\n$aa_freq\n    A     B     C     D     E     F     G     H     I     K     L     M     N \n13294     5  5640  9463 14735  6332 19192  4128  8134 10679 17753  3362  8431 \n    P     Q     R     S     T     V     W     X     Y     Z \n 7989 10450 10845 19726 10337 11299  1693    11  5935     3",
+    "crumbs": [
+      "Reference",
+      "make_fasta_summary"
+    ]
+  },
+  {
+    "objectID": "man/plot_windows.html",
+    "href": "man/plot_windows.html",
+    "title": "prozor",
+    "section": "",
+    "text": "Plot precursor masses with DIA window boundaries\n\n\n\nplot_windows(windows, ms1data, digits = 1)\n\n\n\n\n\n\n\nwindows\n\n\nA data frame or list with the columns from and to, e.g. from Cdsw$as_table() or readjust_windows().\n\n\n\n\nms1data\n\n\nPrecursor masses (m/z).\n\n\n\n\ndigits\n\n\nThe histogram bin width is 1 / 10^digits m/z.\n\n\n\n\n\n\nA ggplot object.\n\n\n\nOther DIA windows: Cdsw-class, readjust_windows()\n\n\n\n\nlibrary(\"prozor\")\n\ndata(masses)\ncdsw &lt;- Cdsw(masses)\nbreaks &lt;- cdsw$sampling_breaks(maxwindow = 100)\nwindows &lt;- readjust_windows(cdsw$as_table(), masses, maxbin = 10)\nplot_windows(windows, masses)\n\n\n\n\n\n\n\n# zoom into one window\nstart &lt;- windows$from[5]\nplot_windows(windows, masses) + ggplot2::coord_cartesian(xlim = c(start - 3, start + 3))",
+    "crumbs": [
+      "Reference",
+      "plot_windows"
+    ]
+  },
+  {
+    "objectID": "man/plot_windows.html#plot-precursor-masses-with-dia-window-boundaries",
+    "href": "man/plot_windows.html#plot-precursor-masses-with-dia-window-boundaries",
+    "title": "prozor",
+    "section": "",
+    "text": "Plot precursor masses with DIA window boundaries\n\n\n\nplot_windows(windows, ms1data, digits = 1)\n\n\n\n\n\n\n\nwindows\n\n\nA data frame or list with the columns from and to, e.g. from Cdsw$as_table() or readjust_windows().\n\n\n\n\nms1data\n\n\nPrecursor masses (m/z).\n\n\n\n\ndigits\n\n\nThe histogram bin width is 1 / 10^digits m/z.\n\n\n\n\n\n\nA ggplot object.\n\n\n\nOther DIA windows: Cdsw-class, readjust_windows()\n\n\n\n\nlibrary(\"prozor\")\n\ndata(masses)\ncdsw &lt;- Cdsw(masses)\nbreaks &lt;- cdsw$sampling_breaks(maxwindow = 100)\nwindows &lt;- readjust_windows(cdsw$as_table(), masses, maxbin = 10)\nplot_windows(windows, masses)\n\n\n\n\n\n\n\n# zoom into one window\nstart &lt;- windows$from[5]\nplot_windows(windows, masses) + ggplot2::coord_cartesian(xlim = c(start - 3, start + 3))",
+    "crumbs": [
+      "Reference",
+      "plot_windows"
+    ]
+  },
+  {
+    "objectID": "man/plot_fdr.html",
+    "href": "man/plot_fdr.html",
+    "title": "prozor",
+    "section": "",
+    "text": "Two panels on a shared score axis: the histogram of target and decoy scores, and the q-values of both FDR estimates in percent. When smaller scores are better, the score axis is logarithmic. See vignette(“TargetDecoyFDR_Example”, package = “prozor”).\n\n\n\nplot_fdr(fdr, bins = 100)\n\n\n\n\n\n\n\nfdr\n\n\nA result of compute_fdr() or compute_fdr_with_id().\n\n\n\n\nbins\n\n\nNumber of histogram bins.\n\n\n\n\n\n\nA ggplot object.\n\n\n\nOther FDR: compute_fdr(), compute_fdr_with_id(), predict_score_fdr()\n\n\n\n\nlibrary(\"prozor\")\n\ndata(fdr_sample)\nfdr &lt;- compute_fdr_with_id(fdr_sample$score, fdr_sample$protein_id, larger_better = FALSE)\nplot_fdr(fdr)\n\n\n\n\n\n\n\nfdr2 &lt;- compute_fdr_with_id(fdr_sample$score2, fdr_sample$protein_id, larger_better = TRUE)\nplot_fdr(fdr2)",
+    "crumbs": [
+      "Reference",
+      "plot_fdr"
+    ]
+  },
+  {
+    "objectID": "man/plot_fdr.html#plot-score-distributions-and-q-values",
+    "href": "man/plot_fdr.html#plot-score-distributions-and-q-values",
+    "title": "prozor",
+    "section": "",
+    "text": "Two panels on a shared score axis: the histogram of target and decoy scores, and the q-values of both FDR estimates in percent. When smaller scores are better, the score axis is logarithmic. See vignette(“TargetDecoyFDR_Example”, package = “prozor”).\n\n\n\nplot_fdr(fdr, bins = 100)\n\n\n\n\n\n\n\nfdr\n\n\nA result of compute_fdr() or compute_fdr_with_id().\n\n\n\n\nbins\n\n\nNumber of histogram bins.\n\n\n\n\n\n\nA ggplot object.\n\n\n\nOther FDR: compute_fdr(), compute_fdr_with_id(), predict_score_fdr()\n\n\n\n\nlibrary(\"prozor\")\n\ndata(fdr_sample)\nfdr &lt;- compute_fdr_with_id(fdr_sample$score, fdr_sample$protein_id, larger_better = FALSE)\nplot_fdr(fdr)\n\n\n\n\n\n\n\nfdr2 &lt;- compute_fdr_with_id(fdr_sample$score2, fdr_sample$protein_id, larger_better = TRUE)\nplot_fdr(fdr2)",
+    "crumbs": [
+      "Reference",
+      "plot_fdr"
+    ]
+  },
+  {
+    "objectID": "man/annotate_peptides.html",
+    "href": "man/annotate_peptides.html",
+    "title": "prozor",
+    "section": "",
+    "text": "Finds every occurrence of each peptide in fasta with annotate_aho() and flags whether it is a tryptic match. Peptides that occur in no protein are dropped.\n\n\n\nannotate_peptides(\n  pepinfo,\n  fasta,\n  peptide = \"peptide_seq\",\n  prefix = \"(([RK])|(^)|(^M))\",\n  suffix = \"\"\n)\n\n\n\n\n\n\n\npepinfo\n\n\nA character vector of peptide sequences, or a data frame (or tibble) with the column peptide and any further columns, such as the charge state, which are kept.\n\n\n\n\nfasta\n\n\nA list of protein sequences with unique names, as returned by read_peptide_fasta().\n\n\n\n\npeptide\n\n\nName of the column with the peptide sequences.\n\n\n\n\nprefix\n\n\nRegular expression the residues before a match must end with.\n\n\n\n\nsuffix\n\n\nRegular expression the residues after a match must start with.\n\n\n\n\n\n\nEach occurrence of a peptide in a protein is one row. matched is TRUE when the residues before that occurrence match prefix and the residues after it match suffix; by default, when the occurrence follows K or R, starts the protein, or follows its initial methionine.\n\n\n\nA data frame with one row per row of pepinfo and protein occurrence: the columns of pepinfo, protein_id, offset (1-based start of the peptide), protein_sequence, matched and peptide_length. NULL, with a warning, if no peptide occurs in fasta.\n\n\n\nOther protein inference: annotate_aho(), greedy_parsimony(), greedy_to_table(), prepare_matrix()\n\n\n\n\nlibrary(\"prozor\")\n\nfile &lt;- system.file(\"extdata/IDResults.txt.gz\", package = \"prozor\")\npeptides &lt;- unique(utils::read.delim(file)$peptideSeq)\nfasta_file &lt;- system.file(\"p1000_db1_example/Annotation_canSeq.fasta.gz\", package = \"prozor\")\nfasta &lt;- read_peptide_fasta(fasta_file)\nannot &lt;- annotate_peptides(peptides[1:20], fasta)\nhead(annot[, c(\"protein_id\", \"peptide_seq\", \"offset\", \"peptide_length\", \"matched\")])\n\n             protein_id              peptide_seq offset peptide_length matched\n1 sp|P02765|FETUA_HUMAN AQLVPLPPSTYVEFTVSGTDCVAK    188             24    TRUE\n2  sp|P06396|GELS_HUMAN   AQPVQVAEGSEPDGFWEALGGK    627             22    TRUE\n3  sp|P01011|AACT_HUMAN      AVLDVFEEGTEASAATAVK    361             19    TRUE\n4  sp|P02787|TRFE_HUMAN            CSTSSLLEACTFR    684             13    TRUE\n5  sp|P01011|AACT_HUMAN                EIGELYLPK    307              9    TRUE\n6 sp|P01767|HV353_HUMAN      EVQLVETGGGLIQPGGSLR     20             19   FALSE",
+    "crumbs": [
+      "Reference",
+      "annotate_peptides"
+    ]
+  },
+  {
+    "objectID": "man/annotate_peptides.html#annotate-peptides-with-the-proteins-that-contain-them",
+    "href": "man/annotate_peptides.html#annotate-peptides-with-the-proteins-that-contain-them",
+    "title": "prozor",
+    "section": "",
+    "text": "Finds every occurrence of each peptide in fasta with annotate_aho() and flags whether it is a tryptic match. Peptides that occur in no protein are dropped.\n\n\n\nannotate_peptides(\n  pepinfo,\n  fasta,\n  peptide = \"peptide_seq\",\n  prefix = \"(([RK])|(^)|(^M))\",\n  suffix = \"\"\n)\n\n\n\n\n\n\n\npepinfo\n\n\nA character vector of peptide sequences, or a data frame (or tibble) with the column peptide and any further columns, such as the charge state, which are kept.\n\n\n\n\nfasta\n\n\nA list of protein sequences with unique names, as returned by read_peptide_fasta().\n\n\n\n\npeptide\n\n\nName of the column with the peptide sequences.\n\n\n\n\nprefix\n\n\nRegular expression the residues before a match must end with.\n\n\n\n\nsuffix\n\n\nRegular expression the residues after a match must start with.\n\n\n\n\n\n\nEach occurrence of a peptide in a protein is one row. matched is TRUE when the residues before that occurrence match prefix and the residues after it match suffix; by default, when the occurrence follows K or R, starts the protein, or follows its initial methionine.\n\n\n\nA data frame with one row per row of pepinfo and protein occurrence: the columns of pepinfo, protein_id, offset (1-based start of the peptide), protein_sequence, matched and peptide_length. NULL, with a warning, if no peptide occurs in fasta.\n\n\n\nOther protein inference: annotate_aho(), greedy_parsimony(), greedy_to_table(), prepare_matrix()\n\n\n\n\nlibrary(\"prozor\")\n\nfile &lt;- system.file(\"extdata/IDResults.txt.gz\", package = \"prozor\")\npeptides &lt;- unique(utils::read.delim(file)$peptideSeq)\nfasta_file &lt;- system.file(\"p1000_db1_example/Annotation_canSeq.fasta.gz\", package = \"prozor\")\nfasta &lt;- read_peptide_fasta(fasta_file)\nannot &lt;- annotate_peptides(peptides[1:20], fasta)\nhead(annot[, c(\"protein_id\", \"peptide_seq\", \"offset\", \"peptide_length\", \"matched\")])\n\n             protein_id              peptide_seq offset peptide_length matched\n1 sp|P02765|FETUA_HUMAN AQLVPLPPSTYVEFTVSGTDCVAK    188             24    TRUE\n2  sp|P06396|GELS_HUMAN   AQPVQVAEGSEPDGFWEALGGK    627             22    TRUE\n3  sp|P01011|AACT_HUMAN      AVLDVFEEGTEASAATAVK    361             19    TRUE\n4  sp|P02787|TRFE_HUMAN            CSTSSLLEACTFR    684             13    TRUE\n5  sp|P01011|AACT_HUMAN                EIGELYLPK    307              9    TRUE\n6 sp|P01767|HV353_HUMAN      EVQLVETGGGLIQPGGSLR     20             19   FALSE",
+    "crumbs": [
+      "Reference",
+      "annotate_peptides"
+    ]
+  },
+  {
+    "objectID": "CITATION.html",
+    "href": "CITATION.html",
+    "title": "Citation",
+    "section": "",
+    "text": "Citation\nTo cite package ‘prozor’ in publications use:\n\nWolski W (????). prozor: Minimal Protein Set Explaining Peptide Spectrum Matches. doi:10.32614/CRAN.package.prozor. R package version 0.4.0, https://CRAN.R-project.org/package=prozor.",
+    "crumbs": [
+      "Citation"
+    ]
+  },
+  {
+    "objectID": "vignettes/PlottingProteinCoverage.html",
+    "href": "vignettes/PlottingProteinCoverage.html",
+    "title": "Untitled",
+    "section": "",
+    "text": "library(prozor)\nresCan &lt;-\n    prozor::read_peptide_fasta(\n        system.file(\"p1000_db1_example/Annotation_canSeq.fasta.gz\" , package = \"prozor\"))\n\nfile = system.file(\"extdata/IDResults.txt.gz\" , package = \"prozor\")\nspecMeta &lt;- readr::read_tsv(file)\n\nRows: 5000 Columns: 12\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \"\\t\"\nchr  (2): peptideSeq, peptideModSeq\ndbl (10): RefSpectraId, numPeaks, precursorCharge, precursorMZ, retentionTim...\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.\n\nupeptide &lt;- unique(specMeta$peptideSeq)\n\nannotCan &lt;- prozor::annotate_peptides(upeptide, resCan)\n#undebug(annotate_peptides)\nlibrary(dplyr)\n\n\nAttaching package: 'dplyr'\n\n\nThe following objects are masked from 'package:stats':\n\n    filter, lag\n\n\nThe following objects are masked from 'package:base':\n\n    intersect, setdiff, setequal, union\n\nlibrary(tidyr)\nlibrary(stringr)\nlibrary(ggplot2)\nxx &lt;- annotCan |&gt; group_by(protein_id,protein_sequence) |&gt; nest()\n\nhead(xx)\n\n# A tibble: 6 × 3\n# Groups:   protein_id, protein_sequence [6]\n  protein_id            protein_sequence                                data    \n  &lt;chr&gt;                 &lt;chr&gt;                                           &lt;list&gt;  \n1 sp|P0C0L4|CO4A_HUMAN  MRLLWGLIWASSFFTLSLQKPRLLLFSPSVVHLGVPLSVGVQLQDV… &lt;tibble&gt;\n2 sp|P0C0L5|CO4B_HUMAN  MRLLWGLIWASSFFTLSLQKPRLLLFSPSVVHLGVPLSVGVQLQDV… &lt;tibble&gt;\n3 sp|P02768|ALBU_HUMAN  MKWVTFISLLFLFSSAYSRGVFRRDAHKSEVAHRFKDLGEENFKAL… &lt;tibble&gt;\n4 sp|P04114|APOB_HUMAN  MDPPRPALLALLALPALLLLLLAGARAEEEMLENVSLVCPKDATRF… &lt;tibble&gt;\n5 sp|P19827|ITIH1_HUMAN MDGAMGPRGLLLCMYLVSLLILQAMPALGSATGRSKSSEKRQAVDT… &lt;tibble&gt;\n6 sp|A0M8Q6|IGLC7_HUMAN GQPKAAPSVTLFPPSSEELQANKATLVCLVSDFNPGAVTVAWKADG… &lt;tibble&gt;\n\ny &lt;- xx$data[[1]]\n\nstrl &lt;- str_length(xx$protein_sequence[[1]])\nx &lt;- vector(mode = \"numeric\", strl)\n\n\nfor(i in 1:nrow(y)) {\n  x[y$offset[i]:(y$offset[i] + y$peptide_length[i] - 1)] &lt;- x[y$offset[i]:(y$offset[i] + y$peptide_length[i] -1)] + 1\n}\n\nxd &lt;- data.frame(pos = 1:strl, sequence = str_split_1(xx$protein_sequence[1],\"\") , nr = x)\n#plot(xd$pos,xd$nr, type=\"h\", xlim = c(100,200)) \n\nxd$ypos &lt;- rep(1:100, length.out = nrow(xd), each = 50)\nhead(xd)\n\n  pos sequence nr ypos\n1   1        M  0    1\n2   2        R  0    1\n3   3        L  0    1\n4   4        L  0    1\n5   5        W  0    1\n6   6        G  0    1\n\nxd &lt;- xd |&gt; mutate(xpos = row_number(), .by = c(ypos))\nhead(xd)\n\n  pos sequence nr ypos xpos\n1   1        M  0    1    1\n2   2        R  0    1    2\n3   3        L  0    1    3\n4   4        L  0    1    4\n5   5        W  0    1    5\n6   6        G  0    1    6\n\nxd$nr &lt;- as.factor(xd$nr)\nxd |&gt; ggplot(aes(x = xpos, y = -ypos, color = nr, label = sequence)) +\n  geom_text(size = 4) + \n  theme_classic() +  \n  scale_color_manual(guide = \"none\", values = c(\"lightgray\", \"green\", \"blue\", \"black\"))\nlibrary(Matrix)\n\n\nAttaching package: 'Matrix'\n\n\nThe following objects are masked from 'package:tidyr':\n\n    expand, pack, unpack\n\nprecursors &lt;-\n    unique(subset(specMeta, select = c(\n        peptideModSeq, precursorCharge, peptideSeq\n    )))",
+    "crumbs": [
+      "Articles",
+      "Untitled"
+    ]
+  },
+  {
+    "objectID": "vignettes/PlottingProteinCoverage.html#protein-inference-for-database-with-trembl-identifiers",
+    "href": "vignettes/PlottingProteinCoverage.html#protein-inference-for-database-with-trembl-identifiers",
+    "title": "Untitled",
+    "section": "Protein Inference for database with Trembl identifiers",
+    "text": "Protein Inference for database with Trembl identifiers\n\nannotatedPrecursors &lt;-\n    merge(precursors ,\n          subset(annotCan, select = c(peptide_seq, protein_id)),\n          by.x = \"peptideSeq\",\n          by.y = \"peptide_seq\")\n\n\nxx &lt;-\n    prepare_matrix(annotatedPrecursors ,\n                  protein_id = \"protein_id\",\n                  peptide_id = \"peptideSeq\")\n\n\nxx &lt;- xx[order(rowSums(xx), decreasing = FALSE),]\nxx &lt;- xx[,order(colSums(xx), decreasing = TRUE)]\ndd &lt;- summary(xx)\nplot(dd$j, dd$i , col= dd$x, pch = 15, cex=0.5)\nabline(h = c(0, nrow(xx)), v=c(0, ncol(xx)))\n\n\n\n\nPeptide protein machtes for the All database. Rows - peptides, Columns - proteins, black - peptide protein match.\n\n\n\nxxCAN &lt;- greedy_parsimony(xx)\nprotPepAssingments &lt;- prozor:::.greedy2(xx)\nmatrixlist &lt;- lapply(protPepAssingments,function(x){ t(cbind(x$peps, rep(x$prot,length(x$peps)))) })",
+    "crumbs": [
+      "Articles",
+      "Untitled"
+    ]
+  },
+  {
+    "objectID": "vignettes/TargetDecoyFDR_Example.html",
+    "href": "vignettes/TargetDecoyFDR_Example.html",
+    "title": "Target Decoy FDR",
+    "section": "",
+    "text": "Here we describe how you can estimate the false discovery rate (FDR) when matching your spectra against a FASTA sequence database using spectra search engines such as Mascot or Comet. The sequence database contains forward sequences and the same number of reverse sequences.",
+    "crumbs": [
+      "Articles",
+      "Target Decoy FDR"
+    ]
+  },
+  {
+    "objectID": "vignettes/TargetDecoyFDR_Example.html#the-data",
+    "href": "vignettes/TargetDecoyFDR_Example.html#the-data",
+    "title": "Target Decoy FDR",
+    "section": "The data",
+    "text": "The data\nThe data needs to have two columns, one with a label, to distinguish targets and decoys, the other with a score. Then you also need to know if a larger score or a smaller score is better. In our example data, we have two scores: score and score2. While the score is better if it is smaller (e.g., posterior error probability), score2 is better if it is larger.\n\n\n\n\n\nScore distributions of decoy (black line) and forward (blue line) hits; the dashed line is the score threshold. TN true negative, FP false positive, FN false negative, TP true positive.\n\n\n\n\n\nlibrary(dplyr)\nlibrary(prozor)\ndata(fdr_sample)\nknitr::kable(head(fdr_sample))\n\n\n\n\n\nprotein_id\nscore\nscore2\n\n\n\n\n28064\nsp|P00738|HPT_HUMAN\n0.0030141\n2.520847\n\n\n47194\nsp|P19823|ITIH2_HUMAN\n0.0008878\n3.051662\n\n\n8916\nsp|Q86WI1|PKHL1_HUMAN\n0.0350109\n1.455797\n\n\n37157\nsp|P04003|C4BPA_HUMAN\n0.0018141\n2.741330\n\n\n60963\nsp|P01876|IGHA1_HUMAN\n0.0000013\n5.897889\n\n\n89689\nsp|P01042|KNG1_HUMAN\n0.0000000\n12.305967\n\n\n\n\n\nWhat is also required is that the number of Targets and Decoys are the same. This is given for mass spectrometry database searches. Our dataset here is already truncated at a 5% FDR. Therefore the number of decoys is much smaller.\n\ntable(grepl(\"^REV_\", fdr_sample$protein_id))\n\n\nFALSE  TRUE \n39142   858 \n\n\nIn our example, we will use the package to filter the data further for a 1% FDR.\nComputing the FDR can be done by calling the function compute_fdr(). plot_fdr() then shows the score distributions of targets and decoys (top) and the q-values of the two FDR estimates (bottom). The score axis is logarithmic because smaller scores are better.\n\nfdr1 &lt;- compute_fdr(fdr_sample$score, grepl(\"^REV_\", fdr_sample$protein_id), larger_better = FALSE)\nplot_fdr(fdr1)\n\n\n\n\n\n\n\n\nThe output is a named list which can be easily converted into a data frame. We next will briefly discuss the elements of the output.\n\nknitr::kable(head(data.frame(fdr1)))\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nlarger_better\norder\ndecoy_hit\nscore\nfpr\nsimple_fdr\nq_value_fpr\nq_value_simple_fdr\n\n\n\n\nFALSE\n287\nFALSE\n0\n0\n0\n0\n0\n\n\nFALSE\n3581\nFALSE\n0\n0\n0\n0\n0\n\n\nFALSE\n29584\nFALSE\n0\n0\n0\n0\n0\n\n\nFALSE\n26559\nFALSE\n0\n0\n0\n0\n0\n\n\nFALSE\n15524\nFALSE\n0\n0\n0\n0\n0\n\n\nFALSE\n30840\nFALSE\n0\n0\n0\n0\n0",
+    "crumbs": [
+      "Articles",
+      "Target Decoy FDR"
+    ]
+  },
+  {
+    "objectID": "vignettes/TargetDecoyFDR_Example.html#types-of-fdr",
+    "href": "vignettes/TargetDecoyFDR_Example.html#types-of-fdr",
+    "title": "Target Decoy FDR",
+    "section": "Types of FDR",
+    "text": "Types of FDR\nWe define\n * false positives (FP) as the number of passing decoy assignments\n * true positives (TP) as the number of passing forward hits.\n\nFalse positive rate\nWhich is the “Fraction of incorrect assignments above score threshold”. The multiplier 2 is needed here since we assume that also the forward sequences have false assignments.\n\\[\nFPR = \\frac{2 \\cdot FP}{TP + FP}\n\\]\nThis is taken from the reference by (Elias and Gygi 2007). (Storey and Tibshirani 2003) defines FPR differently. Kaell points out that the FPR here actually should be named FDR and that “Many proteomics papers incorrectly refer to this quantity as the false positive rate.”\n\n\nSimple FDR\n“The FDR associated with a particular score threshold is defined as the expected percentage of accepted PSMs that are incorrect, where an accepted PSM is one that scores above the threshold (Many proteomics papers incorrectly refer to this quantity as the false positive rate).” ((Käll et al. 2007))\nThe Simple FDR introduced by ((Käll et al. 2007)) is defined by :\n\\[\nSimpleFDR =  \\frac{FP}{TP}\n\\]\n“For a given score threshold, we count the number of decoy PSMs above the threshold and the number of target PSMs above the threshold. We can now estimate the FDR by simply computing the ratio of these two values (SimpleFDR).”(Käll et al. 2007)\n\nfdr_curves &lt;- data.frame(\n  score = rep(fdr1$score, 2),\n  fdr = 100 * c(fdr1$simple_fdr, fdr1$q_value_simple_fdr),\n  curve = rep(c(\"SimpleFDR\", \"q-value\"), each = length(fdr1$score))\n)\nggplot(fdr_curves, aes(x = score, y = fdr, colour = curve)) +\n  geom_line() +\n  coord_cartesian(xlim = c(0, 0.002), ylim = c(0, 0.05)) +\n  scale_colour_manual(values = c(SimpleFDR = \"black\", \"q-value\" = \"#E69F00\")) +\n  labs(x = \"score (smaller is better)\", y = \"FDR (%)\", colour = NULL)\n\n\n\n\n\n\n\n\nAlthough the score is getting better (smaller) the FDR may increase since the number of TP in the denominator decreases while the number of FP stays the same. Therefore Storey and Tibshirani proposed the q-value, “which in our case is defined as the minimal FDR threshold at which a given PSM is accepted”(Käll et al. 2007).",
+    "crumbs": [
+      "Articles",
+      "Target Decoy FDR"
+    ]
+  },
+  {
+    "objectID": "vignettes/TargetDecoyFDR_Example.html#getting-the-score-for-an-fdr.",
+    "href": "vignettes/TargetDecoyFDR_Example.html#getting-the-score-for-an-fdr.",
+    "title": "Target Decoy FDR",
+    "section": "Getting the score for an FDR.",
+    "text": "Getting the score for an FDR.\nMost frequently you will need to get the score for an FDR in order to filter your data. To report your data with an FDR of 1% instead of 5% you can execute this code:\n\n(score05G &lt;- predict_score_fdr(fdr1, q_value = 5, method = \"fpr\"))\n\n[1] 0.09991592\n\ndim(filter(fdr_sample, score &lt;= score05G))\n\n[1] 40000     3\n\n(score01G &lt;- predict_score_fdr(fdr1, q_value = 1, method = \"fpr\"))\n\n[1] 0.008509834\n\ndim(filter(fdr_sample, score &lt;= score01G))\n\n[1] 29180     3\n\n(score01K &lt;- predict_score_fdr(fdr1, q_value = 1, method = \"simple_fdr\"))\n\n[1] 0.03394749\n\ndim(filter(fdr_sample, score &lt;= score01K))\n\n[1] 34876     3",
+    "crumbs": [
+      "Articles",
+      "Target Decoy FDR"
+    ]
+  },
+  {
+    "objectID": "vignettes/TargetDecoyFDR_Example.html#the-order-column",
+    "href": "vignettes/TargetDecoyFDR_Example.html#the-order-column",
+    "title": "Target Decoy FDR",
+    "section": "The order column",
+    "text": "The order column\nSince the scores are sorted to compute the FDR, we return also the order column. This column can be used to align the ID’s with the scores.\n\nknitr::kable(head(data.frame(id = fdr_sample$protein_id[fdr1$order], fdr1)))\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nid\nlarger_better\norder\ndecoy_hit\nscore\nfpr\nsimple_fdr\nq_value_fpr\nq_value_simple_fdr\n\n\n\n\nsp|P04264|K2C1_HUMAN\nFALSE\n287\nFALSE\n0\n0\n0\n0\n0\n\n\nsp|P04264|K2C1_HUMAN\nFALSE\n3581\nFALSE\n0\n0\n0\n0\n0\n\n\nsp|P35527|K1C9_HUMAN\nFALSE\n29584\nFALSE\n0\n0\n0\n0\n0\n\n\nsp|P04264|K2C1_HUMAN\nFALSE\n26559\nFALSE\n0\n0\n0\n0\n0\n\n\nsp|P02768|ALBU_HUMAN\nFALSE\n15524\nFALSE\n0\n0\n0\n0\n0\n\n\nsp|P04264|K2C1_HUMAN\nFALSE\n30840\nFALSE\n0\n0\n0\n0\n0\n\n\n\n\n\nFor convenience we provide the function compute_fdr_with_id() which integrates the reordering of the ID’s.\n\nfdr1 &lt;- compute_fdr_with_id(fdr_sample$score, fdr_sample$protein_id, decoy = \"^REV_\", larger_better = FALSE)\nknitr::kable(head(data.frame(fdr1)))\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nlarger_better\norder\ndecoy_hit\nscore\nfpr\nsimple_fdr\nq_value_fpr\nq_value_simple_fdr\nid\n\n\n\n\nFALSE\n287\nFALSE\n0\n0\n0\n0\n0\nsp|P04264|K2C1_HUMAN\n\n\nFALSE\n3581\nFALSE\n0\n0\n0\n0\n0\nsp|P04264|K2C1_HUMAN\n\n\nFALSE\n29584\nFALSE\n0\n0\n0\n0\n0\nsp|P35527|K1C9_HUMAN\n\n\nFALSE\n26559\nFALSE\n0\n0\n0\n0\n0\nsp|P04264|K2C1_HUMAN\n\n\nFALSE\n15524\nFALSE\n0\n0\n0\n0\n0\nsp|P02768|ALBU_HUMAN\n\n\nFALSE\n30840\nFALSE\n0\n0\n0\n0\n0\nsp|P04264|K2C1_HUMAN",
+    "crumbs": [
+      "Articles",
+      "Target Decoy FDR"
+    ]
+  },
+  {
+    "objectID": "vignettes/cdsw.html",
+    "href": "vignettes/cdsw.html",
+    "title": "Computing Dynamic SWATH Windows",
+    "section": "",
+    "text": "Introduction\nFunction optimizes Extraction windows for DIA/SWATH so we have the same number of precursor per window. This optimization is based on spectral library data or non redundant .blib files (Bibliospec).\n\n\nPrerequisites\n\n\nConstant width method\n\ndata(\"masses\")\ncdsw &lt;- Cdsw(masses, nbins = 25, digits = 1)\ncdsw$plot()\n\n\n\n\n\n\n\n\n\nknitr::kable(cdsw$as_table())\n\n\n\n\nfrom\nto\nmid\nwidth\ncounts\n\n\n\n\n349.63\n384.62\n367.125\n34.99\n6688\n\n\n383.62\n418.62\n401.120\n35.00\n8357\n\n\n417.62\n452.61\n435.115\n34.99\n9661\n\n\n451.61\n486.61\n469.110\n35.00\n10452\n\n\n485.61\n520.60\n503.105\n34.99\n10725\n\n\n519.60\n554.59\n537.095\n34.99\n10837\n\n\n553.59\n588.59\n571.090\n35.00\n10433\n\n\n587.59\n622.58\n605.085\n34.99\n9750\n\n\n621.58\n656.58\n639.080\n35.00\n9276\n\n\n655.58\n690.57\n673.075\n34.99\n8406\n\n\n689.57\n724.56\n707.065\n34.99\n7848\n\n\n723.56\n758.56\n741.060\n35.00\n7116\n\n\n757.56\n792.55\n775.055\n34.99\n6355\n\n\n791.55\n826.55\n809.050\n35.00\n5666\n\n\n825.55\n860.54\n843.045\n34.99\n4923\n\n\n859.54\n894.53\n877.035\n34.99\n4359\n\n\n893.53\n928.53\n911.030\n35.00\n3807\n\n\n927.53\n962.52\n945.025\n34.99\n3344\n\n\n961.52\n996.52\n979.020\n35.00\n2724\n\n\n995.52\n1030.51\n1013.015\n34.99\n2357\n\n\n1029.51\n1064.50\n1047.005\n34.99\n2042\n\n\n1063.50\n1098.50\n1081.000\n35.00\n1807\n\n\n1097.50\n1132.49\n1114.995\n34.99\n1313\n\n\n1131.49\n1166.49\n1148.990\n35.00\n1088\n\n\n1165.49\n1200.48\n1182.985\n34.99\n881\n\n\n\n\n\n\nconst_error &lt;- cdsw$error()\n\n\n\nClassical Method based on quantile\nSame number of MS1 precursors in each window\n\ncdsw$quantile_breaks()\n\n\ncdsw$plot()\n\n\n\n\n\n\n\n\n\nknitr::kable(cdsw$as_table())\n\n\n\n\n\nfrom\nto\nmid\nwidth\ncounts\n\n\n\n\n0%\n349.63\n381.03\n365.330\n31.40\n5956\n\n\n4%\n380.03\n406.71\n393.370\n26.68\n6131\n\n\n8%\n405.71\n429.24\n417.475\n23.53\n6070\n\n\n12%\n428.24\n450.05\n439.145\n21.81\n6086\n\n\n16%\n449.05\n470.06\n459.555\n21.01\n6095\n\n\n20%\n469.06\n488.80\n478.930\n19.74\n6107\n\n\n24%\n487.80\n508.12\n497.960\n20.32\n6173\n\n\n28%\n507.12\n526.81\n516.965\n19.69\n6150\n\n\n32%\n525.81\n545.79\n535.800\n19.98\n6166\n\n\n36%\n544.79\n565.29\n555.040\n20.50\n6123\n\n\n40%\n564.29\n584.80\n574.545\n20.51\n6139\n\n\n44%\n583.80\n605.12\n594.460\n21.32\n6121\n\n\n48%\n604.12\n626.34\n615.230\n22.22\n6113\n\n\n52%\n625.34\n648.36\n636.850\n23.02\n6108\n\n\n56%\n647.36\n672.34\n659.850\n24.98\n6074\n\n\n60%\n671.34\n696.53\n683.935\n25.19\n6082\n\n\n64%\n695.53\n722.89\n709.210\n27.36\n6054\n\n\n68%\n721.89\n751.40\n736.645\n29.51\n6053\n\n\n72%\n750.40\n782.43\n766.415\n32.03\n6023\n\n\n76%\n781.43\n817.40\n799.415\n35.97\n5982\n\n\n80%\n816.40\n857.96\n837.180\n41.56\n6026\n\n\n84%\n856.96\n905.62\n881.290\n48.66\n5971\n\n\n88%\n904.62\n964.93\n934.775\n60.31\n5943\n\n\n92%\n963.93\n1049.48\n1006.705\n85.55\n5903\n\n\n96%\n1048.48\n1200.48\n1124.480\n152.00\n5863\n\n\n\n\n\n\nquantile_error &lt;- cdsw$error()\n\n\n\nAdjust windows\nUsing this method the window start and end is shifted to a mass range with as few MS1 peaks as possible.\n\noptimized &lt;- cdsw$optimize_windows(maxbin = 10)\nknitr::kable(optimized)\n\n\n\n\nfrom\nto\nmid\nwidth\ncounts\n\n\n\n\n350.13\n380.95\n365.54\n30.82\n5952\n\n\n380.45\n406.35\n393.40\n25.90\n5932\n\n\n406.05\n429.05\n417.55\n23.00\n5948\n\n\n428.65\n449.65\n439.15\n21.00\n5891\n\n\n449.45\n469.65\n459.55\n20.20\n5872\n\n\n469.45\n488.35\n478.90\n18.90\n5860\n\n\n488.15\n508.05\n498.10\n19.90\n6137\n\n\n507.45\n526.45\n516.95\n19.00\n5892\n\n\n526.15\n545.45\n535.80\n19.30\n6022\n\n\n545.15\n565.05\n555.10\n19.90\n5992\n\n\n564.55\n584.45\n574.50\n19.90\n5976\n\n\n584.15\n605.05\n594.60\n20.90\n6035\n\n\n604.55\n626.05\n615.30\n21.50\n5893\n\n\n625.55\n648.15\n636.85\n22.60\n5987\n\n\n647.55\n672.15\n659.85\n24.60\n6023\n\n\n671.75\n696.15\n683.95\n24.40\n5890\n\n\n695.55\n722.55\n709.05\n27.00\n5981\n\n\n722.25\n751.15\n736.70\n28.90\n5932\n\n\n750.65\n782.15\n766.40\n31.50\n5927\n\n\n781.65\n817.15\n799.40\n35.50\n5944\n\n\n816.65\n857.55\n837.10\n40.90\n5901\n\n\n857.35\n905.25\n881.30\n47.90\n5904\n\n\n905.05\n964.65\n934.85\n59.60\n5881\n\n\n964.35\n1049.15\n1006.75\n84.80\n5864\n\n\n1048.95\n1200.05\n1124.50\n151.10\n5843\n\n\n\n\nplot_windows(optimized, masses)\n\n\n\n\n\n\n\n\n\n\nDynamic Swath Windows with Constraints.\n\nMaximal window width (maxwindow). Windows should not be too large because of optimal collision energy (personal communication by Bernd R.).\nMinimal window width (minwindow).\nNumber of windows (nbins, set in Cdsw()).\nWindow boundaries can then be moved to regions with few precursors (optimize_windows()).\n\n\ncdsw$sampling_breaks(maxwindow = 100)\ncdsw$plot_breaks()\n\n\n\n\n\n\n\n\n\ncdsw$plot()\n\n\n\n\n\n\n\n\n\nknitr::kable(cdsw$as_table())\n\n\n\n\n\nfrom\nto\nmid\nwidth\ncounts\n\n\n\n\n0%\n349.63\n381.41\n365.520\n31.78\n6054\n\n\n4%\n380.41\n408.39\n394.400\n27.98\n6431\n\n\n8%\n407.39\n432.23\n419.810\n24.84\n6524\n\n\n12%\n431.23\n454.73\n442.980\n23.50\n6585\n\n\n16%\n453.73\n476.25\n464.990\n22.52\n6657\n\n\n20%\n475.25\n496.79\n486.020\n21.54\n6712\n\n\n24%\n495.79\n517.79\n506.790\n22.00\n6742\n\n\n28%\n516.79\n538.77\n527.780\n21.98\n6766\n\n\n32%\n537.77\n559.78\n548.775\n22.01\n6686\n\n\n36%\n558.78\n580.81\n569.795\n22.03\n6648\n\n\n40%\n579.81\n602.79\n591.300\n22.98\n6663\n\n\n44%\n601.79\n625.84\n613.815\n24.05\n6681\n\n\n48%\n624.84\n649.38\n637.110\n24.54\n6504\n\n\n52%\n648.38\n674.84\n661.610\n26.46\n6458\n\n\n56%\n673.84\n700.84\n687.340\n27.00\n6404\n\n\n60%\n699.84\n728.42\n714.130\n28.58\n6325\n\n\n64%\n727.42\n758.40\n742.910\n30.98\n6209\n\n\n68%\n757.40\n790.87\n774.135\n33.47\n6105\n\n\n72%\n789.87\n826.46\n808.165\n36.59\n5955\n\n\n76%\n825.46\n866.65\n846.055\n41.19\n5737\n\n\n80%\n865.65\n912.22\n888.935\n46.57\n5507\n\n\n84%\n911.22\n963.97\n937.595\n52.75\n5155\n\n\n88%\n962.97\n1026.97\n994.970\n64.00\n4647\n\n\n92%\n1025.97\n1101.69\n1063.830\n75.72\n4177\n\n\n96%\n1100.69\n1200.48\n1150.585\n99.79\n3071\n\n\n\n\n\n\noptimized &lt;- cdsw$optimize_windows(maxbin = 10)\nknitr::kable(optimized)\n\n\n\n\nfrom\nto\nmid\nwidth\ncounts\n\n\n\n\n350.13\n380.95\n365.54\n30.82\n5952\n\n\n380.45\n408.05\n394.25\n27.60\n6318\n\n\n407.65\n432.05\n419.85\n24.40\n6448\n\n\n431.65\n454.35\n443.00\n22.70\n6447\n\n\n454.15\n475.85\n465.00\n21.70\n6474\n\n\n475.65\n496.35\n486.00\n20.70\n6467\n\n\n496.15\n517.45\n506.80\n21.30\n6578\n\n\n517.15\n538.45\n527.80\n21.30\n6627\n\n\n538.15\n559.45\n548.80\n21.30\n6508\n\n\n559.15\n580.45\n569.80\n21.30\n6448\n\n\n580.15\n602.45\n591.30\n22.30\n6526\n\n\n602.15\n625.45\n613.80\n23.30\n6450\n\n\n625.15\n649.15\n637.15\n24.00\n6357\n\n\n648.55\n674.45\n661.50\n25.90\n6387\n\n\n674.25\n700.55\n687.40\n26.30\n6277\n\n\n700.25\n728.15\n714.20\n27.90\n6163\n\n\n727.65\n758.15\n742.90\n30.50\n6133\n\n\n757.65\n790.55\n774.10\n32.90\n6047\n\n\n790.25\n826.25\n808.25\n36.00\n5820\n\n\n825.65\n866.25\n845.95\n40.60\n5666\n\n\n866.05\n911.75\n888.90\n45.70\n5383\n\n\n911.65\n963.65\n937.65\n52.00\n5104\n\n\n963.35\n1026.65\n995.00\n63.30\n4612\n\n\n1026.35\n1101.25\n1063.80\n74.90\n4130\n\n\n1101.15\n1200.05\n1150.60\n98.90\n3054\n\n\n\n\nplot_windows(optimized, masses)\n\n\n\n\n\n\n\n\n\nmixed_error &lt;- cdsw$error()\n\n\n\nBenchmarking of the methods.\nWe compare the optimal number of MS1 peaks per SWATH window (same in each window) with the numbers obtained by using all of the 3 methods implemented.\n\nerrors &lt;- data.frame(\n  method = factor(rep(c(\"const\", \"quantile\", \"mixed\"), 2), levels = c(\"const\", \"quantile\", \"mixed\")),\n  metric = rep(c(\"Manhattan distance\", \"Euclidean distance\"), each = 3),\n  value = c(\n    const_error$score1, quantile_error$score1, mixed_error$score1,\n    const_error$score2, quantile_error$score2, mixed_error$score2\n  )\n)\nggplot(errors, aes(x = method, y = value)) +\n  geom_col(fill = \"#0072B2\") +\n  geom_text(aes(label = signif(value, 2)), vjust = -0.3, size = 3) +\n  facet_wrap(~metric, scales = \"free_y\") +\n  labs(x = NULL, y = \"deviation from equal counts\")\n\n\n\n\n\n\n\n\nThe mixed method has a relatively small error although it is able to fulfill constraints such as maximum window size.\n\n\nSession info\n\n\nR version 4.6.2 (2026-10-29)\nPlatform: x86_64-pc-linux-gnu\nRunning under: Ubuntu 26.04.1 LTS\n\nMatrix products: default\nBLAS:   /usr/lib/x86_64-linux-gnu/blas/libblas.so.3.12.1 \nLAPACK: /usr/lib/x86_64-linux-gnu/lapack/liblapack.so.3.12.1;  LAPACK version 3.12.0\n\nlocale:\n [1] LC_CTYPE=C.UTF-8       LC_NUMERIC=C           LC_TIME=C.UTF-8       \n [4] LC_COLLATE=C.UTF-8     LC_MONETARY=C.UTF-8    LC_MESSAGES=C.UTF-8   \n [7] LC_PAPER=C.UTF-8       LC_NAME=C              LC_ADDRESS=C          \n[10] LC_TELEPHONE=C         LC_MEASUREMENT=C.UTF-8 LC_IDENTIFICATION=C   \n\ntime zone: Etc/UTC\ntzcode source: system (glibc)\n\nattached base packages:\n[1] stats     graphics  grDevices datasets  utils     methods   base     \n\nother attached packages:\n[1] ggplot2_4.0.4 prozor_0.4.0 \n\nloaded via a namespace (and not attached):\n [1] vctrs_0.7.3        cli_3.6.6          knitr_1.52         rlang_1.3.0       \n [5] xfun_0.62          otel_0.3.0         generics_0.1.4     S7_1.0.0          \n [9] seqinr_4.2-44      jsonlite_2.0.0     labeling_0.4.3     glue_1.8.1        \n[13] htmltools_0.5.9    scales_1.4.0       rmarkdown_2.32     grid_4.6.2        \n[17] tibble_3.3.1       evaluate_1.0.5     MASS_7.3-66        fastmap_1.2.0     \n[21] yaml_2.3.12        lifecycle_1.0.5    compiler_4.6.2     dplyr_1.2.1       \n[25] RColorBrewer_1.1-3 pkgconfig_2.0.3    Rcpp_1.1.2         farver_2.1.2      \n[29] lattice_0.23-1     digest_0.6.39      R6_2.6.1           tidyselect_1.2.1  \n[33] pillar_1.11.1      magrittr_2.0.5     Matrix_1.7-6       withr_3.0.3       \n[37] tools_4.6.2        gtable_0.3.6       bspm_0.6.0         ade4_1.7-24",
+    "crumbs": [
+      "Articles",
+      "Computing Dynamic SWATH Windows"
+    ]
+  }
+]
