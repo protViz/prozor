@@ -66,8 +66,7 @@ test_that("greedyRes2Matrix() splits the charge at the last dot", {
 
 test_that("greedyRes2Matrix() handles modified precursors of the example data", {
   data(protpepmetashort, package = "prozor", envir = environment())
-  protpepmetashort$precursor <- paste(protpepmetashort$peptideModSeq,
-                                      protpepmetashort$precursorCharge, sep = ".")
+  protpepmetashort$precursor <- paste(protpepmetashort$peptideModSeq, protpepmetashort$precursorCharge, sep = ".")
   pepprot <- prepareMatrix(protpepmetashort, peptideID = "precursor")
   res <- greedy_parsimony(pepprot)
 

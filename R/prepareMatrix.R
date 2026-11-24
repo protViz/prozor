@@ -30,31 +30,32 @@
 #' image(corProtn)
 #' par(oldpar)
 #'
-prepareMatrix <- function(data,
-                          proteinID = "proteinID",
-                          peptideID = "strippedSequence",
-                          weighting = NULL,
-                          sep="|" ,
-                          use.last.ij = TRUE) {
-    fprots = as.factor( data[,proteinID] )
-    prots = as.integer( fprots )
-    fpeps = as.factor( data[,peptideID] )
-    peps = as.integer(fpeps)
+prepareMatrix <- function(
+  data,
+  proteinID = "proteinID",
+  peptideID = "strippedSequence",
+  weighting = NULL,
+  sep = "|",
+  use.last.ij = TRUE
+) {
+  fprots <- as.factor(data[, proteinID])
+  prots <- as.integer(fprots)
+  fpeps <- as.factor(data[, peptideID])
+  peps <- as.integer(fpeps)
 
-    if (is.null(weighting)) {
-        pepProt = Matrix::sparseMatrix(peps , prots, x = 1 , use.last.ij = use.last.ij)
-    } else if (is.numeric(weighting) && length(weighting) == nrow(data)) {
-        pepProt = Matrix::sparseMatrix(peps, prots, x = weighting )
-    } else if (identical(weighting, "inverse")) {
-        pepProt = Matrix::sparseMatrix(peps, prots, x = 1,  use.last.ij = use.last.ij )
-        nrPeps = rowSums(pepProt)
-        pepProt <- sweep(pepProt, 1 , nrPeps, "/" )
-    } else {
-        stop("weighting must be NULL, \"inverse\" or a numeric vector with one weight per row of data")
-    }
-    colnames(pepProt) <- levels(fprots)
-    rownames(pepProt) <- levels(fpeps)
-    dim(pepProt)
-    return(pepProt)
+  if (is.null(weighting)) {
+    pepProt <- Matrix::sparseMatrix(peps, prots, x = 1, use.last.ij = use.last.ij)
+  } else if (is.numeric(weighting) && length(weighting) == nrow(data)) {
+    pepProt <- Matrix::sparseMatrix(peps, prots, x = weighting)
+  } else if (identical(weighting, "inverse")) {
+    pepProt <- Matrix::sparseMatrix(peps, prots, x = 1, use.last.ij = use.last.ij)
+    nrPeps <- rowSums(pepProt)
+    pepProt <- sweep(pepProt, 1, nrPeps, "/")
+  } else {
+    stop("weighting must be NULL, \"inverse\" or a numeric vector with one weight per row of data")
+  }
+  colnames(pepProt) <- levels(fprots)
+  rownames(pepProt) <- levels(fpeps)
+  dim(pepProt)
+  return(pepProt)
 }
-

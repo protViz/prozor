@@ -46,8 +46,10 @@ test_that("create_fgcz_fasta_db() requires outputdir, an existing directory and 
 })
 
 test_that("make_fasta_summary() counts sequences and amino acids", {
-  fasta <- list(seqinr::as.SeqFastaAA("AAC", name = "a", Annot = ">a"),
-                seqinr::as.SeqFastaAA("CD", name = "b", Annot = ">b"))
+  fasta <- list(
+    seqinr::as.SeqFastaAA("AAC", name = "a", Annot = ">a"),
+    seqinr::as.SeqFastaAA("CD", name = "b", Annot = ">b")
+  )
 
   res <- make_fasta_summary(fasta, as_string = FALSE)
   old <- make_fasta_summary(fasta, old = TRUE, as_string = FALSE)

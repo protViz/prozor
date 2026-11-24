@@ -13,20 +13,21 @@ toy_fasta <- function() {
 
 bundled_fasta_files <- function() {
   c(
-    list.files(system.file("extdata", package = "prozor"),
-               pattern = "\\.fasta\\.gz$", full.names = TRUE),
-    list.files(system.file("p1000_db1_example", package = "prozor"),
-               pattern = "\\.fasta\\.gz$", full.names = TRUE)
+    list.files(system.file("extdata", package = "prozor"), pattern = "\\.fasta\\.gz$", full.names = TRUE),
+    list.files(system.file("p1000_db1_example", package = "prozor"), pattern = "\\.fasta\\.gz$", full.names = TRUE)
   )
 }
 
 # Toy target database (x, y) written to a temporary FASTA file for createDecoyDB()
 toy_db_file <- function(env = parent.frame()) {
   file <- withr::local_tempfile(fileext = ".fasta", .local_envir = env)
-  writeFasta(file, list(
-    seqinr::as.SeqFastaAA("ABCD", name = "x", Annot = ">x"),
-    seqinr::as.SeqFastaAA("EFG", name = "y", Annot = ">y")
-  ))
+  writeFasta(
+    file,
+    list(
+      seqinr::as.SeqFastaAA("ABCD", name = "x", Annot = ">x"),
+      seqinr::as.SeqFastaAA("EFG", name = "y", Annot = ">y")
+    )
+  )
   file
 }
 

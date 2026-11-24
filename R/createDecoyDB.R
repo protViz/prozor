@@ -23,22 +23,23 @@
 #' res <- createDecoyDB(c(file,file), revLab=NULL, useContaminants = NULL)
 #' stopifnot(length(res) == (2*length(rabbit) + 1) )
 #'
-createDecoyDB <- function(dbs ,
-                          useContaminants = loadContaminantsFGCZ2022(),
-                          revLab= "REV_",
-                          annot="zz|sourceOf|database")
-{
-    dummy <- as.SeqFastaAA("CRAPCRAPCRAP", Annot = annot, name = annot)
-    dbsfasta <- NULL
-    for (db in dbs) {
-        message( "reading db :" , db )
-        dbsfasta <- c(dbsfasta,readPeptideFasta(db) )
-    }
-    if (!is.null(useContaminants)) {
-        dbsfasta = c(dbsfasta,useContaminants)
-    }
-    if (!is.null(revLab)) {
-        dbsfasta <- c(dbsfasta,reverseSeq(dbsfasta ,revLab = revLab))
-    }
-    return(c(list(dummy),dbsfasta))
+createDecoyDB <- function(
+  dbs,
+  useContaminants = loadContaminantsFGCZ2022(),
+  revLab = "REV_",
+  annot = "zz|sourceOf|database"
+) {
+  dummy <- as.SeqFastaAA("CRAPCRAPCRAP", Annot = annot, name = annot)
+  dbsfasta <- NULL
+  for (db in dbs) {
+    message("reading db :", db)
+    dbsfasta <- c(dbsfasta, readPeptideFasta(db))
+  }
+  if (!is.null(useContaminants)) {
+    dbsfasta <- c(dbsfasta, useContaminants)
+  }
+  if (!is.null(revLab)) {
+    dbsfasta <- c(dbsfasta, reverseSeq(dbsfasta, revLab = revLab))
+  }
+  return(c(list(dummy), dbsfasta))
 }

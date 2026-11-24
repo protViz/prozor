@@ -1,7 +1,13 @@
-.writeFasta <- function(fasta , file=NULL  ) {
-  namesres <- vapply(fasta, function(x) {attributes(x)$Annot}, character(1))
+.writeFasta <- function(fasta, file = NULL) {
+  namesres <- vapply(
+    fasta,
+    function(x) {
+      attributes(x)$Annot
+    },
+    character(1)
+  )
   namesres <- gsub(">", "", namesres)
-  write.fasta(fasta, namesres , file.out = file, nbchar = 60, as.string = TRUE)
+  write.fasta(fasta, namesres, file.out = file, nbchar = 60, as.string = TRUE)
 }
 #' write fasta lists into file
 #'
@@ -20,7 +26,7 @@
 #' tf <- tempfile(fileext = ".fasta")
 #' writeFasta(tf, decoyDB)
 #' unlink(tf)
-writeFasta <- function(file, ...  ) {
-   fasta <- c(...)
-  .writeFasta(fasta,file = file)
+writeFasta <- function(file, ...) {
+  fasta <- c(...)
+  .writeFasta(fasta, file = file)
 }

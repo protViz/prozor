@@ -7,8 +7,7 @@ test_that("writeFasta() output reads back unchanged", {
 
   expect_equal(names(back), names(fasta))
   expect_equal(as.character(unlist(back)), as.character(unlist(fasta)))
-  expect_equal(vapply(back, seqinr::getAnnot, character(1)),
-               vapply(fasta, seqinr::getAnnot, character(1)))
+  expect_equal(vapply(back, seqinr::getAnnot, character(1)), vapply(fasta, seqinr::getAnnot, character(1)))
 })
 
 test_that("writeFasta() writes the Annot header and 60 residues per line", {

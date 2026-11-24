@@ -16,3 +16,5 @@
 ^_quarto$
 ^AGENTS\.md$
 ^CLAUDE\.md$
+^air\.toml$
+^\.lintr$

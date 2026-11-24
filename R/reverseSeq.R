@@ -1,15 +1,17 @@
 .strReverse <- function(x) {
   bb <- lapply(strsplit(x, NULL), rev)
-  vapply(bb,  paste, character(1), collapse = "")
+  vapply(bb, paste, character(1), collapse = "")
 }
 
-.reverseSingleSeq <- function(fasta, revLab = "REV_"){
+.reverseSingleSeq <- function(fasta, revLab = "REV_") {
   name <- getName(fasta)
   Annot <- getAnnot(fasta)
   revseq <- .strReverse(fasta)
-  return(as.SeqFastaAA(revseq, Annot = paste(">", revLab, gsub("^>","",Annot), sep = ""),
-                       name = paste(revLab, name, sep = "")))
-
+  return(as.SeqFastaAA(
+    revseq,
+    Annot = paste(">", revLab, gsub("^>", "", Annot), sep = ""),
+    name = paste(revLab, name, sep = "")
+  ))
 }
 #' create rev sequences to fasta list
 #'
@@ -34,10 +36,15 @@
 #'
 #' reverseSeq(tmp)
 #'
-reverseSeq <- function(fasta, revLab = "REV_"){
-  res <- lapply(fasta, .reverseSingleSeq ,revLab = revLab )
-  revnames <- vapply(res ,  function(x){attributes(x)$name}, character(1))
+reverseSeq <- function(fasta, revLab = "REV_") {
+  res <- lapply(fasta, .reverseSingleSeq, revLab = revLab)
+  revnames <- vapply(
+    res,
+    function(x) {
+      attributes(x)$name
+    },
+    character(1)
+  )
   names(res) <- revnames
   return(res)
 }
-

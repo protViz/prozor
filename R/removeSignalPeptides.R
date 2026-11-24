@@ -16,11 +16,11 @@
 #' nam <-"sp|P30443|1A01_HUMAN"
 #' sp <- 24
 #' makeIDUnip(seq, nam, sp)
-makeIDUnip <- function(sequence, id, sp){
-  tpos <- unlist(strsplit(id, split = "\\|")) [seq_len(2)]
+makeIDUnip <- function(sequence, id, sp) {
+  tpos <- unlist(strsplit(id, split = "\\|"))[seq_len(2)]
   tpos <- paste(tpos, "|", collapse = "", sep = "")
-  sp <- paste( (sp) , "-", nchar(sequence), sep = "")
-  res <- paste(tpos,  sp, sep = "")
+  sp <- paste((sp), "-", nchar(sequence), sep = "")
+  res <- paste(tpos, sp, sep = "")
   return(res)
 }
 #' make id for chain in format sp|P30443|1A01_HUMANs25
@@ -41,17 +41,17 @@ makeIDUnip <- function(sequence, id, sp){
 #' nam <-"sp|P30443|1A01_HUMAN"
 #' sp <- 24
 #' makeID(seq, nam, sp)
-makeID <- function(sequence, id, sp){
+makeID <- function(sequence, id, sp) {
   res <- paste(id, "s", sp, sep = "")
   return(res)
 }
 
-.makesig <- function(sequence, chainstart,  idfun=makeID ){
+.makesig <- function(sequence, chainstart, idfun = makeID) {
   attrlist <- attributes(sequence)
-  newID <- idfun(sequence , attrlist$name, chainstart)
+  newID <- idfun(sequence, attrlist$name, chainstart)
   attrlist$Annot <- newID
   attrlist$name <- newID
-  seq <- substring(sequence , first = chainstart  )
+  seq <- substring(sequence, first = chainstart)
   attributes(seq) <- attrlist
   return(seq)
 }
@@ -70,21 +70,19 @@ makeID <- function(sequence, id, sp){
 #' res <- removeSignalPeptide(db, signal)
 #' nchar(db[[1]])
 #' nchar(res[[1]])
-removeSignalPeptide <- function(db, signal, idfun=makeID){
+removeSignalPeptide <- function(db, signal, idfun = makeID) {
   res <- db
-  tmp2 <- as.numeric(gsub("^SIGNAL [0-9]+ ([0-9]+).*"  , "\\1", signal$Signal.peptide))
+  tmp2 <- as.numeric(gsub("^SIGNAL [0-9]+ ([0-9]+).*", "\\1", signal$Signal.peptide))
 
-  cnamessplit <- strsplit(as.character(names(db)),split = "\\|")
+  cnamessplit <- strsplit(as.character(names(db)), split = "\\|")
   protnam <- do.call(rbind, cnamessplit)
 
-  stopifnot(sum(protnam[,2] == signal$Entry) == length(signal$Entry))
+  stopifnot(sum(protnam[, 2] == signal$Entry) == length(signal$Entry))
 
-  for (i in seq_len(length(tmp2)) ) {
+  for (i in seq_len(length(tmp2))) {
     if (!is.na(tmp2[i])) {
-      res[[i]] <- .makesig(db[[i]], tmp2[i] + 1,idfun = idfun  )
+      res[[i]] <- .makesig(db[[i]], tmp2[i] + 1, idfun = idfun)
     }
   }
   return(res)
 }
-
-

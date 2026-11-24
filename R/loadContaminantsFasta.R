@@ -8,12 +8,12 @@
 #' length(cont)
 #' contNH <- loadContaminantsFasta2019(noHuman = TRUE)
 #' length(contNH)
-loadContaminantsFasta2019 <- function(noHuman = FALSE){
-  file = system.file("extdata/fgcz_contaminants2019_20190708.fasta.gz",package = "prozor")
+loadContaminantsFasta2019 <- function(noHuman = FALSE) {
+  file <- system.file("extdata/fgcz_contaminants2019_20190708.fasta.gz", package = "prozor")
   contaminants <- readPeptideFasta(file)
   if (noHuman) {
     annot <- vapply(contaminants, seqinr::getAnnot, character(1))
-    contaminants <- contaminants[!grepl("HUMAN",annot)]
+    contaminants <- contaminants[!grepl("HUMAN", annot)]
   }
   invisible(contaminants)
 }
@@ -29,12 +29,12 @@ loadContaminantsFasta2019 <- function(noHuman = FALSE){
 #' length(cont)
 #' contNH <- loadContaminantsFasta2021(noHuman = TRUE)
 #' length(contNH)
-loadContaminantsFasta2021 <- function(noHuman = FALSE){
-  file = system.file("extdata/fgcz_contaminants2021_20210929.fasta.gz",package = "prozor")
+loadContaminantsFasta2021 <- function(noHuman = FALSE) {
+  file <- system.file("extdata/fgcz_contaminants2021_20210929.fasta.gz", package = "prozor")
   contaminants <- readPeptideFasta(file)
   if (noHuman) {
-    annot <- vapply(contaminants, seqinr::getAnnot,character(1))
-    contaminants <- contaminants[!grepl("HUMAN",annot)]
+    annot <- vapply(contaminants, seqinr::getAnnot, character(1))
+    contaminants <- contaminants[!grepl("HUMAN", annot)]
   }
   invisible(contaminants)
 }
@@ -50,14 +50,14 @@ loadContaminantsFasta2021 <- function(noHuman = FALSE){
 #' length(cont)
 #' contNH <- loadContaminantsFGCZ2022(noHuman = TRUE)
 #' length(contNH)
-loadContaminantsFGCZ2022 <- function(noHuman = FALSE){
-    file = system.file("extdata/fgcz_contaminants2022_20220405.fasta.gz",package = "prozor")
-    contaminants <- readPeptideFasta(file)
-    if (noHuman) {
-        annot <- vapply(contaminants, seqinr::getAnnot, character(1))
-        contaminants <- contaminants[!grepl("HUMAN",annot)]
-    }
-    invisible(contaminants)
+loadContaminantsFGCZ2022 <- function(noHuman = FALSE) {
+  file <- system.file("extdata/fgcz_contaminants2022_20220405.fasta.gz", package = "prozor")
+  contaminants <- readPeptideFasta(file)
+  if (noHuman) {
+    annot <- vapply(contaminants, seqinr::getAnnot, character(1))
+    contaminants <- contaminants[!grepl("HUMAN", annot)]
+  }
+  invisible(contaminants)
 }
 
 #' load universal contaminants
@@ -72,12 +72,12 @@ loadContaminantsFGCZ2022 <- function(noHuman = FALSE){
 #' length(cont)
 #' contNH <- load_universal_contaminants_2024(noHuman = TRUE)
 #' length(contNH)
-load_universal_contaminants_2024 <- function(noHuman = FALSE){
-  file = system.file("extdata/fgcz_universal_contaminants_github_20241112.fasta.gz",package = "prozor")
+load_universal_contaminants_2024 <- function(noHuman = FALSE) {
+  file <- system.file("extdata/fgcz_universal_contaminants_github_20241112.fasta.gz", package = "prozor")
   contaminants <- readPeptideFasta(file)
   if (noHuman) {
     annot <- vapply(contaminants, seqinr::getAnnot, character(1))
-    contaminants <- contaminants[!grepl("HUMAN",annot)]
+    contaminants <- contaminants[!grepl("HUMAN", annot)]
   }
   invisible(contaminants)
 }
@@ -93,12 +93,12 @@ load_universal_contaminants_2024 <- function(noHuman = FALSE){
 #' length(cont)
 #' contNH <- load_special_prot_2024(noHuman = TRUE)
 #' length(contNH)
-load_special_prot_2024 <- function(noHuman = FALSE){
-  file = system.file("extdata/fgcz_special_prot_20241112.fasta.gz", package = "prozor")
+load_special_prot_2024 <- function(noHuman = FALSE) {
+  file <- system.file("extdata/fgcz_special_prot_20241112.fasta.gz", package = "prozor")
   contaminants <- readPeptideFasta(file)
   if (noHuman) {
     annot <- vapply(contaminants, seqinr::getAnnot, character(1))
-    contaminants <- contaminants[!grepl("HUMAN",annot)]
+    contaminants <- contaminants[!grepl("HUMAN", annot)]
   }
   invisible(contaminants)
 }

@@ -11,6 +11,6 @@
 #' file = system.file("extdata/fgcz_contaminants2021_20210929.fasta.gz",package = "prozor")
 #' fasta = readPeptideFasta(file)
 #'
-readPeptideFasta <- function(file){
-    seqinr::read.fasta(file = file, as.string = TRUE, seqtype = "AA")
+readPeptideFasta <- function(file) {
+  seqinr::read.fasta(file = file, as.string = TRUE, seqtype = "AA")
 }

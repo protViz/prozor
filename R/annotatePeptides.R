@@ -1,4 +1,3 @@
-
 #' Annotate peptides with protein ids
 #'
 #' peptides which do not have protein assignment drop out
@@ -31,33 +30,26 @@
 #' res <-  mutate(annotAll, proteinlength = nchar(proteinSequence))
 #' res <-  select(res, proteinID, peptideSeq, proteinlength, Offset, lengthPeptide)
 #' head(res)
-annotatePeptides <- function(pepinfo,
-                             fasta,
-                             peptide = "peptideSeq",
-                             prefix = "(([RK])|(^)|(^M))",
-                             suffix = "") {
-    if (is.null(dim(pepinfo))) {
-        pepinfo = data.frame(pepinfo, stringsAsFactors = FALSE)
-        colnames(pepinfo) = peptide
-    }
-    pepinfo[[peptide]] <- as.character(pepinfo[[peptide]])
-    pepinfo$lengthPeptide <- nchar(pepinfo[[peptide]])
+annotatePeptides <- function(pepinfo, fasta, peptide = "peptideSeq", prefix = "(([RK])|(^)|(^M))", suffix = "") {
+  if (is.null(dim(pepinfo))) {
+    pepinfo <- data.frame(pepinfo, stringsAsFactors = FALSE)
+    colnames(pepinfo) <- peptide
+  }
+  pepinfo[[peptide]] <- as.character(pepinfo[[peptide]])
+  pepinfo$lengthPeptide <- nchar(pepinfo[[peptide]])
 
-    pepseq  = unique(as.character(pepinfo[, peptide]))
-    restab <- annotateAHO(pepseq, fasta, peptide = peptide)
-    if (!is.null(restab)) {
-
-        before <- substr(restab$proteinSequence, 1, restab$Offset - 1)
-        after <- substring(restab$proteinSequence, restab$Offset + nchar(restab[[peptide]]))
-        restab$matched <- grepl(paste0("(", prefix, ")$"), before) & grepl(paste0("^(", suffix, ")"), after)
-        res = merge(restab, pepinfo, by.x = peptide, by.y = peptide)
-        return(res)
-
-    } else {
-        warning("no matches found")
-        return(NULL)
-    }
-
+  pepseq <- unique(as.character(pepinfo[, peptide]))
+  restab <- annotateAHO(pepseq, fasta, peptide = peptide)
+  if (!is.null(restab)) {
+    before <- substr(restab$proteinSequence, 1, restab$Offset - 1)
+    after <- substring(restab$proteinSequence, restab$Offset + nchar(restab[[peptide]]))
+    restab$matched <- grepl(paste0("(", prefix, ")$"), before) & grepl(paste0("^(", suffix, ")"), after)
+    res <- merge(restab, pepinfo, by.x = peptide, by.y = peptide)
+    return(res)
+  } else {
+    warning("no matches found")
+    return(NULL)
+  }
 }
 
 
@@ -85,37 +77,36 @@ annotatePeptides <- function(pepinfo,
 #'
 #' @export
 annotateAHO <- function(pepseq, fasta, peptide = "peptideSeq") {
-    #100_000 peptides
-    #40_000 Proteine
+  #100_000 peptides
+  #40_000 Proteine
 
-    pepseq <- trimws(unique(pepseq))
-    proteinIDS <- names(unlist(fasta))
-    fasta <- trimws(unlist(fasta))
-    names(fasta) <- proteinIDS
+  pepseq <- trimws(unique(pepseq))
+  proteinIDS <- names(unlist(fasta))
+  fasta <- trimws(unlist(fasta))
+  names(fasta) <- proteinIDS
 
-    res <-
-        AhoCorasickSearch(unique(pepseq) , unlist(fasta), alphabet = "aminoacid")
-    if (length(res) == 0)
-    {
-        return(NULL)
-    }
-    xx <- dplyr::bind_rows(Map(
-        function(name, x) {
-            data.frame(
-                proteinID = name,
-                dplyr::bind_rows(x),
-                stringsAsFactors = FALSE
-            )
-        },
-        names(res),
-        res
-    ))
-    colnames(xx)[colnames(xx) == "Keyword"] <- peptide
-    dbframe <- data.frame(
-        proteinID = names(fasta),
-        proteinSequence = as.character(unlist(fasta)),
+  res <-
+    AhoCorasickSearch(unique(pepseq), unlist(fasta), alphabet = "aminoacid")
+  if (length(res) == 0) {
+    return(NULL)
+  }
+  xx <- dplyr::bind_rows(Map(
+    function(name, x) {
+      data.frame(
+        proteinID = name,
+        dplyr::bind_rows(x),
         stringsAsFactors = FALSE
-    )
-    matches <- dplyr::inner_join(xx, dbframe, by = "proteinID")
-    return(matches)
+      )
+    },
+    names(res),
+    res
+  ))
+  colnames(xx)[colnames(xx) == "Keyword"] <- peptide
+  dbframe <- data.frame(
+    proteinID = names(fasta),
+    proteinSequence = as.character(unlist(fasta)),
+    stringsAsFactors = FALSE
+  )
+  matches <- dplyr::inner_join(xx, dbframe, by = "proteinID")
+  return(matches)
 }
