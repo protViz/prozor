@@ -19,26 +19,13 @@
         }
         mymax <- function(x){ which(max(x) == x) }
         idx <- mymax(pepsPerProt)
-        # if there is tie you need to resolve it.
-        # if peptides are disjoint, return arbitrary since it will win in the next round .
-        # if peptides are not disjoint:
-        # - either they share all peptides then merge/group and remove
-        # - or there are overlapping N and O disjoint peptides then sample winner and warn.
+        # Tie: proteins explaining the same peptides as the first tied protein are
+        # indistinguishable and reported together; the other tied proteins compete
+        # in the next rounds.
         if (length(idx) > 1) {
-            # check if disjoint
-            mm <- pepprot[,idx]
-            find_overlap <- function(mm){
-                ii_x <- mdist(t(as.matrix(mm)), .func = inter_x)
-                ii_y <- mdist(t(as.matrix(mm)), .func = inter_y)
-                if (!all(stats::na.omit(ii_x == ii_y))) { warning("ii_x and ii_y are not identical.") }
-                cS <- mean(colSums(mm))
-                ib <- which( ii_x == cS, arr.ind = TRUE)
-                if (nrow(ib) > 1) {
-                    return(unique(as.integer(ib)))
-                }
-                return(1)
-            }
-            idx <- idx[find_overlap(mm)]
+            first <- pepprot[, idx[1]] > 0
+            same <- vapply(idx, function(j) identical(pepprot[, j] > 0, first), logical(1))
+            idx <- idx[same]
         }
         dele <- pepprot[,idx[1]] > 0
         tmpRes = list(prot = paste(colnames(pepprot)[idx] , collapse = ";"), peps = rownames(pepprot)[dele])
@@ -59,13 +46,13 @@
 #' @examples
 #' data(protpepmetashort)
 #' colnames(protpepmetashort)
-#' dim(unique(protpepmetashort[,4]))
 #' xx = prepareMatrix(protpepmetashort, peptideID = "peptideModSeq")
 #' dim(xx)
-#' stopifnot(dim(xx)[1] == dim(unique(protpepmetashort[,4]))[1])
+#' stopifnot(nrow(xx) == length(unique(protpepmetashort$peptideModSeq)))
 #'
 #' es = greedy_parsimony(xx)
-#' stopifnot(length(unique(names(es))) == dim(unique(protpepmetashort[,4]))[1])
+#' # every precursor is explained by exactly one protein (group)
+#' stopifnot(setequal(names(es), rownames(xx)))
 #'
 greedy_parsimony <- function(pepprot) {
     protPepAssingments <- .greedy2(pepprot)

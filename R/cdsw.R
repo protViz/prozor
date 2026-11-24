@@ -51,6 +51,7 @@ hardconstrain <- function(splits,
 #' @field digits mass accuracy in result
 #' @import methods
 #' @importFrom methods new
+#' @importFrom stats quantile runif
 #' @include readjustWindow.R
 #' @export Cdsw
 #' @exportClass Cdsw

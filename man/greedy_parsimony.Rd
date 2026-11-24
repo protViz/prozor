@@ -18,12 +18,12 @@ given matrix (columns protein rows peptides), compute minimal protein set using 
 \examples{
 data(protpepmetashort)
 colnames(protpepmetashort)
-dim(unique(protpepmetashort[,4]))
 xx = prepareMatrix(protpepmetashort, peptideID = "peptideModSeq")
 dim(xx)
-stopifnot(dim(xx)[1] == dim(unique(protpepmetashort[,4]))[1])
+stopifnot(nrow(xx) == length(unique(protpepmetashort$peptideModSeq)))
 
 es = greedy_parsimony(xx)
-stopifnot(length(unique(names(es))) == dim(unique(protpepmetashort[,4]))[1])
+# every precursor is explained by exactly one protein (group)
+stopifnot(setequal(names(es), rownames(xx)))
 
 }

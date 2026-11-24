@@ -31,3 +31,7 @@ import(Matrix)
 import(methods)
 import(seqinr)
 importFrom(methods,new)
+importFrom(stats,
+  quantile,
+  runif
+)

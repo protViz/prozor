@@ -1,5 +1,6 @@
 # prozor 0.3.4
 
+* `greedy_parsimony()` assigns every peptide again. When several proteins tie, only those explaining exactly the same peptides are reported together (`"A;B"`); the others compete in later rounds. Since 2023 (GitHub only, not on CRAN), unrelated tied proteins were merged into one group and their remaining peptides were left without a protein.
 * `load_special_prot_2024()` works again: the bundled `fgcz_special_prot_20241112.fasta.gz` is a plain gzipped FASTA file again instead of a gzipped tar archive (#7).
 * Removed the undocumented debug dataset `mm`.
 * The vignette "Peptide Annotation and Protein Inference" builds again.
