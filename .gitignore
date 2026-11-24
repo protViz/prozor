@@ -10,3 +10,6 @@ Meta
 docs
 /doc/
 /Meta/
+altdoc/freeze.rds
+_quarto/*
+!_quarto/_freeze/
