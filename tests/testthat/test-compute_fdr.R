@@ -5,10 +5,10 @@ test_that("compute_fdr() matches hand-computed FDR and q-values", {
   expect_equal(res$order, 1:4)
   expect_equal(res$score, c(4, 3, 2, 1))
   expect_equal(res$decoy_hit, c(FALSE, FALSE, TRUE, FALSE))
-  expect_equal(res$SimpleFDR, c(0, 0, 1 / 2, 1 / 3))
-  expect_equal(res$qValue_SimpleFDR, c(0, 0, 1 / 3, 1 / 3))
-  expect_equal(res$FPR, c(0, 0, 2 / 3, 2 / 4))
-  expect_equal(res$qValue_FPR, c(0, 0, 1 / 2, 1 / 2))
+  expect_equal(res$simple_fdr, c(0, 0, 1 / 2, 1 / 3))
+  expect_equal(res$q_value_simple_fdr, c(0, 0, 1 / 3, 1 / 3))
+  expect_equal(res$fpr, c(0, 0, 2 / 3, 2 / 4))
+  expect_equal(res$q_value_fpr, c(0, 0, 1 / 2, 1 / 2))
 })
 
 test_that("compute_fdr() ranks small scores first when larger_better = FALSE", {
@@ -18,7 +18,7 @@ test_that("compute_fdr() ranks small scores first when larger_better = FALSE", {
   expect_equal(res$order, c(2, 1, 4, 3))
   expect_equal(res$score, c(1, 2, 3, 4))
   expect_equal(res$decoy_hit, c(FALSE, FALSE, TRUE, FALSE))
-  expect_equal(res$qValue_SimpleFDR, c(0, 0, 1 / 3, 1 / 3))
+  expect_equal(res$q_value_simple_fdr, c(0, 0, 1 / 3, 1 / 3))
 })
 
 test_that("compute_fdr() ranks decoys first within tied scores, whatever the input order", {
@@ -28,14 +28,14 @@ test_that("compute_fdr() ranks decoys first within tied scores, whatever the inp
 
   expect_equal(decoy_first$decoy_hit, c(TRUE, FALSE, FALSE))
   expect_equal(decoy_second$decoy_hit, c(TRUE, FALSE, FALSE))
-  expect_equal(decoy_first$qValue_SimpleFDR, c(0.5, 0.5, 0.5))
-  expect_equal(decoy_second$qValue_SimpleFDR, c(0.5, 0.5, 0.5))
+  expect_equal(decoy_first$q_value_simple_fdr, c(0.5, 0.5, 0.5))
+  expect_equal(decoy_second$q_value_simple_fdr, c(0.5, 0.5, 0.5))
   expect_equal(smaller$decoy_hit, c(TRUE, FALSE, FALSE))
 })
 
 test_that("compute_fdr() on fdr_sample: sorted scores and monotone q-values", {
   data(fdr_sample, package = "prozor", envir = environment())
-  decoy <- grepl("^REV_", fdr_sample$proteinID)
+  decoy <- grepl("^REV_", fdr_sample$protein_id)
 
   smaller <- compute_fdr(fdr_sample$score, decoy, larger_better = FALSE)
   larger <- compute_fdr(fdr_sample$score2, decoy, larger_better = TRUE)
@@ -44,17 +44,17 @@ test_that("compute_fdr() on fdr_sample: sorted scores and monotone q-values", {
   expect_false(is.unsorted(rev(larger$score)))
   expect_equal(smaller$decoy_hit, decoy[smaller$order])
   expect_equal(larger$decoy_hit, decoy[larger$order])
-  expect_false(is.unsorted(smaller$qValue_SimpleFDR))
-  expect_false(is.unsorted(larger$qValue_SimpleFDR))
-  expect_true(all(smaller$qValue_FPR <= smaller$FPR))
-  expect_true(all(larger$qValue_FPR <= larger$FPR))
+  expect_false(is.unsorted(smaller$q_value_simple_fdr))
+  expect_false(is.unsorted(larger$q_value_simple_fdr))
+  expect_true(all(smaller$q_value_fpr <= smaller$fpr))
+  expect_true(all(larger$q_value_fpr <= larger$fpr))
 })
 
 test_that("compute_fdr_with_id() reorders IDs with the scores and uses the decoy pattern", {
   res <- compute_fdr_with_id(c(1, 3, 2), c("a", "DEC_b", "c"), decoy = "DEC_")
 
   expect_equal(res$score, c(3, 2, 1))
-  expect_equal(res$ID, c("DEC_b", "c", "a"))
+  expect_equal(res$id, c("DEC_b", "c", "a"))
   expect_equal(res$decoy_hit, c(TRUE, FALSE, FALSE))
 })
 
@@ -71,7 +71,7 @@ test_that("predict_score_fdr() returns the least strict score within the FDR", {
   # SimpleFDR q-values 0, 0, 1/3, 1/3; FPR q-values 0, 0, 1/2, 1/2
   expect_equal(predict_score_fdr(res, q_value = 20), 3)
   expect_equal(predict_score_fdr(res, q_value = 40), 1)
-  expect_equal(predict_score_fdr(res, q_value = 40, method = "FPR"), 3)
+  expect_equal(predict_score_fdr(res, q_value = 40, method = "fpr"), 3)
   expect_equal(predict_score_fdr(smaller, q_value = 20), 2)
 })
 
@@ -84,5 +84,5 @@ test_that("predict_score_fdr() errors when no score reaches the FDR", {
 test_that("predict_score_fdr() rejects unknown methods", {
   res <- compute_fdr(c(2, 1), c(FALSE, FALSE))
 
-  expect_error(predict_score_fdr(res, method = "unknown"), "`method` must be \"FPR\" or \"SimpleFDR\", not \"unknown\"")
+  expect_error(predict_score_fdr(res, method = "unknown"), "`method` must be \"simple_fdr\" or \"fpr\", not \"unknown\"")
 })

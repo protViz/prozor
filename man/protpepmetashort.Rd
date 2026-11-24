@@ -5,6 +5,7 @@
 \alias{protpepmetashort}
 \title{Peptide-protein assignments, small version}
 \description{
-A subset of \link{pepprot} that keeps the examples fast.
+Peptide-protein pairs with the columns \code{peptide_seq}, \code{protein_length}, \code{protein_id}, \code{peptide_mod_seq},
+\code{precursor_charge}, \code{m} (precursor m/z) and \code{peptide_length}; small, so the examples stay fast.
 }
 \keyword{data}

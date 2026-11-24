@@ -68,7 +68,7 @@ What is also required is that the number of Targets and Decoys are the same. Thi
 
 
 ```{r}
-table(grepl("^REV_", fdr_sample$proteinID))
+table(grepl("^REV_", fdr_sample$protein_id))
 ```
 
 In our example, we will use the package to filter the data further for a 1% FDR.
@@ -76,7 +76,7 @@ In our example, we will use the package to filter the data further for a 1% FDR.
 Computing the FDR can be done by calling the function `compute_fdr()`. `plot_fdr()` then shows the score distributions of targets and decoys (top) and the q-values of the two FDR estimates (bottom). The score axis is logarithmic because smaller scores are better.
 
 ```{r fig.width=7, fig.height=6}
-fdr1 <- compute_fdr(fdr_sample$score, grepl("^REV_", fdr_sample$proteinID), larger_better = FALSE)
+fdr1 <- compute_fdr(fdr_sample$score, grepl("^REV_", fdr_sample$protein_id), larger_better = FALSE)
 plot_fdr(fdr1)
 ```
 
@@ -130,7 +130,7 @@ number of target PSMs above the threshold. We can now estimate the FDR by simply
 ```{r fig.width=7, fig.height=4}
 fdr_curves <- data.frame(
   score = rep(fdr1$score, 2),
-  fdr = 100 * c(fdr1$SimpleFDR, fdr1$qValue_SimpleFDR),
+  fdr = 100 * c(fdr1$simple_fdr, fdr1$q_value_simple_fdr),
   curve = rep(c("SimpleFDR", "q-value"), each = length(fdr1$score))
 )
 ggplot(fdr_curves, aes(x = score, y = fdr, colour = curve)) +
@@ -148,13 +148,13 @@ Most frequently you will need to get the score for an FDR in order to filter you
 
 ```{r}
 
-(score05G <- predict_score_fdr(fdr1, q_value = 5, method = "FPR"))
+(score05G <- predict_score_fdr(fdr1, q_value = 5, method = "fpr"))
 dim(filter(fdr_sample, score <= score05G))
 
-(score01G <- predict_score_fdr(fdr1, q_value = 1, method = "FPR"))
+(score01G <- predict_score_fdr(fdr1, q_value = 1, method = "fpr"))
 dim(filter(fdr_sample, score <= score01G))
 
-(score01K <- predict_score_fdr(fdr1, q_value = 1, method = "SimpleFDR"))
+(score01K <- predict_score_fdr(fdr1, q_value = 1, method = "simple_fdr"))
 dim(filter(fdr_sample, score <= score01K))
 
 ```
@@ -165,13 +165,13 @@ Since the scores are sorted to compute the FDR, we return also the _order_ colum
 This column can be used to align the ID's with the scores.
 
 ```{r}
-knitr::kable(head(data.frame(ID = fdr_sample$proteinID[fdr1$order], fdr1)))
+knitr::kable(head(data.frame(id = fdr_sample$protein_id[fdr1$order], fdr1)))
 ```
 
 For convenience we provide the function `compute_fdr_with_id()` which integrates the reordering of the ID's.
 
 ```{r}
-fdr1 <- compute_fdr_with_id(fdr_sample$score, fdr_sample$proteinID, decoy = "^REV_", larger_better = FALSE)
+fdr1 <- compute_fdr_with_id(fdr_sample$score, fdr_sample$protein_id, decoy = "^REV_", larger_better = FALSE)
 knitr::kable(head(data.frame(fdr1)))
 ```
 

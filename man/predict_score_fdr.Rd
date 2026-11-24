@@ -4,14 +4,14 @@
 \alias{predict_score_fdr}
 \title{Find the score cut-off for a given FDR}
 \usage{
-predict_score_fdr(fdr, q_value = 1, method = "SimpleFDR")
+predict_score_fdr(fdr, q_value = 1, method = "simple_fdr")
 }
 \arguments{
 \item{fdr}{A result of \code{\link[=compute_fdr]{compute_fdr()}} or \code{\link[=compute_fdr_with_id]{compute_fdr_with_id()}}.}
 
 \item{q_value}{The FDR in percent.}
 
-\item{method}{The FDR estimate to use: \code{"SimpleFDR"} or \code{"FPR"}.}
+\item{method}{The FDR estimate to use: \code{"simple_fdr"} or \code{"fpr"}.}
 }
 \value{
 The least strict score whose q-value is at most \code{q_value} percent. An error if no score reaches it.
@@ -21,9 +21,9 @@ See \code{vignette("TargetDecoyFDR_Example", package = "prozor")}.
 }
 \examples{
 data(fdr_sample)
-fdr <- compute_fdr_with_id(fdr_sample$score, fdr_sample$proteinID, larger_better = FALSE)
+fdr <- compute_fdr_with_id(fdr_sample$score, fdr_sample$protein_id, larger_better = FALSE)
 predict_score_fdr(fdr, q_value = 5)
-fdr2 <- compute_fdr_with_id(fdr_sample$score2, fdr_sample$proteinID, larger_better = TRUE)
+fdr2 <- compute_fdr_with_id(fdr_sample$score2, fdr_sample$protein_id, larger_better = TRUE)
 predict_score_fdr(fdr2, q_value = 5)
 }
 \seealso{

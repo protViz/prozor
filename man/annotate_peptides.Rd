@@ -7,7 +7,7 @@
 annotate_peptides(
   pepinfo,
   fasta,
-  peptide = "peptideSeq",
+  peptide = "peptide_seq",
   prefix = "(([RK])|(^)|(^M))",
   suffix = ""
 )
@@ -26,7 +26,7 @@ and any further columns, such as the charge state, which are kept.}
 }
 \value{
 A data frame with one row per row of \code{pepinfo} and protein occurrence: the columns of \code{pepinfo},
-\code{proteinID}, \code{Offset} (1-based start of the peptide), \code{proteinSequence}, \code{matched} and \code{lengthPeptide}.
+\code{protein_id}, \code{offset} (1-based start of the peptide), \code{protein_sequence}, \code{matched} and \code{peptide_length}.
 \code{NULL}, with a warning, if no peptide occurs in \code{fasta}.
 }
 \description{
@@ -44,7 +44,7 @@ peptides <- unique(utils::read.delim(file)$peptideSeq)
 fasta_file <- system.file("p1000_db1_example/Annotation_canSeq.fasta.gz", package = "prozor")
 fasta <- read_peptide_fasta(fasta_file)
 annot <- annotate_peptides(peptides[1:20], fasta)
-head(annot[, c("proteinID", "peptideSeq", "Offset", "lengthPeptide", "matched")])
+head(annot[, c("protein_id", "peptide_seq", "offset", "peptide_length", "matched")])
 }
 \seealso{
 Other protein inference:

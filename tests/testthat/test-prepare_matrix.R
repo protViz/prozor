@@ -1,5 +1,5 @@
 test_that("prepare_matrix() builds a peptide x protein matrix of ones", {
-  data <- data.frame(proteinID = c("A", "B", "B"), strippedSequence = c("p1", "p1", "p2"))
+  data <- data.frame(protein_id = c("A", "B", "B"), peptide_seq = c("p1", "p1", "p2"))
 
   mat <- as.matrix(prepare_matrix(data))
 
@@ -7,13 +7,13 @@ test_that("prepare_matrix() builds a peptide x protein matrix of ones", {
 })
 
 test_that("prepare_matrix() gives the same matrix for a tibble and a data frame", {
-  data <- data.frame(proteinID = c("A", "B", "B"), strippedSequence = c("p1", "p1", "p2"))
+  data <- data.frame(protein_id = c("A", "B", "B"), peptide_seq = c("p1", "p1", "p2"))
 
   expect_equal(prepare_matrix(dplyr::as_tibble(data)), prepare_matrix(data))
 })
 
 test_that("prepare_matrix() weighting = 'inverse' splits a shared peptide between its proteins", {
-  data <- data.frame(proteinID = c("A", "B", "B"), strippedSequence = c("p1", "p1", "p2"))
+  data <- data.frame(protein_id = c("A", "B", "B"), peptide_seq = c("p1", "p1", "p2"))
 
   mat <- as.matrix(prepare_matrix(data, weighting = "inverse"))
 
@@ -21,7 +21,7 @@ test_that("prepare_matrix() weighting = 'inverse' splits a shared peptide betwee
 })
 
 test_that("prepare_matrix() uses numeric weights, one per row", {
-  data <- data.frame(proteinID = c("A", "B"), strippedSequence = c("p1", "p1"))
+  data <- data.frame(protein_id = c("A", "B"), peptide_seq = c("p1", "p1"))
 
   mat <- as.matrix(prepare_matrix(data, weighting = c(2, 3)))
 
@@ -29,14 +29,14 @@ test_that("prepare_matrix() uses numeric weights, one per row", {
 })
 
 test_that("prepare_matrix() keeps or sums repeated pairs according to use.last.ij", {
-  data <- data.frame(proteinID = c("A", "A"), strippedSequence = c("p1", "p1"))
+  data <- data.frame(protein_id = c("A", "A"), peptide_seq = c("p1", "p1"))
 
   expect_equal(as.matrix(prepare_matrix(data))[1, 1], 1)
   expect_equal(as.matrix(prepare_matrix(data, use.last.ij = FALSE))[1, 1], 2)
 })
 
 test_that("prepare_matrix() rejects unknown weightings", {
-  data <- data.frame(proteinID = c("A", "B"), strippedSequence = c("p1", "p1"))
+  data <- data.frame(protein_id = c("A", "B"), peptide_seq = c("p1", "p1"))
 
   expect_error(prepare_matrix(data, weighting = "AA"), "`weighting` must be NULL.*not a character of length 1")
 })

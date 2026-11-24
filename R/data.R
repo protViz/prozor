@@ -1,6 +1,6 @@
 #' Peptide-protein assignments
 #'
-#' Peptide sequences with the proteins they match.
+#' Peptides with the columns `peptide_seq`, `peptide_mod_seq`, `precursor_charge` and `m` (precursor m/z).
 #'
 #' @name pepprot
 #' @docType data
@@ -9,7 +9,8 @@ NULL
 
 #' Peptide-protein assignments, small version
 #'
-#' A subset of [pepprot] that keeps the examples fast.
+#' Peptide-protein pairs with the columns `peptide_seq`, `protein_length`, `protein_id`, `peptide_mod_seq`,
+#' `precursor_charge`, `m` (precursor m/z) and `peptide_length`; small, so the examples stay fast.
 #'
 #' @name protpepmetashort
 #' @docType data
@@ -27,7 +28,7 @@ NULL
 
 #' Search engine scores with protein IDs
 #'
-#' A data frame with the columns `proteinID` (decoys start with `REV_`), `score` (smaller is better) and
+#' A data frame with the columns `protein_id` (decoys start with `REV_`), `score` (smaller is better) and
 #' `score2` (larger is better).
 #'
 #' @name fdr_sample

@@ -11,7 +11,7 @@ greedy_to_table(res)
 after the last dot, so modified peptides such as \code{"AC[+57.0]K.2"} work.}
 }
 \value{
-A data frame with the columns \code{Peptide}, \code{precursorCharge} and \code{Protein}, and the precursor IDs as row
+A data frame with the columns \code{peptide}, \code{precursor_charge} and \code{protein}, and the precursor IDs as row
 names.
 }
 \description{
@@ -20,8 +20,8 @@ Convert a greedy_parsimony() result to a table
 \examples{
 data(protpepmetashort)
 protpepmetashort$precursor <- paste(
-  protpepmetashort$peptideModSeq,
-  protpepmetashort$precursorCharge,
+  protpepmetashort$peptide_mod_seq,
+  protpepmetashort$precursor_charge,
   sep = "."
 )
 pepprot <- prepare_matrix(protpepmetashort, peptide_id = "precursor")

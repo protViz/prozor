@@ -6,8 +6,8 @@
 \usage{
 prepare_matrix(
   data,
-  protein_id = "proteinID",
-  peptide_id = "strippedSequence",
+  protein_id = "protein_id",
+  peptide_id = "peptide_seq",
   weighting = NULL,
   sep = "|",
   use.last.ij = TRUE
@@ -36,9 +36,9 @@ Build a sparse peptide-by-protein matrix
 }
 \examples{
 data(protpepmetashort)
-count <- prepare_matrix(protpepmetashort, peptide_id = "peptideSeq")
+count <- prepare_matrix(protpepmetashort)
 dim(count)
-inverse <- prepare_matrix(protpepmetashort, peptide_id = "peptideSeq", weighting = "inverse")
+inverse <- prepare_matrix(protpepmetashort, weighting = "inverse")
 # a peptide shared by n proteins gets the weight 1/n in each of them
 table(round(as.vector(inverse[inverse > 0]), 2))
 }

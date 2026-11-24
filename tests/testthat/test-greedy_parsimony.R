@@ -1,7 +1,7 @@
 test_that("greedy_parsimony() groups only proteins with identical peptide sets", {
   # two unrelated tie groups (A, B) and (C, D) plus a single protein E, all with one peptide
   pepprot <- prepare_matrix(
-    data.frame(proteinID = c("A", "B", "C", "D", "E"), pep = c("p1", "p1", "p2", "p2", "p3")),
+    data.frame(protein_id = c("A", "B", "C", "D", "E"), pep = c("p1", "p1", "p2", "p2", "p3")),
     peptide_id = "pep"
   )
 
@@ -13,7 +13,7 @@ test_that("greedy_parsimony() groups only proteins with identical peptide sets",
 test_that("greedy_parsimony() resolves a tie between overlapping proteins one at a time", {
   # A {p1, p2} and B {p2, p3} tie; A wins p1 and p2, B keeps p3
   pepprot <- prepare_matrix(
-    data.frame(proteinID = c("A", "A", "B", "B"), pep = c("p1", "p2", "p2", "p3")),
+    data.frame(protein_id = c("A", "A", "B", "B"), pep = c("p1", "p2", "p2", "p3")),
     peptide_id = "pep"
   )
 
@@ -24,7 +24,7 @@ test_that("greedy_parsimony() resolves a tie between overlapping proteins one at
 
 test_that("greedy_parsimony() prefers the protein explaining most peptides", {
   pepprot <- prepare_matrix(
-    data.frame(proteinID = c("A", "A", "A", "B", "C"), pep = c("p1", "p2", "p3", "p3", "p4")),
+    data.frame(protein_id = c("A", "A", "A", "B", "C"), pep = c("p1", "p2", "p3", "p3", "p4")),
     peptide_id = "pep"
   )
 
@@ -35,7 +35,7 @@ test_that("greedy_parsimony() prefers the protein explaining most peptides", {
 
 test_that("greedy_parsimony() assigns every precursor of the example data", {
   data(protpepmetashort, package = "prozor", envir = environment())
-  pepprot <- prepare_matrix(protpepmetashort, peptide_id = "peptideModSeq")
+  pepprot <- prepare_matrix(protpepmetashort, peptide_id = "peptide_mod_seq")
 
   res <- greedy_parsimony(pepprot)
 
@@ -57,21 +57,21 @@ test_that("greedy_to_table() splits the charge at the last dot", {
 
   mat <- greedy_to_table(res)
 
-  expect_equal(mat$Peptide, c("AC[+57.0]K", "PEPTIDEK"))
-  expect_equal(mat$precursorCharge, c("2", "3"))
-  expect_equal(mat$Protein, c("P1", "P2;P3"))
+  expect_equal(mat$peptide, c("AC[+57.0]K", "PEPTIDEK"))
+  expect_equal(mat$precursor_charge, c("2", "3"))
+  expect_equal(mat$protein, c("P1", "P2;P3"))
   expect_equal(rownames(mat), names(res))
 })
 
 test_that("greedy_to_table() handles modified precursors of the example data", {
   data(protpepmetashort, package = "prozor", envir = environment())
-  protpepmetashort$precursor <- paste(protpepmetashort$peptideModSeq, protpepmetashort$precursorCharge, sep = ".")
+  protpepmetashort$precursor <- paste(protpepmetashort$peptide_mod_seq, protpepmetashort$precursor_charge, sep = ".")
   pepprot <- prepare_matrix(protpepmetashort, peptide_id = "precursor")
   res <- greedy_parsimony(pepprot)
 
   mat <- greedy_to_table(res)
 
   expect_equal(nrow(mat), length(res))
-  expect_equal(paste(mat$Peptide, mat$precursorCharge, sep = "."), names(res))
-  expect_equal(mat$Protein, unlist(res, use.names = FALSE))
+  expect_equal(paste(mat$peptide, mat$precursor_charge, sep = "."), names(res))
+  expect_equal(mat$protein, unlist(res, use.names = FALSE))
 })

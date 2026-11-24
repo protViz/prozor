@@ -5,7 +5,7 @@
 \alias{fdr_sample}
 \title{Search engine scores with protein IDs}
 \description{
-A data frame with the columns \code{proteinID} (decoys start with \code{REV_}), \code{score} (smaller is better) and
+A data frame with the columns \code{protein_id} (decoys start with \code{REV_}), \code{score} (smaller is better) and
 \code{score2} (larger is better).
 }
 \keyword{data}

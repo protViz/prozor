@@ -15,7 +15,7 @@ make_fasta_summary(db, old = FALSE, as_string = TRUE)
 }
 \value{
 With \code{as_string = TRUE}, a character vector to pass to \code{\link[=cat]{cat()}}. Otherwise a list with the elements
-\code{nrSequences}, \code{lengthSummary} and \code{aafreq} (counts per amino acid).
+\code{nr_sequences}, \code{length_summary} and \code{aa_freq} (counts per amino acid).
 }
 \description{
 Counts the sequences and amino acids and summarises the sequence lengths.

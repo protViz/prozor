@@ -4,7 +4,7 @@
 \alias{annotate_aho}
 \title{Find peptides in protein sequences with the Aho-Corasick algorithm}
 \usage{
-annotate_aho(pepseq, fasta, peptide = "peptideSeq")
+annotate_aho(pepseq, fasta, peptide = "peptide_seq")
 }
 \arguments{
 \item{pepseq}{Peptide sequences, upper-case letters only.}
@@ -14,8 +14,8 @@ annotate_aho(pepseq, fasta, peptide = "peptideSeq")
 \item{peptide}{Name of the result column that holds the peptide sequences.}
 }
 \value{
-A data frame with one row per occurrence and the columns \code{proteinID}, \code{peptide} (named by the
-argument), \code{Offset} (1-based start of the peptide) and \code{proteinSequence}; \code{NULL} if no peptide occurs.
+A data frame with one row per occurrence and the columns \code{protein_id}, \code{peptide} (named by the
+argument), \code{offset} (1-based start of the peptide) and \code{protein_sequence}; \code{NULL} if no peptide occurs.
 }
 \description{
 Searches all peptides at once with \code{\link[AhoCorasickTrie:AhoCorasickSearch]{AhoCorasickTrie::AhoCorasickSearch()}}. Peptides that occur in no protein

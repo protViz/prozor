@@ -10,9 +10,9 @@
 #' @param splits The window boundaries.
 #' @param data The MS1 masses.
 #' @return A list with `score1` (Manhattan distance), `score2` (Euclidean distance), `counts` (observed counts)
-#'   and `optimumN` (optimal counts), both counts normalised.
+#'   and `optimum_n` (optimal counts), both counts normalised.
 #' @keywords internal
-objectiveMS1Function <- function(splits, data) {
+objective_ms1 <- function(splits, data) {
   counts <- graphics::hist(data, breaks = splits, plot = FALSE)$counts
   optimum_n <- rep(length(data) / (length(splits) - 1), length(splits) - 1)
   counts <- counts / sqrt(sum(counts^2))
@@ -21,12 +21,12 @@ objectiveMS1Function <- function(splits, data) {
     score1 = sum(abs(counts / max(abs(counts)) - optimum_n / max(abs(optimum_n)))) / length(counts),
     score2 = sqrt(sum((counts - optimum_n)^2)) / length(counts),
     counts = counts,
-    optimumN = optimum_n
+    optimum_n = optimum_n
   )
 }
 
 # TRUE if all window widths lie within [minwindow, maxwindow]
-hardconstrain <- function(splits, minwindow = 5, maxwindow = 50) {
+hard_constrain <- function(splits, minwindow = 5, maxwindow = 50) {
   widths <- diff(splits)
   all(widths >= minwindow & widths <= maxwindow)
 }
@@ -90,7 +90,7 @@ Cdsw <- setRefClass(
       Stops if even equal-width windows violate the limits; returns the breaks invisibly."
       qqs <- stats::quantile(masses, probs = seq(0, 1, by = 1 / nbins))
       unif <- seq(min(masses), max(masses), length.out = nbins + 1)
-      if (!hardconstrain(unif, minwindow = minwindow, maxwindow = maxwindow)) {
+      if (!hard_constrain(unif, minwindow = minwindow, maxwindow = maxwindow)) {
         stop(
           "No window layout satisfies the limits: ",
           nbins,
@@ -104,7 +104,7 @@ Cdsw <- setRefClass(
         )
       }
       mixeddata <- masses
-      while (!hardconstrain(qqs, minwindow, maxwindow)) {
+      while (!hard_constrain(qqs, minwindow, maxwindow)) {
         uniformdata <- stats::runif(round(length(masses) / 20), min = min(masses), max = max(masses))
         mixeddata <- c(mixeddata, uniformdata)
         qqs <- stats::quantile(mixeddata, probs = seq(0, 1, by = 1 / nbins))
@@ -158,8 +158,8 @@ Cdsw <- setRefClass(
       data.frame(from = from, to = to, mid = from + width * 0.5, width = width, counts = counts)
     },
     error = function() {
-      "Deviation of the windows from equal counts: a list, see objectiveMS1Function()."
-      objectiveMS1Function(.self$breaks, .self$masses)
+      "Deviation of the windows from equal counts: a list, see objective_ms1()."
+      objective_ms1(.self$breaks, .self$masses)
     },
     optimize_windows = function(digits = 1, maxbin = 15, overlap = 0) {
       "Move window starts and ends to regions with few precursor masses; returns a data.frame."

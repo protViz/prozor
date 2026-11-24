@@ -10,15 +10,15 @@ editor_options:
 ```{r}
 library(prozor)
 resCan <-
-    prozor::readPeptideFasta(
+    prozor::read_peptide_fasta(
         system.file("p1000_db1_example/Annotation_canSeq.fasta.gz" , package = "prozor"))
 
 file = system.file("extdata/IDResults.txt.gz" , package = "prozor")
 specMeta <- readr::read_tsv(file)
 upeptide <- unique(specMeta$peptideSeq)
 
-annotCan <- prozor::annotatePeptides(upeptide, resCan)
-#undebug(annotatePeptides)
+annotCan <- prozor::annotate_peptides(upeptide, resCan)
+#undebug(annotate_peptides)
 
 ```
 
@@ -26,20 +26,20 @@ annotCan <- prozor::annotatePeptides(upeptide, resCan)
 
 ```{r}
 library(tidyverse)
-xx <- annotCan |> group_by(proteinID,proteinSequence) |> nest()
+xx <- annotCan |> group_by(protein_id,protein_sequence) |> nest()
 
 head(xx)
 y <- xx$data[[1]]
 
-strl <- str_length(xx$proteinSequence[[1]])
+strl <- str_length(xx$protein_sequence[[1]])
 x <- vector(mode = "numeric", strl)
 
 
 for(i in 1:nrow(y)) {
-  x[y$Offset[i]:(y$Offset[i] + y$lengthPeptide[i] - 1)] <- x[y$Offset[i]:(y$Offset[i] + y$lengthPeptide[i] -1)] + 1
+  x[y$offset[i]:(y$offset[i] + y$peptide_length[i] - 1)] <- x[y$offset[i]:(y$offset[i] + y$peptide_length[i] -1)] + 1
 }
 
-xd <- data.frame(pos = 1:strl, sequence = str_split_1(xx$proteinSequence[1],"") , nr = x)
+xd <- data.frame(pos = 1:strl, sequence = str_split_1(xx$protein_sequence[1],"") , nr = x)
 #plot(xd$pos,xd$nr, type="h", xlim = c(100,200)) 
 
 xd$ypos <- rep(1:100, length.out = nrow(xd), each = 50)
@@ -70,15 +70,15 @@ precursors <-
 ```{r greedyTrembl, fig.cap="Peptide protein machtes for the All database. Rows - peptides, Columns - proteins, black - peptide protein match."}
 annotatedPrecursors <-
     merge(precursors ,
-          subset(annotCan, select = c(peptideSeq, proteinID)),
+          subset(annotCan, select = c(peptide_seq, protein_id)),
           by.x = "peptideSeq",
-          by.y = "peptideSeq")
+          by.y = "peptide_seq")
 
 
 xx <-
-    prepareMatrix(annotatedPrecursors ,
-                  proteinID = "proteinID",
-                  peptideID = "peptideSeq")
+    prepare_matrix(annotatedPrecursors ,
+                  protein_id = "protein_id",
+                  peptide_id = "peptideSeq")
 
 
 xx <- xx[order(rowSums(xx), decreasing = FALSE),]

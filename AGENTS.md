@@ -31,8 +31,8 @@ Guide for coding agents working in prozor. The workspace guide `../AGENTS.md` ap
 ## Decisions
 
 - Maintainer address stays `wewolski@gmail.com`
-- Next CRAN version is 0.4.0: bump with `usethis::use_version("minor")`, not `make new-version` (which bumps the patch, tags and pushes before CRAN acceptance)
-- API is snake_case (functions, arguments, `Cdsw` methods); renamed in 0.4.0 without aliases, `greedy()` included. Result column and element names (`proteinID`, `qValue_FPR`, ...) keep their old spelling
+- DESCRIPTION is at 0.4.0, the next CRAN version. Don't run `make new-version` before CRAN accepts it (it bumps the patch, tags and pushes)
+- API is snake_case: functions, arguments, `Cdsw` methods, result columns and list elements, default column names, method values and the bundled data sets (except `bcd`, which keeps COMET's column names); renamed in 0.4.0 without aliases, `greedy()` included
 - Plots use ggplot2 and return ggplot objects; no base graphics, no `plot = TRUE` arguments
 - `Depends: R (>= 4.4.0)`
 - The CLI options of `inst/script/fgcz_create_fasta.R` (`--revLab`, `--contamin`, ...) stay as they are: the `inst/script/*.sh` wrappers and FGCZ jobs call them

@@ -24,8 +24,8 @@ create_fgcz_fasta_db(
 \item{make_summary}{If \code{TRUE}, append the output of \code{\link[=make_fasta_summary]{make_fasta_summary()}} to the summary.}
 }
 \value{
-A list with the elements \code{resDB} (the sequences written), \code{filepath}, \code{summary} (text), \code{mcall} (the
-call) and \code{dbname}.
+A list with the elements \code{db} (the sequences written), \code{file_path}, \code{summary} (text), \code{call} and
+\code{db_name}.
 }
 \description{
 Reads all FASTA files in \code{database_dir}, adds contaminants and decoys with \code{\link[=create_decoy_db]{create_decoy_db()}}, drops
@@ -39,8 +39,8 @@ res <- create_fgcz_fasta_db(
   output_dir = tempdir(),
   make_summary = FALSE
 )
-basename(res$filepath)
-unlink(res$filepath)
+basename(res$file_path)
+unlink(res$file_path)
 }
 \seealso{
 Other FASTA databases:

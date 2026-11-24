@@ -28,7 +28,7 @@ subject to minimum and maximum window widths.
 
 \item{\code{constant_breaks(digits = 2)}}{Equal-width windows; returns the breaks invisibly.}
 
-\item{\code{error()}}{Deviation of the windows from equal counts: a list, see objectiveMS1Function().}
+\item{\code{error()}}{Deviation of the windows from equal counts: a list, see objective_ms1().}
 
 \item{\code{initialize(masses, nbins = 25, digits = 1)}}{Create the object from a vector of MS1 masses, with nbins windows of equal width and mass accuracy digits.}
 

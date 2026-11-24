@@ -19,7 +19,7 @@ explain exactly the same peptides are reported together, separated by \verb{;}.
 }
 \examples{
 data(protpepmetashort)
-pepprot <- prepare_matrix(protpepmetashort, peptide_id = "peptideModSeq")
+pepprot <- prepare_matrix(protpepmetashort, peptide_id = "peptide_mod_seq")
 groups <- greedy_parsimony(pepprot)
 # every precursor is assigned to exactly one protein group
 stopifnot(setequal(names(groups), rownames(pepprot)))

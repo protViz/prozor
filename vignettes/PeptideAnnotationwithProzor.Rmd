@@ -48,7 +48,7 @@ ggplot(db_sizes, aes(x = database, y = proteins)) +
 length(unique(specMeta$peptideSeq))
 upeptide <- unique(specMeta$peptideSeq)
 annotAll <- annotate_peptides(upeptide, resAll)
-head(select(annotAll, !proteinSequence)) |> knitr::kable()
+head(select(annotAll, !protein_sequence)) |> knitr::kable()
 
 annotCan <- annotate_peptides(upeptide, resCan)
 ```
@@ -70,8 +70,8 @@ A proteotypic peptide is one which matches only a single protein.
 proteotypic <- data.frame(
   database = c("All", "Canonical"),
   percent = c(
-    sum(table(annotAll$peptideSeq) == 1) / length(table(annotAll$peptideSeq)) * 100,
-    sum(table(annotCan$peptideSeq) == 1) / length(table(annotCan$peptideSeq)) * 100
+    sum(table(annotAll$peptide_seq) == 1) / length(table(annotAll$peptide_seq)) * 100,
+    sum(table(annotCan$peptide_seq) == 1) / length(table(annotCan$peptide_seq)) * 100
   )
 )
 ggplot(proteotypic, aes(x = database, y = percent)) +
@@ -107,12 +107,12 @@ plot_matches <- function(pepprot) {
 ```{r greedyTrembl, fig.cap="Peptide protein matches for the All database. Rows - peptides, columns - proteins, point - peptide protein match."}
 annotatedPrecursors <- inner_join(
   precursors,
-  select(annotAll, peptideSeq, proteinID),
-  by = join_by(peptideSeq),
+  select(annotAll, peptide_seq, protein_id),
+  by = join_by(peptideSeq == peptide_seq),
   relationship = "many-to-many"
 )
 
-xx <- prepare_matrix(annotatedPrecursors, protein_id = "proteinID", peptide_id = "peptideSeq")
+xx <- prepare_matrix(annotatedPrecursors, peptide_id = "peptideSeq")
 plot_matches(xx)
 dim(xx)
 xx[1:10, 1:100]
@@ -124,12 +124,12 @@ xxAll <- greedy_parsimony(xx)
 ```{r greedyCanonical, fig.cap="Peptide protein matches for the Canonical database. Rows - peptides, columns - proteins, point - peptide protein match."}
 annotatedPrecursors <- inner_join(
   precursors,
-  select(annotCan, peptideSeq, proteinID),
-  by = join_by(peptideSeq),
+  select(annotCan, peptide_seq, protein_id),
+  by = join_by(peptideSeq == peptide_seq),
   relationship = "many-to-many"
 )
 
-xx <- prepare_matrix(annotatedPrecursors, protein_id = "proteinID", peptide_id = "peptideSeq")
+xx <- prepare_matrix(annotatedPrecursors, peptide_id = "peptideSeq")
 plot_matches(xx)
 xx[80:100, 1:10]
 xxCAN <- greedy_parsimony(xx)
@@ -144,8 +144,8 @@ inference <- data.frame(
   database = rep(c("All", "Canonical"), each = 2),
   stage = factor(rep(c("before", "after"), 2), levels = c("before", "after")),
   proteins = c(
-    length(unique(annotAll$proteinID)), length(unique(unlist(xxAll))),
-    length(unique(annotCan$proteinID)), length(unique(unlist(xxCAN)))
+    length(unique(annotAll$protein_id)), length(unique(unlist(xxAll))),
+    length(unique(annotCan$protein_id)), length(unique(unlist(xxCAN)))
   )
 )
 ggplot(inference, aes(x = stage, y = proteins)) +

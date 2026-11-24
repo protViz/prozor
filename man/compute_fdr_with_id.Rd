@@ -16,7 +16,7 @@ compute_fdr_with_id(score, id, decoy = "^REV_", larger_better = TRUE)
 \item{larger_better}{\code{TRUE} if a larger score is better, \code{FALSE} if a smaller score is better.}
 }
 \value{
-The list returned by \code{\link[=compute_fdr]{compute_fdr()}}, plus the element \code{ID}: the protein IDs in the sorted order.
+The list returned by \code{\link[=compute_fdr]{compute_fdr()}}, plus the element \code{id}: the protein IDs in the sorted order.
 }
 \description{
 Same as \code{\link[=compute_fdr]{compute_fdr()}}, but takes protein IDs and finds the decoys with the \code{decoy} pattern. See
@@ -24,7 +24,7 @@ Same as \code{\link[=compute_fdr]{compute_fdr()}}, but takes protein IDs and fin
 }
 \examples{
 data(fdr_sample)
-fdr <- compute_fdr_with_id(fdr_sample$score2, fdr_sample$proteinID, larger_better = TRUE)
+fdr <- compute_fdr_with_id(fdr_sample$score2, fdr_sample$protein_id, larger_better = TRUE)
 head(as.data.frame(fdr))
 }
 \seealso{

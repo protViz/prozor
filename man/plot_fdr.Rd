@@ -21,9 +21,9 @@ estimates in percent. When smaller scores are better, the score axis is logarith
 }
 \examples{
 data(fdr_sample)
-fdr <- compute_fdr_with_id(fdr_sample$score, fdr_sample$proteinID, larger_better = FALSE)
+fdr <- compute_fdr_with_id(fdr_sample$score, fdr_sample$protein_id, larger_better = FALSE)
 plot_fdr(fdr)
-fdr2 <- compute_fdr_with_id(fdr_sample$score2, fdr_sample$proteinID, larger_better = TRUE)
+fdr2 <- compute_fdr_with_id(fdr_sample$score2, fdr_sample$protein_id, larger_better = TRUE)
 plot_fdr(fdr2)
 }
 \seealso{

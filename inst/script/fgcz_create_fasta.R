@@ -81,4 +81,4 @@ res_db <- create_fgcz_fasta_db(
 cat(res_db$summary)
 
 res <- paste(c("fgcz_create_fasta.R run with params\n", params), collapse = "")
-writeLines(c(res, paste(res_db$summary, collapse = "")), con = paste0(res_db$dbname, ".txt"))
+writeLines(c(res, paste(res_db$summary, collapse = "")), con = paste0(res_db$db_name, ".txt"))

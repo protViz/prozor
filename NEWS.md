@@ -1,4 +1,4 @@
-# prozor 0.3.4
+# prozor 0.4.0
 
 ## Breaking changes
 
@@ -19,6 +19,14 @@
 | arguments `useContaminants`, `revLab`, `noHuman`, `databasedirectory`, `outputdir`, `resDB`, `fdrObj`, `qValue`, `proteinID`, `peptideID`, `idfun`, `ID` | `contaminants`, `rev_lab`, `no_human`, `database_dir`, `output_dir`, `db`, `fdr`, `q_value`, `protein_id`, `peptide_id`, `id_fun`, `id` |
 | data set `fdrSample` | `fdr_sample` |
 
+* Result columns and list elements are snake_case too:
+  * `annotate_aho()`, `annotate_peptides()`: `protein_id`, `offset`, `protein_sequence`, `peptide_length`, and `peptide_seq` for vector input (was `proteinID`, `Offset`, `proteinSequence`, `lengthPeptide`, `peptideSeq`)
+  * `compute_fdr()`: `fpr`, `simple_fdr`, `q_value_fpr`, `q_value_simple_fdr`; `compute_fdr_with_id()` adds `id` (was `FPR`, `SimpleFDR`, `qValue_FPR`, `qValue_SimpleFDR`, `ID`)
+  * `greedy_to_table()`: `peptide`, `precursor_charge`, `protein` (was `Peptide`, `precursorCharge`, `Protein`)
+  * `make_fasta_summary(as_string = FALSE)`: `nr_sequences`, `length_summary`, `aa_freq`; `create_fgcz_fasta_db()`: `db`, `file_path`, `summary`, `call`, `db_name`
+* `predict_score_fdr(method = )` takes `"simple_fdr"` (default) or `"fpr"` (was `"SimpleFDR"`, `"FPR"`).
+* Default column names follow the results: `annotate_peptides(peptide = "peptide_seq")`, `prepare_matrix(protein_id = "protein_id", peptide_id = "peptide_seq")` (was `"peptideSeq"`, `"proteinID"`, `"strippedSequence"`).
+* The data sets `fdr_sample`, `protpepmetashort` and `pepprot` have snake_case columns (`protein_id`, `peptide_seq`, `peptide_mod_seq`, `precursor_charge`, `protein_length`, `peptide_length`); `bcd` keeps COMET's column names.
 * `greedy()`, last on CRAN in 0.3.1, has no alias; use `greedy_parsimony()`.
 * `write_fasta(fasta, file)` takes one list of sequences, data first (was `writeFasta(file, ...)`); combine several lists with `c()`.
 * Plots use ggplot2, which moved from Suggests to Imports. `plot_fdr()`, `Cdsw$plot()` and `Cdsw$show_cycle()` return ggplot objects and draw nothing themselves. The `plot` argument of `Cdsw$sampling_breaks()`, `Cdsw$optimize_windows()` and `readjust_windows()` is gone; use `Cdsw$plot_breaks()` and `plot_windows()`.

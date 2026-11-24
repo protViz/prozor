@@ -36,7 +36,7 @@
 #' @export
 #' @examples
 #' data(protpepmetashort)
-#' pepprot <- prepare_matrix(protpepmetashort, peptide_id = "peptideModSeq")
+#' pepprot <- prepare_matrix(protpepmetashort, peptide_id = "peptide_mod_seq")
 #' groups <- greedy_parsimony(pepprot)
 #' # every precursor is assigned to exactly one protein group
 #' stopifnot(setequal(names(groups), rownames(pepprot)))
@@ -53,15 +53,15 @@ greedy_parsimony <- function(pepprot) {
 #'
 #' @param res A result of [greedy_parsimony()] whose names have the form `peptide.charge`. The charge is taken
 #'   after the last dot, so modified peptides such as `"AC[+57.0]K.2"` work.
-#' @return A data frame with the columns `Peptide`, `precursorCharge` and `Protein`, and the precursor IDs as row
+#' @return A data frame with the columns `peptide`, `precursor_charge` and `protein`, and the precursor IDs as row
 #'   names.
 #' @family protein inference
 #' @export
 #' @examples
 #' data(protpepmetashort)
 #' protpepmetashort$precursor <- paste(
-#'   protpepmetashort$peptideModSeq,
-#'   protpepmetashort$precursorCharge,
+#'   protpepmetashort$peptide_mod_seq,
+#'   protpepmetashort$precursor_charge,
 #'   sep = "."
 #' )
 #' pepprot <- prepare_matrix(protpepmetashort, peptide_id = "precursor")
@@ -69,9 +69,9 @@ greedy_parsimony <- function(pepprot) {
 greedy_to_table <- function(res) {
   precursor <- names(res)
   data.frame(
-    Peptide = sub("\\.[^.]*$", "", precursor),
-    precursorCharge = sub("^.*\\.", "", precursor),
-    Protein = unlist(res, use.names = FALSE),
+    peptide = sub("\\.[^.]*$", "", precursor),
+    precursor_charge = sub("^.*\\.", "", precursor),
+    protein = unlist(res, use.names = FALSE),
     row.names = precursor
   )
 }

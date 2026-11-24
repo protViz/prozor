@@ -19,9 +19,9 @@ A list of vectors in the sorted order:
 \item \code{larger_better}: the argument.
 \item \code{order}: the positions of the sorted hits in the input.
 \item \code{decoy_hit}, \code{score}: the sorted input.
-\item \code{FPR}: the FDR estimated as 2 * decoys / all hits (Elias and Gygi).
-\item \code{SimpleFDR}: the FDR estimated as decoys / targets (Kaell).
-\item \code{qValue_FPR}, \code{qValue_SimpleFDR}: the q-values of both estimates.
+\item \code{fpr}: the FDR estimated as 2 * decoys / all hits (Elias and Gygi).
+\item \code{simple_fdr}: the FDR estimated as decoys / targets (Kaell).
+\item \code{q_value_fpr}, \code{q_value_simple_fdr}: the q-values of both estimates.
 }
 }
 \description{
@@ -31,7 +31,7 @@ get the conservative FDR. See \code{vignette("TargetDecoyFDR_Example", package =
 }
 \examples{
 data(fdr_sample)
-fdr <- compute_fdr(fdr_sample$score, grepl("^REV_", fdr_sample$proteinID), larger_better = FALSE)
+fdr <- compute_fdr(fdr_sample$score, grepl("^REV_", fdr_sample$protein_id), larger_better = FALSE)
 head(as.data.frame(fdr))
 }
 \seealso{

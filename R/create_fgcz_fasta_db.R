@@ -6,7 +6,7 @@
 #' @param old If `TRUE`, count the amino acids by concatenating all sequences (the older, slower method).
 #' @param as_string If `TRUE`, return text to pass to [cat()]; if `FALSE`, a list.
 #' @return With `as_string = TRUE`, a character vector to pass to [cat()]. Otherwise a list with the elements
-#'   `nrSequences`, `lengthSummary` and `aafreq` (counts per amino acid).
+#'   `nr_sequences`, `length_summary` and `aa_freq` (counts per amino acid).
 #' @family FASTA databases
 #' @export
 #' @examples
@@ -16,10 +16,10 @@
 #' make_fasta_summary(db, as_string = FALSE)
 make_fasta_summary <- function(db, old = FALSE, as_string = TRUE) {
   if (old) {
-    aafreq <- table(strsplit(paste(db, collapse = ""), split = "")[[1]])
+    aa_freq <- table(strsplit(paste(db, collapse = ""), split = "")[[1]])
   } else {
     counts <- unlist(unname(lapply(db, function(x) table(strsplit(x, split = "")[[1]]))))
-    aafreq <- vapply(split(as.numeric(counts), names(counts)), sum, numeric(1))
+    aa_freq <- vapply(split(as.numeric(counts), names(counts)), sum, numeric(1))
   }
   length_summary <- summary(vapply(db, seqinr::getLength, numeric(1)))
 
@@ -30,10 +30,10 @@ make_fasta_summary <- function(db, old = FALSE, as_string = TRUE) {
       "\n length summary:\n",
       paste0(utils::capture.output(length_summary), "\n"),
       "AA frequencies:\n",
-      paste0(utils::capture.output(as.matrix(aafreq)), "\n")
+      paste0(utils::capture.output(as.matrix(aa_freq)), "\n")
     )
   } else {
-    list(nrSequences = length(db), lengthSummary = length_summary, aafreq = aafreq)
+    list(nr_sequences = length(db), length_summary = length_summary, aa_freq = aa_freq)
   }
 }
 
@@ -50,8 +50,8 @@ make_fasta_summary <- function(db, old = FALSE, as_string = TRUE) {
 #' @param rev_lab Prefix of the reversed decoy sequences, or `NULL` for no decoys.
 #' @param output_dir Directory the FASTA file is written to.
 #' @param make_summary If `TRUE`, append the output of [make_fasta_summary()] to the summary.
-#' @return A list with the elements `resDB` (the sequences written), `filepath`, `summary` (text), `mcall` (the
-#'   call) and `dbname`.
+#' @return A list with the elements `db` (the sequences written), `file_path`, `summary` (text), `call` and
+#'   `db_name`.
 #' @family FASTA databases
 #' @export
 #' @examples
@@ -60,8 +60,8 @@ make_fasta_summary <- function(db, old = FALSE, as_string = TRUE) {
 #'   output_dir = tempdir(),
 #'   make_summary = FALSE
 #' )
-#' basename(res$filepath)
-#' unlink(res$filepath)
+#' basename(res$file_path)
+#' unlink(res$file_path)
 create_fgcz_fasta_db <- function(
   database_dir,
   contaminants = load_contaminants("fgcz2022"),
@@ -74,7 +74,7 @@ create_fgcz_fasta_db <- function(
   if (!dir.exists(database_dir)) {
     stop("`database_dir` must be an existing directory, not \"", database_dir, "\".")
   }
-  dbname <- basename(database_dir)
+  db_name <- basename(database_dir)
   files <- file.path(database_dir, grep("fasta", dir(database_dir), value = TRUE))
   annot_file <- grep("annotation.txt", dir(database_dir), value = TRUE)
   if (length(annot_file) == 0) {
@@ -86,11 +86,11 @@ create_fgcz_fasta_db <- function(
   db <- db[!duplicated(names(db))]
 
   if (!is.null(rev_lab)) {
-    dbname <- paste0(dbname, "_d")
+    db_name <- paste0(db_name, "_d")
   }
-  filepath <- file.path(output_dir, paste0(dbname, "_", format(Sys.time(), "%Y%m%d"), ".fasta"))
-  message("Writing database to ", filepath, ".")
-  write_fasta(db, file = filepath)
+  file_path <- file.path(output_dir, paste0(db_name, "_", format(Sys.time(), "%Y%m%d"), ".fasta"))
+  message("Writing database to ", file_path, ".")
+  write_fasta(db, file = file_path)
   summary_str <- paste0(
     "Database created with prozor: ",
     paste(utils::capture.output(mcall), collapse = "\n"),
@@ -98,9 +98,9 @@ create_fgcz_fasta_db <- function(
     "where database_dir was prepared according to ",
     "https://fgcz-intranet.uzh.ch/tiki-index.php?page=SOPrequestFASTA \n\n",
     "\n      FASTA name : ",
-    dbname,
+    db_name,
     "\n FASTA file name : ",
-    basename(filepath),
+    basename(file_path),
     "\n  written to dir : ",
     output_dir,
     "\n       annotation:\n",
@@ -114,5 +114,5 @@ create_fgcz_fasta_db <- function(
   if (make_summary) {
     summary_str <- c(summary_str, make_fasta_summary(db, as_string = TRUE))
   }
-  list(resDB = db, filepath = filepath, summary = summary_str, mcall = mcall, dbname = dbname)
+  list(db = db, file_path = file_path, summary = summary_str, call = mcall, db_name = db_name)
 }

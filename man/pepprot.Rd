@@ -5,6 +5,6 @@
 \alias{pepprot}
 \title{Peptide-protein assignments}
 \description{
-Peptide sequences with the proteins they match.
+Peptides with the columns \code{peptide_seq}, \code{peptide_mod_seq}, \code{precursor_charge} and \code{m} (precursor m/z).
 }
 \keyword{data}

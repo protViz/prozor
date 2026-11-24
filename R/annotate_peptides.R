@@ -14,7 +14,7 @@
 #' @param prefix Regular expression the residues before a match must end with.
 #' @param suffix Regular expression the residues after a match must start with.
 #' @return A data frame with one row per row of `pepinfo` and protein occurrence: the columns of `pepinfo`,
-#'   `proteinID`, `Offset` (1-based start of the peptide), `proteinSequence`, `matched` and `lengthPeptide`.
+#'   `protein_id`, `offset` (1-based start of the peptide), `protein_sequence`, `matched` and `peptide_length`.
 #'   `NULL`, with a warning, if no peptide occurs in `fasta`.
 #' @family protein inference
 #' @export
@@ -24,22 +24,22 @@
 #' fasta_file <- system.file("p1000_db1_example/Annotation_canSeq.fasta.gz", package = "prozor")
 #' fasta <- read_peptide_fasta(fasta_file)
 #' annot <- annotate_peptides(peptides[1:20], fasta)
-#' head(annot[, c("proteinID", "peptideSeq", "Offset", "lengthPeptide", "matched")])
-annotate_peptides <- function(pepinfo, fasta, peptide = "peptideSeq", prefix = "(([RK])|(^)|(^M))", suffix = "") {
+#' head(annot[, c("protein_id", "peptide_seq", "offset", "peptide_length", "matched")])
+annotate_peptides <- function(pepinfo, fasta, peptide = "peptide_seq", prefix = "(([RK])|(^)|(^M))", suffix = "") {
   if (is.null(dim(pepinfo))) {
     pepinfo <- data.frame(pepinfo)
     colnames(pepinfo) <- peptide
   }
   pepinfo[[peptide]] <- as.character(pepinfo[[peptide]])
-  pepinfo$lengthPeptide <- nchar(pepinfo[[peptide]])
+  pepinfo$peptide_length <- nchar(pepinfo[[peptide]])
 
   restab <- annotate_aho(unique(pepinfo[[peptide]]), fasta, peptide = peptide)
   if (is.null(restab)) {
     warning("None of the peptides in `pepinfo` occurs in `fasta`.")
     return(NULL)
   }
-  before <- substr(restab$proteinSequence, 1, restab$Offset - 1)
-  after <- substring(restab$proteinSequence, restab$Offset + nchar(restab[[peptide]]))
+  before <- substr(restab$protein_sequence, 1, restab$offset - 1)
+  after <- substring(restab$protein_sequence, restab$offset + nchar(restab[[peptide]]))
   restab$matched <- grepl(paste0("(", prefix, ")$"), before) & grepl(paste0("^(", suffix, ")"), after)
   merge(restab, pepinfo, by.x = peptide, by.y = peptide)
 }
@@ -53,8 +53,8 @@ annotate_peptides <- function(pepinfo, fasta, peptide = "peptideSeq", prefix = "
 #' @param pepseq Peptide sequences, upper-case letters only.
 #' @param fasta A list of protein sequences with unique names, as returned by [read_peptide_fasta()].
 #' @param peptide Name of the result column that holds the peptide sequences.
-#' @return A data frame with one row per occurrence and the columns `proteinID`, `peptide` (named by the
-#'   argument), `Offset` (1-based start of the peptide) and `proteinSequence`; `NULL` if no peptide occurs.
+#' @return A data frame with one row per occurrence and the columns `protein_id`, `peptide` (named by the
+#'   argument), `offset` (1-based start of the peptide) and `protein_sequence`; `NULL` if no peptide occurs.
 #' @family protein inference
 #' @export
 #' @examples
@@ -64,7 +64,7 @@ annotate_peptides <- function(pepinfo, fasta, peptide = "peptideSeq", prefix = "
 #' fasta <- read_peptide_fasta(fasta_file)
 #' hits <- annotate_aho(peptides[1:20], fasta)
 #' dim(hits)
-annotate_aho <- function(pepseq, fasta, peptide = "peptideSeq") {
+annotate_aho <- function(pepseq, fasta, peptide = "peptide_seq") {
   pepseq <- unique(trimws(pepseq))
   invalid <- pepseq[!grepl("^[A-Z]+$", pepseq)]
   if (length(invalid) > 0) {
@@ -91,8 +91,9 @@ annotate_aho <- function(pepseq, fasta, peptide = "peptideSeq") {
   if (length(res) == 0) {
     return(NULL)
   }
-  hits <- as.data.frame(dplyr::bind_rows(lapply(res, dplyr::bind_rows), .id = "proteinID"))
+  hits <- as.data.frame(dplyr::bind_rows(lapply(res, dplyr::bind_rows), .id = "protein_id"))
   colnames(hits)[colnames(hits) == "Keyword"] <- peptide
-  proteins <- data.frame(proteinID = protein_ids, proteinSequence = unname(sequences))
-  dplyr::inner_join(hits, proteins, by = "proteinID")
+  colnames(hits)[colnames(hits) == "Offset"] <- "offset"
+  proteins <- data.frame(protein_id = protein_ids, protein_sequence = unname(sequences))
+  dplyr::inner_join(hits, proteins, by = "protein_id")
 }

@@ -11,9 +11,9 @@
 #' @export
 #' @examples
 #' data(fdr_sample)
-#' fdr <- compute_fdr_with_id(fdr_sample$score, fdr_sample$proteinID, larger_better = FALSE)
+#' fdr <- compute_fdr_with_id(fdr_sample$score, fdr_sample$protein_id, larger_better = FALSE)
 #' plot_fdr(fdr)
-#' fdr2 <- compute_fdr_with_id(fdr_sample$score2, fdr_sample$proteinID, larger_better = TRUE)
+#' fdr2 <- compute_fdr_with_id(fdr_sample$score2, fdr_sample$protein_id, larger_better = TRUE)
 #' plot_fdr(fdr2)
 plot_fdr <- function(fdr, bins = 100) {
   panels <- c("hits", "q-value (%)")
@@ -25,7 +25,7 @@ plot_fdr <- function(fdr, bins = 100) {
   )
   q_values <- data.frame(
     score = rep(fdr$score, 2),
-    q_value = 100 * c(fdr$qValue_FPR, fdr$qValue_SimpleFDR),
+    q_value = 100 * c(fdr$q_value_fpr, fdr$q_value_simple_fdr),
     estimate = rep(c("FPR", "SimpleFDR"), each = length(fdr$score)),
     panel = factor(panels[2], levels = panels)
   )
