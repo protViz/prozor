@@ -25,7 +25,10 @@ annotCan <- prozor::annotate_peptides(upeptide, resCan)
 
 
 ```{r}
-library(tidyverse)
+library(dplyr)
+library(tidyr)
+library(stringr)
+library(ggplot2)
 xx <- annotCan |> group_by(protein_id,protein_sequence) |> nest()
 
 head(xx)
