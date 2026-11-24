@@ -16,6 +16,10 @@ A data frame with 423 rows and 7 columns:
 \item \code{peptide_length}: length of the peptide sequence.
 }
 }
+\source{
+Precursors of \link{pepprot}, annotated with \code{\link[=annotate_peptides]{annotate_peptides()}} against mouse UniProt sequences and FGCZ
+contaminants.
+}
 \description{
 Peptide-protein pairs for 250 mouse proteins; small, so the examples stay fast.
 }

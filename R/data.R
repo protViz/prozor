@@ -24,6 +24,8 @@ NULL
 #' * `precursor_charge`: precursor charge (integer).
 #' * `m`: precursor m/z.
 #' * `peptide_length`: length of the peptide sequence.
+#' @source Precursors of [pepprot], annotated with [annotate_peptides()] against mouse UniProt sequences and FGCZ
+#'   contaminants.
 #' @name protpepmetashort
 #' @docType data
 #' @keywords data
@@ -72,6 +74,8 @@ NULL
 #' * `protein`: comma-separated protein IDs; decoys start with `REV_`.
 #' * `protein_count`: number of proteins.
 #' * `modifications`: modifications as position, residue and mass.
+#' @source COMET search (low-resolution HCD settings) of the FGCZ quality-control run
+#'   `FUSION_1.20180713_005_autoQC4L` against human UniProt sequences with reversed decoys.
 #' @name bcd
 #' @docType data
 #' @keywords data

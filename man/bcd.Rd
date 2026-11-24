@@ -24,6 +24,10 @@ A data frame with 4,557 rows and 18 columns:
 \item \code{modifications}: modifications as position, residue and mass.
 }
 }
+\source{
+COMET search (low-resolution HCD settings) of the FGCZ quality-control run
+\code{FUSION_1.20180713_005_autoQC4L} against human UniProt sequences with reversed decoys.
+}
 \description{
 Peptide-spectrum matches as produced by the COMET search engine, with its column names.
 }

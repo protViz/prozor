@@ -54,6 +54,7 @@ BugReports: https://github.com/protviz/prozor/issues
 Depends: R (>= 4.4.0)
 VignetteBuilder: knitr
 LazyData: true
+LazyDataCompression: xz
 Config/roxygen2/version: 8.1.1
 Roxygen: list(markdown = TRUE)
 Config/testthat/edition: 3
