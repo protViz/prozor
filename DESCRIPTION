@@ -42,11 +42,8 @@ Suggests:
     docopt,
     dplyr (>= 1.1.0),
     knitr,
-    readr,
     rmarkdown,
-    stringr,
     testthat (>= 3.0.0),
-    tidyr,
     withr
 URL: https://prolfqua.github.io/prozor/, https://github.com/prolfqua/prozor
 BugReports: https://github.com/prolfqua/prozor/issues

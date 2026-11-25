@@ -20,6 +20,7 @@ Articles:
 
 - [Creating Target Decoy Databases](https://prolfqua.github.io/prozor/vignettes/CreatingDecoyDB.html)
 - [Peptide Annotation and Protein Inference](https://prolfqua.github.io/prozor/vignettes/PeptideAnnotationwithProzor.html)
+- [Protein Sequence Coverage](https://prolfqua.github.io/prozor/vignettes/ProteinCoverage.html)
 - [Target Decoy FDR](https://prolfqua.github.io/prozor/vignettes/TargetDecoyFDR_Example.html)
 - [Target Decoy FDR from COMET search results](https://prolfqua.github.io/prozor/vignettes/TargetDecoyComet.html)
 - [Computing Dynamic SWATH Windows](https://prolfqua.github.io/prozor/vignettes/cdsw.html)

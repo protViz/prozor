@@ -54,6 +54,7 @@
 
 * `load_contaminants(set, no_human)` loads any of the bundled contaminant sets.
 * `plot_windows()` shows the precursor masses with the DIA window boundaries; `Cdsw$plot_breaks()` compares the current breaks with equal-width and quantile breaks.
+* `residue_coverage()`, `sequence_coverage()` and `plot_coverage()` compute and plot the peptide coverage of protein sequences from the result of `annotate_peptides()`; the new vignette "Protein Sequence Coverage" shows them, including coverage of the minimal protein set and of isoforms.
 
 ## Minor improvements and fixes
 
@@ -102,7 +103,7 @@
 * The vignettes use the new names and ggplot2; "Peptide Annotation and Protein Inference" builds again. "Creating Target Decoy Databases" finds the FASTA files as `create_fgcz_fasta_db()` does, writes to `tempdir()` and ends with the one-call `create_fgcz_fasta_db()`.
 * The `Cdsw` help page no longer documents method arguments without a usage section (r-devel NOTE).
 * Removed the undocumented debug data set `mm`.
-* Fewer dependencies: protViz, purrr, rlang and seqinr are no longer needed, so a default install also skips the five packages only seqinr needed, RcppArmadillo among them; dplyr, readr, stringr and docopt moved to Suggests (dplyr is only used by the vignettes and tests, readr and stringr only by the draft vignette on the website, docopt only by `inst/script/fgcz_create_fasta.R`).
+* Fewer dependencies: protViz, purrr, rlang and seqinr are no longer needed, so a default install also skips the five packages only seqinr needed, RcppArmadillo among them; dplyr and docopt moved to Suggests (dplyr is only used by the vignettes and tests, docopt only by `inst/script/fgcz_create_fasta.R`).
 
 # prozor 0.2.15
 

@@ -1,0 +1,143 @@
+---
+title: "Protein Sequence Coverage"
+author: "Witold Wolski"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Protein Sequence Coverage}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options:
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  fig.width = 7
+)
+```
+
+```{r libraries}
+library(prozor)
+library(ggplot2)
+```
+
+# Introduction
+
+The sequence coverage of a protein is the fraction of its residues that the identified peptides cover. It tells how much of a protein the data actually support: a protein identified by one short peptide is weaker evidence than one whose sequence is covered from end to end. Per residue, coverage shows which regions the peptides support, and, for proteins with several isoforms, whether the peptides cover the stretches that tell the isoforms apart.
+
+prozor computes coverage from the result of `annotate_peptides()` (or `annotate_aho()`):
+
+* `residue_coverage()` counts, for every residue, how many distinct peptides cover it;
+* `sequence_coverage()` summarizes this per protein;
+* `plot_coverage()` draws a protein sequence with each residue colored by its coverage.
+
+# Data
+
+The example data are the peptides identified in a human sample (`IDResults.txt.gz`) and two FASTA databases: one with canonical sequences only and one that also contains isoforms.
+
+```{r data}
+file <- system.file("extdata/IDResults.txt.gz", package = "prozor")
+peptides <- unique(utils::read.delim(file)$peptideSeq)
+canonical <- read_peptide_fasta(system.file("p1000_db1_example/Annotation_canSeq.fasta.gz", package = "prozor"))
+all_sequences <- read_peptide_fasta(system.file("p1000_db1_example/Annotation_allSeq.fasta.gz", package = "prozor"))
+c(peptides = length(peptides), canonical = length(canonical), with_isoforms = length(all_sequences))
+```
+
+# Coverage per protein
+
+First we find the proteins each peptide occurs in, then summarize the coverage per protein.
+
+```{r coverage}
+annotation <- annotate_peptides(peptides, canonical)
+coverage <- sequence_coverage(annotation)
+head(coverage)
+```
+
+Most proteins are covered only in small part; a few abundant proteins, such as serum albumin, are covered almost completely.
+
+```{r coverage-distribution, fig.height = 3.5, fig.cap = "Sequence coverage of the proteins matched by at least one peptide."}
+ggplot(coverage, aes(x = coverage)) +
+  geom_histogram(binwidth = 0.05, boundary = 0, fill = "#0072B2", colour = "white") +
+  scale_x_continuous(labels = function(x) paste0(100 * x, " %")) +
+  labs(x = "sequence coverage", y = "proteins")
+```
+
+```{r best-covered}
+best <- coverage[order(coverage$coverage, decreasing = TRUE), ]
+knitr::kable(head(best, 10), digits = 2, row.names = FALSE, caption = "The ten best-covered proteins.")
+```
+
+# Coverage of the minimal protein set
+
+`greedy_parsimony()` keeps the smallest set of proteins that explains all peptides (see `vignette("PeptideAnnotationwithProzor", package = "prozor")`). The proteins it drops are those whose peptides are all explained by other proteins; they tend to have lower coverage.
+
+```{r inference}
+inference <- greedy_parsimony(prepare_matrix(annotation))
+kept <- unique(unlist(strsplit(unlist(inference), ";", fixed = TRUE)))
+coverage$inference <- ifelse(coverage$protein_id %in% kept, "kept", "dropped")
+table(coverage$inference)
+```
+
+```{r inference-coverage, fig.height = 3, fig.cap = "Sequence coverage of the proteins kept and dropped by protein inference."}
+ggplot(coverage, aes(x = coverage, y = inference)) +
+  geom_boxplot(outlier.shape = NA, colour = "grey40") +
+  geom_jitter(height = 0.2, width = 0, alpha = 0.4, size = 0.8, colour = "#0072B2") +
+  scale_x_continuous(labels = function(x) paste0(100 * x, " %")) +
+  labs(x = "sequence coverage", y = NULL)
+```
+
+# Coverage along a sequence
+
+`residue_coverage()` gives the coverage of every residue. We plot the best-covered protein with at least 20 peptides.
+
+```{r residues}
+residues <- residue_coverage(annotation)
+well_covered <- best[best$n_peptides >= 20, ]
+example <- well_covered$protein_id[1]
+example
+```
+
+```{r plot-example, fig.height = 3, fig.cap = "Coverage of each residue: gray residues are covered by no peptide, darker blue by more peptides."}
+plot_coverage(residues, example)
+```
+
+# Isoforms
+
+With isoforms in the database, a peptide can match several sequences of the same gene. Coverage along the sequences shows which parts of each isoform the peptides support. Kininogen-1 (KNG1, UniProt P01042) is an example: its high-molecular-weight form (the canonical sequence) and its low-molecular-weight form (isoform 2) share the N-terminal part and differ in the C-terminal part.
+
+```{r isoforms}
+annotation_all <- annotate_peptides(peptides, all_sequences)
+kng1 <- c("sp|P01042|KNG1_HUMAN", "sp|P01042-2|KNG1_HUMAN")
+coverage_all <- sequence_coverage(annotation_all)
+coverage_all[coverage_all$protein_id %in% kng1, ]
+```
+
+Peptides that match only one of the two sequences are evidence for that isoform:
+
+```{r isoform-peptides}
+kng1_peptides <- split(annotation_all$peptide_seq, annotation_all$protein_id)[kng1]
+isoform_counts <- c(
+  shared = length(intersect(kng1_peptides[[1]], kng1_peptides[[2]])),
+  canonical_only = length(setdiff(kng1_peptides[[1]], kng1_peptides[[2]])),
+  isoform_2_only = length(setdiff(kng1_peptides[[2]], kng1_peptides[[1]]))
+)
+isoform_counts
+```
+
+```{r isoform-plots, fig.height = 3, fig.cap = "Coverage of the canonical KNG1 sequence (top) and of isoform 2 (bottom)."}
+residues_all <- residue_coverage(annotation_all)
+plot_coverage(residues_all, kng1[1])
+plot_coverage(residues_all, kng1[2])
+```
+
+Isoform 2 has the higher coverage only because it is shorter: the `r isoform_counts[["shared"]]` shared peptides cover the common N-terminal part of both sequences. The C-terminal part of isoform 2 is not covered. The isoform-specific evidence is the `r isoform_counts[["canonical_only"]]` peptide(s) in the C-terminal part of the canonical sequence, which isoform 2 lacks: only they show that the high-molecular-weight form is present. Judged by coverage fraction alone, isoform 2 would look like the better-supported form.
+
+# Session Info
+
+```{r session-info}
+sessionInfo()
+```

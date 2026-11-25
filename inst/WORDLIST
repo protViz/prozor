@@ -4,6 +4,7 @@ Benchmarking
 Bernd
 Bibliospec
 BiocCheck
+CMD
 COMET's
 Corasick
 DDA
@@ -16,8 +17,13 @@ Frankenfield
 Gygi
 HCD
 Hao
+Isoform
+Isoforms
+KNG
 Kaell
+Kininogen
 Käll
+Makefile
 ORCID
 PSM
 PSMs
@@ -34,8 +40,10 @@ Trembl
 UniProt
 UniProt's
 al
+altdoc
 blib
 cdot
+changelog
 docopt
 doi
 dplyr
@@ -46,6 +54,8 @@ funder
 ggplot
 gzip
 gzipped
+isoform
+isoforms
 keratins
 maxwindow
 minwindow
@@ -56,7 +66,6 @@ protViz
 proteomics
 proteotypic
 purrr
-readr
 rlang
 roxygen
 runnable
@@ -64,7 +73,6 @@ seqinr
 seqinr's
 sp
 spectrometry
-stringr
 tibble
 tibbles
 trie's
