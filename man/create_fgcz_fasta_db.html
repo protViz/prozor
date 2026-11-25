@@ -414,7 +414,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="usage">Usage</h3>
 <pre><code class="language-R">create_fgcz_fasta_db(
   database_dir,
-  contaminants = load_contaminants("fgcz2022"),
+  contaminants = c(load_contaminants("special2024"), load_contaminants("universal2024")),
   rev_lab = "REV_",
   output_dir,
   make_summary = TRUE
@@ -490,7 +490,7 @@ If <code>TRUE</code>, append the output of <code>make_fasta_summary()</code> to 
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">basename</span>(res<span class="sc">$</span>file_path)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "p1000_db1_example_d_20261124.fasta"</code></pre>
+<pre><code>[1] "p1000_db1_example_d_20261125.fasta"</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">unlink</span>(res<span class="sc">$</span>file_path)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>

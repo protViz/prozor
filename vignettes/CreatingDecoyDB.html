@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Witek Wolski">
-<meta name="dcterms.date" content="2026-11-24">
+<meta name="dcterms.date" content="2026-11-25">
 
 <title>Creating Target Decoy Databases – prozor</title>
 <style>
@@ -422,7 +422,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">November 24, 2026</p>
+      <p class="date">November 25, 2026</p>
     </div>
   </div>
   
@@ -493,7 +493,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>db_file <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="fu">tempdir</span>(), <span class="fu">paste0</span>(<span class="fu">basename</span>(database_dir), <span class="st">"_"</span>, <span class="fu">format</span>(<span class="fu">Sys.time</span>(), <span class="st">"%Y%m%d"</span>), <span class="st">".fasta"</span>))</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">basename</span>(db_file)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "p1000_db1_example_20261124.fasta"</code></pre>
+<pre><code>[1] "p1000_db1_example_20261125.fasta"</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write_fasta</span>(db, <span class="at">file =</span> db_file)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
@@ -530,7 +530,7 @@ attr(,"class")
 <span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="fu">basename</span>(db_decoy_file)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "p1000_db1_example_d_20261124.fasta"</code></pre>
+<pre><code>[1] "p1000_db1_example_d_20261125.fasta"</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write_fasta</span>(db_decoy, <span class="at">file =</span> db_decoy_file)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
@@ -551,9 +551,9 @@ attr(,"class")
    database_dir : /usr/local/lib/R/site-library/prozor/p1000_db1_example
    contaminants : 499 sequences
         rev_lab : REV_
-     output_dir : /tmp/Rtmp1yzda1
+     output_dir : /tmp/RtmpQ86TAX
      FASTA name : p1000_db1_example_d
-FASTA file name : p1000_db1_example_d_20261124.fasta
+FASTA file name : p1000_db1_example_d_20261125.fasta
      annotation : AA|p2569_db1_mouse_phosPXS|20171029_UNIPROT http://www.uniprot.org/proteomes/UP000000589
    nr sequences : 3143</code></pre>
 </div>

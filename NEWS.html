@@ -470,6 +470,7 @@ ul.task-list li input[type="checkbox"] {
 <li>prozor requires R 4.4.0 or later.</li>
 <li><code>prepare_matrix()</code> applies <code>use.last.ij</code> to numeric weights too: by default a repeated peptide-protein pair keeps the weight of its last row, as it keeps a single entry for the other weightings. It summed the weights; pass <code>use.last.ij = FALSE</code> for the sum.</li>
 <li>prozor no longer imports seqinr: <code>read_peptide_fasta()</code> and <code>write_fasta()</code> use base R. The entries are still <code>SeqFastaAA</code> objects with the attributes <code>name</code> and <code>Annot</code>, so seqinr’s <code>getAnnot()</code>, <code>getName()</code> and <code>getLength()</code> work on them as before. <code>library(prozor)</code> no longer loads seqinr, so <code>summary()</code> of an entry gives R’s default summary of a string unless seqinr is loaded (it used to dispatch to seqinr’s method, which returns the length, the composition and the amino-acid properties).</li>
+<li><code>create_decoy_db()</code> and <code>create_fgcz_fasta_db()</code> add the contaminant sets <code>"special2024"</code> and <code>"universal2024"</code> by default, like <code>inst/script/fgcz_create_fasta.R</code> (was <code>"fgcz2022"</code>).</li>
 </ul>
 </section>
 <section id="new-features" class="level2">
