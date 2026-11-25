@@ -46,7 +46,7 @@ ul.task-list li input[type="checkbox"] {
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-63b5708e65d6cd79cd7618c58d0c21e7.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-44f7b187718e43abfea0560aa82c1a71.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-fa0a78a35c610c9312ee21faad30fe3c.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -373,21 +373,26 @@ ul.task-list li input[type="checkbox"] {
 <h3 class="anchored" data-anchor-id="description">Description</h3>
 <p>Peptide-protein pairs for 241 mouse proteins and 9 FGCZ contaminants; small, so the examples stay fast.</p>
 </section>
+<section id="usage" class="level3">
+<h3 class="anchored" data-anchor-id="usage">Usage</h3>
+<pre><code class="language-R">protpepmetashort
+</code></pre>
+</section>
 <section id="format" class="level3">
 <h3 class="anchored" data-anchor-id="format">Format</h3>
 <p>A data frame with 423 rows and 7 columns:</p>
 <ul>
 <li>
-<p><code>peptide_seq</code>: peptide sequence.</p>
+<p><code>peptide_seq</code>: peptide sequence (factor).</p>
 </li>
 <li>
 <p><code>protein_length</code>: length of the protein sequence.</p>
 </li>
 <li>
-<p><code>protein_id</code>: UniProt protein ID, e.g.&nbsp;<code>sp|Q62009|POSTN_MOUSE</code>.</p>
+<p><code>protein_id</code>: UniProt protein ID (factor), e.g.&nbsp;<code>sp|Q62009|POSTN_MOUSE</code>.</p>
 </li>
 <li>
-<p><code>peptide_mod_seq</code>: modified peptide sequence.</p>
+<p><code>peptide_mod_seq</code>: modified peptide sequence (factor).</p>
 </li>
 <li>
 <p><code>precursor_charge</code>: precursor charge (integer).</p>
