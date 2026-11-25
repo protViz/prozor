@@ -94,3 +94,5 @@ Rscript "$script" path/to/database_dir nodecoy -c none -o path/to/output_dir
 ## Citation
 
 Cite prozor with its DOI [10.32614/CRAN.package.prozor](https://doi.org/10.32614/CRAN.package.prozor); `citation("prozor")` gives the full reference.
+
+Each GitHub release is archived on Zenodo under [10.5281/zenodo.24535408](https://doi.org/10.5281/zenodo.24535408), which resolves to the latest release.
