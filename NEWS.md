@@ -176,6 +176,7 @@ prozor 0.4.0 was not released to CRAN; this section lists all changes since CRAN
 * `?create_fgcz_fasta_db` gives the memory a build needs, and `?greedy_parsimony` says that protein groups are formed on the peptides left in each round. `pepprot` is titled "Precursors of identified peptides", as it holds no proteins.
 * New or runnable examples for `create_fgcz_fasta_db()`, `greedy_to_table()`, `remove_signal_peptide()` and `write_fasta()`; removed debugging code from examples and vignettes.
 * The vignettes use the new names, snake_case code and ggplot2; "Peptide Annotation and Protein Inference" builds again. "Creating Target Decoy Databases" finds the FASTA files as `create_fgcz_fasta_db()` does, writes to `tempdir()` and ends with the one-call `create_fgcz_fasta_db()`.
+* "Peptide Annotation and Protein Inference" shows proteotypic peptides in red in the peptide protein match plots.
 * The README has an R example and a citation section.
 
 ## Dependencies

@@ -90,13 +90,25 @@ We can now identify a minimal set of proteins explaining all the peptides observ
 ```{r}
 precursors <- distinct(id_results, peptideModSeq, precursorCharge, peptideSeq)
 
-# peptide protein matches as points; rows and columns sorted by their number of matches
+# peptide protein matches as points; rows and columns sorted by their number of matches,
+# proteotypic peptides (one protein) in red
 plot_matches <- function(annotation) {
   pairs <- distinct(annotation, peptide = factor(peptideSeq), protein = factor(protein_id))
-  peptide_rank <- rank(-tabulate(pairs$peptide, nlevels(pairs$peptide)), ties.method = "first")
+  peptide_matches <- tabulate(pairs$peptide, nlevels(pairs$peptide))
+  peptide_rank <- rank(-peptide_matches, ties.method = "first")
   protein_rank <- rank(-tabulate(pairs$protein, nlevels(pairs$protein)), ties.method = "first")
-  ggplot(data.frame(peptide = peptide_rank[pairs$peptide], protein = protein_rank[pairs$protein])) +
-    geom_point(aes(x = protein, y = peptide), shape = 15, size = 0.5) +
+  matches <- data.frame(
+    peptide = peptide_rank[pairs$peptide],
+    protein = protein_rank[pairs$protein],
+    proteotypic = peptide_matches[pairs$peptide] == 1
+  )
+  ggplot(matches) +
+    geom_point(aes(x = protein, y = peptide, colour = proteotypic), shape = 15, size = 0.5) +
+    scale_colour_manual(
+      name = NULL,
+      values = c(`FALSE` = "black", `TRUE` = "red"),
+      labels = c(`FALSE` = "shared", `TRUE` = "proteotypic")
+    ) +
     scale_y_reverse() +
     labs(x = "proteins, most peptides first", y = "peptides, most proteins first")
 }
@@ -104,7 +116,7 @@ plot_matches <- function(annotation) {
 
 ## Protein Inference for database with TrEMBL identifiers
 
-```{r greedy-trembl, fig.cap="Peptide protein matches for the All database. Rows - peptides, columns - proteins, point - peptide protein match."}
+```{r greedy-trembl, fig.cap="Peptide protein matches for the All database. Rows - peptides, columns - proteins, point - peptide protein match, red - proteotypic peptide."}
 annotated_precursors <- inner_join(
   precursors,
   select(annotation_all, peptide_seq, protein_id),
@@ -123,7 +135,7 @@ groups_all <- greedy_parsimony(annotated_precursors, peptide = "peptideSeq")
 
 ## Protein Inference for Reviewed/Canonical database
 
-```{r greedy-canonical, fig.cap="Peptide protein matches for the Canonical database. Rows - peptides, columns - proteins, point - peptide protein match."}
+```{r greedy-canonical, fig.cap="Peptide protein matches for the Canonical database. Rows - peptides, columns - proteins, point - peptide protein match, red - proteotypic peptide."}
 annotated_precursors <- inner_join(
   precursors,
   select(annotation_canonical, peptide_seq, protein_id),
