@@ -40,7 +40,7 @@ At the [FGCZ](https://fgcz.ch/) the database name is the project number, e.g. `p
 Add to the folder also an annotation.txt file. The annotation file should contain a single line formatted like a _FASTA_ entry header with the following content:
 `aa|p<project_number>_<database_name>|<YYYYMMDD> <detailed_description>`.
 
-Example : `AA|p1000_db1_example|20180119_Example https://github.com/protViz/prozor`
+Example : `AA|p1000_db1_example|20180119_Example https://github.com/prolfqua/prozor`
 
 
 The package provides an example of such a folder with the FASTA files. `create_fgcz_fasta_db()` reads the FASTA files in it (`*.fasta`, `*.fa` or `*.faa`, optionally gzipped) and the first line of `annotation.txt`; here we do the same step by step.

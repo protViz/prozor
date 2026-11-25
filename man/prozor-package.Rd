@@ -11,9 +11,9 @@ Determine the minimal set of proteins that explains the peptide spectrum matches
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://protviz.github.io/prozor/}
-  \item \url{https://github.com/protviz/prozor}
-  \item Report bugs at \url{https://github.com/protviz/prozor/issues}
+  \item \url{https://prolfqua.github.io/prozor/}
+  \item \url{https://github.com/prolfqua/prozor}
+  \item Report bugs at \url{https://github.com/prolfqua/prozor/issues}
 }
 
 }

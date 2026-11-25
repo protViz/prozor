@@ -5,7 +5,7 @@ Guide for coding agents working in prozor. The workspace guide `../AGENTS.md` ap
 ## What prozor is
 
 - R package: minimal protein set from peptide-spectrum matches (greedy parsimony), FASTA databases with decoys and contaminants, target-decoy FDR, dynamic DIA (SWATH) windows
-- On CRAN as 0.3.1 (2021); GitHub `protviz/prozor` master is ahead and heading for 0.4.0
+- On CRAN as 0.3.1 (2021); GitHub `prolfqua/prozor` master (moved from protViz on 25 Nov 2026; site https://prolfqua.github.io/prozor/) is ahead and heading for 0.4.0
 - Used at FGCZ through `inst/script/fgcz_create_fasta.R`, the command-line tool that builds FASTA databases
 - Current work plan: `../TODO/prozor/TODO_cran_health.md` (review reports next to it)
 
@@ -40,5 +40,5 @@ Guide for coding agents working in prozor. The workspace guide `../AGENTS.md` ap
 
 ## Git
 
-- Commit on `master`, one commit per batch of work, then push to `protviz/prozor`
+- Commit on `master`, one commit per batch of work, then push to `prolfqua/prozor`
 - A push to `master` runs the altdoc workflow, which deploys the site

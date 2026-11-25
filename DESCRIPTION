@@ -48,8 +48,8 @@ Suggests:
     testthat (>= 3.0.0),
     tidyr,
     withr
-URL: https://protviz.github.io/prozor/, https://github.com/protviz/prozor
-BugReports: https://github.com/protviz/prozor/issues
+URL: https://prolfqua.github.io/prozor/, https://github.com/prolfqua/prozor
+BugReports: https://github.com/prolfqua/prozor/issues
 Depends: R (>= 4.4.0)
 VignetteBuilder: knitr
 LazyData: true
