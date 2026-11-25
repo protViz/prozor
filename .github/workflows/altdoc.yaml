@@ -34,9 +34,12 @@ jobs:
           extra-packages: any::altdoc
           needs: website
 
-      # the vignettes call prozor functions; install the package first
+      # the vignettes call prozor functions; install the package first. Installing from a built tarball sets the
+      # Packaged date, from which citation("prozor") takes the year shown on the site's citation page.
       - name: Install package
-        run: R CMD INSTALL .
+        run: |
+          R CMD build --no-build-vignettes --no-manual .
+          R CMD INSTALL prozor_*.tar.gz
 
       - name: Build docs with altdoc
         run: Rscript -e 'altdoc::render_docs(freeze = FALSE)'
