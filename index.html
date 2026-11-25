@@ -113,7 +113,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 </head>
 
-<body class="nav-sidebar floating nav-fixed quarto-light"><a id="quarto-skip-link" class="visually-hidden-focusable" href="#quarto-document-content">Skip to main content</a>
+<body class="nav-sidebar floating nav-fixed fullcontent quarto-light"><a id="quarto-skip-link" class="visually-hidden-focusable" href="#quarto-document-content">Skip to main content</a>
 
 <div id="quarto-search-results"></div>
   <header id="quarto-header" class="headroom fixed-top">
@@ -130,7 +130,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll ms-auto">
   <li class="nav-item compact">
-    <a class="nav-link" href="https://github.com/protviz/prozor"> <i class="bi bi-github" role="img" aria-label="prozor GitHub">
+    <a class="nav-link" href="https://github.com/prolfqua/prozor"> <i class="bi bi-github" role="img" aria-label="prozor GitHub">
 </i> 
 <span class="menu-text"></span></a>
   </li>  
@@ -172,12 +172,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-1" aria-labelledby="quarto-sidebar-section-1-label" class="collapse list-unstyled sidebar-section depth1 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./vignettes/cdsw.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Computing Dynamic SWATH Windows</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
   <a href="./vignettes/CreatingDecoyDB.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Creating Target Decoy Databases</span></a>
   </div>
@@ -190,8 +184,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./vignettes/PlottingProteinCoverage.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Untitled</span></a>
+  <a href="./vignettes/TargetDecoyFDR_Example.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Target Decoy FDR</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -202,8 +196,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./vignettes/TargetDecoyFDR_Example.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Target Decoy FDR</span></a>
+  <a href="./vignettes/cdsw.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Computing Dynamic SWATH Windows</span></a>
   </div>
 </li>
       </ul>
@@ -395,16 +389,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
-        
-    <div class="quarto-code-links"><h2>Code Links</h2><ul><li><a href="undefined"><i class="bi bi-link-45deg"></i></a></li></ul></div></div>
+    
 <!-- main -->
 <main class="content" id="quarto-document-content" tabindex="-1"><header id="title-block-header" class="quarto-title-block"></header>
 
 
 
 
-<p><a href="https://cran.r-project.org/package=prozor"><img src="https://www.r-pkg.org/badges/version/prozor.png" class="img-fluid" alt="CRAN_Status_Badge"></a> <a href="https://cran.r-project.org/package=prozor"><img src="https://cranlogs.r-pkg.org/badges/prozor.png" class="img-fluid"></a> <a href="https://cran.r-project.org/package=prozor"><img src="https://cranlogs.r-pkg.org/badges/grand-total/prozor.png" class="img-fluid"></a></p>
+<p><a href="https://cran.r-project.org/package=prozor"><img src="https://www.r-pkg.org/badges/version/prozor.png" class="img-fluid" alt="CRAN_Status_Badge"></a> <a href="https://cran.r-project.org/package=prozor"><img src="https://cranlogs.r-pkg.org/badges/grand-total/prozor.png" class="img-fluid"></a> <a href="https://github.com/prolfqua/prozor/actions/workflows/R-CMD-check.yaml"><img src="https://github.com/prolfqua/prozor/actions/workflows/R-CMD-check.yaml/badge.svg" class="img-fluid" alt="R-CMD-check"></a> <a href="https://github.com/prolfqua/prozor/actions/workflows/lint.yaml"><img src="https://github.com/prolfqua/prozor/actions/workflows/lint.yaml/badge.svg" class="img-fluid" alt="lint"></a> <a href="https://prolfqua.github.io/prozor/"><img src="https://github.com/prolfqua/prozor/actions/workflows/altdoc.yaml/badge.svg" class="img-fluid" alt="altdoc"></a></p>
 <section id="prozor" class="level1">
 <h1>prozor</h1>
 <ul>
@@ -413,29 +405,37 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Estimate the false discovery rate for target-decoy search results on PSM, precursor, peptide and protein level.</li>
 <li>Compute dynamic SWATH (DIA) window sizes from the distribution of MS1 masses.</li>
 </ul>
-<p>An HTML version of the package documentation can be found here:</p>
-<p>https://protviz.github.io/prozor</p>
-<section id="how-to-install" class="level2">
-<h2 class="anchored" data-anchor-id="how-to-install">How to install:</h2>
-<p>For CRAN version (not the newest). Please use the GitHub version.</p>
+<section id="documentation" class="level2">
+<h2 class="anchored" data-anchor-id="documentation">Documentation</h2>
+<p>The website https://prolfqua.github.io/prozor/ has the function reference, the articles and the <a href="https://prolfqua.github.io/prozor/NEWS.html">changelog</a>.</p>
+<p>Articles:</p>
+<ul>
+<li><a href="https://prolfqua.github.io/prozor/vignettes/CreatingDecoyDB.html">Creating Target Decoy Databases</a></li>
+<li><a href="https://prolfqua.github.io/prozor/vignettes/PeptideAnnotationwithProzor.html">Peptide Annotation and Protein Inference</a></li>
+<li><a href="https://prolfqua.github.io/prozor/vignettes/TargetDecoyFDR_Example.html">Target Decoy FDR</a></li>
+<li><a href="https://prolfqua.github.io/prozor/vignettes/TargetDecoyComet.html">Target Decoy FDR from COMET search results</a></li>
+<li><a href="https://prolfqua.github.io/prozor/vignettes/cdsw.html">Computing Dynamic SWATH Windows</a></li>
+</ul>
+</section>
+<section id="installation" class="level2">
+<h2 class="anchored" data-anchor-id="installation">Installation</h2>
+<p>The CRAN version (0.3.1) is older than the GitHub version:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"prozor"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<p>This is how you install the GitHub version.</p>
+<p>The current version from GitHub:</p>
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="st">"remotes"</span>)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"protviz/prozor"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>remotes<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"prolfqua/prozor"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <section id="for-developers" class="level3">
-<h3 class="anchored" data-anchor-id="for-developers">for Developers</h3>
-<p>Download the git repo. Document new functions with roxygen2, then run these 2 commands to update NAMESPACE and the Rd files:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(devtools)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">document</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<h3 class="anchored" data-anchor-id="for-developers">For developers</h3>
+<p>Clone the repository and use the Makefile targets: <code>make document</code> (roxygen2 docs and NAMESPACE), <code>make test</code>, <code>make check</code>, <code>make lint</code> and <code>make format</code> (air).</p>
 </section>
 </section>
 <section id="creating-a-fasta-database-from-the-command-line" class="level2">
 <h2 class="anchored" data-anchor-id="creating-a-fasta-database-from-the-command-line">Creating a FASTA database from the command line</h2>
 <p>prozor installs the script <code>fgcz_create_fasta.R</code> (it needs the docopt package). It reads all FASTA files and the <code>annotation.txt</code> in a directory, adds contaminants and reversed decoy sequences, and writes one FASTA file:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="va">script</span><span class="op">=</span><span class="va">$(</span><span class="ex">Rscript</span> <span class="at">-e</span> <span class="st">'cat(system.file("script", "fgcz_create_fasta.R", package = "prozor"))'</span><span class="va">)</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Rscript</span> <span class="st">"</span><span class="va">$script</span><span class="st">"</span> <span class="at">-h</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="ex">Rscript</span> <span class="st">"</span><span class="va">$script</span><span class="st">"</span> path/to/database_dir <span class="at">-o</span> path/to/output_dir</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="ex">Rscript</span> <span class="st">"</span><span class="va">$script</span><span class="st">"</span> path/to/database_dir nodecoy <span class="at">-c</span> none <span class="at">-o</span> path/to/output_dir</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="va">script</span><span class="op">=</span><span class="va">$(</span><span class="ex">Rscript</span> <span class="at">-e</span> <span class="st">'cat(system.file("script", "fgcz_create_fasta.R", package = "prozor"))'</span><span class="va">)</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Rscript</span> <span class="st">"</span><span class="va">$script</span><span class="st">"</span> <span class="at">-h</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="ex">Rscript</span> <span class="st">"</span><span class="va">$script</span><span class="st">"</span> path/to/database_dir <span class="at">-o</span> path/to/output_dir</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="ex">Rscript</span> <span class="st">"</span><span class="va">$script</span><span class="st">"</span> path/to/database_dir nodecoy <span class="at">-c</span> none <span class="at">-o</span> path/to/output_dir</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 
 
 </section>
@@ -923,4 +923,4 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-</body></html>
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions"><ul><li><a href="https://github.com/prolfqua/prozor/blob/master/index.md" class="toc-action"><i class="bi bi-github"></i>View source</a></li></ul></div></div></div></footer></body></html>
