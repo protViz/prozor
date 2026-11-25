@@ -26,6 +26,7 @@ website:
         contents:
           - vignettes/CreatingDecoyDB.Rmd
           - vignettes/PeptideAnnotationwithProzor.Rmd
+          - vignettes/ProteinCoverage.Rmd
           - vignettes/TargetDecoyFDR_Example.Rmd
           - vignettes/TargetDecoyComet.Rmd
           - vignettes/cdsw.Rmd

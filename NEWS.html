@@ -149,6 +149,12 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./vignettes/ProteinCoverage.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Protein Sequence Coverage</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./vignettes/TargetDecoyFDR_Example.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Target Decoy FDR</span></a>
   </div>
@@ -277,6 +283,12 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./man/plot_coverage.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">plot_coverage</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./man/plot_fdr.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">plot_fdr</span></a>
   </div>
@@ -325,8 +337,20 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="./man/residue_coverage.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">residue_coverage</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="./man/reverse_seq.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">reverse_seq</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./man/sequence_coverage.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">sequence_coverage</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -470,6 +494,7 @@ ul.task-list li input[type="checkbox"] {
 <ul>
 <li><code>load_contaminants(set, no_human)</code> loads any of the bundled contaminant sets.</li>
 <li><code>plot_windows()</code> shows the precursor masses with the DIA window boundaries; <code>Cdsw$plot_breaks()</code> compares the current breaks with equal-width and quantile breaks.</li>
+<li><code>residue_coverage()</code>, <code>sequence_coverage()</code> and <code>plot_coverage()</code> compute and plot the peptide coverage of protein sequences from the result of <code>annotate_peptides()</code>; the new vignette “Protein Sequence Coverage” shows them, including coverage of the minimal protein set and of isoforms.</li>
 </ul>
 </section>
 <section id="minor-improvements-and-fixes" class="level2">
@@ -520,7 +545,7 @@ ul.task-list li input[type="checkbox"] {
 <li>The vignettes use the new names and ggplot2; “Peptide Annotation and Protein Inference” builds again. “Creating Target Decoy Databases” finds the FASTA files as <code>create_fgcz_fasta_db()</code> does, writes to <code>tempdir()</code> and ends with the one-call <code>create_fgcz_fasta_db()</code>.</li>
 <li>The <code>Cdsw</code> help page no longer documents method arguments without a usage section (r-devel NOTE).</li>
 <li>Removed the undocumented debug data set <code>mm</code>.</li>
-<li>Fewer dependencies: protViz, purrr, rlang and seqinr are no longer needed, so a default install also skips the five packages only seqinr needed, RcppArmadillo among them; dplyr, readr, stringr and docopt moved to Suggests (dplyr is only used by the vignettes and tests, readr and stringr only by the draft vignette on the website, docopt only by <code>inst/script/fgcz_create_fasta.R</code>).</li>
+<li>Fewer dependencies: protViz, purrr, rlang and seqinr are no longer needed, so a default install also skips the five packages only seqinr needed, RcppArmadillo among them; dplyr and docopt moved to Suggests (dplyr is only used by the vignettes and tests, docopt only by <code>inst/script/fgcz_create_fasta.R</code>).</li>
 </ul>
 </section>
 </section>
