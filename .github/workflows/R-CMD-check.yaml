@@ -27,6 +27,9 @@ jobs:
           - {os: windows-latest, r: "release"}
           - {os: ubuntu-latest, r: "devel", http-user-agent: "release", rd-usage: "true"}
           - {os: ubuntu-latest, r: "release"}
+          - {os: ubuntu-latest, r: "oldrel-1"}
+          # the minimum R version in DESCRIPTION
+          - {os: ubuntu-latest, r: "4.4"}
 
     env:
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
@@ -52,12 +55,21 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: any::rcmdcheck, any::goodpractice
+          extra-packages: any::rcmdcheck, any::goodpractice, any::covr
           needs: check
 
       - uses: r-lib/actions/check-r-package@v2
         with:
           upload-snapshots: true
+
+      - name: Code coverage
+        if: ${{ success() && runner.os == 'Linux' && matrix.config.r == 'release' }}
+        # The upload depends on the Codecov service; its failures must not fail the package check.
+        continue-on-error: true
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        run: covr::codecov(token = Sys.getenv("CODECOV_TOKEN"))
+        shell: Rscript {0}
 
       - name: Run goodpractice report
         if: ${{ always() && runner.os == 'Linux' && matrix.config.r == 'release' }}

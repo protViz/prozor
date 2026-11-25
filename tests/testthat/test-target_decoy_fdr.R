@@ -12,16 +12,16 @@ test_that("TargetDecoyFDR matches hand-computed FDR and q-values", {
       "score",
       "decoy_hit",
       "fdr_concatenated",
-      "simple_fdr",
+      "fdr_simple",
       "q_value_fdr_concatenated",
-      "q_value_simple_fdr"
+      "q_value_fdr_simple"
     )
   )
   expect_equal(tab$order, 1:4)
   expect_equal(tab$score, c(4, 3, 2, 1))
   expect_equal(tab$decoy_hit, c(FALSE, FALSE, TRUE, FALSE))
-  expect_equal(tab$simple_fdr, c(0, 0, 1 / 2, 1 / 3))
-  expect_equal(tab$q_value_simple_fdr, c(0, 0, 1 / 3, 1 / 3))
+  expect_equal(tab$fdr_simple, c(0, 0, 1 / 2, 1 / 3))
+  expect_equal(tab$q_value_fdr_simple, c(0, 0, 1 / 3, 1 / 3))
   expect_equal(tab$fdr_concatenated, c(0, 0, 2 / 3, 2 / 4))
   expect_equal(tab$q_value_fdr_concatenated, c(0, 0, 1 / 2, 1 / 2))
 })
@@ -33,7 +33,7 @@ test_that("TargetDecoyFDR ranks small scores first when larger_better = FALSE", 
   expect_equal(fdr$table$order, c(2, 1, 4, 3))
   expect_equal(fdr$table$score, c(1, 2, 3, 4))
   expect_equal(fdr$table$decoy_hit, c(FALSE, FALSE, TRUE, FALSE))
-  expect_equal(fdr$table$q_value_simple_fdr, c(0, 0, 1 / 3, 1 / 3))
+  expect_equal(fdr$table$q_value_fdr_simple, c(0, 0, 1 / 3, 1 / 3))
 })
 
 test_that("TargetDecoyFDR ranks decoys first within tied scores, whatever the input order", {
@@ -43,24 +43,23 @@ test_that("TargetDecoyFDR ranks decoys first within tied scores, whatever the in
 
   expect_equal(decoy_first$table$decoy_hit, c(TRUE, FALSE, FALSE))
   expect_equal(decoy_second$table$decoy_hit, c(TRUE, FALSE, FALSE))
-  expect_equal(decoy_first$table$q_value_simple_fdr, c(0.5, 0.5, 0.5))
-  expect_equal(decoy_second$table$q_value_simple_fdr, c(0.5, 0.5, 0.5))
+  expect_equal(decoy_first$table$q_value_fdr_simple, c(0.5, 0.5, 0.5))
+  expect_equal(decoy_second$table$q_value_fdr_simple, c(0.5, 0.5, 0.5))
   expect_equal(smaller$table$decoy_hit, c(TRUE, FALSE, FALSE))
 })
 
 test_that("TargetDecoyFDR on fdr_sample: sorted scores and monotone q-values", {
-  data(fdr_sample, package = "prozor", envir = environment())
   decoy <- grepl("^REV_", fdr_sample$protein_id)
 
   smaller <- TargetDecoyFDR$new(fdr_sample$score, decoy, larger_better = FALSE)$table
-  larger <- TargetDecoyFDR$new(fdr_sample$score2, decoy, larger_better = TRUE)$table
+  larger <- TargetDecoyFDR$new(fdr_sample$neg_log10_score, decoy, larger_better = TRUE)$table
 
   expect_false(is.unsorted(smaller$score))
   expect_false(is.unsorted(rev(larger$score)))
   expect_equal(smaller$decoy_hit, decoy[smaller$order])
   expect_equal(larger$decoy_hit, decoy[larger$order])
-  expect_false(is.unsorted(smaller$q_value_simple_fdr))
-  expect_false(is.unsorted(larger$q_value_simple_fdr))
+  expect_false(is.unsorted(smaller$q_value_fdr_simple))
+  expect_false(is.unsorted(larger$q_value_fdr_simple))
   expect_true(all(smaller$q_value_fdr_concatenated <= smaller$fdr_concatenated))
   expect_true(all(larger$q_value_fdr_concatenated <= larger$fdr_concatenated))
 })
@@ -85,6 +84,41 @@ test_that("TargetDecoyFDR stops for NA, non-logical decoy flags and unequal leng
   )
 })
 
+test_that("TargetDecoyFDR stops for scores that are not numeric", {
+  # sorted as text, the scores would be ranked 9, 100, 10
+  expect_error(
+    TargetDecoyFDR$new(c("10", "9", "100"), c(FALSE, TRUE, FALSE)),
+    "`score` must be numeric, not character\\."
+  )
+  expect_error(TargetDecoyFDR$new(factor(c(10, 9)), c(FALSE, TRUE)), "`score` must be numeric, not factor\\.")
+})
+
+test_that("TargetDecoyFDR stops unless larger_better is TRUE or FALSE", {
+  score <- c(4, 3, 2, 1)
+  decoy <- c(FALSE, FALSE, TRUE, FALSE)
+
+  expect_error(TargetDecoyFDR$new(score, decoy, larger_better = NA), "`larger_better` must be TRUE or FALSE, not NA\\.")
+  expect_error(
+    TargetDecoyFDR$new(score, decoy, larger_better = "no"),
+    "`larger_better` must be TRUE or FALSE, not \"no\"\\."
+  )
+  expect_error(
+    TargetDecoyFDR$new(score, decoy, larger_better = c(TRUE, FALSE)),
+    "`larger_better` must be TRUE or FALSE, not c\\(TRUE, FALSE\\)\\."
+  )
+})
+
+test_that("TargetDecoyFDR caps the FDR estimates and q-values at 1 when the best hit is a decoy", {
+  fdr <- TargetDecoyFDR$new(c(3, 2, 1), c(TRUE, FALSE, TRUE))
+  tab <- fdr$table
+
+  # uncapped: fdr_simple Inf, 1, 2 and fdr_concatenated 2, 1, 4/3, with q-values up to 2
+  expect_equal(tab$fdr_simple, c(1, 1, 1))
+  expect_equal(tab$fdr_concatenated, c(1, 1, 1))
+  expect_equal(tab$q_value_fdr_simple, c(1, 1, 1))
+  expect_equal(tab$q_value_fdr_concatenated, c(1, 1, 1))
+})
+
 test_that("TargetDecoyFDR puts the IDs, sorted with the scores, after `order`", {
   id <- c("a", "DEC_b", "c")
   fdr <- TargetDecoyFDR$new(c(1, 3, 2), decoy_hit = grepl("^DEC_", id), id = id)
@@ -98,22 +132,14 @@ test_that("TargetDecoyFDR puts the IDs, sorted with the scores, after `order`", 
 })
 
 test_that("TargetDecoyFDR keeps factor IDs and has the rank as row names", {
-  data(fdr_sample, package = "prozor", envir = environment())
   fdr <- TargetDecoyFDR$new(
-    fdr_sample$score2,
+    fdr_sample$neg_log10_score,
     decoy_hit = grepl("^REV_", fdr_sample$protein_id),
     id = fdr_sample$protein_id
   )
 
   expect_identical(fdr$table$id, fdr_sample$protein_id[fdr$table$order])
   expect_identical(rownames(TargetDecoyFDR$new(c(a = 1, b = 2), c(FALSE, FALSE))$table), c("1", "2"))
-})
-
-test_that("the decoy pattern ^REV_ counts only IDs starting with REV_ as decoys", {
-  id <- c("REV_sp|P1|X_HUMAN", "sp|P2|PREV_HUMAN")
-  fdr <- TargetDecoyFDR$new(c(2, 1), decoy_hit = grepl("^REV_", id), id = id)
-
-  expect_equal(fdr$table$decoy_hit, c(TRUE, FALSE))
 })
 
 test_that("TargetDecoyFDR fields are read-only", {
@@ -132,16 +158,16 @@ test_that("TargetDecoyFDR$score_at() returns the least strict score within the F
   fdr <- TargetDecoyFDR$new(c(4, 3, 2, 1), c(FALSE, FALSE, TRUE, FALSE))
   smaller <- TargetDecoyFDR$new(c(1, 2, 3, 4), c(FALSE, FALSE, TRUE, FALSE), larger_better = FALSE)
 
-  # simple_fdr q-values 0, 0, 1/3, 1/3; fdr_concatenated q-values 0, 0, 1/2, 1/2
+  # fdr_simple q-values 0, 0, 1/3, 1/3; fdr_concatenated q-values 0, 0, 1/2, 1/2
   expect_equal(fdr$score_at(q_value = 0.2), 3)
   expect_equal(fdr$score_at(q_value = 0.4), 1)
+  expect_equal(fdr$score_at(q_value = 0.4, method = "fdr_simple"), 1)
   expect_equal(fdr$score_at(q_value = 0.4, method = "fdr_concatenated"), 3)
   expect_equal(smaller$score_at(q_value = 0.2), 2)
 })
 
 test_that("TargetDecoyFDR$score_at() takes q_value as a fraction, like the q-values in table", {
-  data(fdr_sample, package = "prozor", envir = environment())
-  fdr <- TargetDecoyFDR$new(fdr_sample$score2, decoy_hit = grepl("^REV_", fdr_sample$protein_id))
+  fdr <- TargetDecoyFDR$new(fdr_sample$neg_log10_score, decoy_hit = grepl("^REV_", fdr_sample$protein_id))
 
   cutoff <- fdr$score_at(q_value = 0.01)
 
@@ -154,7 +180,7 @@ test_that("TargetDecoyFDR$score_at() takes q_value as a fraction, like the q-val
 test_that("TargetDecoyFDR$score_at() errors when no score reaches the FDR", {
   fdr <- TargetDecoyFDR$new(c(2, 1), c(TRUE, FALSE))
 
-  expect_error(fdr$score_at(q_value = 0.01), "No score reaches a q-value of 0.01 \\(method \"simple_fdr\"\\)")
+  expect_error(fdr$score_at(q_value = 0.01), "No score reaches a q-value of 0.01 \\(method \"fdr_simple\"\\)")
 })
 
 test_that("TargetDecoyFDR$score_at() rejects unknown methods", {
@@ -162,23 +188,62 @@ test_that("TargetDecoyFDR$score_at() rejects unknown methods", {
 
   expect_error(
     fdr$score_at(method = "unknown"),
-    "`method` must be one of \"simple_fdr\", \"fdr_concatenated\"; not \"unknown\""
+    "`method` must be one of \"fdr_simple\", \"fdr_concatenated\", not \"unknown\""
   )
 })
 
 test_that("TargetDecoyFDR$print() shows hits, decoys, larger_better and the scores at 1 % and 5 %", {
-  # simple_fdr q-values 0, 0, 0, 0, 1/4: the score at 0.01 and 0.05 is 2
+  # fdr_simple q-values 0, 0, 0, 0, 1/4: the score at 0.01 and 0.05 is 2
   fdr <- TargetDecoyFDR$new(c(5, 4, 3, 2, 1), c(FALSE, FALSE, FALSE, FALSE, TRUE))
   none <- TargetDecoyFDR$new(c(1, 2), c(TRUE, FALSE), larger_better = FALSE)
 
   expect_output(
     expect_invisible(print(fdr)),
-    "<TargetDecoyFDR> hits: 5, decoys: 1, larger_better: TRUE\nscore at simple_fdr q-value 0.01: 2, at 0.05: 2",
+    "<TargetDecoyFDR> hits: 5, decoys: 1, larger_better: TRUE\nscore at fdr_simple q-value 0.01: 2, at 0.05: 2",
     fixed = TRUE
   )
   expect_output(
     print(none),
-    "<TargetDecoyFDR> hits: 2, decoys: 1, larger_better: FALSE\nscore at simple_fdr q-value 0.01: none, at 0.05: none",
+    "<TargetDecoyFDR> hits: 2, decoys: 1, larger_better: FALSE\nscore at fdr_simple q-value 0.01: none, at 0.05: none",
     fixed = TRUE
   )
+})
+
+test_that("TargetDecoyFDR$plot() draws the score histogram and the q-value curves in two panels", {
+  fdr <- TargetDecoyFDR$new(c(4, 3, 2, 1), c(FALSE, FALSE, TRUE, FALSE))
+
+  p <- fdr$plot(bins = 4)
+
+  expect_s3_class(p, "ggplot")
+  hits <- ggplot2::layer_data(p, 1)
+  curves <- ggplot2::layer_data(p, 2)
+  expect_equal(sum(hits$count), 4)
+  expect_true(all(hits$PANEL == 1))
+  # targets blue, decoys orange
+  expect_setequal(unique(hits$fill[hits$count > 0]), c("#0072B2", "#D55E00"))
+  expect_true(all(curves$PANEL == 2))
+  # one curve per estimate: fdr_concatenated black, fdr_simple orange
+  expect_setequal(unique(curves$colour), c("#000000", "#E69F00"))
+  # q-values in percent: fdr_simple 0, 0, 1/3, 1/3 and fdr_concatenated 0, 0, 1/2, 1/2
+  expect_setequal(round(curves$y, 2), c(0, 33.33, 50))
+})
+
+test_that("TargetDecoyFDR$plot() uses a log score axis when smaller scores are better", {
+  scores <- c(1e-5, 1e-3, 1e-2, 1e-1)
+  fdr <- TargetDecoyFDR$new(scores, c(FALSE, FALSE, TRUE, FALSE), larger_better = FALSE)
+
+  p <- fdr$plot()
+
+  expect_equal(sort(unique(ggplot2::layer_data(p, 2)$x)), log10(scores))
+})
+
+test_that("TargetDecoyFDR$plot() keeps zero scores, on a linear axis, when smaller scores are better", {
+  scores <- c(0, 0, 1e-3, 1e-2, 1e-1)
+  fdr <- TargetDecoyFDR$new(scores, c(FALSE, FALSE, FALSE, TRUE, FALSE), larger_better = FALSE)
+
+  p <- fdr$plot(bins = 5)
+
+  expect_no_warning(hits <- ggplot2::layer_data(p, 1))
+  expect_equal(sum(hits$count), 5)
+  expect_equal(sort(unique(ggplot2::layer_data(p, 2)$x)), unique(scores))
 })

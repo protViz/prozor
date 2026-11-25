@@ -7,7 +7,17 @@
 \format{
 A numeric vector of 146,009 precursor m/z values.
 }
+\usage{
+masses
+}
 \description{
 Precursor masses, the input of \link{Cdsw} for computing DIA windows.
 }
-\keyword{data}
+\seealso{
+Other DIA windows:
+\code{\link{Cdsw}},
+\code{\link[=plot_windows]{plot_windows()}},
+\code{\link[=readjust_windows]{readjust_windows()}}
+}
+\concept{DIA windows}
+\keyword{datasets}

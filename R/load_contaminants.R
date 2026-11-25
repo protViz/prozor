@@ -38,7 +38,7 @@ load_contaminants <- function(set, no_human = FALSE) {
       "."
     )
   }
-  contaminants <- read_peptide_fasta(system.file("extdata", .contaminant_files[[set]], package = "prozor"))
+  contaminants <- read_fasta(system.file("extdata", .contaminant_files[[set]], package = "prozor"))
   if (no_human) {
     annot <- vapply(contaminants, attr, character(1), "Annot")
     contaminants <- contaminants[!grepl("HUMAN|Homo sapiens", annot)]

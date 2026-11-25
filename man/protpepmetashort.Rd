@@ -12,7 +12,7 @@ A data frame with 423 rows and 7 columns:
 \item \code{protein_id}: UniProt protein ID, e.g. \code{sp|Q62009|POSTN_MOUSE}.
 \item \code{peptide_mod_seq}: modified peptide sequence.
 \item \code{precursor_charge}: precursor charge (integer).
-\item \code{m}: precursor m/z.
+\item \code{precursor_mz}: precursor m/z.
 \item \code{peptide_length}: length of the peptide sequence.
 }
 }
@@ -23,4 +23,13 @@ contaminants.
 \description{
 Peptide-protein pairs for 250 mouse proteins; small, so the examples stay fast.
 }
-\keyword{data}
+\seealso{
+Other protein inference:
+\code{\link[=annotate_aho]{annotate_aho()}},
+\code{\link[=annotate_peptides]{annotate_peptides()}},
+\code{\link[=greedy_parsimony]{greedy_parsimony()}},
+\code{\link[=greedy_to_table]{greedy_to_table()}},
+\code{\link{pepprot}}
+}
+\concept{protein inference}
+\keyword{datasets}

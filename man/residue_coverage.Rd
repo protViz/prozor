@@ -7,14 +7,15 @@
 residue_coverage(annotation, peptide = "peptide_seq")
 }
 \arguments{
-\item{annotation}{A data frame with the columns \code{protein_id}, \code{protein_sequence}, \code{offset} and the peptide
-column, as returned by \code{\link[=annotate_peptides]{annotate_peptides()}} or \code{\link[=annotate_aho]{annotate_aho()}}.}
+\item{annotation}{A data frame with the columns \code{protein_id}, \code{protein_sequence}, \code{offset} and the column named
+by \code{peptide}, as returned by \code{\link[=annotate_peptides]{annotate_peptides()}} or \code{\link[=annotate_aho]{annotate_aho()}}.}
 
 \item{peptide}{Name of the column with the peptide sequences.}
 }
 \value{
 A data frame with one row per residue of each protein in \code{annotation}, ordered by \code{protein_id} and
-\code{position}: \code{protein_id}, \code{position}, \code{residue} and \code{n_peptides}, the number of peptides covering it.
+\code{position}: \code{protein_id}, \code{position}, \code{residue} and \code{n_peptides}, the number of peptides covering it; 0 rows
+if \code{annotation} has none.
 }
 \description{
 Counts, for every residue of the proteins in \code{annotation}, how many distinct peptide sequences cover it.
@@ -25,7 +26,7 @@ peptide that occurs twice in a protein covers both places, and where its occurre
 file <- system.file("extdata/IDResults.txt.gz", package = "prozor")
 peptides <- unique(utils::read.delim(file)$peptideSeq)
 fasta_file <- system.file("p1000_db1_example/Annotation_canSeq.fasta.gz", package = "prozor")
-annot <- annotate_peptides(peptides, read_peptide_fasta(fasta_file))
+annot <- annotate_peptides(peptides, read_fasta(fasta_file))
 residues <- residue_coverage(annot)
 head(residues)
 }

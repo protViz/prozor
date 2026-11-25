@@ -4,25 +4,21 @@
 \alias{make_fasta_summary}
 \title{Summarize a FASTA database}
 \usage{
-make_fasta_summary(db, as_string = TRUE)
+make_fasta_summary(fasta)
 }
 \arguments{
-\item{db}{A list of sequences, as returned by \code{\link[=read_peptide_fasta]{read_peptide_fasta()}}.}
-
-\item{as_string}{If \code{TRUE}, return text to pass to \code{\link[=cat]{cat()}}; if \code{FALSE}, a list.}
+\item{fasta}{A list of sequences, as returned by \code{\link[=read_fasta]{read_fasta()}}.}
 }
 \value{
-With \code{as_string = TRUE}, a character vector to pass to \code{\link[=cat]{cat()}}. Otherwise a list with the elements
-\code{nr_sequences}, \code{length_summary} and \code{aa_freq} (counts per amino acid).
+A list with the elements \code{n_sequences}, \code{length_summary} and \code{aa_freq} (counts per amino acid).
 }
 \description{
 Counts the sequences and amino acids and summarizes the sequence lengths.
 }
 \examples{
 file <- system.file("extdata/fgcz_contaminants2022_20220405.fasta.gz", package = "prozor")
-db <- read_peptide_fasta(file)
-cat(make_fasta_summary(db))
-make_fasta_summary(db, as_string = FALSE)
+fasta <- read_fasta(file)
+make_fasta_summary(fasta)
 }
 \seealso{
 Other FASTA databases:
@@ -31,7 +27,7 @@ Other FASTA databases:
 \code{\link[=load_contaminants]{load_contaminants()}},
 \code{\link[=make_chain_id]{make_chain_id()}},
 \code{\link[=make_chain_id_uniprot]{make_chain_id_uniprot()}},
-\code{\link[=read_peptide_fasta]{read_peptide_fasta()}},
+\code{\link[=read_fasta]{read_fasta()}},
 \code{\link[=remove_signal_peptide]{remove_signal_peptide()}},
 \code{\link[=reverse_seq]{reverse_seq()}},
 \code{\link[=write_fasta]{write_fasta()}}

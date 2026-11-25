@@ -15,11 +15,11 @@
 #' @export
 #' @examples
 #' file <- system.file("extdata/fgcz_contaminants2021_20210929.fasta.gz", package = "prozor")
-#' fasta <- read_peptide_fasta(file)
+#' fasta <- read_fasta(file)
 #' decoys <- reverse_seq(fasta)
 #' names(decoys)[1:3]
 #'
-#' # an entry as read_peptide_fasta() returns it
+#' # an entry as read_fasta() returns it
 #' tag <- structure(
 #'   "DYKDDDDK",
 #'   name = "Flag|FLAG|p2079",

@@ -2,19 +2,16 @@
 #'
 #' Counts the sequences and amino acids and summarizes the sequence lengths.
 #'
-#' @param db A list of sequences, as returned by [read_peptide_fasta()].
-#' @param as_string If `TRUE`, return text to pass to [cat()]; if `FALSE`, a list.
-#' @return With `as_string = TRUE`, a character vector to pass to [cat()]. Otherwise a list with the elements
-#'   `nr_sequences`, `length_summary` and `aa_freq` (counts per amino acid).
+#' @param fasta A list of sequences, as returned by [read_fasta()].
+#' @return A list with the elements `n_sequences`, `length_summary` and `aa_freq` (counts per amino acid).
 #' @family FASTA databases
 #' @export
 #' @examples
 #' file <- system.file("extdata/fgcz_contaminants2022_20220405.fasta.gz", package = "prozor")
-#' db <- read_peptide_fasta(file)
-#' cat(make_fasta_summary(db))
-#' make_fasta_summary(db, as_string = FALSE)
-make_fasta_summary <- function(db, as_string = TRUE) {
-  sequences <- unlist(db, use.names = FALSE)
+#' fasta <- read_fasta(file)
+#' make_fasta_summary(fasta)
+make_fasta_summary <- function(fasta) {
+  sequences <- unlist(fasta, use.names = FALSE)
   # residue counts per byte, pasting 20,000 sequences at a time
   counts <- numeric(255)
   for (chunk in split(seq_along(sequences), ceiling(seq_along(sequences) / 20000))) {
@@ -24,19 +21,19 @@ make_fasta_summary <- function(db, as_string = TRUE) {
   aa_freq <- stats::setNames(counts[present], vapply(as.raw(present), rawToChar, character(1)))
   aa_freq <- aa_freq[order(names(aa_freq))]
   length_summary <- summary(as.numeric(nchar(sequences)))
+  list(n_sequences = length(fasta), length_summary = length_summary, aa_freq = aa_freq)
+}
 
-  if (as_string) {
-    c(
-      "nr sequences:\n",
-      length(db),
-      "\n length summary:\n",
-      paste0(utils::capture.output(length_summary), "\n"),
-      "AA frequencies:\n",
-      paste0(utils::capture.output(as.matrix(aa_freq)), "\n")
-    )
-  } else {
-    list(nr_sequences = length(db), length_summary = length_summary, aa_freq = aa_freq)
-  }
+# The sequence lengths and amino-acid counts of a make_fasta_summary() result as text, one value per line
+.format_fasta_summary <- function(fasta_summary) {
+  length_summary <- fasta_summary$length_summary
+  aa_freq <- fasta_summary$aa_freq
+  paste0(
+    "length summary:\n",
+    paste0(sprintf("%15s : %s\n", names(length_summary), signif(unclass(length_summary), 6)), collapse = ""),
+    "AA frequencies:\n",
+    paste0(sprintf("%15s : %s\n", names(aa_freq), aa_freq), collapse = "")
+  )
 }
 
 
@@ -52,12 +49,13 @@ make_fasta_summary <- function(db, as_string = TRUE) {
 #' sequences with decoys, a 320 MB file) take 2.2 GB.
 #'
 #' @param database_dir Directory with the FASTA files and `annotation.txt`.
-#' @param contaminants Contaminant sequences to add, e.g. from [load_contaminants()], or `NULL` for none.
-#' @param rev_lab Prefix of the reversed decoy sequences, or `NULL` for no decoys.
 #' @param output_dir Directory the FASTA file is written to; must not be `database_dir`, where the next run
 #'   would read the written database as targets.
-#' @param make_summary If `TRUE`, append the output of [make_fasta_summary()] to the summary.
-#' @return A list with the elements `db` (the sequences written), `file_path`, `summary` (text with the argument
+#' @param contaminants Contaminant sequences to add, e.g. from [load_contaminants()], or `NULL` for none.
+#' @inheritParams create_decoy_db
+#' @param make_summary If `TRUE`, append the sequence lengths and amino-acid counts of [make_fasta_summary()] to
+#'   the summary.
+#' @return A list with the elements `fasta` (the sequences written), `file_path`, `summary` (text with the argument
 #'   values, the file name and the number of sequences), `call` and `db_name`.
 #' @family FASTA databases
 #' @export
@@ -71,9 +69,9 @@ make_fasta_summary <- function(db, as_string = TRUE) {
 #' unlink(res$file_path)
 create_fgcz_fasta_db <- function(
   database_dir,
+  output_dir,
   contaminants = c(load_contaminants("special2024"), load_contaminants("universal2024")),
   rev_lab = "REV_",
-  output_dir,
   make_summary = TRUE
 ) {
   mcall <- match.call()
@@ -99,18 +97,18 @@ create_fgcz_fasta_db <- function(
   }
   annot_file <- file.path(database_dir, "annotation.txt")
   if (!file.exists(annot_file)) {
-    stop("Can't find an annotation file (annotation.txt) in `database_dir` \"", database_dir, "\".")
+    stop("`database_dir` must contain the file `annotation.txt`; \"", database_dir, "\" has none.")
   }
   annotation <- readLines(annot_file)[1]
 
-  db <- create_decoy_db(files, contaminants = contaminants, annot = annotation, rev_lab = rev_lab)
+  fasta <- create_decoy_db(files, contaminants = contaminants, rev_lab = rev_lab, header = annotation)
 
   if (!is.null(rev_lab)) {
     db_name <- paste0(db_name, "_d")
   }
   file_path <- file.path(output_dir, paste0(db_name, "_", format(Sys.time(), "%Y%m%d"), ".fasta"))
   message("Writing database to ", file_path, ".")
-  write_fasta(db, file = file_path)
+  write_fasta(fasta, file = file_path)
   values <- c(
     database_dir = database_dir,
     contaminants = if (is.null(contaminants)) "NULL" else paste(length(contaminants), "sequences"),
@@ -119,7 +117,7 @@ create_fgcz_fasta_db <- function(
     `FASTA name` = db_name,
     `FASTA file name` = basename(file_path),
     annotation = annotation,
-    `nr sequences` = length(db)
+    n_sequences = length(fasta)
   )
   summary_str <- paste0(
     "Database created with prozor ",
@@ -129,7 +127,7 @@ create_fgcz_fasta_db <- function(
   )
 
   if (make_summary) {
-    summary_str <- c(summary_str, make_fasta_summary(db, as_string = TRUE))
+    summary_str <- paste0(summary_str, .format_fasta_summary(make_fasta_summary(fasta)))
   }
-  list(db = db, file_path = file_path, summary = summary_str, call = mcall, db_name = db_name)
+  list(fasta = fasta, file_path = file_path, summary = summary_str, call = mcall, db_name = db_name)
 }

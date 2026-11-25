@@ -28,7 +28,16 @@ A data frame with 4,557 rows and 18 columns:
 COMET search (low-resolution HCD settings) of the FGCZ quality-control run
 \code{FUSION_1.20180713_005_autoQC4L} against human UniProt sequences with reversed decoys.
 }
+\usage{
+bcd
+}
 \description{
 Peptide-spectrum matches as produced by the COMET search engine, with its column names.
 }
-\keyword{data}
+\seealso{
+Other FDR:
+\code{\link{TargetDecoyFDR}},
+\code{\link{fdr_sample}}
+}
+\concept{FDR}
+\keyword{datasets}

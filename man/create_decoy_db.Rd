@@ -5,20 +5,20 @@
 \title{Create a database with contaminants and decoys}
 \usage{
 create_decoy_db(
-  dbs,
+  files,
   contaminants = c(load_contaminants("special2024"), load_contaminants("universal2024")),
   rev_lab = "REV_",
-  annot = "zz|sourceOf|database"
+  header = "zz|sourceOf|database"
 )
 }
 \arguments{
-\item{dbs}{Paths to one or more FASTA files.}
+\item{files}{Paths to one or more FASTA files.}
 
 \item{contaminants}{A list of contaminant sequences, e.g. from \code{\link[=load_contaminants]{load_contaminants()}}, or \code{NULL} for none.}
 
 \item{rev_lab}{Prefix of the reversed decoy sequences, or \code{NULL} for no decoys.}
 
-\item{annot}{Header of the dummy entry that records the source of the database, with or without the leading \code{>}.}
+\item{header}{Header of the dummy entry that records the source of the database, with or without the leading \code{>}.}
 }
 \value{
 A list of \code{SeqFastaAA} objects with unique names: the dummy entry, the targets, the contaminants and,
@@ -31,7 +31,7 @@ the first is kept. See \code{vignette("CreatingDecoyDB", package = "prozor")}.
 }
 \examples{
 file <- system.file("extdata/fgcz_contaminants2022_20220405.fasta.gz", package = "prozor")
-targets <- read_peptide_fasta(file)
+targets <- read_fasta(file)
 cont <- load_contaminants("fgcz2022")
 
 # the file, read twice, holds the same entries as the default contaminants: each is kept once
@@ -48,7 +48,7 @@ Other FASTA databases:
 \code{\link[=make_chain_id]{make_chain_id()}},
 \code{\link[=make_chain_id_uniprot]{make_chain_id_uniprot()}},
 \code{\link[=make_fasta_summary]{make_fasta_summary()}},
-\code{\link[=read_peptide_fasta]{read_peptide_fasta()}},
+\code{\link[=read_fasta]{read_fasta()}},
 \code{\link[=remove_signal_peptide]{remove_signal_peptide()}},
 \code{\link[=reverse_seq]{reverse_seq()}},
 \code{\link[=write_fasta]{write_fasta()}}

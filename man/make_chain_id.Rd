@@ -4,17 +4,17 @@
 \alias{make_chain_id}
 \title{Make an ID for a protein chain}
 \usage{
-make_chain_id(sequence, id, sp)
+make_chain_id(sequence, id, start)
 }
 \arguments{
 \item{sequence}{The chain sequence, as one string; not used.}
 
 \item{id}{The ID of the protein, e.g. \code{"sp|P30443|1A01_HUMAN"}.}
 
-\item{sp}{Start position of the chain.}
+\item{start}{Start position of the chain.}
 }
 \value{
-\code{id} followed by \code{s} and \code{sp}, e.g. \code{"sp|P30443|1A01_HUMANs24"}.
+\code{id} followed by \code{s} and \code{start}, e.g. \code{"sp|P30443|1A01_HUMANs24"}.
 }
 \description{
 Make an ID for a protein chain
@@ -29,7 +29,7 @@ Other FASTA databases:
 \code{\link[=load_contaminants]{load_contaminants()}},
 \code{\link[=make_chain_id_uniprot]{make_chain_id_uniprot()}},
 \code{\link[=make_fasta_summary]{make_fasta_summary()}},
-\code{\link[=read_peptide_fasta]{read_peptide_fasta()}},
+\code{\link[=read_fasta]{read_fasta()}},
 \code{\link[=remove_signal_peptide]{remove_signal_peptide()}},
 \code{\link[=reverse_seq]{reverse_seq()}},
 \code{\link[=write_fasta]{write_fasta()}}

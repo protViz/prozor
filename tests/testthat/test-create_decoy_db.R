@@ -2,7 +2,7 @@ test_that("create_decoy_db() puts the source entry first, then targets, contamin
   file <- toy_db_file()
 
   expect_message(
-    res <- create_decoy_db(file, contaminants = toy_contaminants(), annot = "zz|src|x"),
+    res <- create_decoy_db(file, contaminants = toy_contaminants(), header = "zz|src|x"),
     "Reading database"
   )
 

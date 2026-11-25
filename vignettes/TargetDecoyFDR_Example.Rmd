@@ -21,16 +21,21 @@ knitr::opts_chunk$set(
 )
 ```
 
+```{r libraries}
+library(prozor)
+library(dplyr)
+library(ggplot2)
+```
+
 Here we describe how you can estimate the false discovery rate (FDR) when matching your spectra against a FASTA sequence database using spectra search engines such as Mascot or Comet. The sequence database contains forward sequences and the same number of reverse sequences.
 
 ## The data
 
 The data needs to have two columns, one with a label, to distinguish targets and decoys, the other with a score. Then you also need to know if a larger score or a smaller score is better.
-In our example data, we have two scores: `score` and `score2`. While the `score` is better if it is smaller (e.g., posterior error probability), `score2` is better if it is larger.
+In our example data, we have two scores: `score` and `neg_log10_score`. While the `score` is better if it is smaller (e.g., posterior error probability), `neg_log10_score`, which is `-log10(score)`, is better if it is larger.
 
 
 ```{r  targetdecoy, fig.cap = "Score distributions of decoy (black line) and forward (blue line) hits; the dashed line is the score threshold. TN true negative, FP false positive, FN false negative, TP true positive.", echo = FALSE, fig.width=6, fig.height=4}
-library(ggplot2)
 threshold <- 3.5
 regions <- function(hits, mean) {
   below <- seq(0, threshold, by = 0.05)
@@ -56,11 +61,8 @@ ggplot(dens, aes(x = score, y = density)) +
 
 
 ```{r}
-library(dplyr)
-library(prozor)
 data(fdr_sample)
 knitr::kable(head(fdr_sample))
-
 ```
 
 
@@ -90,10 +92,10 @@ knitr::kable(head(fdr1$table))
 
 ## Types of FDR
 
-We define 
+We define
 
-     * false positives (FP) as the number of passing decoy assignments
-     * true positives (TP) as the number of passing forward hits.
+* false positives (FP) as the number of passing decoy assignments
+* true positives (TP) as the number of passing forward hits.
 
 ### FDR of a concatenated target-decoy search
 
@@ -104,7 +106,7 @@ $$
 FDR_{concatenated} = \frac{2 \cdot FP}{TP + FP}
 $$
 
-This is taken from the reference by [@Elias2007]. It is often called the false positive rate (FPR), which [@Storey2003] defines differently. Kaell points out that this quantity actually should be named FDR and that "Many proteomics papers incorrectly refer to this quantity as the _false positive rate_." `TargetDecoyFDR` therefore names it `fdr_concatenated`.
+This is taken from the reference by [@Elias2007]. It is often called the false positive rate (FPR), which [@Storey2003] defines differently. Käll et al. [-@Kaell2008] point out that this quantity actually should be named FDR and that "Many proteomics papers incorrectly refer to this quantity as the _false positive rate_." `TargetDecoyFDR` therefore names it `fdr_concatenated`.
 
 
 ### Simple FDR
@@ -112,10 +114,10 @@ This is taken from the reference by [@Elias2007]. It is often called the false p
 "The FDR associated with a particular score threshold is defined as the expected
 percentage of accepted PSMs that are incorrect, where an
 _accepted PSM_ is one that scores above the threshold (Many
-proteomics papers incorrectly refer to this quantity as the _false positive rate_)." ([@Kaell2007])
+proteomics papers incorrectly refer to this quantity as the _false positive rate_)." ([@Kaell2008])
 
 
-The Simple FDR introduced by ([@Kaell2007]) is defined by :
+The Simple FDR introduced by ([@Kaell2008]) is defined by :
     
 
 $$
@@ -123,7 +125,7 @@ SimpleFDR =  \frac{FP}{TP}
 $$
 
 "For a given score threshold, we count the number of decoy PSMs above the threshold and the
-number of target PSMs above the threshold. We can now estimate the FDR by simply computing the ratio of these two values (SimpleFDR)."[@Kaell2007]
+number of target PSMs above the threshold. We can now estimate the FDR by simply computing the ratio of these two values (SimpleFDR)."[@Kaell2008]
 
 
 
@@ -131,7 +133,7 @@ number of target PSMs above the threshold. We can now estimate the FDR by simply
 ```{r fig.width=7, fig.height=4}
 fdr_curves <- data.frame(
   score = rep(fdr1$table$score, 2),
-  fdr = 100 * c(fdr1$table$simple_fdr, fdr1$table$q_value_simple_fdr),
+  fdr = 100 * c(fdr1$table$fdr_simple, fdr1$table$q_value_fdr_simple),
   curve = rep(c("SimpleFDR", "q-value"), each = fdr1$n)
 )
 ggplot(fdr_curves, aes(x = score, y = fdr, colour = curve)) +
@@ -141,23 +143,21 @@ ggplot(fdr_curves, aes(x = score, y = fdr, colour = curve)) +
   labs(x = "score (smaller is better)", y = "FDR (%)", colour = NULL)
 ```
 
-Although the score is getting better (smaller) the FDR may increase since the number of TP in the denominator decreases while the number of FP stays the same. Therefore Storey and Tibshirani proposed the _q-value_, "which in our case is defined as the minimal FDR threshold at which a given PSM is accepted"[@Kaell2007].
+Although the score is getting better (smaller) the FDR may increase since the number of TP in the denominator decreases while the number of FP stays the same. Therefore Storey and Tibshirani proposed the _q-value_, "which in our case is defined as the minimal FDR threshold at which a given PSM is accepted"[@Kaell2008].
 
 ## Getting the score for an FDR.
 
 Most frequently you will need to get the score for an FDR in order to filter your data. The method `score_at()` returns it; the q-value is a fraction, `0.01` for 1 %. To report your data with an FDR of 1% instead of 5% you can execute this code:
 
 ```{r}
+(score_05_concatenated <- fdr1$score_at(q_value = 0.05, method = "fdr_concatenated"))
+dim(filter(fdr_sample, score <= score_05_concatenated))
 
-(score05G <- fdr1$score_at(q_value = 0.05, method = "fdr_concatenated"))
-dim(filter(fdr_sample, score <= score05G))
+(score_01_concatenated <- fdr1$score_at(q_value = 0.01, method = "fdr_concatenated"))
+dim(filter(fdr_sample, score <= score_01_concatenated))
 
-(score01G <- fdr1$score_at(q_value = 0.01, method = "fdr_concatenated"))
-dim(filter(fdr_sample, score <= score01G))
-
-(score01K <- fdr1$score_at(q_value = 0.01, method = "simple_fdr"))
-dim(filter(fdr_sample, score <= score01K))
-
+(score_01_simple <- fdr1$score_at(q_value = 0.01, method = "fdr_simple"))
+dim(filter(fdr_sample, score <= score_01_simple))
 ```
 
 ## The order column

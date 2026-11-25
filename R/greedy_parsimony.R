@@ -60,9 +60,9 @@
 #'   `peptide` (character or factor columns, without `NA`; unused factor levels are ignored).
 #' @param peptide Name of the column with the peptide IDs. For precursors, add a column such as
 #'   `paste(peptide_seq, precursor_charge, sep = ".")` and pass its name.
-#' @return A named list with one element per distinct peptide ID: the protein, or `;`-separated protein group, it
-#'   is assigned to. The elements are in the order in which the groups are chosen, and the peptides of a group in
-#'   the order of `factor(annotation[[peptide]])`.
+#' @return A named character vector with one element per distinct peptide ID, named by the peptide ID: the protein,
+#'   or `;`-separated protein group, it is assigned to. The elements are in the order in which the groups are chosen,
+#'   and the peptides of a group in the order of `factor(annotation[[peptide]])`.
 #' @family protein inference
 #' @export
 #' @examples
@@ -70,14 +70,13 @@
 #' groups <- greedy_parsimony(protpepmetashort, peptide = "peptide_mod_seq")
 #' # every modified peptide is assigned to exactly one protein group
 #' stopifnot(setequal(names(groups), protpepmetashort$peptide_mod_seq))
-#' head(unlist(groups))
+#' head(groups)
 greedy_parsimony <- function(annotation, peptide = "peptide_seq") {
   if (!is.data.frame(annotation)) {
     stop(
-      "`annotation` must be a data frame of peptide-protein matches, e.g. from annotate_peptides(), not a ",
+      "`annotation` must be a data frame of peptide-protein matches, e.g. from annotate_peptides(), not ",
       class(annotation)[1],
-      ".",
-      call. = FALSE
+      "."
     )
   }
   columns <- c("protein_id", peptide)
@@ -88,8 +87,7 @@ greedy_parsimony <- function(annotation, peptide = "peptide_seq") {
       peptide,
       "` (argument `peptide`); missing: ",
       paste0("`", missing_columns, "`", collapse = ", "),
-      ".",
-      call. = FALSE
+      "."
     )
   }
   n_na <- vapply(columns, function(column) sum(is.na(annotation[[column]])), integer(1))
@@ -97,25 +95,24 @@ greedy_parsimony <- function(annotation, peptide = "peptide_seq") {
     stop(
       "`annotation` must not have NA IDs; found ",
       paste0(n_na[n_na > 0], " in `", columns[n_na > 0], "`", collapse = " and "),
-      ".",
-      call. = FALSE
+      "."
     )
   }
   # factor() drops unused levels of factor columns and keeps the order of the used ones
   groups <- .greedy_counts(factor(annotation[[peptide]]), factor(annotation[["protein_id"]]))
   peps <- lapply(groups, function(g) g$peps)
   prots <- vapply(groups, function(g) g$prot, character(1))
-  stats::setNames(as.list(rep(prots, lengths(peps))), unlist(peps))
+  stats::setNames(rep(prots, lengths(peps)), unlist(peps))
 }
 
 
 #' Convert a greedy_parsimony() result to a table
 #'
-#' @param res A result of [greedy_parsimony()] whose names have the form `peptide.charge`, i.e. end in a dot and
+#' @param groups A result of [greedy_parsimony()] whose names have the form `peptide.charge`, i.e. end in a dot and
 #'   an integer charge; an error otherwise. The charge is taken after the last dot, so modified peptides such as
 #'   `"AC[+57.0]K.2"` work.
-#' @return A data frame with the columns `peptide`, `precursor_charge` (integer) and `protein`, and the precursor
-#'   IDs as row names.
+#' @return A data frame with the columns `peptide`, `precursor_charge` (integer) and `protein_group`, and the
+#'   precursor IDs as row names.
 #' @family protein inference
 #' @export
 #' @examples
@@ -126,12 +123,12 @@ greedy_parsimony <- function(annotation, peptide = "peptide_seq") {
 #'   sep = "."
 #' )
 #' head(greedy_to_table(greedy_parsimony(protpepmetashort, peptide = "precursor")))
-greedy_to_table <- function(res) {
-  precursor <- names(res)
+greedy_to_table <- function(groups) {
+  precursor <- names(groups)
   no_charge <- precursor[!grepl("\\.[0-9]+$", precursor)]
   if (length(no_charge) > 0) {
     stop(
-      "The names of `res` must have the form `peptide.charge`, e.g. \"PEPTIDEK.2\"; found: ",
+      "The names of `groups` must have the form `peptide.charge`, e.g. \"PEPTIDEK.2\"; found: ",
       paste0("\"", utils::head(no_charge, 5), "\"", collapse = ", "),
       "."
     )
@@ -139,7 +136,7 @@ greedy_to_table <- function(res) {
   data.frame(
     peptide = sub("\\.[0-9]+$", "", precursor),
     precursor_charge = as.integer(sub("^.*\\.", "", precursor)),
-    protein = unlist(res, use.names = FALSE),
+    protein_group = unname(groups),
     row.names = precursor
   )
 }

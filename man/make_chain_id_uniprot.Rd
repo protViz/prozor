@@ -4,17 +4,17 @@
 \alias{make_chain_id_uniprot}
 \title{Make a UniProt-style ID for a protein chain}
 \usage{
-make_chain_id_uniprot(sequence, id, sp)
+make_chain_id_uniprot(sequence, id, start)
 }
 \arguments{
 \item{sequence}{The chain sequence, as one string.}
 
 \item{id}{The UniProt ID of the protein, e.g. \code{"sp|P30443|1A01_HUMAN"}.}
 
-\item{sp}{Start position of the chain.}
+\item{start}{Start position of the chain.}
 }
 \value{
-The first two fields of \code{id}, followed by \code{sp}, \code{-} and the length of \code{sequence}, e.g.
+The first two fields of \code{id}, followed by \code{start}, \code{-} and the length of \code{sequence}, e.g.
 \code{"sp|P30443|24-5"}.
 }
 \description{
@@ -30,7 +30,7 @@ Other FASTA databases:
 \code{\link[=load_contaminants]{load_contaminants()}},
 \code{\link[=make_chain_id]{make_chain_id()}},
 \code{\link[=make_fasta_summary]{make_fasta_summary()}},
-\code{\link[=read_peptide_fasta]{read_peptide_fasta()}},
+\code{\link[=read_fasta]{read_fasta()}},
 \code{\link[=remove_signal_peptide]{remove_signal_peptide()}},
 \code{\link[=reverse_seq]{reverse_seq()}},
 \code{\link[=write_fasta]{write_fasta()}}

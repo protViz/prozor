@@ -7,11 +7,9 @@
 #' * `peptide_seq`: peptide sequence (factor).
 #' * `peptide_mod_seq`: modified peptide sequence (factor).
 #' * `precursor_charge`: precursor charge (integer).
-#' * `m`: precursor m/z.
-#' @name pepprot
-#' @docType data
-#' @keywords data
-NULL
+#' * `precursor_mz`: precursor m/z.
+#' @family protein inference
+"pepprot"
 
 #' Peptide-protein assignments
 #'
@@ -23,13 +21,14 @@ NULL
 #' * `protein_id`: UniProt protein ID, e.g. `sp|Q62009|POSTN_MOUSE`.
 #' * `peptide_mod_seq`: modified peptide sequence.
 #' * `precursor_charge`: precursor charge (integer).
-#' * `m`: precursor m/z.
+#' * `precursor_mz`: precursor m/z.
 #' * `peptide_length`: length of the peptide sequence.
 #' @source Precursors of [pepprot], annotated with [annotate_peptides()] against mouse UniProt sequences and FGCZ
 #'   contaminants.
+#' @family protein inference
 #' @name protpepmetashort
 #' @docType data
-#' @keywords data
+#' @keywords datasets
 NULL
 
 #' MS1 precursor masses
@@ -37,10 +36,8 @@ NULL
 #' Precursor masses, the input of [Cdsw] for computing DIA windows.
 #'
 #' @format A numeric vector of 146,009 precursor m/z values.
-#' @name masses
-#' @docType data
-#' @keywords data
-NULL
+#' @family DIA windows
+"masses"
 
 #' Search engine scores with protein IDs
 #'
@@ -49,11 +46,9 @@ NULL
 #' @format A data frame with 40,000 rows and 3 columns:
 #' * `protein_id`: protein ID (factor); decoys start with `REV_`.
 #' * `score`: score where smaller is better.
-#' * `score2`: score where larger is better.
-#' @name fdr_sample
-#' @docType data
-#' @keywords data
-NULL
+#' * `neg_log10_score`: `-log10(score)`, a score where larger is better.
+#' @family FDR
+"fdr_sample"
 
 #' COMET search results
 #'
@@ -77,7 +72,5 @@ NULL
 #' * `modifications`: modifications as position, residue and mass.
 #' @source COMET search (low-resolution HCD settings) of the FGCZ quality-control run
 #'   `FUSION_1.20180713_005_autoQC4L` against human UniProt sequences with reversed decoys.
-#' @name bcd
-#' @docType data
-#' @keywords data
-NULL
+#' @family FDR
+"bcd"

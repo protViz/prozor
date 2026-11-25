@@ -3,14 +3,19 @@
 \name{TargetDecoyFDR}
 \alias{TargetDecoyFDR}
 \title{Target-decoy false discovery rate}
+\value{
+\code{TargetDecoyFDR$new()} returns a \code{TargetDecoyFDR} R6 object; see Methods.
+}
 \description{
 An R6 class that estimates the false discovery rate (FDR) of target-decoy search results. When the object is
 created, the hits are sorted from best to worst score and two FDR estimates are computed at each score:
 \itemize{
 \item \code{fdr_concatenated}: the FDR of a concatenated target-decoy search, estimated as 2 * decoys / all hits (Elias and
-Gygi).
-\item \code{simple_fdr}: the FDR estimated as decoys / targets (Kaell).
+Gygi 2007).
+\item \code{fdr_simple}: the FDR estimated as decoys / targets (Käll et al. 2008).
 }
+
+Both estimates are fractions in [0, 1]: values above 1, e.g. where the best hits are decoys, are set to 1.
 
 The q-value of a hit is the lowest FDR at which it is accepted: the smallest estimate at its own or any worse
 score. Within tied scores, decoys are ranked before targets, so the result does not depend on the input order and
@@ -37,9 +42,24 @@ fdr$score_at(q_value = 0.01)
 fdr$score_at(q_value = 0.01, method = "fdr_concatenated")
 fdr$plot()
 # larger scores are better
-fdr2 <- TargetDecoyFDR$new(fdr_sample$score2, decoy_hit = grepl("^REV_", fdr_sample$protein_id))
+fdr2 <- TargetDecoyFDR$new(
+  fdr_sample$neg_log10_score,
+  decoy_hit = grepl("^REV_", fdr_sample$protein_id)
+)
 fdr2$score_at(q_value = 0.01)
 fdr2$plot()
+}
+\references{
+Elias JE, Gygi SP (2007). Target-decoy search strategy for increased confidence in large-scale protein
+identifications by mass spectrometry. \emph{Nature Methods}, 4(3), 207-214. \doi{10.1038/nmeth1019}
+
+Käll L, Storey JD, MacCoss MJ, Noble WS (2008). Assigning significance to peptides identified by tandem mass
+spectrometry using decoy databases. \emph{Journal of Proteome Research}, 7(1), 29-34. \doi{10.1021/pr700600n}
+}
+\seealso{
+Other FDR:
+\code{\link{bcd}},
+\code{\link{fdr_sample}}
 }
 \concept{FDR}
 \section{Active bindings}{
@@ -54,8 +74,8 @@ fdr2$plot()
 \item \code{order}: the position of the hit in the input.
 \item \code{id}: the ID of the hit; only when \code{id} was given.
 \item \code{score}, \code{decoy_hit}: the sorted input.
-\item \code{fdr_concatenated}, \code{simple_fdr}: the FDR estimates at the score.
-\item \code{q_value_fdr_concatenated}, \code{q_value_simple_fdr}: the q-values of both estimates, as fractions.
+\item \code{fdr_concatenated}, \code{fdr_simple}: the FDR estimates at the score, as fractions in [0, 1].
+\item \code{q_value_fdr_concatenated}, \code{q_value_fdr_simple}: the q-values of both estimates, as fractions in [0, 1].
 }}
   }
   \if{html}{\out{</div>}}
@@ -99,7 +119,7 @@ fdr2$plot()
 \if{html}{\out{<a id="method-TargetDecoyFDR-print"></a>}}
 \if{latex}{\out{\hypertarget{method-TargetDecoyFDR-print}{}}}
 \subsection{\code{TargetDecoyFDR$print()}}{
-  Print the numbers of hits and decoys, \code{larger_better}, and the scores at \code{simple_fdr} q-values of 0.01 and 0.05
+  Print the numbers of hits and decoys, \code{larger_better}, and the scores at \code{fdr_simple} q-values of 0.01 and 0.05
 (\code{none} if no score reaches them).
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
@@ -127,7 +147,7 @@ fdr2$plot()
     \if{html}{\out{<div class="r">}}
     \preformatted{TargetDecoyFDR$score_at(
   q_value = 0.01,
-  method = c("simple_fdr", "fdr_concatenated")
+  method = c("fdr_simple", "fdr_concatenated")
 )}
     \if{html}{\out{</div>}}
   }
@@ -135,7 +155,7 @@ fdr2$plot()
     \if{html}{\out{<div class="arguments">}}
     \describe{
       \item{\code{q_value}}{The FDR as a fraction, like the q-values in \code{table}: \code{0.01} for 1 \%.}
-      \item{\code{method}}{The FDR estimate to use: \code{"simple_fdr"} (default) or \code{"fdr_concatenated"}.}
+      \item{\code{method}}{The FDR estimate to use: \code{"fdr_simple"} (default) or \code{"fdr_concatenated"}.}
     }
     \if{html}{\out{</div>}}
   }

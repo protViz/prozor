@@ -4,16 +4,16 @@
 \alias{greedy_to_table}
 \title{Convert a greedy_parsimony() result to a table}
 \usage{
-greedy_to_table(res)
+greedy_to_table(groups)
 }
 \arguments{
-\item{res}{A result of \code{\link[=greedy_parsimony]{greedy_parsimony()}} whose names have the form \code{peptide.charge}, i.e. end in a dot and
+\item{groups}{A result of \code{\link[=greedy_parsimony]{greedy_parsimony()}} whose names have the form \code{peptide.charge}, i.e. end in a dot and
 an integer charge; an error otherwise. The charge is taken after the last dot, so modified peptides such as
 \code{"AC[+57.0]K.2"} work.}
 }
 \value{
-A data frame with the columns \code{peptide}, \code{precursor_charge} (integer) and \code{protein}, and the precursor
-IDs as row names.
+A data frame with the columns \code{peptide}, \code{precursor_charge} (integer) and \code{protein_group}, and the
+precursor IDs as row names.
 }
 \description{
 Convert a greedy_parsimony() result to a table
@@ -31,6 +31,8 @@ head(greedy_to_table(greedy_parsimony(protpepmetashort, peptide = "precursor")))
 Other protein inference:
 \code{\link[=annotate_aho]{annotate_aho()}},
 \code{\link[=annotate_peptides]{annotate_peptides()}},
-\code{\link[=greedy_parsimony]{greedy_parsimony()}}
+\code{\link[=greedy_parsimony]{greedy_parsimony()}},
+\code{\link{pepprot}},
+\code{\link{protpepmetashort}}
 }
 \concept{protein inference}

@@ -15,13 +15,13 @@ editor_options:
 
 # Introduction
 
-Function optimizes Extraction windows for DIA/SWATH so we have the same number of precursor per window. This optimization is based on spectral library data or non redundant .blib files (Bibliospec).
+This vignette computes precursor isolation windows for DIA (SWATH) that each hold about the same number of precursors. The input is a vector of precursor m/z values (MS1 masses), e.g. from a spectral library or a non-redundant BiblioSpec `.blib` file.
 
-`Cdsw$new()` computes the window boundaries (breaks) once, with one of three methods: `"constant"`, `"quantile"` or `"sampling"` (the default). The object cannot be changed afterwards, so we create one object per method and compare them at the end.
+`Cdsw$new()` computes the window boundaries (breaks) once, with one of three methods: `"constant"`, `"quantile"` or `"mixture"` (the default). The object cannot be changed afterwards, so we create one object per method and compare them at the end.
 
 # Prerequisites
 
-```{r echo=FALSE}
+```{r}
 library(prozor)
 library(ggplot2)
 ```
@@ -31,7 +31,7 @@ library(ggplot2)
 
 ```{r fig.retina=3}
 data("masses")
-cdsw_const <- Cdsw$new(masses, nbins = 25, method = "constant")
+cdsw_const <- Cdsw$new(masses, n_bins = 25, method = "constant")
 cdsw_const
 cdsw_const$plot()
 ```
@@ -51,7 +51,7 @@ const_error <- cdsw_const$error()
 Same number of MS1 precursors in each window
 
 ```{r}
-cdsw_quantile <- Cdsw$new(masses, nbins = 25, method = "quantile")
+cdsw_quantile <- Cdsw$new(masses, n_bins = 25, method = "quantile")
 cdsw_quantile
 ```
 
@@ -73,23 +73,23 @@ quantile_error <- cdsw_quantile$error()
 Using this method the window start and end is shifted to a mass range with as few MS1 peaks as possible.
 
 ```{r fig.retina=3, fig.width=7, fig.height=4}
-optimized <- cdsw_quantile$optimize_windows(maxbin = 10)
+optimized <- cdsw_quantile$optimize_windows(min_count = 10)
 knitr::kable(optimized)
 plot_windows(optimized, masses)
 ```
 
 # Dynamic Swath Windows with Constraints.
 
-- Maximal window width (`maxwindow`). Windows should not be too large because of optimal collision energy (personal communication by Bernd R.).
-- Minimal window width (`minwindow`).
-- Number of windows (`nbins`).
+- Maximal window width (`max_window`). Windows should not be too large because of optimal collision energy (personal communication by Bernd R.).
+- Minimal window width (`min_window`).
+- Number of windows (`n_bins`).
 - Window boundaries can then be moved to regions with few precursors (`optimize_windows()`).
 
-`maxwindow`, `minwindow` and `nbins` are arguments of `Cdsw$new()`. `method = "sampling"` mixes the masses with uniformly spread data and takes the quantile breaks of the mixture, with the smallest share of uniform data for which all windows lie within `minwindow` and `maxwindow`. `plot_breaks()` compares the resulting breaks with the constant and quantile breaks.
+`max_window`, `min_window` and `n_bins` are arguments of `Cdsw$new()`. `method = "mixture"` mixes the masses with uniformly spread data and takes the quantile breaks of the mixture, with the smallest share of uniform data for which all windows lie within `min_window` and `max_window`. `plot_breaks()` compares the resulting breaks with the constant and quantile breaks.
 
 
 ```{r fig.retina=3}
-cdsw_mixed <- Cdsw$new(masses, nbins = 25, method = "sampling", maxwindow = 100)
+cdsw_mixed <- Cdsw$new(masses, n_bins = 25, method = "mixture", max_window = 100)
 cdsw_mixed
 cdsw_mixed$plot_breaks()
 ```
@@ -103,7 +103,7 @@ knitr::kable(cdsw_mixed$as_table())
 ```
 
 ```{r fig.retina=3, fig.width=7, fig.height=4}
-optimized <- cdsw_mixed$optimize_windows(maxbin = 10)
+optimized <- cdsw_mixed$optimize_windows(min_count = 10)
 knitr::kable(optimized)
 plot_windows(optimized, masses)
 ```
@@ -119,11 +119,11 @@ We compare the optimal number of MS1 peaks per SWATH window (same in each window
 
 ```{r fig.retina=3, fig.width=6, fig.height=3}
 errors <- data.frame(
-  method = factor(rep(c("const", "quantile", "mixed"), 2), levels = c("const", "quantile", "mixed")),
+  method = factor(rep(c("constant", "quantile", "mixture"), 2), levels = c("constant", "quantile", "mixture")),
   metric = rep(c("Manhattan distance", "Euclidean distance"), each = 3),
   value = c(
-    const_error$score1, quantile_error$score1, mixed_error$score1,
-    const_error$score2, quantile_error$score2, mixed_error$score2
+    const_error$manhattan, quantile_error$manhattan, mixed_error$manhattan,
+    const_error$euclidean, quantile_error$euclidean, mixed_error$euclidean
   )
 )
 ggplot(errors, aes(x = method, y = value)) +
@@ -133,7 +133,7 @@ ggplot(errors, aes(x = method, y = value)) +
   labs(x = NULL, y = "deviation from equal counts")
 ```
 
-The error of the mixed method lies between the two others: it is smaller than that of the equal-width windows, and unlike the quantile windows the mixed windows meet the width limits.
+The error of the `"mixture"` windows lies between the two others: it is smaller than that of the `"constant"` (equal-width) windows, and unlike the `"quantile"` windows the `"mixture"` windows meet the width limits.
 
 # Session info
 

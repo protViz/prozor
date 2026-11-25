@@ -6,26 +6,27 @@
 \usage{
 create_fgcz_fasta_db(
   database_dir,
+  output_dir,
   contaminants = c(load_contaminants("special2024"), load_contaminants("universal2024")),
   rev_lab = "REV_",
-  output_dir,
   make_summary = TRUE
 )
 }
 \arguments{
 \item{database_dir}{Directory with the FASTA files and \code{annotation.txt}.}
 
+\item{output_dir}{Directory the FASTA file is written to; must not be \code{database_dir}, where the next run
+would read the written database as targets.}
+
 \item{contaminants}{Contaminant sequences to add, e.g. from \code{\link[=load_contaminants]{load_contaminants()}}, or \code{NULL} for none.}
 
 \item{rev_lab}{Prefix of the reversed decoy sequences, or \code{NULL} for no decoys.}
 
-\item{output_dir}{Directory the FASTA file is written to; must not be \code{database_dir}, where the next run
-would read the written database as targets.}
-
-\item{make_summary}{If \code{TRUE}, append the output of \code{\link[=make_fasta_summary]{make_fasta_summary()}} to the summary.}
+\item{make_summary}{If \code{TRUE}, append the sequence lengths and amino-acid counts of \code{\link[=make_fasta_summary]{make_fasta_summary()}} to
+the summary.}
 }
 \value{
-A list with the elements \code{db} (the sequences written), \code{file_path}, \code{summary} (text with the argument
+A list with the elements \code{fasta} (the sequences written), \code{file_path}, \code{summary} (text with the argument
 values, the file name and the number of sequences), \code{call} and \code{db_name}.
 }
 \description{
@@ -55,7 +56,7 @@ Other FASTA databases:
 \code{\link[=make_chain_id]{make_chain_id()}},
 \code{\link[=make_chain_id_uniprot]{make_chain_id_uniprot()}},
 \code{\link[=make_fasta_summary]{make_fasta_summary()}},
-\code{\link[=read_peptide_fasta]{read_peptide_fasta()}},
+\code{\link[=read_fasta]{read_fasta()}},
 \code{\link[=remove_signal_peptide]{remove_signal_peptide()}},
 \code{\link[=reverse_seq]{reverse_seq()}},
 \code{\link[=write_fasta]{write_fasta()}}

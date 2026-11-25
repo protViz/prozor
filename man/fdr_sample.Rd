@@ -9,10 +9,19 @@ A data frame with 40,000 rows and 3 columns:
 \itemize{
 \item \code{protein_id}: protein ID (factor); decoys start with \code{REV_}.
 \item \code{score}: score where smaller is better.
-\item \code{score2}: score where larger is better.
+\item \code{neg_log10_score}: \code{-log10(score)}, a score where larger is better.
 }
+}
+\usage{
+fdr_sample
 }
 \description{
 Target and decoy hits with two scores, the input of \link{TargetDecoyFDR}.
 }
-\keyword{data}
+\seealso{
+Other FDR:
+\code{\link{TargetDecoyFDR}},
+\code{\link{bcd}}
+}
+\concept{FDR}
+\keyword{datasets}

@@ -1,7 +1,7 @@
 ---
 title: "Peptide Annotation and Protein Inference"
 author: "Witold Wolski"
-date: "March 16, 2017"
+date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Peptide Annotation and Protein Inference}
@@ -20,24 +20,24 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE, fig.width = 6, fig.height = 
 
 This Vignette describes how the `greedy_parsimony()` function can be used to infer proteins from peptide identifications using the Occam's razor principle. The method tries to find a minimal set of proteins which can explain all the peptides identified.
 
-```{r loadData}
+```{r load-data}
 library(prozor)
 library(dplyr)
 library(ggplot2)
 
 file <- system.file("extdata/IDResults.txt.gz", package = "prozor")
-specMeta <- utils::read.delim(file)
-head(specMeta) |> knitr::kable()
+id_results <- utils::read.delim(file)
+head(id_results) |> knitr::kable()
 ```
 
 
-Annotate peptide sequences with protein sequences from two FASTA files, one with reviewed entries only (sp) and the other with reviewed and Trembl entries (sp/tr).
+Annotate peptide sequences with protein sequences from two FASTA files, one with reviewed entries only (sp) and the other with reviewed and TrEMBL entries (sp/tr).
 
 ```{r fig.cap = "Number of proteins in the All and Canonical database."}
-resAll <- read_peptide_fasta(system.file("p1000_db1_example/Annotation_allSeq.fasta.gz", package = "prozor"))
-resCan <- read_peptide_fasta(system.file("p1000_db1_example/Annotation_canSeq.fasta.gz", package = "prozor"))
+fasta_all <- read_fasta(system.file("p1000_db1_example/Annotation_allSeq.fasta.gz", package = "prozor"))
+fasta_canonical <- read_fasta(system.file("p1000_db1_example/Annotation_canSeq.fasta.gz", package = "prozor"))
 
-db_sizes <- data.frame(database = c("All", "Canonical"), proteins = c(length(resAll), length(resCan)))
+db_sizes <- data.frame(database = c("All", "Canonical"), proteins = c(length(fasta_all), length(fasta_canonical)))
 ggplot(db_sizes, aes(x = database, y = proteins)) +
   geom_col(fill = "#0072B2") +
   geom_text(aes(label = proteins), vjust = -0.3) +
@@ -45,18 +45,18 @@ ggplot(db_sizes, aes(x = database, y = proteins)) +
 ```
 
 ```{r}
-length(unique(specMeta$peptideSeq))
-upeptide <- unique(specMeta$peptideSeq)
-annotAll <- annotate_peptides(upeptide, resAll)
-head(select(annotAll, !protein_sequence)) |> knitr::kable()
+peptides <- unique(id_results$peptideSeq)
+length(peptides)
+annotation_all <- annotate_peptides(peptides, fasta_all)
+head(select(annotation_all, !protein_sequence)) |> knitr::kable()
 
-annotCan <- annotate_peptides(upeptide, resCan)
+annotation_canonical <- annotate_peptides(peptides, fasta_canonical)
 ```
 
 
 
 ```{r fig.cap="Number of peptide protein matches for the All and Canonical database."}
-matches <- data.frame(database = c("All", "Canonical"), matches = c(nrow(annotAll), nrow(annotCan)))
+matches <- data.frame(database = c("All", "Canonical"), matches = c(nrow(annotation_all), nrow(annotation_canonical)))
 ggplot(matches, aes(x = database, y = matches)) +
   geom_col(fill = "#0072B2") +
   geom_text(aes(label = matches), vjust = -0.3) +
@@ -66,12 +66,12 @@ ggplot(matches, aes(x = database, y = matches)) +
 We can see that using the larger FASTA database reduces the proportion of proteotypic peptides.
 A proteotypic peptide is one which matches only a single protein.
 
-```{r proteotypicPetides, fig.cap="Proportion of proteotypic peptides."}
+```{r proteotypic-peptides, fig.cap="Proportion of proteotypic peptides."}
 proteotypic <- data.frame(
   database = c("All", "Canonical"),
   percent = c(
-    sum(table(annotAll$peptide_seq) == 1) / length(table(annotAll$peptide_seq)) * 100,
-    sum(table(annotCan$peptide_seq) == 1) / length(table(annotCan$peptide_seq)) * 100
+    mean(table(annotation_all$peptide_seq) == 1) * 100,
+    mean(table(annotation_canonical$peptide_seq) == 1) * 100
   )
 )
 ggplot(proteotypic, aes(x = database, y = percent)) +
@@ -88,7 +88,7 @@ ggplot(proteotypic, aes(x = database, y = percent)) +
 We can now identify a minimal set of proteins explaining all the peptides observed for both databases. `greedy_parsimony()` takes a table with one row per peptide-protein match; a peptide observed as several precursors gives repeated rows, which count once.
 
 ```{r}
-precursors <- distinct(specMeta, peptideModSeq, precursorCharge, peptideSeq)
+precursors <- distinct(id_results, peptideModSeq, precursorCharge, peptideSeq)
 
 # peptide protein matches as points; rows and columns sorted by their number of matches
 plot_matches <- function(annotation) {
@@ -102,35 +102,41 @@ plot_matches <- function(annotation) {
 }
 ```
 
-## Protein Inference for database with Trembl identifiers
+## Protein Inference for database with TrEMBL identifiers
 
-```{r greedyTrembl, fig.cap="Peptide protein matches for the All database. Rows - peptides, columns - proteins, point - peptide protein match."}
-annotatedPrecursors <- inner_join(
+```{r greedy-trembl, fig.cap="Peptide protein matches for the All database. Rows - peptides, columns - proteins, point - peptide protein match."}
+annotated_precursors <- inner_join(
   precursors,
-  select(annotAll, peptide_seq, protein_id),
+  select(annotation_all, peptide_seq, protein_id),
   by = join_by(peptideSeq == peptide_seq),
   relationship = "many-to-many"
 )
 
-head(annotatedPrecursors) |> knitr::kable()
-c(peptides = n_distinct(annotatedPrecursors$peptideSeq), proteins = n_distinct(annotatedPrecursors$protein_id))
-plot_matches(annotatedPrecursors)
-xxAll <- greedy_parsimony(annotatedPrecursors, peptide = "peptideSeq")
+head(annotated_precursors) |> knitr::kable()
+c(
+  peptides = n_distinct(annotated_precursors$peptideSeq),
+  proteins = n_distinct(annotated_precursors$protein_id)
+)
+plot_matches(annotated_precursors)
+groups_all <- greedy_parsimony(annotated_precursors, peptide = "peptideSeq")
 ```
 
 ## Protein Inference for Reviewed/Canonical database
 
-```{r greedyCanonical, fig.cap="Peptide protein matches for the Canonical database. Rows - peptides, columns - proteins, point - peptide protein match."}
-annotatedPrecursors <- inner_join(
+```{r greedy-canonical, fig.cap="Peptide protein matches for the Canonical database. Rows - peptides, columns - proteins, point - peptide protein match."}
+annotated_precursors <- inner_join(
   precursors,
-  select(annotCan, peptide_seq, protein_id),
+  select(annotation_canonical, peptide_seq, protein_id),
   by = join_by(peptideSeq == peptide_seq),
   relationship = "many-to-many"
 )
 
-c(peptides = n_distinct(annotatedPrecursors$peptideSeq), proteins = n_distinct(annotatedPrecursors$protein_id))
-plot_matches(annotatedPrecursors)
-xxCAN <- greedy_parsimony(annotatedPrecursors, peptide = "peptideSeq")
+c(
+  peptides = n_distinct(annotated_precursors$peptideSeq),
+  proteins = n_distinct(annotated_precursors$protein_id)
+)
+plot_matches(annotated_precursors)
+groups_canonical <- greedy_parsimony(annotated_precursors, peptide = "peptideSeq")
 ```
 
 # Conclusion
@@ -142,8 +148,8 @@ inference <- data.frame(
   database = rep(c("All", "Canonical"), each = 2),
   stage = factor(rep(c("before", "after"), 2), levels = c("before", "after")),
   proteins = c(
-    length(unique(annotAll$protein_id)), length(unique(unlist(xxAll))),
-    length(unique(annotCan$protein_id)), length(unique(unlist(xxCAN)))
+    length(unique(annotation_all$protein_id)), length(unique(groups_all)),
+    length(unique(annotation_canonical$protein_id)), length(unique(groups_canonical))
   )
 )
 ggplot(inference, aes(x = stage, y = proteins)) +
@@ -152,11 +158,6 @@ ggplot(inference, aes(x = stage, y = proteins)) +
   facet_wrap(~database) +
   labs(x = "protein inference", y = "proteins")
 ```
-
-
-# TODO
-
-[Protein Grouping and Clustering in Scaffold](https://www.dropbox.com/s/a4kqyc4gxln8sfj/scaffold_protein_grouping_clustering.pdf?dl=1)
 
 
 # Session Info

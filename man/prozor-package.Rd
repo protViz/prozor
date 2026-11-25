@@ -6,8 +6,44 @@
 \alias{prozor-package}
 \title{prozor: Minimal Protein Set Explaining Peptide Spectrum Matches}
 \description{
-Determine the minimal set of proteins that explains the peptide spectrum matches (PSMs) of a mass spectrometry experiment, using a greedy parsimony algorithm. Annotate peptides with the proteins they match in 'FASTA' sequence databases, and create 'FASTA' databases with reversed decoy sequences and contaminant proteins. Estimate the false discovery rate (FDR) of target-decoy search results at the PSM, precursor, peptide and protein level, following Elias and Gygi (2007) \doi{10.1038/nmeth1019} and Käll et al. (2008) \doi{10.1021/pr700600n}. Compute variable precursor isolation windows for data-independent acquisition (DIA) from the distribution of precursor (MS1) masses.
+Determine the minimal set of proteins that explains the peptide spectrum matches (PSMs) of a mass spectrometry experiment, using a greedy parsimony algorithm. Annotate peptides with the proteins they match in 'FASTA' sequence databases, and create 'FASTA' databases with reversed decoy sequences and contaminant proteins. Compute and plot the coverage of protein sequences by the matched peptides. Estimate the false discovery rate (FDR) of target-decoy search results at the PSM, precursor, peptide and protein level, following Elias and Gygi (2007) \doi{10.1038/nmeth1019} and Käll et al. (2008) \doi{10.1021/pr700600n}. Compute variable precursor isolation windows for data-independent acquisition (DIA) from the distribution of precursor (MS1) masses.
 }
+\section{FASTA databases}{
+
+\code{\link[=read_fasta]{read_fasta()}} and \code{\link[=write_fasta]{write_fasta()}} read and write protein sequences. \code{\link[=create_fgcz_fasta_db]{create_fgcz_fasta_db()}} builds a database
+from a directory of FASTA files with \code{\link[=create_decoy_db]{create_decoy_db()}}, which adds contaminants from \code{\link[=load_contaminants]{load_contaminants()}} and
+reversed decoys from \code{\link[=reverse_seq]{reverse_seq()}}; \code{\link[=make_fasta_summary]{make_fasta_summary()}} summarizes it. \code{\link[=remove_signal_peptide]{remove_signal_peptide()}} cuts signal
+peptides off UniProt sequences. See \code{vignette("CreatingDecoyDB", package = "prozor")}.
+}
+
+\section{Peptide annotation and protein inference}{
+
+\code{\link[=annotate_peptides]{annotate_peptides()}} finds the proteins that contain each peptide, with \code{\link[=annotate_aho]{annotate_aho()}}.
+\code{\link[=greedy_parsimony]{greedy_parsimony()}} finds the minimal set of proteins that explains the peptides, and \code{\link[=greedy_to_table]{greedy_to_table()}} turns
+its result into a table. See \code{vignette("PeptideAnnotationwithProzor", package = "prozor")}.
+}
+
+\section{Sequence coverage}{
+
+\code{\link[=residue_coverage]{residue_coverage()}} and \code{\link[=sequence_coverage]{sequence_coverage()}} compute the peptide coverage of each residue and each protein from
+the result of \code{\link[=annotate_peptides]{annotate_peptides()}}; \code{\link[=plot_coverage]{plot_coverage()}} plots it for one protein. See
+\code{vignette("ProteinCoverage", package = "prozor")}.
+}
+
+\section{Target-decoy FDR}{
+
+\link{TargetDecoyFDR} estimates the false discovery rate and the q-values of target-decoy search results, finds the
+score cut-off for a given FDR, and plots the score distributions and q-values. See
+\code{vignette("TargetDecoyFDR_Example", package = "prozor")} and \code{vignette("TargetDecoyComet", package = "prozor")}.
+}
+
+\section{DIA windows}{
+
+\link{Cdsw} computes precursor isolation windows with about equal numbers of precursors from the MS1 masses;
+\code{\link[=readjust_windows]{readjust_windows()}} moves their boundaries to regions with few precursors, and \code{\link[=plot_windows]{plot_windows()}} shows them. See
+\code{vignette("cdsw", package = "prozor")}.
+}
+
 \seealso{
 Useful links:
 \itemize{

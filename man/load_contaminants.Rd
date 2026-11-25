@@ -42,7 +42,7 @@ Other FASTA databases:
 \code{\link[=make_chain_id]{make_chain_id()}},
 \code{\link[=make_chain_id_uniprot]{make_chain_id_uniprot()}},
 \code{\link[=make_fasta_summary]{make_fasta_summary()}},
-\code{\link[=read_peptide_fasta]{read_peptide_fasta()}},
+\code{\link[=read_fasta]{read_fasta()}},
 \code{\link[=remove_signal_peptide]{remove_signal_peptide()}},
 \code{\link[=reverse_seq]{reverse_seq()}},
 \code{\link[=write_fasta]{write_fasta()}}

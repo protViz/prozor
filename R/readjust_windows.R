@@ -14,57 +14,83 @@
   ends
 }
 
+# Stops unless `windows` is a data frame or list with the columns `from` and `to`
+.check_windows <- function(windows) {
+  if (!is.list(windows)) {
+    stop("`windows` must be a data frame or list, not ", class(windows)[1], ".", call. = FALSE)
+  }
+  missing_cols <- setdiff(c("from", "to"), names(windows))
+  if (length(missing_cols) > 0) {
+    stop(
+      "`windows` must have the columns `from` and `to`; missing: ",
+      paste0("`", missing_cols, "`", collapse = ", "),
+      ".",
+      call. = FALSE
+    )
+  }
+}
+
 #' Move DIA window boundaries to regions with few precursors
 #'
-#' @param wind A data frame or list with the columns `from` and `to`, e.g. from `Cdsw$as_table()`.
-#' @param ms1data Precursor masses (m/z).
+#' @param windows A data frame or list with the columns `from` and `to`, e.g. from `Cdsw$as_table()`.
+#' @param masses Precursor masses (m/z): a numeric vector of finite values.
 #' @param bin_width Width of the bins (m/z) into which the masses are binned.
-#' @param maxbin Bins with fewer than `maxbin` precursors count as empty.
-#' @return A data frame with one row per window and the columns `from`, `to`, `mid`, `width` and `counts` (precursors
-#'   with `from < m/z <= to`).
+#' @param min_count Bins with fewer than `min_count` precursors count as empty.
+#' @return A data frame with one row per window and the columns `from`, `to`, `mid`, `width` and `n_precursors`
+#'   (precursors with `from < m/z <= to`).
 #' @family DIA windows
 #' @export
 #' @examples
 #' data(masses)
-#' cdsw <- Cdsw$new(masses, maxwindow = 100)
+#' cdsw <- Cdsw$new(masses, max_window = 100)
 #' windows <- cdsw$as_table()
-#' head(readjust_windows(windows, masses, maxbin = 10))
-readjust_windows <- function(wind, ms1data, bin_width = 0.1, maxbin = 15) {
+#' head(readjust_windows(windows, masses, min_count = 10))
+readjust_windows <- function(windows, masses, bin_width = 0.1, min_count = 15) {
+  .check_windows(windows)
+  .check_masses(masses)
   .check_number(bin_width, "bin_width", positive = TRUE, whole = FALSE)
-  mass_range <- .padded_range(ms1data, 1 / bin_width)
+  mass_range <- .padded_range(masses, 1 / bin_width)
   breaks <- seq(mass_range[1], mass_range[2], by = bin_width)
-  reshist <- graphics::hist(ms1data, breaks = breaks, plot = FALSE)
-  empty <- reshist$mids[reshist$counts < maxbin]
-  new_from <- .move_starts(wind$from, empty)
-  new_to <- .move_ends(wind$to, empty)
-  counts <- .window_counts(ms1data, new_from, new_to)
-  data.frame(from = new_from, to = new_to, mid = (new_from + new_to) * 0.5, width = new_to - new_from, counts = counts)
+  reshist <- graphics::hist(masses, breaks = breaks, plot = FALSE)
+  empty <- reshist$mids[reshist$counts < min_count]
+  new_from <- .move_starts(windows$from, empty)
+  new_to <- .move_ends(windows$to, empty)
+  n_precursors <- .window_counts(masses, new_from, new_to)
+  data.frame(
+    from = new_from,
+    to = new_to,
+    mid = (new_from + new_to) * 0.5,
+    width = new_to - new_from,
+    n_precursors = n_precursors
+  )
 }
 
 #' Plot precursor masses with DIA window boundaries
 #'
 #' @param windows A data frame or list with the columns `from` and `to`, e.g. from `Cdsw$as_table()` or
 #'   [readjust_windows()].
-#' @param ms1data Precursor masses (m/z).
+#' @inheritParams readjust_windows
 #' @param bin_width Width of the histogram bins (m/z).
 #' @return A ggplot object.
 #' @family DIA windows
 #' @export
 #' @examples
 #' data(masses)
-#' cdsw <- Cdsw$new(masses, maxwindow = 100)
-#' windows <- cdsw$optimize_windows(maxbin = 10)
+#' cdsw <- Cdsw$new(masses, max_window = 100)
+#' windows <- cdsw$optimize_windows(min_count = 10)
 #' plot_windows(windows, masses)
 #' # zoom into one window
 #' start <- windows$from[5]
 #' plot_windows(windows, masses) + ggplot2::coord_cartesian(xlim = c(start - 3, start + 3))
-plot_windows <- function(windows, ms1data, bin_width = 0.1) {
+plot_windows <- function(windows, masses, bin_width = 0.1) {
+  .check_windows(windows)
+  .check_masses(masses)
   .check_number(bin_width, "bin_width", positive = TRUE, whole = FALSE)
   boundaries <- data.frame(
     mz = c(windows$from, windows$to),
     boundary = rep(c("window start", "window end"), each = length(windows$from))
   )
-  ggplot2::ggplot(data.frame(mz = ms1data), ggplot2::aes(x = .data$mz)) +
+  ggplot2::ggplot(data.frame(mz = masses), ggplot2::aes(x = .data$mz)) +
     ggplot2::geom_histogram(binwidth = bin_width, fill = "grey40") +
     ggplot2::geom_vline(
       data = boundaries,

@@ -51,22 +51,29 @@ bcd |>
 # Define helper function
 
 ```{r}
-summarizeLevel <- function(data, level = "PSM", score = "e.value", protein = "protein", q_value = 0.01, decoy = "^REV_") {
+summarize_level <- function(
+  data,
+  level = "psm",
+  score = "e.value",
+  protein = "protein",
+  q_value = 0.01,
+  decoy = "^REV_"
+) {
   fdr <- TargetDecoyFDR$new(data[[score]], decoy_hit = grepl(decoy, data[[protein]]), larger_better = FALSE)
-  cutoff <- fdr$score_at(q_value = q_value, method = "simple_fdr")
+  cutoff <- fdr$score_at(q_value = q_value, method = "fdr_simple")
 
-  filt <- filter(data, .data[[score]] <= .env$cutoff)
-  nDecoy <- sum(grepl(decoy, filt[[protein]]))
-  nConfident <- nrow(filt) - nDecoy
+  filtered <- filter(data, .data[[score]] <= .env$cutoff)
+  n_decoy <- sum(grepl(decoy, filtered[[protein]]))
+  n_confident <- nrow(filtered) - n_decoy
 
   res <- data.frame(
     n = nrow(data),
-    nConfident = nConfident,
-    nDecoy = nDecoy,
-    fdr = nDecoy / nConfident,
-    assignmentRate = nrow(filt) / nrow(data) * 100
+    n_confident = n_confident,
+    n_decoy = n_decoy,
+    fdr = n_decoy / n_confident,
+    assignment_rate = nrow(filtered) / nrow(data) * 100
   )
-  colnames(res) <- paste0(colnames(res), level)
+  colnames(res) <- paste(colnames(res), level, sep = "_")
   res
 }
 ```
@@ -74,7 +81,7 @@ summarizeLevel <- function(data, level = "PSM", score = "e.value", protein = "pr
 # PSM level
 
 ```{r}
-summarizeLevel(bcd)
+summarize_level(bcd)
 ```
 
 
@@ -83,13 +90,13 @@ summarizeLevel(bcd)
 Use minimum of e.value of all PSMs matching a peptide as new score for the peptide.
 
 ```{r}
-peptideLevel <- bcd |>
+peptide_level <- bcd |>
   summarise(n = n(), min_e.value = min(e.value), .by = c(plain_peptide, protein))
 ```
 
 ```{r}
-table(peptideLevel$n)
-summarizeLevel(peptideLevel, score = "min_e.value", level = "Peptides")
+table(peptide_level$n)
+summarize_level(peptide_level, score = "min_e.value", level = "peptides")
 ```
 
 # Protein FDR
@@ -97,50 +104,58 @@ summarizeLevel(peptideLevel, score = "min_e.value", level = "Peptides")
 Use minimum of e.value of all PSMs matching a protein as new score for the protein.
 
 ```{r}
-proteinLevel <- bcd |>
+protein_level <- bcd |>
   summarise(n = n(), min_e.value = min(e.value), .by = protein)
 ```
 
 ```{r}
-table(proteinLevel$n)
-summarizeLevel(proteinLevel, score = "min_e.value", level = "Proteins")
+table(protein_level$n)
+summarize_level(protein_level, score = "min_e.value", level = "proteins")
 ```
 
 # Filter on PSM level only
 
-Filter on PSM level and then estimate the FDR on peptide and protein level.
+Filter on PSM level and then estimate the FDR on peptide and protein level. `score_cutoff()` returns the score at the requested q-value; the code below prints it and keeps the PSMs that pass it.
 
 ```{r}
-filtLevel <- function(data, score = "e.value", larger_better = FALSE, protein = "protein", q_value = 0.01, decoy = "^REV_") {
+score_cutoff <- function(
+  data,
+  score = "e.value",
+  larger_better = FALSE,
+  protein = "protein",
+  q_value = 0.01,
+  decoy = "^REV_"
+) {
   fdr <- TargetDecoyFDR$new(data[[score]], decoy_hit = grepl(decoy, data[[protein]]), larger_better = larger_better)
-  cutoff <- fdr$score_at(q_value = q_value, method = "simple_fdr")
-  print(cutoff)
-  if (larger_better) {
-    filter(data, .data[[score]] >= .env$cutoff)
-  } else {
-    filter(data, .data[[score]] <= .env$cutoff)
-  }
+  fdr$score_at(q_value = q_value, method = "fdr_simple")
 }
 
-summarizeFDRS <- function(data, filt, psmFdrCutoff, pep = "plain_peptide", prot = "protein", decoy = "^REV_") {
+summarize_fdrs <- function(
+  data,
+  filtered,
+  psm_fdr_cutoff,
+  peptide = "plain_peptide",
+  protein = "protein",
+  decoy = "^REV_"
+) {
   res <- list()
-  res$nPSM <- nrow(data)
-  res$psmFdrCutoff <- psmFdrCutoff
-  res$nDecoyPSM <- sum(grepl(decoy, filt[[prot]]))
-  res$nConfidentPSM <- nrow(filt) - res$nDecoyPSM
-  res$fdrPSM <- res$nDecoyPSM / res$nConfidentPSM
+  res$n_psm <- nrow(data)
+  res$psm_fdr_cutoff <- psm_fdr_cutoff
+  res$n_decoy_psm <- sum(grepl(decoy, filtered[[protein]]))
+  res$n_confident_psm <- nrow(filtered) - res$n_decoy_psm
+  res$fdr_psm <- res$n_decoy_psm / res$n_confident_psm
 
   # peptide level FDR
-  filtPep <- filt |> select(all_of(c(pep, prot))) |> distinct()
-  res$nDecoyPeptide <- sum(grepl(decoy, filtPep[[prot]]))
-  res$nConfidentPeptide <- nrow(filtPep) - res$nDecoyPeptide
-  res$fdrPeptide <- res$nDecoyPeptide / res$nConfidentPeptide
+  filtered_peptides <- filtered |> select(all_of(c(peptide, protein))) |> distinct()
+  res$n_decoy_peptide <- sum(grepl(decoy, filtered_peptides[[protein]]))
+  res$n_confident_peptide <- nrow(filtered_peptides) - res$n_decoy_peptide
+  res$fdr_peptide <- res$n_decoy_peptide / res$n_confident_peptide
 
   # protein level FDR
-  filtProt <- filt |> select(all_of(prot)) |> distinct()
-  res$nDecoyProtein <- sum(grepl(decoy, filtProt[[prot]]))
-  res$nConfidentProtein <- nrow(filtProt) - res$nDecoyProtein
-  res$fdrProtein <- res$nDecoyProtein / res$nConfidentProtein
+  filtered_proteins <- filtered |> select(all_of(protein)) |> distinct()
+  res$n_decoy_protein <- sum(grepl(decoy, filtered_proteins[[protein]]))
+  res$n_confident_protein <- nrow(filtered_proteins) - res$n_decoy_protein
+  res$fdr_protein <- res$n_decoy_protein / res$n_confident_protein
   data.frame(res)
 }
 ```
@@ -149,10 +164,12 @@ summarizeFDRS <- function(data, filt, psmFdrCutoff, pep = "plain_peptide", prot 
 
 ```{r}
 # psm level FDR
-psmFdrCutoff <- 0.01
+psm_fdr_cutoff <- 0.01
 
-filt <- filtLevel(bcd, score = "e.value", larger_better = FALSE, q_value = psmFdrCutoff)
-knitr::kable(summarizeFDRS(bcd, filt, psmFdrCutoff))
+cutoff <- score_cutoff(bcd, score = "e.value", larger_better = FALSE, q_value = psm_fdr_cutoff)
+cutoff
+filtered <- filter(bcd, e.value <= cutoff)
+knitr::kable(summarize_fdrs(bcd, filtered, psm_fdr_cutoff))
 ```
 
 
@@ -160,8 +177,10 @@ knitr::kable(summarizeFDRS(bcd, filt, psmFdrCutoff))
 
 ```{r}
 # psm level FDR
-psmFdrCutoff <- 0.01
+psm_fdr_cutoff <- 0.01
 
-filt <- filtLevel(bcd, score = "sp_score", larger_better = TRUE, q_value = psmFdrCutoff)
-knitr::kable(summarizeFDRS(bcd, filt, psmFdrCutoff))
+cutoff <- score_cutoff(bcd, score = "sp_score", larger_better = TRUE, q_value = psm_fdr_cutoff)
+cutoff
+filtered <- filter(bcd, sp_score >= cutoff)
+knitr::kable(summarize_fdrs(bcd, filtered, psm_fdr_cutoff))
 ```

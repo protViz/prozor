@@ -7,23 +7,23 @@
 write_fasta(fasta, file)
 }
 \arguments{
-\item{fasta}{A list of \code{SeqFastaAA} objects, e.g. from \code{\link[=read_peptide_fasta]{read_peptide_fasta()}} or \code{\link[=create_decoy_db]{create_decoy_db()}}.}
+\item{fasta}{A list of \code{SeqFastaAA} objects, e.g. from \code{\link[=read_fasta]{read_fasta()}} or \code{\link[=create_decoy_db]{create_decoy_db()}}.}
 
 \item{file}{Path of the FASTA file to write.}
 }
 \value{
-No return value, called for side effects (writes a FASTA file).
+\code{file}, invisibly.
 }
 \description{
 Writes each sequence with its \code{Annot} header and 60 residues per line.
 }
 \examples{
 file <- system.file("extdata/fgcz_contaminants2021_20210929.fasta.gz", package = "prozor")
-fasta <- read_peptide_fasta(file)
+fasta <- read_fasta(file)
 decoy_db <- c(fasta, reverse_seq(fasta))
 out <- tempfile(fileext = ".fasta")
 write_fasta(decoy_db, out)
-length(read_peptide_fasta(out))
+length(read_fasta(out))
 unlink(out)
 }
 \seealso{
@@ -34,7 +34,7 @@ Other FASTA databases:
 \code{\link[=make_chain_id]{make_chain_id()}},
 \code{\link[=make_chain_id_uniprot]{make_chain_id_uniprot()}},
 \code{\link[=make_fasta_summary]{make_fasta_summary()}},
-\code{\link[=read_peptide_fasta]{read_peptide_fasta()}},
+\code{\link[=read_fasta]{read_fasta()}},
 \code{\link[=remove_signal_peptide]{remove_signal_peptide()}},
 \code{\link[=reverse_seq]{reverse_seq()}}
 }

@@ -5,7 +5,7 @@
 \title{Annotate peptides with the proteins that contain them}
 \usage{
 annotate_peptides(
-  pepinfo,
+  peptides,
   fasta,
   peptide = "peptide_seq",
   prefix = "(([RK])|(^)|(^M))",
@@ -13,11 +13,11 @@ annotate_peptides(
 )
 }
 \arguments{
-\item{pepinfo}{A character vector of peptide sequences, or a data frame (or tibble) with the column \code{peptide}
-and any further columns, such as the charge state, which are kept. It must not have the columns \code{protein_id},
-\code{offset}, \code{protein_sequence}, \code{matched} or \code{peptide_length}, which the result adds.}
+\item{peptides}{A character vector of peptide sequences, or a data frame (or tibble) with the column named by
+\code{peptide} and any further columns, such as the charge state, which are kept. It must not have the columns
+\code{protein_id}, \code{offset}, \code{protein_sequence}, \code{matched} or \code{peptide_length}, which the result adds.}
 
-\item{fasta}{A list of protein sequences with unique names, as returned by \code{\link[=read_peptide_fasta]{read_peptide_fasta()}}.}
+\item{fasta}{A list of protein sequences with unique names, as returned by \code{\link[=read_fasta]{read_fasta()}}.}
 
 \item{peptide}{Name of the column with the peptide sequences.}
 
@@ -26,9 +26,9 @@ and any further columns, such as the charge state, which are kept. It must not h
 \item{suffix}{Regular expression the residues after a match must start with.}
 }
 \value{
-A data frame with one row per row of \code{pepinfo} and protein occurrence: the columns of \code{pepinfo},
+A data frame with one row per row of \code{peptides} and protein occurrence: the columns of \code{peptides},
 \code{protein_id}, \code{offset} (1-based start of the peptide), \code{protein_sequence} (as searched, see \code{\link[=annotate_aho]{annotate_aho()}}),
-\code{matched} and \code{peptide_length}. \code{NULL}, with a warning, if no peptide occurs in \code{fasta}.
+\code{matched} and \code{peptide_length}. With 0 rows and a warning if no peptide occurs in \code{fasta}.
 }
 \description{
 Finds every occurrence of each peptide in \code{fasta} with \code{\link[=annotate_aho]{annotate_aho()}} and flags whether it is preceded by a
@@ -47,7 +47,7 @@ before the search, and the result holds the trimmed sequences.
 file <- system.file("extdata/IDResults.txt.gz", package = "prozor")
 peptides <- unique(utils::read.delim(file)$peptideSeq)
 fasta_file <- system.file("p1000_db1_example/Annotation_canSeq.fasta.gz", package = "prozor")
-fasta <- read_peptide_fasta(fasta_file)
+fasta <- read_fasta(fasta_file)
 annot <- annotate_peptides(peptides[1:20], fasta)
 head(annot[, c("protein_id", "peptide_seq", "offset", "peptide_length", "matched")])
 }
@@ -55,6 +55,8 @@ head(annot[, c("protein_id", "peptide_seq", "offset", "peptide_length", "matched
 Other protein inference:
 \code{\link[=annotate_aho]{annotate_aho()}},
 \code{\link[=greedy_parsimony]{greedy_parsimony()}},
-\code{\link[=greedy_to_table]{greedy_to_table()}}
+\code{\link[=greedy_to_table]{greedy_to_table()}},
+\code{\link{pepprot}},
+\code{\link{protpepmetashort}}
 }
 \concept{protein inference}

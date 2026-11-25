@@ -3,12 +3,15 @@
 \name{Cdsw}
 \alias{Cdsw}
 \title{Compute dynamic SWATH (DIA) windows}
+\value{
+\code{Cdsw$new()} returns a \code{Cdsw} R6 object; see Methods.
+}
 \description{
-An R6 class that splits the MS1 mass range into \code{nbins} windows with about equal numbers of precursors. The window
+An R6 class that splits the MS1 mass range into \code{n_bins} windows with about equal numbers of precursors. The window
 boundaries (breaks) are computed once, when the object is created, with one of three methods:
 \itemize{
-\item \code{"sampling"} (default): the quantile breaks of the masses mixed with uniformly spread data, with the smallest share
-of uniform data that keeps all window widths within \verb{[minwindow, maxwindow]}; the quantile breaks themselves if
+\item \code{"mixture"} (default): the quantile breaks of the masses mixed with uniformly spread data, with the smallest share
+of uniform data that keeps all window widths within \verb{[min_window, max_window]}; the quantile breaks themselves if
 they fit. Stops if even windows of equal width violate the limits.
 \item \code{"quantile"}: windows with equal numbers of masses, of any width.
 \item \code{"constant"}: windows of equal width.
@@ -23,19 +26,20 @@ depend on the order in which they are called. To compare methods or settings, cr
 }
 \examples{
 data(masses)
-cdsw <- Cdsw$new(masses, maxwindow = 100)
+cdsw <- Cdsw$new(masses, max_window = 100)
 cdsw
 cdsw$plot_breaks()
 cdsw$plot()
 head(cdsw$as_table())
 head(cdsw$optimize_windows())
-cdsw$show_cycle()
+cdsw$plot_cycle()
 # one object per method
 quantile_windows <- Cdsw$new(masses, method = "quantile")
-c(sampling = cdsw$error()$score1, quantile = quantile_windows$error()$score1)
+c(mixture = cdsw$error()$manhattan, quantile = quantile_windows$error()$manhattan)
 }
 \seealso{
 Other DIA windows:
+\code{\link{masses}},
 \code{\link[=plot_windows]{plot_windows()}},
 \code{\link[=readjust_windows]{readjust_windows()}}
 }
@@ -45,11 +49,11 @@ Other DIA windows:
   \describe{
     \item{\code{masses}}{MS1 masses (read-only).}
 
-    \item{\code{nbins}}{Number of windows (read-only).}
+    \item{\code{n_bins}}{Number of windows (read-only).}
 
     \item{\code{method}}{Method that placed the breaks (read-only).}
 
-    \item{\code{breaks}}{Window boundaries, \code{nbins + 1} values (read-only).}
+    \item{\code{breaks}}{Window boundaries, \code{n_bins + 1} values (read-only).}
   }
   \if{html}{\out{</div>}}
 }
@@ -63,7 +67,7 @@ Other DIA windows:
     \item \href{#method-Cdsw-optimize_windows}{\code{Cdsw$optimize_windows()}}
     \item \href{#method-Cdsw-plot}{\code{Cdsw$plot()}}
     \item \href{#method-Cdsw-plot_breaks}{\code{Cdsw$plot_breaks()}}
-    \item \href{#method-Cdsw-show_cycle}{\code{Cdsw$show_cycle()}}
+    \item \href{#method-Cdsw-plot_cycle}{\code{Cdsw$plot_cycle()}}
     \item \href{#method-Cdsw-clone}{\code{Cdsw$clone()}}
   }
 }
@@ -71,15 +75,15 @@ Other DIA windows:
 \if{html}{\out{<a id="method-Cdsw-initialize"></a>}}
 \if{latex}{\out{\hypertarget{method-Cdsw-initialize}{}}}
 \subsection{\code{Cdsw$new()}}{
-  Compute the breaks of \code{nbins} windows over the masses with \code{method}.
+  Compute the breaks of \code{n_bins} windows over the masses with \code{method}.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{Cdsw$new(
   masses,
-  nbins = 25,
-  method = c("sampling", "quantile", "constant"),
-  maxwindow = 150,
-  minwindow = 5,
+  n_bins = 25,
+  method = c("mixture", "quantile", "constant"),
+  max_window = 150,
+  min_window = 5,
   digits = 2
 )}
     \if{html}{\out{</div>}}
@@ -88,9 +92,9 @@ Other DIA windows:
     \if{html}{\out{<div class="arguments">}}
     \describe{
       \item{\code{masses}}{MS1 masses (m/z): a numeric vector of finite values.}
-      \item{\code{nbins}}{Number of windows.}
-      \item{\code{method}}{How to place the breaks: \code{"sampling"} (default), \code{"quantile"} or \code{"constant"}; see Description.}
-      \item{\code{maxwindow, minwindow}}{Largest and smallest window width in m/z; used by \code{method = "sampling"} only.}
+      \item{\code{n_bins}}{Number of windows.}
+      \item{\code{method}}{How to place the breaks: \code{"mixture"} (default), \code{"quantile"} or \code{"constant"}; see Description.}
+      \item{\code{max_window, min_window}}{Largest and smallest window width in m/z; used by \code{method = "mixture"} only.}
       \item{\code{digits}}{Number of decimal places of the breaks.}
     }
     \if{html}{\out{</div>}}
@@ -141,7 +145,7 @@ Other DIA windows:
   }
   \subsection{Returns}{
     A data frame with one row per window: start \code{from}, end \code{to}, center \code{mid}, \code{width} and the number of
-precursors with \verb{from < m/z <= to} (\code{counts}).
+precursors with \verb{from < m/z <= to} (\code{n_precursors}).
   }
 }
 
@@ -156,8 +160,9 @@ precursors with \verb{from < m/z <= to} (\code{counts}).
     \if{html}{\out{</div>}}
   }
   \subsection{Returns}{
-    A list with \code{score1} (Manhattan distance), \code{score2} (Euclidean distance), \code{counts} (precursors per
-window) and \code{optimum_n} (equal counts), both counts normalized to length 1.
+    A list with \code{manhattan} (Manhattan distance), \code{euclidean} (Euclidean distance), \code{normalized_counts}
+(precursors per window) and \code{equal_counts} (the counts of windows with equal numbers of precursors), both
+counts normalized to length 1.
   }
 }
 
@@ -168,14 +173,14 @@ window) and \code{optimum_n} (equal counts), both counts normalized to length 1.
   Move window starts and ends to regions with few precursors, with \code{\link[=readjust_windows]{readjust_windows()}}.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{Cdsw$optimize_windows(bin_width = 0.1, maxbin = 15, overlap = 0)}
+    \preformatted{Cdsw$optimize_windows(bin_width = 0.1, min_count = 15, overlap = 1)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
       \item{\code{bin_width}}{Width of the bins (m/z) into which the masses are binned.}
-      \item{\code{maxbin}}{Bins with fewer than \code{maxbin} precursors count as empty.}
+      \item{\code{min_count}}{Bins with fewer than \code{min_count} precursors count as empty.}
       \item{\code{overlap}}{Overlap of neighboring windows in m/z, as in \code{as_table()}.}
     }
     \if{html}{\out{</div>}}
@@ -216,13 +221,13 @@ window) and \code{optimum_n} (equal counts), both counts normalized to length 1.
 }
 
 \if{html}{\out{<hr>}}
-\if{html}{\out{<a id="method-Cdsw-show_cycle"></a>}}
-\if{latex}{\out{\hypertarget{method-Cdsw-show_cycle}{}}}
-\subsection{\code{Cdsw$show_cycle()}}{
+\if{html}{\out{<a id="method-Cdsw-plot_cycle"></a>}}
+\if{latex}{\out{\hypertarget{method-Cdsw-plot_cycle}{}}}
+\subsection{\code{Cdsw$plot_cycle()}}{
   Plot the DIA cycle, one window per step.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
-    \preformatted{Cdsw$show_cycle(overlap = 1)}
+    \preformatted{Cdsw$plot_cycle(overlap = 1)}
     \if{html}{\out{</div>}}
   }
   \subsection{Arguments}{

@@ -1,0 +1,13 @@
+local({
+  # title, authors (role "aut") and year from DESCRIPTION, as in the citation R generates for a package
+  auto <- citation(auto = meta)
+  bibentry(
+    bibtype = "Manual",
+    title = auto$title,
+    author = auto$author,
+    year = auto$year,
+    note = paste("R package version", meta$Version),
+    doi = "10.32614/CRAN.package.prozor",
+    url = "https://github.com/prolfqua/prozor"
+  )
+})

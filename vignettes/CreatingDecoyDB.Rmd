@@ -12,11 +12,11 @@ vignette: >
 
 
 Using the package prozor for creating standardized FASTA.
-The package can be used to: 
-     
-     * merge several FASTA files into a single FASTA file
-     * add reverse sequences to the FASTA file.
-     * add contaminants to the FASTA file
+The package can be used to:
+
+* merge several FASTA files into a single FASTA file
+* add reverse sequences to the FASTA file.
+* add contaminants to the FASTA file
 
 
 # Contaminants
@@ -58,7 +58,7 @@ annotation
 `create_decoy_db()` puts a dummy entry, whose header is the annotation, first, followed by the sequences of the FASTA files and the contaminants. Of entries with the same name, only the first is kept.
 
 ```{r message = FALSE}
-db <- create_decoy_db(files, contaminants = load_contaminants("fgcz2021"), annot = annotation, rev_lab = NULL)
+db <- create_decoy_db(files, contaminants = load_contaminants("fgcz2021"), rev_lab = NULL, header = annotation)
 length(db)
 ```
 
@@ -77,7 +77,7 @@ Apart from the dummy entry, the resulting database is twice as long as the non-d
 The names stay unique.
 
 ```{r message = FALSE}
-db_decoy <- create_decoy_db(files, contaminants = load_contaminants("fgcz2021"), annot = annotation, rev_lab = "REV_")
+db_decoy <- create_decoy_db(files, contaminants = load_contaminants("fgcz2021"), rev_lab = "REV_", header = annotation)
 db_decoy[[length(db_decoy)]]
 length(db_decoy)
 anyDuplicated(names(db_decoy))

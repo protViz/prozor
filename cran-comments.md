@@ -1,6 +1,6 @@
 ## Submission
 
-Update of prozor from 0.3.1 (2021) to 0.4.0. The exported functions are renamed to snake_case without aliases (see NEWS.md); prozor has no reverse dependencies.
+Update of prozor from 0.3.1 (2021) to 0.5.0. The exported functions are renamed to snake_case without aliases (see NEWS.md); prozor has no reverse dependencies.
 
 ## Current CRAN check results
 

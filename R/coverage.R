@@ -1,14 +1,15 @@
 # Stop unless `annotation` has the columns the coverage functions read.
 .check_annotation <- function(annotation, peptide) {
   needed <- c("protein_id", "protein_sequence", "offset", peptide)
-  missing <- setdiff(needed, colnames(annotation))
-  if (length(missing) > 0) {
+  missing_cols <- setdiff(needed, colnames(annotation))
+  if (length(missing_cols) > 0) {
     stop(
       "`annotation` must have the columns ",
-      paste(needed, collapse = ", "),
+      paste0("`", needed, "`", collapse = ", "),
       " (as returned by annotate_peptides()); missing: ",
-      paste(missing, collapse = ", "),
-      "."
+      paste0("`", missing_cols, "`", collapse = ", "),
+      ".",
+      call. = FALSE
     )
   }
 }
@@ -31,26 +32,27 @@
 #' Repeated rows of the same peptide, such as several charge states from [annotate_peptides()], count once. A
 #' peptide that occurs twice in a protein covers both places, and where its occurrences overlap it counts once.
 #'
-#' @param annotation A data frame with the columns `protein_id`, `protein_sequence`, `offset` and the peptide
-#'   column, as returned by [annotate_peptides()] or [annotate_aho()].
-#' @param peptide Name of the column with the peptide sequences.
+#' @param annotation A data frame with the columns `protein_id`, `protein_sequence`, `offset` and the column named
+#'   by `peptide`, as returned by [annotate_peptides()] or [annotate_aho()].
+#' @inheritParams annotate_peptides
 #' @return A data frame with one row per residue of each protein in `annotation`, ordered by `protein_id` and
-#'   `position`: `protein_id`, `position`, `residue` and `n_peptides`, the number of peptides covering it.
+#'   `position`: `protein_id`, `position`, `residue` and `n_peptides`, the number of peptides covering it; 0 rows
+#'   if `annotation` has none.
 #' @family sequence coverage
 #' @export
 #' @examples
 #' file <- system.file("extdata/IDResults.txt.gz", package = "prozor")
 #' peptides <- unique(utils::read.delim(file)$peptideSeq)
 #' fasta_file <- system.file("p1000_db1_example/Annotation_canSeq.fasta.gz", package = "prozor")
-#' annot <- annotate_peptides(peptides, read_peptide_fasta(fasta_file))
+#' annot <- annotate_peptides(peptides, read_fasta(fasta_file))
 #' residues <- residue_coverage(annot)
 #' head(residues)
 residue_coverage <- function(annotation, peptide = "peptide_seq") {
   .check_annotation(annotation, peptide)
   occurrences <- .peptide_occurrences(annotation, peptide)
   per_protein <- lapply(split(occurrences, occurrences$protein_id), function(x) {
-    sequence <- x$protein_sequence[1]
-    len <- nchar(sequence)
+    protein_seq <- x$protein_sequence[1]
+    len <- nchar(protein_seq)
     ends <- x$offset + nchar(x$peptide) - 1L
     # residues covered by each distinct peptide, so overlapping occurrences of one peptide count once
     covered <- lapply(split(seq_len(nrow(x)), x$peptide), function(i) {
@@ -60,11 +62,13 @@ residue_coverage <- function(annotation, peptide = "peptide_seq") {
     data.frame(
       protein_id = x$protein_id[1],
       position = seq_len(len),
-      residue = strsplit(sequence, "", fixed = TRUE)[[1]],
+      residue = strsplit(protein_seq, "", fixed = TRUE)[[1]],
       n_peptides = as.integer(depth)
     )
   })
-  res <- do.call(rbind, unname(per_protein))
+  # rbind() drops the 0-row template unless there are no proteins, which gives a 0-row result
+  template <- data.frame(protein_id = character(), position = integer(), residue = character(), n_peptides = integer())
+  res <- do.call(rbind, c(list(template), unname(per_protein)))
   rownames(res) <- NULL
   res
 }
@@ -78,14 +82,14 @@ residue_coverage <- function(annotation, peptide = "peptide_seq") {
 #' @inheritParams residue_coverage
 #' @return A data frame with one row per protein, ordered by `protein_id`: `protein_id`, `protein_length`,
 #'   `n_peptides` (distinct peptides), `n_covered` (residues covered by at least one peptide) and `coverage`
-#'   (`n_covered / protein_length`).
+#'   (`n_covered / protein_length`); 0 rows if `annotation` has none.
 #' @family sequence coverage
 #' @export
 #' @examples
 #' file <- system.file("extdata/IDResults.txt.gz", package = "prozor")
 #' peptides <- unique(utils::read.delim(file)$peptideSeq)
 #' fasta_file <- system.file("p1000_db1_example/Annotation_canSeq.fasta.gz", package = "prozor")
-#' annot <- annotate_peptides(peptides, read_peptide_fasta(fasta_file))
+#' annot <- annotate_peptides(peptides, read_fasta(fasta_file))
 #' coverage <- sequence_coverage(annot)
 #' head(coverage[order(coverage$coverage, decreasing = TRUE), ])
 sequence_coverage <- function(annotation, peptide = "peptide_seq") {
@@ -111,8 +115,8 @@ sequence_coverage <- function(annotation, peptide = "peptide_seq") {
 #' peptides that cover it; uncovered residues are gray.
 #'
 #' @param residues A result of [residue_coverage()].
-#' @param protein_id The protein to plot, one of `residues$protein_id`.
-#' @param width Residues per row.
+#' @param protein_id The protein to plot: one protein ID, a value of `residues$protein_id`.
+#' @param width Residues per row: a positive whole number.
 #' @return A ggplot object; the y axis labels the position of the first residue of each row.
 #' @family sequence coverage
 #' @export
@@ -120,18 +124,23 @@ sequence_coverage <- function(annotation, peptide = "peptide_seq") {
 #' file <- system.file("extdata/IDResults.txt.gz", package = "prozor")
 #' peptides <- unique(utils::read.delim(file)$peptideSeq)
 #' fasta_file <- system.file("p1000_db1_example/Annotation_canSeq.fasta.gz", package = "prozor")
-#' annot <- annotate_peptides(peptides, read_peptide_fasta(fasta_file))
+#' annot <- annotate_peptides(peptides, read_fasta(fasta_file))
 #' coverage <- sequence_coverage(annot)
 #' best <- coverage$protein_id[which.max(coverage$coverage)]
 #' plot_coverage(residue_coverage(annot), best)
 plot_coverage <- function(residues, protein_id, width = 50) {
-  missing <- setdiff(c("protein_id", "position", "residue", "n_peptides"), colnames(residues))
-  if (length(missing) > 0) {
-    stop("`residues` must be a result of residue_coverage(); missing columns: ", paste(missing, collapse = ", "), ".")
+  missing_cols <- setdiff(c("protein_id", "position", "residue", "n_peptides"), colnames(residues))
+  if (length(missing_cols) > 0) {
+    stop(
+      "`residues` must be a result of residue_coverage(); missing columns: ",
+      paste0("`", missing_cols, "`", collapse = ", "),
+      "."
+    )
   }
   if (length(protein_id) != 1 || !protein_id %in% residues$protein_id) {
     stop("`protein_id` must be one protein of `residues`, not \"", paste(protein_id, collapse = "\", \""), "\".")
   }
+  .check_number(width, "width", positive = TRUE, whole = TRUE)
   x <- residues[residues$protein_id == protein_id, ]
   x <- x[order(x$position), ]
   x$column <- (x$position - 1L) %% width + 1L

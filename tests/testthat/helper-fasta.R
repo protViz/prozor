@@ -1,4 +1,4 @@
-# A FASTA entry as read_peptide_fasta() returns it
+# A FASTA entry as read_fasta() returns it
 seq_fasta_aa <- function(sequence, name, annot = paste0(">", name)) {
   structure(sequence, name = name, Annot = annot, class = "SeqFastaAA")
 }
@@ -52,9 +52,27 @@ toy_contaminants <- function() {
 # Bundled contaminant entries and their UniProt accessions for remove_signal_peptide()
 contaminant_entries <- function(rows) {
   file <- system.file("extdata/fgcz_contaminants2021_20210929.fasta.gz", package = "prozor")
-  read_peptide_fasta(file)[rows]
+  read_fasta(file)[rows]
 }
 
-accessions <- function(db) {
-  vapply(strsplit(names(db), split = "|", fixed = TRUE), function(x) x[2], character(1))
+accessions <- function(fasta) {
+  vapply(strsplit(names(fasta), split = "|", fixed = TRUE), function(x) x[2], character(1))
+}
+
+# Peptide-protein matches for the coverage functions, as annotate_peptides() returns them
+toy_annotation <- function() {
+  # P: MAAAKLLLRCGGGCWWW; AAAK covers 2-5, AAKLLLR 3-9, GGG 11-13
+  data.frame(
+    protein_id = "P",
+    peptide_seq = c("AAAK", "AAKLLLR", "GGG"),
+    offset = c(2, 3, 11),
+    protein_sequence = "MAAAKLLLRCGGGCWWW"
+  )
+}
+
+# Runs inst/script/fgcz_create_fasta.R with `args`; it loads the installed prozor, which is the working tree only under
+# R CMD check
+run_fgcz_create_fasta <- function(args) {
+  script <- system.file("script", "fgcz_create_fasta.R", package = "prozor")
+  system2(file.path(R.home("bin"), "Rscript"), shQuote(c(script, args)), stdout = TRUE, stderr = TRUE)
 }

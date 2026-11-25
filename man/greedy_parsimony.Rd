@@ -15,9 +15,9 @@ greedy_parsimony(annotation, peptide = "peptide_seq")
 \code{paste(peptide_seq, precursor_charge, sep = ".")} and pass its name.}
 }
 \value{
-A named list with one element per distinct peptide ID: the protein, or \verb{;}-separated protein group, it
-is assigned to. The elements are in the order in which the groups are chosen, and the peptides of a group in
-the order of \code{factor(annotation[[peptide]])}.
+A named character vector with one element per distinct peptide ID, named by the peptide ID: the protein,
+or \verb{;}-separated protein group, it is assigned to. The elements are in the order in which the groups are chosen,
+and the peptides of a group in the order of \code{factor(annotation[[peptide]])}.
 }
 \description{
 Repeatedly assigns all unexplained peptides of the protein that explains the most of them. Proteins that
@@ -35,12 +35,14 @@ data(protpepmetashort)
 groups <- greedy_parsimony(protpepmetashort, peptide = "peptide_mod_seq")
 # every modified peptide is assigned to exactly one protein group
 stopifnot(setequal(names(groups), protpepmetashort$peptide_mod_seq))
-head(unlist(groups))
+head(groups)
 }
 \seealso{
 Other protein inference:
 \code{\link[=annotate_aho]{annotate_aho()}},
 \code{\link[=annotate_peptides]{annotate_peptides()}},
-\code{\link[=greedy_to_table]{greedy_to_table()}}
+\code{\link[=greedy_to_table]{greedy_to_table()}},
+\code{\link{pepprot}},
+\code{\link{protpepmetashort}}
 }
 \concept{protein inference}

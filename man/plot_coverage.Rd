@@ -9,9 +9,9 @@ plot_coverage(residues, protein_id, width = 50)
 \arguments{
 \item{residues}{A result of \code{\link[=residue_coverage]{residue_coverage()}}.}
 
-\item{protein_id}{The protein to plot, one of \code{residues$protein_id}.}
+\item{protein_id}{The protein to plot: one protein ID, a value of \code{residues$protein_id}.}
 
-\item{width}{Residues per row.}
+\item{width}{Residues per row: a positive whole number.}
 }
 \value{
 A ggplot object; the y axis labels the position of the first residue of each row.
@@ -24,7 +24,7 @@ peptides that cover it; uncovered residues are gray.
 file <- system.file("extdata/IDResults.txt.gz", package = "prozor")
 peptides <- unique(utils::read.delim(file)$peptideSeq)
 fasta_file <- system.file("p1000_db1_example/Annotation_canSeq.fasta.gz", package = "prozor")
-annot <- annotate_peptides(peptides, read_peptide_fasta(fasta_file))
+annot <- annotate_peptides(peptides, read_fasta(fasta_file))
 coverage <- sequence_coverage(annot)
 best <- coverage$protein_id[which.max(coverage$coverage)]
 plot_coverage(residue_coverage(annot), best)

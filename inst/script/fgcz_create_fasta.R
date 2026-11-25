@@ -52,7 +52,7 @@ contaminants <- switch(
   contamin,
   special = c(load_contaminants("special2024"), load_contaminants("universal2024")),
   none = NULL,
-  if (file.exists(contamin)) read_peptide_fasta(contamin) else load_contaminants(contamin)
+  if (file.exists(contamin)) read_fasta(contamin) else load_contaminants(contamin)
 )
 
 res_db <- create_fgcz_fasta_db(

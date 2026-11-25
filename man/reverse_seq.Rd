@@ -19,11 +19,11 @@ Reverse protein sequences to create decoys
 }
 \examples{
 file <- system.file("extdata/fgcz_contaminants2021_20210929.fasta.gz", package = "prozor")
-fasta <- read_peptide_fasta(file)
+fasta <- read_fasta(file)
 decoys <- reverse_seq(fasta)
 names(decoys)[1:3]
 
-# an entry as read_peptide_fasta() returns it
+# an entry as read_fasta() returns it
 tag <- structure(
   "DYKDDDDK",
   name = "Flag|FLAG|p2079",
@@ -40,7 +40,7 @@ Other FASTA databases:
 \code{\link[=make_chain_id]{make_chain_id()}},
 \code{\link[=make_chain_id_uniprot]{make_chain_id_uniprot()}},
 \code{\link[=make_fasta_summary]{make_fasta_summary()}},
-\code{\link[=read_peptide_fasta]{read_peptide_fasta()}},
+\code{\link[=read_fasta]{read_fasta()}},
 \code{\link[=remove_signal_peptide]{remove_signal_peptide()}},
 \code{\link[=write_fasta]{write_fasta()}}
 }

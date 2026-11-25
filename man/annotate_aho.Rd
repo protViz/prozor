@@ -4,20 +4,20 @@
 \alias{annotate_aho}
 \title{Find peptides in protein sequences with the Aho-Corasick algorithm}
 \usage{
-annotate_aho(pepseq, fasta, peptide = "peptide_seq")
+annotate_aho(peptides, fasta, peptide = "peptide_seq")
 }
 \arguments{
-\item{pepseq}{Peptide sequences: upper-case letters only, without whitespace or modifications.
+\item{peptides}{Peptide sequences: upper-case letters only, without whitespace or modifications.
 \code{\link[=annotate_peptides]{annotate_peptides()}} removes surrounding whitespace before it calls this function.}
 
-\item{fasta}{A list of protein sequences with unique names, as returned by \code{\link[=read_peptide_fasta]{read_peptide_fasta()}}.}
+\item{fasta}{A list of protein sequences with unique names, as returned by \code{\link[=read_fasta]{read_fasta()}}.}
 
 \item{peptide}{Name of the result column that holds the peptide sequences.}
 }
 \value{
 A data frame with one row per occurrence and the columns \code{protein_id}, \code{peptide} (named by the
-argument), \code{offset} (1-based start of the peptide) and \code{protein_sequence} (the sequence as searched);
-\code{NULL} if no peptide occurs.
+argument), \code{offset} (1-based start of the peptide) and \code{protein_sequence} (the sequence as searched); with 0
+rows if no peptide occurs.
 }
 \description{
 Searches all peptides at once with \code{\link[AhoCorasickTrie:AhoCorasickSearch]{AhoCorasickTrie::AhoCorasickSearch()}}. Peptides that occur in no protein
@@ -31,7 +31,7 @@ codon \code{*} of a translated database, replaced by \code{X}. The offsets are t
 file <- system.file("extdata/IDResults.txt.gz", package = "prozor")
 peptides <- unique(utils::read.delim(file)$peptideSeq)
 fasta_file <- system.file("p1000_db1_example/Annotation_canSeq.fasta.gz", package = "prozor")
-fasta <- read_peptide_fasta(fasta_file)
+fasta <- read_fasta(fasta_file)
 hits <- annotate_aho(peptides[1:20], fasta)
 dim(hits)
 }
@@ -39,6 +39,8 @@ dim(hits)
 Other protein inference:
 \code{\link[=annotate_peptides]{annotate_peptides()}},
 \code{\link[=greedy_parsimony]{greedy_parsimony()}},
-\code{\link[=greedy_to_table]{greedy_to_table()}}
+\code{\link[=greedy_to_table]{greedy_to_table()}},
+\code{\link{pepprot}},
+\code{\link{protpepmetashort}}
 }
 \concept{protein inference}

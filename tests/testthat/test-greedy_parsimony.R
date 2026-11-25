@@ -4,7 +4,8 @@ test_that("greedy_parsimony() groups only proteins with identical peptide sets",
 
   res <- greedy_parsimony(data, peptide = "pep")
 
-  expect_equal(unlist(res)[c("p1", "p2", "p3")], c(p1 = "A;B", p2 = "C;D", p3 = "E"))
+  expect_type(res, "character")
+  expect_equal(res[c("p1", "p2", "p3")], c(p1 = "A;B", p2 = "C;D", p3 = "E"))
 })
 
 test_that("greedy_parsimony() resolves a tie between overlapping proteins one at a time", {
@@ -13,7 +14,7 @@ test_that("greedy_parsimony() resolves a tie between overlapping proteins one at
 
   expect_no_message(res <- greedy_parsimony(data, peptide = "pep"))
 
-  expect_equal(unlist(res)[c("p1", "p2", "p3")], c(p1 = "A", p2 = "A", p3 = "B"))
+  expect_equal(res[c("p1", "p2", "p3")], c(p1 = "A", p2 = "A", p3 = "B"))
 })
 
 test_that("greedy_parsimony() follows the level order of factor columns", {
@@ -27,8 +28,8 @@ test_that("greedy_parsimony() follows the level order of factor columns", {
     peptide_seq = factor(c("p1", "p2", "p2", "p3"), levels = c("p3", "p2", "p1"))
   )
 
-  expect_equal(greedy_parsimony(b_first), list(p2 = "B", p3 = "B", p1 = "A"))
-  expect_equal(greedy_parsimony(peptides_reversed), list(p2 = "A", p1 = "A", p3 = "B"))
+  expect_identical(greedy_parsimony(b_first), c(p2 = "B", p3 = "B", p1 = "A"))
+  expect_identical(greedy_parsimony(peptides_reversed), c(p2 = "A", p1 = "A", p3 = "B"))
 })
 
 test_that("greedy_parsimony() groups proteins on the peptides that remain", {
@@ -39,7 +40,7 @@ test_that("greedy_parsimony() groups proteins on the peptides that remain", {
 
   res <- greedy_parsimony(data)
 
-  expect_equal(unlist(res)[c("p1", "p2", "p5", "p6")], c(p1 = "A", p2 = "A", p5 = "B;C", p6 = "B;C"))
+  expect_equal(res[c("p1", "p2", "p5", "p6")], c(p1 = "A", p2 = "A", p5 = "B;C", p6 = "B;C"))
 })
 
 test_that("greedy_parsimony() prefers the protein explaining most peptides", {
@@ -47,7 +48,7 @@ test_that("greedy_parsimony() prefers the protein explaining most peptides", {
 
   res <- greedy_parsimony(data, peptide = "pep")
 
-  expect_equal(unlist(res)[c("p1", "p2", "p3", "p4")], c(p1 = "A", p2 = "A", p3 = "A", p4 = "C"))
+  expect_equal(res[c("p1", "p2", "p3", "p4")], c(p1 = "A", p2 = "A", p3 = "A", p4 = "C"))
 })
 
 test_that("greedy_parsimony() ranks proteins by peptide count, however widely the peptides are shared", {
@@ -60,7 +61,7 @@ test_that("greedy_parsimony() ranks proteins by peptide count, however widely th
   res <- greedy_parsimony(data, peptide = "pep")
 
   expect_equal(
-    unlist(res)[c("p1", "p2", "p3", "p4", "p5", "p6")],
+    res[c("p1", "p2", "p3", "p4", "p5", "p6")],
     c(p1 = "A", p2 = "A", p3 = "A", p4 = "B", p5 = "B", p6 = "A")
   )
 })
@@ -74,7 +75,7 @@ test_that("greedy_parsimony() counts a repeated peptide-protein pair once", {
 
   res <- greedy_parsimony(data)
 
-  expect_equal(res, list(p1 = "A", p2 = "A", p3 = "B"))
+  expect_identical(res, c(p1 = "A", p2 = "A", p3 = "B"))
   expect_identical(res, greedy_parsimony(unique(data)))
 })
 
@@ -84,7 +85,7 @@ test_that("greedy_parsimony() gives the same result for a tibble and a data fram
 
   res <- greedy_parsimony(dplyr::as_tibble(data))
 
-  expect_equal(res, list(p1 = "B", p2 = "B"))
+  expect_identical(res, c(p1 = "B", p2 = "B"))
   expect_identical(res, greedy_parsimony(data))
 })
 
@@ -106,7 +107,7 @@ test_that("greedy_parsimony() ignores unused factor levels", {
 test_that("greedy_parsimony() stops for input other than a data frame", {
   data <- data.frame(protein_id = c("A", "B"), peptide_seq = c("p1", "p2"))
 
-  expect_error(greedy_parsimony(as.matrix(data)), "`annotation` must be a data frame of .*, not a matrix\\.$")
+  expect_error(greedy_parsimony(as.matrix(data)), "`annotation` must be a data frame of .*, not matrix\\.$")
 })
 
 test_that("greedy_parsimony() stops, naming them, for missing columns", {
@@ -154,7 +155,7 @@ test_that("greedy_parsimony() handles 20000 peptides in about a second", {
   expect_lt(time, 5)
   expect_setequal(names(res), data$peptide_seq)
   # every protein of a group matches the peptides assigned to it
-  proteins <- strsplit(unlist(res), ";", fixed = TRUE)
+  proteins <- strsplit(res, ";", fixed = TRUE)
   pairs <- paste(rep(names(res), lengths(proteins)), unlist(proteins))
   expect_true(all(pairs %in% paste(data$peptide_seq, data$protein_id)))
 })
@@ -167,26 +168,27 @@ test_that("greedy_parsimony() assigns every precursor of the example data", {
   expect_length(res, length(unique(protpepmetashort$peptide_mod_seq)))
   expect_setequal(names(res), as.character(protpepmetashort$peptide_mod_seq))
   # 101 protein groups: recorded from the fixed implementation (c416c0c), not computed independently
-  expect_length(unique(unlist(res)), 101)
+  expect_length(unique(res), 101)
   # every protein of a group matches the precursors assigned to it
-  proteins <- strsplit(unlist(res), ";", fixed = TRUE)
+  proteins <- strsplit(res, ";", fixed = TRUE)
   pairs <- paste(rep(names(res), lengths(proteins)), unlist(proteins))
   expect_true(all(pairs %in% paste(protpepmetashort$peptide_mod_seq, protpepmetashort$protein_id)))
 
   # recorded output, guards against unintended changes; skipped on CRAN
-  assignment <- unlist(res)[sort(names(res))]
+  assignment <- res[sort(names(res))]
   expect_snapshot(cat(paste(names(assignment), assignment, sep = " -> "), sep = "\n"))
 })
 
 test_that("greedy_to_table() splits the charge at the last dot", {
-  res <- list("AC[+57.0]K.2" = "P1", "PEPTIDEK.3" = "P2;P3")
+  groups <- c("AC[+57.0]K.2" = "P1", "PEPTIDEK.3" = "P2;P3")
 
-  mat <- greedy_to_table(res)
+  tab <- greedy_to_table(groups)
 
-  expect_equal(mat$peptide, c("AC[+57.0]K", "PEPTIDEK"))
-  expect_identical(mat$precursor_charge, c(2L, 3L))
-  expect_equal(mat$protein, c("P1", "P2;P3"))
-  expect_equal(rownames(mat), names(res))
+  expect_named(tab, c("peptide", "precursor_charge", "protein_group"))
+  expect_equal(tab$peptide, c("AC[+57.0]K", "PEPTIDEK"))
+  expect_identical(tab$precursor_charge, c(2L, 3L))
+  expect_identical(tab$protein_group, c("P1", "P2;P3"))
+  expect_equal(rownames(tab), names(groups))
 })
 
 test_that("greedy_to_table() stops for names without a charge", {
@@ -194,20 +196,20 @@ test_that("greedy_to_table() stops for names without a charge", {
   peptide_level <- greedy_parsimony(protpepmetashort)
 
   expect_error(
-    greedy_to_table(list(PEPTIDEK = "P1", "AC[+57.0]K" = "P2", "PEPTIDER.2" = "P3")),
-    "names of `res` must have the form `peptide.charge`.*found: \"PEPTIDEK\", \"AC\\[\\+57.0\\]K\"\\.$"
+    greedy_to_table(c(PEPTIDEK = "P1", "AC[+57.0]K" = "P2", "PEPTIDER.2" = "P3")),
+    "names of `groups` must have the form `peptide.charge`.*found: \"PEPTIDEK\", \"AC\\[\\+57.0\\]K\"\\.$"
   )
-  expect_error(greedy_to_table(peptide_level), "names of `res` must have the form `peptide.charge`")
+  expect_error(greedy_to_table(peptide_level), "names of `groups` must have the form `peptide.charge`")
 })
 
 test_that("greedy_to_table() handles modified precursors of the example data", {
   data(protpepmetashort, package = "prozor", envir = environment())
   protpepmetashort$precursor <- paste(protpepmetashort$peptide_mod_seq, protpepmetashort$precursor_charge, sep = ".")
-  res <- greedy_parsimony(protpepmetashort, peptide = "precursor")
+  groups <- greedy_parsimony(protpepmetashort, peptide = "precursor")
 
-  mat <- greedy_to_table(res)
+  tab <- greedy_to_table(groups)
 
-  expect_equal(nrow(mat), length(res))
-  expect_equal(paste(mat$peptide, mat$precursor_charge, sep = "."), names(res))
-  expect_equal(mat$protein, unlist(res, use.names = FALSE))
+  expect_equal(nrow(tab), length(groups))
+  expect_equal(paste(tab$peptide, tab$precursor_charge, sep = "."), names(groups))
+  expect_equal(tab$protein_group, unname(groups))
 })

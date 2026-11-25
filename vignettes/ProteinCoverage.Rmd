@@ -42,8 +42,8 @@ The example data are the peptides identified in a human sample (`IDResults.txt.g
 ```{r data}
 file <- system.file("extdata/IDResults.txt.gz", package = "prozor")
 peptides <- unique(utils::read.delim(file)$peptideSeq)
-canonical <- read_peptide_fasta(system.file("p1000_db1_example/Annotation_canSeq.fasta.gz", package = "prozor"))
-all_sequences <- read_peptide_fasta(system.file("p1000_db1_example/Annotation_allSeq.fasta.gz", package = "prozor"))
+canonical <- read_fasta(system.file("p1000_db1_example/Annotation_canSeq.fasta.gz", package = "prozor"))
+all_sequences <- read_fasta(system.file("p1000_db1_example/Annotation_allSeq.fasta.gz", package = "prozor"))
 c(peptides = length(peptides), canonical = length(canonical), with_isoforms = length(all_sequences))
 ```
 
@@ -77,7 +77,7 @@ knitr::kable(head(best, 10), digits = 2, row.names = FALSE, caption = "The ten b
 
 ```{r inference}
 inference <- greedy_parsimony(annotation)
-kept <- unique(unlist(strsplit(unlist(inference), ";", fixed = TRUE)))
+kept <- unique(unlist(strsplit(inference, ";", fixed = TRUE)))
 coverage$inference <- ifelse(coverage$protein_id %in% kept, "kept", "dropped")
 table(coverage$inference)
 ```

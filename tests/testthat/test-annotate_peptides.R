@@ -10,7 +10,10 @@ test_that("annotate_aho() finds every occurrence with 1-based offsets", {
 
 test_that("annotate_aho() rejects peptides with characters other than upper-case letters", {
   # AhoCorasickTrie 0.1.3 crashes R on such peptides
-  expect_error(annotate_aho(c("PEPTIDEK", "peptidek"), toy_fasta()), "upper-case letters only.*\"peptidek\"")
+  expect_error(
+    annotate_aho(c("PEPTIDEK", "peptidek"), toy_fasta()),
+    "`peptides` must consist of upper-case letters only.*\"peptidek\""
+  )
   expect_error(annotate_aho("AC[+57.0]K", toy_fasta()), "\"AC\\[\\+57\\.0\\]K\"")
 })
 
@@ -57,9 +60,9 @@ test_that("annotate_peptides() uses prefix and suffix", {
 })
 
 test_that("annotate_peptides() keeps one row per peptide row and protein occurrence", {
-  pepinfo <- data.frame(peptide_seq = c("PEPTIDEK", "PEPTIDEK", "GGGR"), charge = c(2, 3, 3))
+  peptides <- data.frame(peptide_seq = c("PEPTIDEK", "PEPTIDEK", "GGGR"), charge = c(2, 3, 3))
 
-  res <- annotate_peptides(pepinfo, toy_fasta())
+  res <- annotate_peptides(peptides, toy_fasta())
 
   expect_equal(nrow(res), 2 * 6 + 1)
   expect_equal(res$charge[res$peptide_seq == "GGGR"], 3)
@@ -68,9 +71,9 @@ test_that("annotate_peptides() keeps one row per peptide row and protein occurre
 
 test_that("annotate_peptides() trims whitespace around the peptides", {
   # e.g. "\r" at the end of the last column of a file with Windows line endings
-  pepinfo <- data.frame(peptide_seq = c("PEPTIDEK\r", " GGGR"), charge = c(2, 3))
+  peptides <- data.frame(peptide_seq = c("PEPTIDEK\r", " GGGR"), charge = c(2, 3))
 
-  res <- annotate_peptides(pepinfo, toy_fasta())
+  res <- annotate_peptides(peptides, toy_fasta())
 
   expect_equal(nrow(res), 6 + 1)
   expect_setequal(res$peptide_seq, c("PEPTIDEK", "GGGR"))
@@ -78,37 +81,56 @@ test_that("annotate_peptides() trims whitespace around the peptides", {
   expect_equal(res$charge[res$peptide_seq == "GGGR"], 3)
 })
 
-test_that("annotate_peptides() rejects `pepinfo` columns named like result columns", {
+test_that("annotate_peptides() rejects `peptides` columns named like result columns", {
   # e.g. search engine output with a protein column
   psm <- data.frame(peptide_seq = "PEPTIDEK", protein_id = "P1", offset = 99, matched = TRUE, peptide_length = 8)
 
   expect_error(
     annotate_peptides(psm, toy_fasta()),
-    "`pepinfo` has columns.*: protein_id, offset, matched, peptide_length\\."
+    "`peptides` must not have columns named like result .*; rename `protein_id`, `offset`, `matched`, `peptide_length`\\."
   )
-  expect_error(annotate_peptides("PEPTIDEK", toy_fasta(), peptide = "offset"), "`pepinfo` has columns.*: offset\\.")
+  expect_error(
+    annotate_peptides("PEPTIDEK", toy_fasta(), peptide = "offset"),
+    "`peptides` must not have columns .*; rename `offset`\\."
+  )
 })
 
 test_that("annotate_peptides() gives the same result for a tibble and a data frame", {
   skip_if_not_installed("dplyr")
-  pepinfo <- data.frame(peptide_seq = c("PEPTIDEK", "GGGR"), charge = c(2, 3))
+  peptides <- data.frame(peptide_seq = c("PEPTIDEK", "GGGR"), charge = c(2, 3))
 
-  from_df <- annotate_peptides(pepinfo, toy_fasta())
-  from_tibble <- annotate_peptides(dplyr::as_tibble(pepinfo), toy_fasta())
+  from_df <- annotate_peptides(peptides, toy_fasta())
+  from_tibble <- annotate_peptides(dplyr::as_tibble(peptides), toy_fasta())
 
   expect_equal(as.data.frame(from_tibble), from_df)
 })
 
 test_that("annotate_peptides() reads the peptide column given by `peptide`", {
-  pepinfo <- data.frame(seq = c("PEPTIDEK", "GGGR"))
+  peptides <- data.frame(seq = c("PEPTIDEK", "GGGR"))
 
-  res <- annotate_peptides(pepinfo, toy_fasta(), peptide = "seq")
+  res <- annotate_peptides(peptides, toy_fasta(), peptide = "seq")
 
   expect_setequal(res$seq, c("PEPTIDEK", "GGGR"))
   expect_equal(nrow(res), 7)
 })
 
-test_that("annotate_peptides() warns and returns NULL without matches", {
-  expect_warning(res <- annotate_peptides("WWWWW", toy_fasta()), "None of the peptides")
-  expect_null(res)
+test_that("annotate_aho() returns 0 rows with the result columns without matches", {
+  expect_no_warning(res <- annotate_aho("WWWWW", toy_fasta(), peptide = "sequence"))
+
+  expect_s3_class(res, "data.frame")
+  expect_equal(nrow(res), 0)
+  expect_named(res, c("protein_id", "sequence", "offset", "protein_sequence"))
+})
+
+test_that("annotate_peptides() warns and returns 0 rows with the result columns without matches", {
+  peptides <- data.frame(peptide_seq = c("WWWWW", "YYYYY"), charge = c(2, 3))
+
+  expect_warning(res <- annotate_peptides(peptides, toy_fasta()), "None of the peptides")
+
+  expect_s3_class(res, "data.frame")
+  expect_equal(nrow(res), 0)
+  expect_named(res, c("peptide_seq", "protein_id", "offset", "protein_sequence", "matched", "charge", "peptide_length"))
+  # downstream functions take the empty result
+  expect_equal(nrow(residue_coverage(res)), 0)
+  expect_equal(nrow(sequence_coverage(res)), 0)
 })

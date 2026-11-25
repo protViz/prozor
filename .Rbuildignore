@@ -1,15 +1,12 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^\.Rhistory$
-^.\.gitignore$
+^\.gitignore$
 ^\.github$
 ^\.git$
-^\.travis\.yml$
-^.*inst/dataignore/.*$
 ^doc$
 ^Meta$
 ^docs$
-^pkgdown$
 ^Makefile$
 ^make$
 ^altdoc$

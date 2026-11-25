@@ -10,11 +10,23 @@ A data frame with 4,938 rows and 4 columns:
 \item \code{peptide_seq}: peptide sequence (factor).
 \item \code{peptide_mod_seq}: modified peptide sequence (factor).
 \item \code{precursor_charge}: precursor charge (integer).
-\item \code{m}: precursor m/z.
+\item \code{precursor_mz}: precursor m/z.
 }
+}
+\usage{
+pepprot
 }
 \description{
 Sequence, charge and m/z of identified precursors, without proteins; \link{protpepmetashort} holds the proteins of
 some of them.
 }
-\keyword{data}
+\seealso{
+Other protein inference:
+\code{\link[=annotate_aho]{annotate_aho()}},
+\code{\link[=annotate_peptides]{annotate_peptides()}},
+\code{\link[=greedy_parsimony]{greedy_parsimony()}},
+\code{\link[=greedy_to_table]{greedy_to_table()}},
+\code{\link{protpepmetashort}}
+}
+\concept{protein inference}
+\keyword{datasets}

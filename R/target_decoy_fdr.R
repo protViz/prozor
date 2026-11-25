@@ -1,6 +1,9 @@
-# Stops unless `decoy_hit` is logical, `score`, `decoy_hit` and `id` (if given) have the same length, and `score` and
-# `decoy_hit` have no NA
-.check_target_decoy <- function(score, decoy_hit, id) {
+# Stops unless `score` is numeric, `decoy_hit` is logical, `score`, `decoy_hit` and `id` (if given) have the same
+# length, `score` and `decoy_hit` have no NA, and `larger_better` is TRUE or FALSE
+.check_target_decoy <- function(score, decoy_hit, larger_better, id) {
+  if (!is.numeric(score)) {
+    stop("`score` must be numeric, not ", class(score)[1], ".", call. = FALSE)
+  }
   if (!is.logical(decoy_hit)) {
     stop("`decoy_hit` must be logical, not ", class(decoy_hit)[1], ".", call. = FALSE)
   }
@@ -23,6 +26,9 @@
   if (anyNA(decoy_hit)) {
     stop("`decoy_hit` must not contain NA; found ", sum(is.na(decoy_hit)), ".", call. = FALSE)
   }
+  if (!(isTRUE(larger_better) || isFALSE(larger_better))) {
+    stop("`larger_better` must be TRUE or FALSE, not ", deparse1(larger_better), ".", call. = FALSE)
+  }
 }
 
 # Stops unless `q_value` is a single number between 0 and 1
@@ -39,8 +45,10 @@
 #' An R6 class that estimates the false discovery rate (FDR) of target-decoy search results. When the object is
 #' created, the hits are sorted from best to worst score and two FDR estimates are computed at each score:
 #' * `fdr_concatenated`: the FDR of a concatenated target-decoy search, estimated as 2 * decoys / all hits (Elias and
-#'   Gygi).
-#' * `simple_fdr`: the FDR estimated as decoys / targets (Kaell).
+#'   Gygi 2007).
+#' * `fdr_simple`: the FDR estimated as decoys / targets (Käll et al. 2008).
+#'
+#' Both estimates are fractions in \[0, 1\]: values above 1, e.g. where the best hits are decoys, are set to 1.
 #'
 #' The q-value of a hit is the lowest FDR at which it is accepted: the smallest estimate at its own or any worse
 #' score. Within tied scores, decoys are ranked before targets, so the result does not depend on the input order and
@@ -52,6 +60,13 @@
 #' The object cannot be changed: its fields are read-only and its methods only read them. `clone()` copies an object.
 #' See `vignette("TargetDecoyFDR_Example", package = "prozor")`.
 #'
+#' @return `TargetDecoyFDR$new()` returns a `TargetDecoyFDR` R6 object; see Methods.
+#' @references
+#' Elias JE, Gygi SP (2007). Target-decoy search strategy for increased confidence in large-scale protein
+#' identifications by mass spectrometry. *Nature Methods*, 4(3), 207-214. \doi{10.1038/nmeth1019}
+#'
+#' Käll L, Storey JD, MacCoss MJ, Noble WS (2008). Assigning significance to peptides identified by tandem mass
+#' spectrometry using decoy databases. *Journal of Proteome Research*, 7(1), 29-34. \doi{10.1021/pr700600n}
 #' @family FDR
 #' @export
 #' @examples
@@ -69,7 +84,10 @@
 #' fdr$score_at(q_value = 0.01, method = "fdr_concatenated")
 #' fdr$plot()
 #' # larger scores are better
-#' fdr2 <- TargetDecoyFDR$new(fdr_sample$score2, decoy_hit = grepl("^REV_", fdr_sample$protein_id))
+#' fdr2 <- TargetDecoyFDR$new(
+#'   fdr_sample$neg_log10_score,
+#'   decoy_hit = grepl("^REV_", fdr_sample$protein_id)
+#' )
 #' fdr2$score_at(q_value = 0.01)
 #' fdr2$plot()
 TargetDecoyFDR <- R6::R6Class(
@@ -83,13 +101,14 @@ TargetDecoyFDR <- R6::R6Class(
     #' @param id IDs of the hits, e.g. protein IDs, one per score; `NULL` (default) for none.
     #' @return A new `TargetDecoyFDR` object.
     initialize = function(score, decoy_hit, larger_better = TRUE, id = NULL) {
-      .check_target_decoy(score, decoy_hit, id)
+      .check_target_decoy(score, decoy_hit, larger_better, id)
       ord <- order(score, decoy_hit, decreasing = c(larger_better, TRUE), method = "radix")
       decoy_hit <- decoy_hit[ord]
       fp <- cumsum(decoy_hit)
       tp <- seq_along(ord) - fp
-      fdr_concatenated <- (2 * fp) / (tp + fp)
-      simple_fdr <- fp / tp
+      # capped at 1: fp / tp is Inf while all hits are decoys
+      fdr_concatenated <- pmin(1, (2 * fp) / (tp + fp))
+      fdr_simple <- pmin(1, fp / tp)
       columns <- c(
         list(order = ord),
         if (!is.null(id)) list(id = id[ord]),
@@ -97,16 +116,16 @@ TargetDecoyFDR <- R6::R6Class(
           score = score[ord],
           decoy_hit = decoy_hit,
           fdr_concatenated = fdr_concatenated,
-          simple_fdr = simple_fdr,
+          fdr_simple = fdr_simple,
           q_value_fdr_concatenated = rev(cummin(rev(fdr_concatenated))),
-          q_value_simple_fdr = rev(cummin(rev(simple_fdr)))
+          q_value_fdr_simple = rev(cummin(rev(fdr_simple)))
         )
       )
       private$.larger_better <- larger_better
       private$.table <- data.frame(columns, row.names = NULL)
     },
     #' @description
-    #' Print the numbers of hits and decoys, `larger_better`, and the scores at `simple_fdr` q-values of 0.01 and 0.05
+    #' Print the numbers of hits and decoys, `larger_better`, and the scores at `fdr_simple` q-values of 0.01 and 0.05
     #' (`none` if no score reaches them).
     #' @param ... Not used.
     #' @return The object, invisibly.
@@ -114,35 +133,29 @@ TargetDecoyFDR <- R6::R6Class(
       cutoffs <- vapply(
         c(0.01, 0.05),
         function(q_value) {
-          if (any(private$.table$q_value_simple_fdr <= q_value)) format(self$score_at(q_value), digits = 4) else "none"
+          if (any(private$.table$q_value_fdr_simple <= q_value)) format(self$score_at(q_value), digits = 4) else "none"
         },
         character(1)
       )
-      cat(
-        "<TargetDecoyFDR> hits: ",
-        format(nrow(private$.table), big.mark = ","),
-        ", decoys: ",
-        format(sum(private$.table$decoy_hit), big.mark = ","),
-        ", larger_better: ",
-        private$.larger_better,
-        "\n",
-        "score at simple_fdr q-value 0.01: ",
-        cutoffs[1],
-        ", at 0.05: ",
-        cutoffs[2],
-        "\n",
-        sep = ""
-      )
+      n_hits <- format(nrow(private$.table), big.mark = ",")
+      n_decoys <- format(sum(private$.table$decoy_hit), big.mark = ",")
+      cat(sprintf(
+        "<TargetDecoyFDR> hits: %s, decoys: %s, larger_better: %s\n",
+        n_hits,
+        n_decoys,
+        private$.larger_better
+      ))
+      cat(sprintf("score at fdr_simple q-value 0.01: %s, at 0.05: %s\n", cutoffs[1], cutoffs[2]))
       invisible(self)
     },
     #' @description
     #' Find the score cut-off for a given FDR.
     #' @param q_value The FDR as a fraction, like the q-values in `table`: `0.01` for 1 %.
-    #' @param method The FDR estimate to use: `"simple_fdr"` (default) or `"fdr_concatenated"`.
+    #' @param method The FDR estimate to use: `"fdr_simple"` (default) or `"fdr_concatenated"`.
     #' @return The least strict score whose q-value is at most `q_value`. An error if no score reaches it.
-    score_at = function(q_value = 0.01, method = c("simple_fdr", "fdr_concatenated")) {
+    score_at = function(q_value = 0.01, method = c("fdr_simple", "fdr_concatenated")) {
       .check_q_value(q_value)
-      method <- .match_method(method, c("simple_fdr", "fdr_concatenated"))
+      method <- .match_method(method, c("fdr_simple", "fdr_concatenated"))
       q <- private$.table[[paste0("q_value_", method)]]
       valid_scores <- private$.table$score[q <= q_value]
       if (length(valid_scores) == 0) {
@@ -167,8 +180,8 @@ TargetDecoyFDR <- R6::R6Class(
       )
       q_values <- data.frame(
         score = rep(fdr$score, 2),
-        q_value = 100 * c(fdr$q_value_fdr_concatenated, fdr$q_value_simple_fdr),
-        estimate = rep(c("fdr_concatenated", "simple_fdr"), each = nrow(fdr)),
+        q_value = 100 * c(fdr$q_value_fdr_concatenated, fdr$q_value_fdr_simple),
+        estimate = rep(c("fdr_concatenated", "fdr_simple"), each = nrow(fdr)),
         panel = factor(panels[2], levels = panels)
       )
       p <- ggplot2::ggplot() +
@@ -186,7 +199,7 @@ TargetDecoyFDR <- R6::R6Class(
         ggplot2::facet_grid(panel ~ ., scales = "free_y") +
         ggplot2::scale_fill_manual(values = c(target = "#0072B2", decoy = "#D55E00"), name = NULL) +
         ggplot2::scale_colour_manual(
-          values = c(fdr_concatenated = "#000000", simple_fdr = "#E69F00"),
+          values = c(fdr_concatenated = "#000000", fdr_simple = "#E69F00"),
           name = "FDR estimate"
         ) +
         ggplot2::labs(
@@ -218,8 +231,8 @@ TargetDecoyFDR <- R6::R6Class(
     #' * `order`: the position of the hit in the input.
     #' * `id`: the ID of the hit; only when `id` was given.
     #' * `score`, `decoy_hit`: the sorted input.
-    #' * `fdr_concatenated`, `simple_fdr`: the FDR estimates at the score.
-    #' * `q_value_fdr_concatenated`, `q_value_simple_fdr`: the q-values of both estimates, as fractions.
+    #' * `fdr_concatenated`, `fdr_simple`: the FDR estimates at the score, as fractions in \[0, 1\].
+    #' * `q_value_fdr_concatenated`, `q_value_fdr_simple`: the q-values of both estimates, as fractions in \[0, 1\].
     table = function(value) {
       if (!missing(value)) {
         .stop_read_only("table", "TargetDecoyFDR")
