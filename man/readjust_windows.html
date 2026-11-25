@@ -406,7 +406,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="unnumbered anchored" data-anchor-id="move-dia-window-boundaries-to-regions-with-few-precursors">Move DIA window boundaries to regions with few precursors</h2>
 <section id="description" class="level3">
 <h3 class="anchored" data-anchor-id="description">Description</h3>
-<p>Move DIA window boundaries to regions with few precursors</p>
+<p>Moves each window start down, and each window end up, to the mid of the nearest empty bin. A boundary already on such a mid stays, so <code>readjust_windows()</code> returns its own result unchanged.</p>
 </section>
 <section id="usage" class="level3">
 <h3 class="anchored" data-anchor-id="usage">Usage</h3>
@@ -445,7 +445,7 @@ Width of the bins (m/z) into which the masses are binned.
 <code id="min_count">min_count</code>
 </td>
 <td>
-Bins with fewer than <code>min_count</code> precursors count as empty.
+Bins with fewer than <code>min_count</code> precursors count as empty; a number, at least 0.
 </td>
 </tr>
 </tbody></table>

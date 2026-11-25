@@ -409,6 +409,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>The sets:</p>
 <ul>
 <li>
+<p><code>“fgcz2024”</code> (default): the FGCZ default, the sets <code>“special2024”</code> and <code>“universal2024”</code> together; used by <code>create_decoy_db()</code>, <code>create_fgcz_fasta_db()</code> and <code>inst/script/fgcz_create_fasta.R</code>.</p>
+</li>
+<li>
 <p><code>“fgcz2019”</code>, <code>“fgcz2021”</code>, <code>“fgcz2022”</code>: FGCZ contaminant lists of 2019, 2021 and 2022.</p>
 </li>
 <li>
@@ -421,7 +424,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="usage" class="level3">
 <h3 class="anchored" data-anchor-id="usage">Usage</h3>
-<pre><code class="language-R">load_contaminants(set, no_human = FALSE)
+<pre><code class="language-R">load_contaminants(
+  set = c("fgcz2024", "fgcz2019", "fgcz2021", "fgcz2022", "universal2024", "special2024"),
+  no_human = FALSE
+)
 </code></pre>
 </section>
 <section id="arguments" class="level3">
@@ -432,7 +438,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <code id="set">set</code>
 </td>
 <td>
-Name of the contaminant set: <code>“fgcz2019”</code>, <code>“fgcz2021”</code>, <code>“fgcz2022”</code>, <code>“universal2024”</code> or <code>“special2024”</code>.
+Name of the contaminant set: <code>“fgcz2024”</code> (default), <code>“fgcz2019”</code>, <code>“fgcz2021”</code>, <code>“fgcz2022”</code>, <code>“universal2024”</code> or <code>“special2024”</code>.
 </td>
 </tr>
 <tr>
@@ -462,12 +468,16 @@ If <code>TRUE</code>, drop the sequences whose header contains <code>HUMAN</code
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"prozor"</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>cont <span class="ot">&lt;-</span> <span class="fu">load_contaminants</span>(<span class="st">"fgcz2022"</span>)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(cont)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(<span class="fu">load_contaminants</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 399</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>cont <span class="ot">&lt;-</span> <span class="fu">load_contaminants</span>(<span class="st">"fgcz2022"</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(cont)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 505</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(<span class="fu">load_contaminants</span>(<span class="st">"fgcz2022"</span>, <span class="at">no_human =</span> <span class="cn">TRUE</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(<span class="fu">load_contaminants</span>(<span class="st">"fgcz2022"</span>, <span class="at">no_human =</span> <span class="cn">TRUE</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 349</code></pre>
 </div>

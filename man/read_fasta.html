@@ -428,7 +428,7 @@ Path to a FASTA file, optionally gzip-compressed.
 </section>
 <section id="value" class="level3">
 <h3 class="anchored" data-anchor-id="value">Value</h3>
-<p>A named list with one <code>SeqFastaAA</code> object per sequence: the sequence as a string, with the attributes <code>name</code> (the first word of the header, without <code>&gt;</code>, also the list name) and <code>Annot</code> (the header line).</p>
+<p>A named list with one <code>SeqFastaAA</code> object per sequence: the sequence as a string, with the attributes <code>name</code> (the first word of the header, up to the first whitespace, without <code>&gt;</code>; also the list name) and <code>Annot</code> (the header line).</p>
 </section>
 <section id="see-also" class="level3">
 <h3 class="anchored" data-anchor-id="see-also">See Also</h3>

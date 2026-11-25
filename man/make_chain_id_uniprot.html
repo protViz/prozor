@@ -421,7 +421,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <code id="sequence">sequence</code>
 </td>
 <td>
-The chain sequence, as one string.
+The protein sequence, as one string; the chain ends at its last residue.
 </td>
 </tr>
 <tr>
@@ -444,7 +444,7 @@ Start position of the chain.
 </section>
 <section id="value" class="level3">
 <h3 class="anchored" data-anchor-id="value">Value</h3>
-<p>The first two fields of <code>id</code>, followed by <code>start</code>, <code>-</code> and the length of <code>sequence</code>, e.g. <code>“sp|P30443|24-5”</code>.</p>
+<p>The first two fields of <code>id</code>, followed by the range of the chain as UniProt writes it: <code>start</code>, <code>-</code> and the length of <code>sequence</code> (the end of the chain), e.g.&nbsp;<code>“sp|P30443|21-148”</code>.</p>
 </section>
 <section id="see-also" class="level3">
 <h3 class="anchored" data-anchor-id="see-also">See Also</h3>
@@ -455,9 +455,9 @@ Start position of the chain.
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"prozor"</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">make_chain_id_uniprot</span>(<span class="st">"ABCDE"</span>, <span class="st">"sp|P30443|1A01_HUMAN"</span>, <span class="dv">24</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">make_chain_id_uniprot</span>(<span class="fu">strrep</span>(<span class="st">"A"</span>, <span class="dv">148</span>), <span class="st">"sp|P30443|1A01_HUMAN"</span>, <span class="dv">21</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "sp|P30443|24-5"</code></pre>
+<pre><code>[1] "sp|P30443|21-148"</code></pre>
 </div>
 </div>
 

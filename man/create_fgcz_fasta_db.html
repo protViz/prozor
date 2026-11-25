@@ -413,7 +413,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code class="language-R">create_fgcz_fasta_db(
   database_dir,
   output_dir,
-  contaminants = c(load_contaminants("special2024"), load_contaminants("universal2024")),
+  contaminants = load_contaminants(),
   rev_lab = "REV_",
   make_summary = TRUE
 )
@@ -435,7 +435,7 @@ Directory with the FASTA files and <code>annotation.txt</code>.
 <code id="output_dir">output_dir</code>
 </td>
 <td>
-Directory the FASTA file is written to; must not be <code>database_dir</code>, where the next run would read the written database as targets.
+Existing directory the FASTA file is written to; must not be <code>database_dir</code>, where the next run would read the written database as targets.
 </td>
 </tr>
 <tr>

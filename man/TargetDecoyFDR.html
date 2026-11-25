@@ -416,7 +416,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
 </ul>
 <p>Both estimates are fractions in [0, 1]: values above 1, e.g.&nbsp;where the best hits are decoys, are set to 1.</p>
-<p>The q-value of a hit is the lowest FDR at which it is accepted: the smallest estimate at its own or any worse score. Within tied scores, decoys are ranked before targets, so the result does not depend on the input order and tied targets get the conservative FDR.</p>
+<p>The q-value of a hit is the lowest FDR at which it is accepted: the smallest estimate at its own or any worse score. The estimate at a score counts all hits with that score or a better one, so tied hits share their estimates and q-values, whatever the input order; within a tie, decoys are listed before targets.</p>
 <p>The decoys are given as logical flags. For protein IDs whose decoys start with <code>REV_</code>, pass <code>decoy_hit = grepl(“^REV_”, id)</code>, and <code>id = id</code> to keep the IDs in <code>table</code>.</p>
 <p>The object cannot be changed: its fields are read-only and its methods only read them. <code>clone()</code> copies an object. See <code>vignette(“TargetDecoyFDR_Example”, package = “prozor”)</code>.</p>
 </section>
@@ -509,7 +509,7 @@ Arguments
 <code>score</code>
 </dt>
 <dd>
-Search engine scores, without <code>NA</code>.
+Search engine scores, at least one, without <code>NA</code>.
 </dd>
 <dt>
 <code>decoy_hit</code>
@@ -607,7 +607,7 @@ Returns
 <h4 class="anchored">
 <code>TargetDecoyFDR$plot()</code>
 </h4>
-<p>Plot the score distributions and q-values: two panels on a shared score axis, the histogram of target and decoy scores, and the q-values of both FDR estimates in percent. When smaller scores are better and all scores are positive, the score axis is logarithmic.</p>
+<p>Plot the score distributions and q-values: two panels on a shared score axis, the histogram of target and decoy scores, and the q-values of both FDR estimates in percent. When smaller scores are better and all scores are positive, the score axis is logarithmic. Every hit is drawn: one million hits take about 2 s to render as PDF and 20 s as PNG.</p>
 <h5 class="anchored">
 Usage
 </h5>

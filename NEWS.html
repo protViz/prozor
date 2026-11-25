@@ -506,7 +506,7 @@ ul.task-list li input[type="checkbox"] {
 <li><code>plotFDR(fdr)</code> → <code>fdr$plot()</code>.</li>
 <li><code>computeFDRwithID(score, ID)</code> → <code>TargetDecoyFDR$new(score, decoy_hit = grepl("^REV_", ID), id = ID)</code>; only IDs starting with <code>REV_</code> count as decoys (<code>decoy = "REV_"</code> matched anywhere in the ID).</li>
 </ul></li>
-<li><code>TargetDecoyFDR</code> ranks decoys before targets within tied scores, so q-values no longer depend on the input order.</li>
+<li><code>TargetDecoyFDR</code> computes the FDR per score, counting all tied hits: they share one FDR and q-value, whatever the input order, and <code>score_at()</code> no longer returns a cut-off whose FDR exceeds <code>q_value</code> (1.07 % at 0.01 on <code>bcd</code> with rounded scores).</li>
 <li><code>TargetDecoyFDR$score_at()</code> stops when no score reaches the requested FDR; <code>predictScoreFDR()</code> returned <code>Inf</code> with a warning.</li>
 <li><code>greedy_parsimony(annotation, peptide = "peptide_seq")</code> replaces <code>greedy()</code> and <code>prepareMatrix()</code> (<code>prepare_matrix()</code> on GitHub), without aliases. It takes the peptide-protein matches as a data frame, e.g.&nbsp;from <code>annotate_peptides()</code>, instead of a peptide-by-protein matrix (see <code>?greedy_parsimony</code>).
 <ul>
@@ -559,6 +559,7 @@ ul.task-list li input[type="checkbox"] {
 <h2 class="anchored" data-anchor-id="new-features">New features</h2>
 <ul>
 <li><code>load_contaminants(set, no_human)</code> loads any of the bundled contaminant sets.</li>
+<li><code>load_contaminants()</code> loads the new set <code>"fgcz2024"</code> by default: <code>"special2024"</code> and <code>"universal2024"</code> together, the default contaminants of <code>create_decoy_db()</code>, <code>create_fgcz_fasta_db()</code> and <code>fgcz_create_fasta.R --contamin=special</code>.</li>
 <li><code>plot_windows()</code> shows the precursor masses with the DIA window boundaries.</li>
 <li><code>Cdsw$plot_breaks()</code> compares the breaks of the object with the constant and quantile breaks of the same masses.</li>
 <li><code>residue_coverage()</code>, <code>sequence_coverage()</code> and <code>plot_coverage()</code> compute and plot the peptide coverage of protein sequences from the result of <code>annotate_peptides()</code>; the new vignette “Protein Sequence Coverage” shows them.</li>
@@ -570,6 +571,8 @@ ul.task-list li input[type="checkbox"] {
 <ul>
 <li><code>greedy_parsimony()</code> assigns every peptide that matches a protein again: only proteins that explain exactly the same peptides are reported together (<code>"A;B"</code>). Since 2023 (GitHub only), unrelated tied proteins were merged into one group and their other peptides were left without a protein.</li>
 <li><code>greedy_parsimony()</code> is 250 to 400 times faster on thousands of peptides, e.g.&nbsp;0.05 s instead of 21 s for 12,000 peptides.</li>
+<li><code>greedy_parsimony()</code> no longer scans all proteins in every round: 2.2 s instead of 36 s for 400,000 peptides that match many proteins.</li>
+<li><code>greedy_parsimony()</code> breaks ties between character IDs in C-locale order (upper case first) in every locale; it followed the session’s collation, so a tie between proteins <code>"a"</code> and <code>"B"</code> depended on the locale.</li>
 <li><code>greedy_parsimony()</code> ignores unused factor levels of the ID columns, so it works on subsets of the bundled data sets; <code>prepareMatrix()</code> failed on them or gave rows or columns without entries.</li>
 <li><code>annotate_peptides()</code> and <code>greedy_parsimony()</code> accept tibbles; <code>annotatePeptides()</code> and <code>prepareMatrix()</code> crashed R or failed on them.</li>
 <li><code>greedy_to_table()</code> takes the charge after the last dot, so modified peptides such as <code>"AC[+57.0]K.2"</code> work; they failed with “length of ‘dimnames’ [2] not equal to array extent”.</li>
@@ -578,44 +581,59 @@ ul.task-list li input[type="checkbox"] {
 <ul>
 <li>Character scores were sorted as text, and one <code>NA</code> decoy flag made all q-values <code>NA</code>.</li>
 </ul></li>
+<li><code>TargetDecoyFDR$new()</code> stops for zero hits; <code>$plot()</code> failed on them with “arguments imply differing number of rows: 0, 1”.</li>
 <li><code>TargetDecoyFDR</code> caps both FDR estimates and their q-values at 1; when the best hit was a decoy, <code>fdr_simple</code> was <code>Inf</code> and q-values exceeded 1.</li>
 <li><code>TargetDecoyFDR$plot()</code> uses a logarithmic score axis only when all scores are positive; scores of 0 (e.g.&nbsp;PEP or rounded E-values) vanished from the plot with a warning.</li>
 <li><code>annotate_peptides()</code> removes whitespace around the peptides, e.g.&nbsp;the <code>"\r"</code> of a file with Windows line endings, before it searches them; such peptides were dropped from the result without a warning.</li>
 <li><code>annotate_aho()</code> and <code>annotate_peptides()</code> search proteins with lower-case residues or characters other than letters, such as the stop codon <code>*</code> of translated databases, with unchanged offsets; one such protein stopped the search with “character ’*’ is not in the trie’s alphabet”.</li>
+<li><code>annotate_aho()</code> and <code>annotate_peptides()</code> give the offsets in the sequences of <code>fasta</code> also for a sequence that starts with blanks; they removed such blanks and gave offsets shifted by their number. Blanks are searched as <code>X</code>, like <code>*</code>.</li>
+<li><code>annotate_peptides()</code> stops when <code>peptides</code> lacks the column named by <code>peptide</code>, and <code>annotate_aho()</code> when <code>fasta</code> has no names; they failed with “replacement has 0 rows, data has 1” and “arguments imply differing number of rows: 0, 1”.</li>
 <li><code>annotate_aho()</code> is about 6 times faster on the bundled example.</li>
 <li><code>annotate_aho()</code> and <code>annotate_peptides()</code> no longer print dplyr’s “Joining with <code>by = join_by(proteinID)</code>” message, nor dplyr’s <code>funs()</code> deprecation warning.</li>
 <li><code>readjust_windows()</code> and <code>plot_windows()</code> stop for <code>masses</code> with <code>NA</code> or non-numeric values, as <code>Cdsw$new()</code> does, and for <code>windows</code> without the column <code>from</code> or <code>to</code>.</li>
 <li><code>plot_coverage()</code> stops unless <code>width</code> is a positive whole number.</li>
+<li><code>residue_coverage()</code> and <code>sequence_coverage()</code> take 0.5 s and 0.2 s instead of 15 s for 190,000 peptides, and 0.6 and 0.3 GB of memory instead of 6 GB.</li>
 <li><code>Cdsw$new(method = "mixture")</code> stops when even equal-width windows violate <code>min_window</code> or <code>max_window</code>; <code>sampling_breaks()</code> warned and then never returned.</li>
+<li><code>Cdsw$new(method = "mixture")</code> keeps the rounded and padded breaks within <code>min_window</code> and <code>max_window</code>; the last window was up to <code>2 / 10^digits</code> wider than <code>max_window</code>.</li>
+<li><code>Cdsw$new()</code> stops for an infinite <code>n_bins</code>, <code>max_window</code>, <code>min_window</code> or <code>digits</code>, <code>readjust_windows()</code> and <code>Cdsw$optimize_windows()</code> for a <code>min_count</code> that is not a non-negative number, and <code>Cdsw$as_table()</code>, <code>$optimize_windows()</code> and <code>$plot_cycle()</code> for such an <code>overlap</code>; <code>digits = Inf</code> gave <code>NaN</code> breaks, and <code>min_count = "a"</code> compared the counts as text.</li>
 <li>Constant breaks enclose the masses for any <code>digits</code>, and <code>readjust_windows()</code> and <code>Cdsw$optimize_windows()</code> work for any bin width. <code>constant_breaks(digits = 3)</code> followed by <code>$plot()</code> or <code>$error()</code>, and <code>readjust_windows(digits = 2)</code>, failed with “some ‘x’ not counted” for about 38 % of data sets.
 <ul>
 <li>With the default <code>digits</code> the breaks are unchanged; other values give slightly different breaks.</li>
 </ul></li>
 <li><code>readjust_windows()</code> and <code>Cdsw$optimize_windows()</code> also move a window start down to the first empty bin and a window end up to the last one; such boundaries stayed in place when that bin was the nearest.</li>
 <li><code>readjust_windows()</code> and <code>Cdsw$optimize_windows()</code> return the windows unchanged when no bin is empty, e.g.&nbsp;with <code>min_count = 0</code>; they failed with “argument is of length zero”.</li>
+<li><code>readjust_windows()</code> leaves a boundary that is already on the mid of an empty bin in place, so it returns its own result unchanged; it moved such a boundary to the next empty bin, and a second pass widened the windows by up to 0.7 m/z.</li>
 <li>The breaks of <code>Cdsw</code> are unnamed for all methods, so <code>Cdsw$as_table()</code> has row numbers instead of the quantile names <code>0%</code>, <code>4%</code>, …</li>
 <li><code>write_fasta()</code> keeps a <code>&gt;</code> inside a header (<code>ADP&gt;ATP</code> used to become <code>ADPATP</code>).</li>
+<li><code>write_fasta()</code> stops, naming the first such entry, unless every entry has one <code>Annot</code> string, before it creates the file; it failed with “values must be length 1” and left an empty or partial file.</li>
 <li><code>write_fasta()</code>, <code>make_fasta_summary()</code> and <code>reverse_seq()</code> are faster and give the same output; <code>create_fgcz_fasta_db()</code> takes 4.7 s instead of 30 s for 82,000 proteins.</li>
 <li><code>read_fasta()</code> gives an entry without sequence lines the empty string; it returned the next header pasted to this one, e.g.&nbsp;<code>"&gt;b&gt;a"</code>, which <code>write_fasta()</code> then wrote as an extra header line.</li>
 <li><code>make_fasta_summary()</code> counts an empty sequence as length 0 (was 1).</li>
+<li><code>read_fasta()</code> ends an entry’s name at the first whitespace, so a tab-separated header <code>&gt;sp|P1|A_HUMAN&lt;TAB&gt;...</code> gives <code>sp|P1|A_HUMAN</code>; only a space ended it. <code>reverse_seq()</code> takes the decoy names from the decoy headers in the same way.</li>
+<li><code>read_fasta()</code> and <code>create_fgcz_fasta_db()</code> read a FASTA file or <code>annotation.txt</code> without a final newline without the warning “incomplete final line found”.</li>
 <li><code>remove_signal_peptide()</code> reads UniProt’s current signal peptide format <code>SIGNAL 1..20</code>, and works on a database with a single entry.</li>
 <li><code>remove_signal_peptide()</code> stops when a name of <code>fasta</code> has no <code>|</code> and so no UniProt accession, or <code>signal$Entry</code> is <code>NA</code>; such entries skipped the check that <code>signal</code> lists the entries in the order of <code>fasta</code>.</li>
 <li><code>remove_signal_peptide()</code> gives a shortened sequence its new ID as list name too, so <code>annotate_aho()</code> and the written FASTA file report the same ID, and keeps the description in its header.</li>
+<li><code>remove_signal_peptide()</code> stops, naming the missing columns, when <code>signal</code> lacks <code>Entry</code> or <code>Signal.peptide</code>; with UniProt’s <code>Signal peptide</code> (as <code>read.delim(check.names = FALSE)</code> names it) it returned <code>fasta</code> unchanged, and without <code>Entry</code> it skipped the order check.</li>
+<li><code>remove_signal_peptide()</code> takes linear time: 0.5 s instead of 5 s for 82,000 entries.</li>
 <li><code>load_contaminants("special2024")</code> works: the bundled <code>fgcz_special_prot_20241112.fasta.gz</code> is a plain gzipped FASTA file again instead of a gzipped tar archive (<a href="https://github.com/prolfqua/prozor/issues/7">#7</a>).</li>
 <li><code>load_contaminants(no_human = TRUE)</code> also drops entries whose header says <code>Homo sapiens</code>; it kept 7 human keratins of the <code>"fgcz2019"</code>, <code>"fgcz2021"</code> and <code>"fgcz2022"</code> sets.</li>
 <li><code>create_fgcz_fasta_db()</code> reads only FASTA files (<code>*.fasta</code>, <code>*.fa</code> or <code>*.faa</code>, optionally gzipped) and <code>annotation.txt</code>, and stops when <code>database_dir</code> holds no FASTA file or is <code>output_dir</code>.
 <ul>
 <li>It read every file with <code>fasta</code> in its name, so a <code>*.fa.gz</code> database was skipped, and a second run read the written database as targets (<code>REV_REV_</code> decoys).</li>
 </ul></li>
+<li><code>create_fgcz_fasta_db()</code> stops before it reads any file when <code>output_dir</code> does not exist; it failed with “cannot open file” after building the whole database.</li>
 <li><code>create_decoy_db()</code> keeps only the first entry of each name, as <code>create_fgcz_fasta_db()</code> did; duplicated names made <code>annotate_aho()</code> refuse the result.</li>
 <li>The summary of <code>create_fgcz_fasta_db()</code> and the parameter log of <code>fgcz_create_fasta.R</code> record the argument values, e.g.&nbsp;<code>contaminants : 505 sequences</code>, instead of the call, and no longer link to the FGCZ intranet.</li>
 <li>The dummy entry <code>CRAPCRAPCRAP</code> that <code>create_decoy_db()</code> puts first has the attributes it gets when the written file is read back: <code>Annot</code> starts with <code>&gt;</code> and <code>name</code> is the first word of the header. The written files are unchanged.</li>
 <li><code>inst/script/fgcz_create_fasta.R --contamin</code> takes every set of <code>load_contaminants()</code> besides <code>special</code>, <code>none</code> and a FASTA file, and stops early, naming the sets, for an unknown value. The parameter log of a <code>nodecoy</code> run says <code>revLab: NULL</code> instead of <code>REV_</code>.</li>
+<li><code>inst/script/fgcz_create_fasta.R</code> writes its parameter log next to the FASTA file in the output directory, named like it, e.g.&nbsp;<code>p1000_db1_example_d_20261125.txt</code>; it wrote <code>&lt;db_name&gt;.txt</code> into the working directory.</li>
 <li>The FGCZ shell wrappers (<code>inst/script/*.sh</code>) and the notes in <code>inst/creatingDBs/</code> are no longer part of the package; <code>inst/script/fgcz_create_fasta.R</code> stays.</li>
 <li>The example database <code>inst/p1000_db1_example</code> is described as human in its <code>annotation.txt</code>; it said mouse.</li>
 <li>Errors raised by exported functions show their call; errors from internal checks and R6 methods show none, so <code>residue_coverage()</code> no longer reports <code>.check_annotation()</code>.</li>
 <li>Error messages name the argument and the offending value, and put column names in backticks.</li>
 <li><code>library(prozor)</code> no longer prints the package version.</li>
+<li><code>library(prozor)</code> no longer loads ggplot2, only the first plot does: 0.002 s instead of 0.33 s.</li>
 <li>Removed the undocumented debug data set <code>mm</code>.</li>
 </ul>
 </section>

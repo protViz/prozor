@@ -406,7 +406,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="unnumbered anchored" data-anchor-id="write-protein-sequences-to-a-fasta-file">Write protein sequences to a FASTA file</h2>
 <section id="description" class="level3">
 <h3 class="anchored" data-anchor-id="description">Description</h3>
-<p>Writes each sequence with its <code>Annot</code> header and 60 residues per line.</p>
+<p>Writes each sequence with its <code>Annot</code> header and 60 residues per line. A header without the leading <code>&gt;</code> gets one.</p>
 </section>
 <section id="usage" class="level3">
 <h3 class="anchored" data-anchor-id="usage">Usage</h3>
@@ -421,7 +421,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <code id="fasta">fasta</code>
 </td>
 <td>
-A list of <code>SeqFastaAA</code> objects, e.g.&nbsp;from <code>read_fasta()</code> or <code>create_decoy_db()</code>.
+A list of <code>SeqFastaAA</code> objects, e.g.&nbsp;from <code>read_fasta()</code> or <code>create_decoy_db()</code>; each needs the attribute <code>Annot</code>, a single string.
 </td>
 </tr>
 <tr>

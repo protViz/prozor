@@ -436,11 +436,11 @@ Name of the column with the peptide IDs. For precursors, add a column such as <c
 </section>
 <section id="details" class="level3">
 <h3 class="anchored" data-anchor-id="details">Details</h3>
-<p>Proteins are ranked by the number of distinct peptides they explain; a peptide-protein pair that occurs in several rows counts once. Of the proteins that tie, the one first in <code>factor(annotation$protein_id)</code> is taken first: alphabetical order for a character column, the level order for a factor column.</p>
+<p>Proteins are ranked by the number of distinct peptides they explain; a peptide-protein pair that occurs in several rows counts once. Of the proteins that tie, the one first in the order of the IDs is taken first. The IDs of a character column are in C-locale order, as by <code>sort(method = “radix”)</code>, whatever the locale: upper case before lower case; those of a factor column in the level order.</p>
 </section>
 <section id="value" class="level3">
 <h3 class="anchored" data-anchor-id="value">Value</h3>
-<p>A named character vector with one element per distinct peptide ID, named by the peptide ID: the protein, or <code style="white-space: pre;">;</code>-separated protein group, it is assigned to. The elements are in the order in which the groups are chosen, and the peptides of a group in the order of <code>factor(annotation[[peptide]])</code>.</p>
+<p>A named character vector with one element per distinct peptide ID, named by the peptide ID: the protein, or <code style="white-space: pre;">;</code>-separated protein group, it is assigned to. The elements are in the order in which the groups are chosen, and the peptides of a group, like the proteins of a group, in the order of the IDs.</p>
 </section>
 <section id="see-also" class="level3">
 <h3 class="anchored" data-anchor-id="see-also">See Also</h3>

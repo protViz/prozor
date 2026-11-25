@@ -437,7 +437,7 @@ A data frame with one row per entry of <code>fasta</code>, in the same order, an
 <code id="id_fun">id_fun</code>
 </td>
 <td>
-Function that makes the ID of the remaining chain, e.g.&nbsp;<code>make_chain_id()</code> or <code>make_chain_id_uniprot()</code>.
+Function that makes the ID of the remaining chain from the protein sequence, its ID and the start of the chain, e.g.&nbsp;<code>make_chain_id()</code> or <code>make_chain_id_uniprot()</code>.
 </td>
 </tr>
 </tbody></table>
@@ -457,14 +457,20 @@ Function that makes the ID of the remaining chain, e.g.&nbsp;<code>make_chain_id
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>file <span class="ot">&lt;-</span> <span class="fu">system.file</span>(<span class="st">"extdata/fgcz_contaminants2021_20210929.fasta.gz"</span>, <span class="at">package =</span> <span class="st">"prozor"</span>)</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>fasta <span class="ot">&lt;-</span> <span class="fu">read_fasta</span>(file)[<span class="dv">2</span><span class="sc">:</span><span class="dv">3</span>]</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>entry <span class="ot">&lt;-</span> <span class="fu">vapply</span>(<span class="fu">strsplit</span>(<span class="fu">names</span>(fasta), <span class="at">split =</span> <span class="st">"|"</span>, <span class="at">fixed =</span> <span class="cn">TRUE</span>), <span class="cf">function</span>(x) x[<span class="dv">2</span>], <span class="fu">character</span>(<span class="dv">1</span>))</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>signal <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">Entry =</span> entry, <span class="at">Signal.peptide =</span> <span class="fu">c</span>(<span class="st">"SIGNAL 1 20"</span>, <span class="st">""</span>))</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">remove_signal_peptide</span>(fasta, signal)</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">nchar</span>(fasta[[<span class="dv">1</span>]])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(fasta)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "zz|Y-FGCZCont00001|" "zz|Y-FGCZCont00002|"</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>signal <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">Entry =</span> <span class="fu">c</span>(<span class="st">"Y-FGCZCont00001"</span>, <span class="st">"Y-FGCZCont00002"</span>),</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">Signal.peptide =</span> <span class="fu">c</span>(<span class="st">"SIGNAL 1 20"</span>, <span class="st">""</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">remove_signal_peptide</span>(fasta, signal)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="fu">nchar</span>(fasta[[<span class="dv">1</span>]])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 148</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nchar</span>(res[[<span class="dv">1</span>]])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">nchar</span>(res[[<span class="dv">1</span>]])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 128</code></pre>
 </div>
