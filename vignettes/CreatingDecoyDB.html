@@ -83,7 +83,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-63b5708e65d6cd79cd7618c58d0c21e7.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-44f7b187718e43abfea0560aa82c1a71.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-ded4168630e1422961a6247c4ac5fe91.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -326,8 +326,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../man/read_peptide_fasta.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">read_peptide_fasta</span></a>
+  <a href="../man/read_fasta.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">read_fasta</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -427,25 +427,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 <p>Using the package prozor for creating standardized FASTA. The package can be used to:</p>
-<pre><code> * merge several FASTA files into a single FASTA file
- * add reverse sequences to the FASTA file.
- * add contaminants to the FASTA file</code></pre>
+<ul>
+<li>merge several FASTA files into a single FASTA file</li>
+<li>add reverse sequences to the FASTA file.</li>
+<li>add contaminants to the FASTA file</li>
+</ul>
 <section id="contaminants" class="level1">
 <h1>Contaminants</h1>
 <p>This package provides several sets of typical contaminant proteins and peptides, which can be loaded with <code>load_contaminants()</code>; <code>no_human = TRUE</code> leaves out the contaminants of human origin. At the <a href="https://fgcz.ch/">FGCZ</a> we always are adding contaminants to the database. To databases already containing human proteins, we add the contaminants without the human ones. The contaminants are easy to distinguish from other entries thanks to the <code>zz|FGCZCont</code> prefix.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(prozor)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">names</span>(<span class="fu">load_contaminants</span>(<span class="st">"fgcz2021"</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(prozor)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">names</span>(<span class="fu">load_contaminants</span>(<span class="st">"fgcz2021"</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "zz|fgczContaminants2021|" "zz|Y-FGCZCont00001|"     
 [3] "zz|Y-FGCZCont00002|"      "zz|Y-FGCZCont00003|"     
 [5] "zz|Y-FGCZCont00004|"      "zz|Y-FGCZCont00005|"     </code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(<span class="fu">load_contaminants</span>(<span class="st">"fgcz2021"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(<span class="fu">load_contaminants</span>(<span class="st">"fgcz2021"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 499</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(<span class="fu">load_contaminants</span>(<span class="st">"fgcz2021"</span>, <span class="at">no_human =</span> <span class="cn">TRUE</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(<span class="fu">load_contaminants</span>(<span class="st">"fgcz2021"</span>, <span class="at">no_human =</span> <span class="cn">TRUE</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 343</code></pre>
 </div>
@@ -458,44 +460,44 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Example : <code>AA|p1000_db1_example|20180119_Example https://github.com/prolfqua/prozor</code></p>
 <p>The package provides an example of such a folder with the FASTA files. <code>create_fgcz_fasta_db()</code> reads the FASTA files in it (<code>*.fasta</code>, <code>*.fa</code> or <code>*.faa</code>, optionally gzipped) and the first line of <code>annotation.txt</code>; here we do the same step by step.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>database_dir <span class="ot">&lt;-</span> <span class="fu">system.file</span>(<span class="st">"p1000_db1_example"</span>, <span class="at">package =</span> <span class="st">"prozor"</span>)</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>files <span class="ot">&lt;-</span> <span class="fu">list.files</span>(database_dir, <span class="at">pattern =</span> <span class="st">"</span><span class="sc">\\</span><span class="st">.(fasta|fa|faa)(</span><span class="sc">\\</span><span class="st">.gz)?$"</span>, <span class="at">full.names =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">basename</span>(files)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>database_dir <span class="ot">&lt;-</span> <span class="fu">system.file</span>(<span class="st">"p1000_db1_example"</span>, <span class="at">package =</span> <span class="st">"prozor"</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>files <span class="ot">&lt;-</span> <span class="fu">list.files</span>(database_dir, <span class="at">pattern =</span> <span class="st">"</span><span class="sc">\\</span><span class="st">.(fasta|fa|faa)(</span><span class="sc">\\</span><span class="st">.gz)?$"</span>, <span class="at">full.names =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">basename</span>(files)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "Annotation_allSeq.fasta.gz" "Annotation_canSeq.fasta.gz"</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>annotation <span class="ot">&lt;-</span> <span class="fu">readLines</span>(<span class="fu">file.path</span>(database_dir, <span class="st">"annotation.txt"</span>))[<span class="dv">1</span>]</span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>annotation</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>annotation <span class="ot">&lt;-</span> <span class="fu">readLines</span>(<span class="fu">file.path</span>(database_dir, <span class="st">"annotation.txt"</span>))[<span class="dv">1</span>]</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>annotation</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "AA|p2569_db1_mouse_phosPXS|20171029_UNIPROT http://www.uniprot.org/proteomes/UP000000589"</code></pre>
+<pre><code>[1] "AA|p1000_db1_example|20180118 Example: Homo sapiens UniProt entries (Swiss-Prot and TrEMBL, with isoforms) matched by the peptides of extdata/IDResults.txt.gz"</code></pre>
 </div>
 </div>
 <section id="create-non-decoy-database" class="level2">
 <h2 class="anchored" data-anchor-id="create-non-decoy-database">Create non decoy database</h2>
 <p><code>create_decoy_db()</code> puts a dummy entry, whose header is the annotation, first, followed by the sequences of the FASTA files and the contaminants. Of entries with the same name, only the first is kept.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>db <span class="ot">&lt;-</span> <span class="fu">create_decoy_db</span>(files, <span class="at">contaminants =</span> <span class="fu">load_contaminants</span>(<span class="st">"fgcz2021"</span>), <span class="at">annot =</span> annotation, <span class="at">rev_lab =</span> <span class="cn">NULL</span>)</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(db)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>db <span class="ot">&lt;-</span> <span class="fu">create_decoy_db</span>(files, <span class="at">contaminants =</span> <span class="fu">load_contaminants</span>(<span class="st">"fgcz2021"</span>), <span class="at">rev_lab =</span> <span class="cn">NULL</span>, <span class="at">header =</span> annotation)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(db)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 1572</code></pre>
 </div>
 </div>
 <p>Based on the directory name we build the name of the FASTA file adding the current date.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>db_file <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="fu">tempdir</span>(), <span class="fu">paste0</span>(<span class="fu">basename</span>(database_dir), <span class="st">"_"</span>, <span class="fu">format</span>(<span class="fu">Sys.time</span>(), <span class="st">"%Y%m%d"</span>), <span class="st">".fasta"</span>))</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">basename</span>(db_file)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>db_file <span class="ot">&lt;-</span> <span class="fu">file.path</span>(<span class="fu">tempdir</span>(), <span class="fu">paste0</span>(<span class="fu">basename</span>(database_dir), <span class="st">"_"</span>, <span class="fu">format</span>(<span class="fu">Sys.time</span>(), <span class="st">"%Y%m%d"</span>), <span class="st">".fasta"</span>))</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">basename</span>(db_file)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "p1000_db1_example_20261125.fasta"</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write_fasta</span>(db, <span class="at">file =</span> db_file)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write_fasta</span>(db, <span class="at">file =</span> db_file)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="create-decoy-database" class="level2">
 <h2 class="anchored" data-anchor-id="create-decoy-database">Create decoy database</h2>
 <p>To add decoys, reversed sequences, specify the <code>rev_lab</code> parameter of <code>create_decoy_db()</code>. Apart from the dummy entry, the resulting database is twice as long as the non-decoy database. The names stay unique.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>db_decoy <span class="ot">&lt;-</span> <span class="fu">create_decoy_db</span>(files, <span class="at">contaminants =</span> <span class="fu">load_contaminants</span>(<span class="st">"fgcz2021"</span>), <span class="at">annot =</span> annotation, <span class="at">rev_lab =</span> <span class="st">"REV_"</span>)</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>db_decoy[[<span class="fu">length</span>(db_decoy)]]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>db_decoy <span class="ot">&lt;-</span> <span class="fu">create_decoy_db</span>(files, <span class="at">contaminants =</span> <span class="fu">load_contaminants</span>(<span class="st">"fgcz2021"</span>), <span class="at">rev_lab =</span> <span class="st">"REV_"</span>, <span class="at">header =</span> annotation)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>db_decoy[[<span class="fu">length</span>(db_decoy)]]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "ADAFGLESLKQHAEAYDAFFADEDAAYKDVLPRFVPDSLLAKDSPLQLLGEKEGSLLETFYSNDFILPNSTWPGEFGSREKHAAGITHGGSLAVIDQDTLGMAKGFVDRLHDSGKTADPLRGEPPPEPKDERGPHFPVEPGGTVEVAVVGALQYFDAYSLIPFEAKLPELLRVAIDLGNNASHALEAPHKITGFPGGTKTGKDFTGASHWALRLMLPACRKEAIFGRLKKKAKEVAKQYDASVTPYSKGM"
 attr(,"name")
@@ -505,58 +507,58 @@ attr(,"Annot")
 attr(,"class")
 [1] "SeqFastaAA"</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(db_decoy)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(db_decoy)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 3143</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anyDuplicated</span>(<span class="fu">names</span>(db_decoy))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anyDuplicated</span>(<span class="fu">names</span>(db_decoy))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0</code></pre>
 </div>
 </div>
 <p>The name of a database with decoys ends in <code>_d</code>.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>db_decoy_file <span class="ot">&lt;-</span> <span class="fu">file.path</span>(</span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tempdir</span>(),</span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(<span class="fu">basename</span>(database_dir), <span class="st">"_d_"</span>, <span class="fu">format</span>(<span class="fu">Sys.time</span>(), <span class="st">"%Y%m%d"</span>), <span class="st">".fasta"</span>)</span>
-<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="fu">basename</span>(db_decoy_file)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>db_decoy_file <span class="ot">&lt;-</span> <span class="fu">file.path</span>(</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tempdir</span>(),</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">paste0</span>(<span class="fu">basename</span>(database_dir), <span class="st">"_d_"</span>, <span class="fu">format</span>(<span class="fu">Sys.time</span>(), <span class="st">"%Y%m%d"</span>), <span class="st">".fasta"</span>)</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="fu">basename</span>(db_decoy_file)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "p1000_db1_example_d_20261125.fasta"</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write_fasta</span>(db_decoy, <span class="at">file =</span> db_decoy_file)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">write_fasta</span>(db_decoy, <span class="at">file =</span> db_decoy_file)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="all-steps-in-one-call" class="level2">
 <h2 class="anchored" data-anchor-id="all-steps-in-one-call">All steps in one call</h2>
 <p><code>create_fgcz_fasta_db()</code> runs these steps, writes the file to <code>output_dir</code> and returns a summary.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">create_fgcz_fasta_db</span>(</span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  database_dir,</span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">contaminants =</span> <span class="fu">load_contaminants</span>(<span class="st">"fgcz2021"</span>),</span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">output_dir =</span> <span class="fu">tempdir</span>(),</span>
-<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">make_summary =</span> <span class="cn">FALSE</span></span>
-<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(res<span class="sc">$</span>summary)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">create_fgcz_fasta_db</span>(</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  database_dir,</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">contaminants =</span> <span class="fu">load_contaminants</span>(<span class="st">"fgcz2021"</span>),</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">output_dir =</span> <span class="fu">tempdir</span>(),</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">make_summary =</span> <span class="cn">FALSE</span></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(res<span class="sc">$</span>summary)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Database created with prozor 0.4.0
+<pre><code>Database created with prozor 0.5.0
    database_dir : /home/runner/work/_temp/Library/prozor/p1000_db1_example
    contaminants : 499 sequences
         rev_lab : REV_
-     output_dir : /tmp/RtmpwHonaU
+     output_dir : /tmp/RtmpLto8TV
      FASTA name : p1000_db1_example_d
 FASTA file name : p1000_db1_example_d_20261125.fasta
-     annotation : AA|p2569_db1_mouse_phosPXS|20171029_UNIPROT http://www.uniprot.org/proteomes/UP000000589
-   nr sequences : 3143</code></pre>
+     annotation : AA|p1000_db1_example|20180118 Example: Homo sapiens UniProt entries (Swiss-Prot and TrEMBL, with isoforms) matched by the peptides of extdata/IDResults.txt.gz
+    n_sequences : 3143</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">unlink</span>(<span class="fu">c</span>(db_file, db_decoy_file, res<span class="sc">$</span>file_path))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">unlink</span>(<span class="fu">c</span>(db_file, db_decoy_file, res<span class="sc">$</span>file_path))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 </section>
 <section id="session-info" class="level1">
 <h1>Session Info</h1>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>R version 4.6.2 (2026-10-29)
 Platform: x86_64-pc-linux-gnu
@@ -579,7 +581,7 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] prozor_0.4.0
+[1] prozor_0.5.0
 
 loaded via a namespace (and not attached):
  [1] vctrs_0.7.3        cli_3.6.6          knitr_1.52         rlang_1.3.0       

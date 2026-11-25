@@ -81,7 +81,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-63b5708e65d6cd79cd7618c58d0c21e7.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-44f7b187718e43abfea0560aa82c1a71.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-ded4168630e1422961a6247c4ac5fe91.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -324,8 +324,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../man/read_peptide_fasta.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">read_peptide_fasta</span></a>
+  <a href="../man/read_fasta.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">read_fasta</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -404,7 +404,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="usage" class="level3">
 <h3 class="anchored" data-anchor-id="usage">Usage</h3>
-<pre><code class="language-R">readjust_windows(wind, ms1data, bin_width = 0.1, maxbin = 15)
+<pre><code class="language-R">readjust_windows(windows, masses, bin_width = 0.1, min_count = 15)
 </code></pre>
 </section>
 <section id="arguments" class="level3">
@@ -412,7 +412,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <table role="presentation">
 <tbody><tr>
 <td style="white-space: collapse; font-family: monospace; vertical-align: top">
-<code id="wind">wind</code>
+<code id="windows">windows</code>
 </td>
 <td>
 A data frame or list with the columns <code>from</code> and <code>to</code>, e.g.&nbsp;from <code>Cdsw$as_table()</code>.
@@ -420,10 +420,10 @@ A data frame or list with the columns <code>from</code> and <code>to</code>, e.g
 </tr>
 <tr>
 <td style="white-space: collapse; font-family: monospace; vertical-align: top">
-<code id="ms1data">ms1data</code>
+<code id="masses">masses</code>
 </td>
 <td>
-Precursor masses (m/z).
+Precursor masses (m/z): a numeric vector of finite values.
 </td>
 </tr>
 <tr>
@@ -436,21 +436,21 @@ Width of the bins (m/z) into which the masses are binned.
 </tr>
 <tr>
 <td style="white-space: collapse; font-family: monospace; vertical-align: top">
-<code id="maxbin">maxbin</code>
+<code id="min_count">min_count</code>
 </td>
 <td>
-Bins with fewer than <code>maxbin</code> precursors count as empty.
+Bins with fewer than <code>min_count</code> precursors count as empty.
 </td>
 </tr>
 </tbody></table>
 </section>
 <section id="value" class="level3">
 <h3 class="anchored" data-anchor-id="value">Value</h3>
-<p>A data frame with one row per window and the columns <code>from</code>, <code>to</code>, <code>mid</code>, <code>width</code> and <code>counts</code> (precursors with <code style="white-space: pre;">from &lt; m/z &lt;= to</code>).</p>
+<p>A data frame with one row per window and the columns <code>from</code>, <code>to</code>, <code>mid</code>, <code>width</code> and <code>n_precursors</code> (precursors with <code style="white-space: pre;">from &lt; m/z &lt;= to</code>).</p>
 </section>
 <section id="see-also" class="level3">
 <h3 class="anchored" data-anchor-id="see-also">See Also</h3>
-<p>Other DIA windows: <code>Cdsw</code>, <code>plot_windows()</code></p>
+<p>Other DIA windows: <code>Cdsw</code>, <code>masses</code>, <code>plot_windows()</code></p>
 </section>
 <section id="examples" class="level3">
 <h3 class="anchored" data-anchor-id="examples">Examples</h3>
@@ -458,17 +458,17 @@ Bins with fewer than <code>maxbin</code> precursors count as empty.
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"prozor"</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(masses)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>cdsw <span class="ot">&lt;-</span> Cdsw<span class="sc">$</span><span class="fu">new</span>(masses, <span class="at">maxwindow =</span> <span class="dv">100</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>cdsw <span class="ot">&lt;-</span> Cdsw<span class="sc">$</span><span class="fu">new</span>(masses, <span class="at">max_window =</span> <span class="dv">100</span>)</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>windows <span class="ot">&lt;-</span> cdsw<span class="sc">$</span><span class="fu">as_table</span>()</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">readjust_windows</span>(windows, masses, <span class="at">maxbin =</span> <span class="dv">10</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">readjust_windows</span>(windows, masses, <span class="at">min_count =</span> <span class="dv">10</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>    from     to    mid width counts
-1 349.63 381.95 365.79 32.32   6177
-2 380.45 408.35 394.40 27.90   6431
-3 407.05 432.35 419.70 25.30   6695
-4 431.15 454.65 442.90 23.50   6613
-5 453.45 476.05 464.75 22.60   6658
-6 474.85 496.85 485.85 22.00   6842</code></pre>
+<pre><code>    from     to    mid width n_precursors
+1 349.63 381.95 365.79 32.32         6177
+2 380.45 408.35 394.40 27.90         6431
+3 407.05 432.35 419.70 25.30         6695
+4 431.15 454.65 442.90 23.50         6613
+5 453.45 476.05 464.75 22.60         6658
+6 474.85 496.85 485.85 22.00         6842</code></pre>
 </div>
 </div>
 

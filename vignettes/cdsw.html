@@ -83,7 +83,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-63b5708e65d6cd79cd7618c58d0c21e7.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-44f7b187718e43abfea0560aa82c1a71.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-ded4168630e1422961a6247c4ac5fe91.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -326,8 +326,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../man/read_peptide_fasta.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">read_peptide_fasta</span></a>
+  <a href="../man/read_fasta.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">read_fasta</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -428,23 +428,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <section id="introduction" class="level1">
 <h1>Introduction</h1>
-<p>Function optimizes Extraction windows for DIA/SWATH so we have the same number of precursor per window. This optimization is based on spectral library data or non redundant .blib files (Bibliospec).</p>
-<p><code>Cdsw$new()</code> computes the window boundaries (breaks) once, with one of three methods: <code>"constant"</code>, <code>"quantile"</code> or <code>"sampling"</code> (the default). The object cannot be changed afterwards, so we create one object per method and compare them at the end.</p>
+<p>This vignette computes precursor isolation windows for DIA (SWATH) that each hold about the same number of precursors. The input is a vector of precursor m/z values (MS1 masses), e.g.&nbsp;from a spectral library or a non-redundant BiblioSpec <code>.blib</code> file.</p>
+<p><code>Cdsw$new()</code> computes the window boundaries (breaks) once, with one of three methods: <code>"constant"</code>, <code>"quantile"</code> or <code>"mixture"</code> (the default). The object cannot be changed afterwards, so we create one object per method and compare them at the end.</p>
 </section>
 <section id="prerequisites" class="level1">
 <h1>Prerequisites</h1>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(prozor)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
 </section>
 <section id="constant-width-method" class="level1">
 <h1>Constant width method</h1>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"masses"</span>)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>cdsw_const <span class="ot">&lt;-</span> Cdsw<span class="sc">$</span><span class="fu">new</span>(masses, <span class="at">nbins =</span> <span class="dv">25</span>, <span class="at">method =</span> <span class="st">"constant"</span>)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>cdsw_const</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">"masses"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>cdsw_const <span class="ot">&lt;-</span> Cdsw<span class="sc">$</span><span class="fu">new</span>(masses, <span class="at">n_bins =</span> <span class="dv">25</span>, <span class="at">method =</span> <span class="st">"constant"</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>cdsw_const</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;Cdsw&gt; 146,009 masses in 25 windows, method "constant"
 window widths 33.99 to 34.00 m/z</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>cdsw_const<span class="sc">$</span><span class="fu">plot</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>cdsw_const<span class="sc">$</span><span class="fu">plot</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -454,7 +458,7 @@ window widths 33.99 to 34.00 m/z</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(cdsw_const<span class="sc">$</span><span class="fu">as_table</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(cdsw_const<span class="sc">$</span><span class="fu">as_table</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <thead>
@@ -463,7 +467,7 @@ window widths 33.99 to 34.00 m/z</code></pre>
 <th style="text-align: right;">to</th>
 <th style="text-align: right;">mid</th>
 <th style="text-align: right;">width</th>
-<th style="text-align: right;">counts</th>
+<th style="text-align: right;">n_precursors</th>
 </tr>
 </thead>
 <tbody>
@@ -647,22 +651,22 @@ window widths 33.99 to 34.00 m/z</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>const_error <span class="ot">&lt;-</span> cdsw_const<span class="sc">$</span><span class="fu">error</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>const_error <span class="ot">&lt;-</span> cdsw_const<span class="sc">$</span><span class="fu">error</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="classical-method-based-on-quantile" class="level1">
 <h1>Classical Method based on <code>quantile</code></h1>
 <p>Same number of MS1 precursors in each window</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>cdsw_quantile <span class="ot">&lt;-</span> Cdsw<span class="sc">$</span><span class="fu">new</span>(masses, <span class="at">nbins =</span> <span class="dv">25</span>, <span class="at">method =</span> <span class="st">"quantile"</span>)</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>cdsw_quantile</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>cdsw_quantile <span class="ot">&lt;-</span> Cdsw<span class="sc">$</span><span class="fu">new</span>(masses, <span class="at">n_bins =</span> <span class="dv">25</span>, <span class="at">method =</span> <span class="st">"quantile"</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>cdsw_quantile</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;Cdsw&gt; 146,009 masses in 25 windows, method "quantile"
 window widths 18.69 to 151.00 m/z</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>cdsw_quantile<span class="sc">$</span><span class="fu">plot</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>cdsw_quantile<span class="sc">$</span><span class="fu">plot</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -672,7 +676,7 @@ window widths 18.69 to 151.00 m/z</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(cdsw_quantile<span class="sc">$</span><span class="fu">as_table</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(cdsw_quantile<span class="sc">$</span><span class="fu">as_table</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <thead>
@@ -681,7 +685,7 @@ window widths 18.69 to 151.00 m/z</code></pre>
 <th style="text-align: right;">to</th>
 <th style="text-align: right;">mid</th>
 <th style="text-align: right;">width</th>
-<th style="text-align: right;">counts</th>
+<th style="text-align: right;">n_precursors</th>
 </tr>
 </thead>
 <tbody>
@@ -865,15 +869,15 @@ window widths 18.69 to 151.00 m/z</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>quantile_error <span class="ot">&lt;-</span> cdsw_quantile<span class="sc">$</span><span class="fu">error</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>quantile_error <span class="ot">&lt;-</span> cdsw_quantile<span class="sc">$</span><span class="fu">error</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="adjust-windows" class="level1">
 <h1>Adjust windows</h1>
 <p>Using this method the window start and end is shifted to a mass range with as few MS1 peaks as possible.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>optimized <span class="ot">&lt;-</span> cdsw_quantile<span class="sc">$</span><span class="fu">optimize_windows</span>(<span class="at">maxbin =</span> <span class="dv">10</span>)</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(optimized)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>optimized <span class="ot">&lt;-</span> cdsw_quantile<span class="sc">$</span><span class="fu">optimize_windows</span>(<span class="at">min_count =</span> <span class="dv">10</span>)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(optimized)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <thead>
@@ -882,189 +886,189 @@ window widths 18.69 to 151.00 m/z</code></pre>
 <th style="text-align: right;">to</th>
 <th style="text-align: right;">mid</th>
 <th style="text-align: right;">width</th>
-<th style="text-align: right;">counts</th>
+<th style="text-align: right;">n_precursors</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: right;">350.05</td>
-<td style="text-align: right;">380.95</td>
-<td style="text-align: right;">365.50</td>
-<td style="text-align: right;">30.9</td>
-<td style="text-align: right;">5952</td>
+<td style="text-align: right;">349.63</td>
+<td style="text-align: right;">381.05</td>
+<td style="text-align: right;">365.340</td>
+<td style="text-align: right;">31.42</td>
+<td style="text-align: right;">5956</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">380.45</td>
-<td style="text-align: right;">406.35</td>
-<td style="text-align: right;">393.40</td>
-<td style="text-align: right;">25.9</td>
-<td style="text-align: right;">5932</td>
+<td style="text-align: right;">379.95</td>
+<td style="text-align: right;">407.05</td>
+<td style="text-align: right;">393.500</td>
+<td style="text-align: right;">27.10</td>
+<td style="text-align: right;">6211</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">406.05</td>
-<td style="text-align: right;">429.05</td>
-<td style="text-align: right;">417.55</td>
-<td style="text-align: right;">23.0</td>
-<td style="text-align: right;">5948</td>
+<td style="text-align: right;">405.45</td>
+<td style="text-align: right;">429.35</td>
+<td style="text-align: right;">417.400</td>
+<td style="text-align: right;">23.90</td>
+<td style="text-align: right;">6174</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">428.65</td>
-<td style="text-align: right;">449.65</td>
-<td style="text-align: right;">439.15</td>
-<td style="text-align: right;">21.0</td>
-<td style="text-align: right;">5891</td>
+<td style="text-align: right;">428.15</td>
+<td style="text-align: right;">450.15</td>
+<td style="text-align: right;">439.150</td>
+<td style="text-align: right;">22.00</td>
+<td style="text-align: right;">6143</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">449.45</td>
-<td style="text-align: right;">469.65</td>
-<td style="text-align: right;">459.55</td>
-<td style="text-align: right;">20.2</td>
-<td style="text-align: right;">5872</td>
+<td style="text-align: right;">448.65</td>
+<td style="text-align: right;">470.15</td>
+<td style="text-align: right;">459.400</td>
+<td style="text-align: right;">21.50</td>
+<td style="text-align: right;">6221</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">469.45</td>
-<td style="text-align: right;">488.35</td>
-<td style="text-align: right;">478.90</td>
-<td style="text-align: right;">18.9</td>
-<td style="text-align: right;">5860</td>
+<td style="text-align: right;">469.05</td>
+<td style="text-align: right;">488.85</td>
+<td style="text-align: right;">478.950</td>
+<td style="text-align: right;">19.80</td>
+<td style="text-align: right;">6110</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">488.15</td>
-<td style="text-align: right;">508.05</td>
-<td style="text-align: right;">498.10</td>
-<td style="text-align: right;">19.9</td>
-<td style="text-align: right;">6137</td>
+<td style="text-align: right;">487.45</td>
+<td style="text-align: right;">508.15</td>
+<td style="text-align: right;">497.800</td>
+<td style="text-align: right;">20.70</td>
+<td style="text-align: right;">6329</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">507.45</td>
-<td style="text-align: right;">526.45</td>
-<td style="text-align: right;">516.95</td>
-<td style="text-align: right;">19.0</td>
-<td style="text-align: right;">5892</td>
+<td style="text-align: right;">507.05</td>
+<td style="text-align: right;">527.05</td>
+<td style="text-align: right;">517.050</td>
+<td style="text-align: right;">20.00</td>
+<td style="text-align: right;">6184</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">526.15</td>
-<td style="text-align: right;">545.45</td>
-<td style="text-align: right;">535.80</td>
-<td style="text-align: right;">19.3</td>
-<td style="text-align: right;">6022</td>
+<td style="text-align: right;">525.45</td>
+<td style="text-align: right;">546.05</td>
+<td style="text-align: right;">535.750</td>
+<td style="text-align: right;">20.60</td>
+<td style="text-align: right;">6391</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">545.15</td>
-<td style="text-align: right;">565.05</td>
-<td style="text-align: right;">555.10</td>
-<td style="text-align: right;">19.9</td>
-<td style="text-align: right;">5992</td>
+<td style="text-align: right;">544.45</td>
+<td style="text-align: right;">565.45</td>
+<td style="text-align: right;">554.950</td>
+<td style="text-align: right;">21.00</td>
+<td style="text-align: right;">6322</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">564.55</td>
-<td style="text-align: right;">584.45</td>
-<td style="text-align: right;">574.50</td>
-<td style="text-align: right;">19.9</td>
-<td style="text-align: right;">5976</td>
+<td style="text-align: right;">564.15</td>
+<td style="text-align: right;">585.05</td>
+<td style="text-align: right;">574.600</td>
+<td style="text-align: right;">20.90</td>
+<td style="text-align: right;">6267</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">584.15</td>
-<td style="text-align: right;">605.05</td>
-<td style="text-align: right;">594.60</td>
-<td style="text-align: right;">20.9</td>
-<td style="text-align: right;">6035</td>
+<td style="text-align: right;">583.55</td>
+<td style="text-align: right;">605.15</td>
+<td style="text-align: right;">594.350</td>
+<td style="text-align: right;">21.60</td>
+<td style="text-align: right;">6199</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">604.55</td>
-<td style="text-align: right;">626.05</td>
-<td style="text-align: right;">615.30</td>
-<td style="text-align: right;">21.5</td>
-<td style="text-align: right;">5893</td>
+<td style="text-align: right;">604.05</td>
+<td style="text-align: right;">626.45</td>
+<td style="text-align: right;">615.250</td>
+<td style="text-align: right;">22.40</td>
+<td style="text-align: right;">6144</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">625.55</td>
-<td style="text-align: right;">648.15</td>
-<td style="text-align: right;">636.85</td>
-<td style="text-align: right;">22.6</td>
-<td style="text-align: right;">5987</td>
+<td style="text-align: right;">625.15</td>
+<td style="text-align: right;">648.45</td>
+<td style="text-align: right;">636.800</td>
+<td style="text-align: right;">23.30</td>
+<td style="text-align: right;">6217</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">647.55</td>
-<td style="text-align: right;">672.15</td>
-<td style="text-align: right;">659.85</td>
-<td style="text-align: right;">24.6</td>
-<td style="text-align: right;">6023</td>
+<td style="text-align: right;">647.15</td>
+<td style="text-align: right;">672.45</td>
+<td style="text-align: right;">659.800</td>
+<td style="text-align: right;">25.30</td>
+<td style="text-align: right;">6215</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">671.75</td>
-<td style="text-align: right;">696.15</td>
-<td style="text-align: right;">683.95</td>
-<td style="text-align: right;">24.4</td>
-<td style="text-align: right;">5890</td>
+<td style="text-align: right;">671.25</td>
+<td style="text-align: right;">696.55</td>
+<td style="text-align: right;">683.900</td>
+<td style="text-align: right;">25.30</td>
+<td style="text-align: right;">6121</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">695.55</td>
-<td style="text-align: right;">722.55</td>
-<td style="text-align: right;">709.05</td>
-<td style="text-align: right;">27.0</td>
-<td style="text-align: right;">5981</td>
+<td style="text-align: right;">695.45</td>
+<td style="text-align: right;">723.15</td>
+<td style="text-align: right;">709.300</td>
+<td style="text-align: right;">27.70</td>
+<td style="text-align: right;">6105</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">722.25</td>
-<td style="text-align: right;">751.15</td>
-<td style="text-align: right;">736.70</td>
-<td style="text-align: right;">28.9</td>
-<td style="text-align: right;">5932</td>
+<td style="text-align: right;">721.55</td>
+<td style="text-align: right;">751.55</td>
+<td style="text-align: right;">736.550</td>
+<td style="text-align: right;">30.00</td>
+<td style="text-align: right;">6175</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">750.65</td>
-<td style="text-align: right;">782.15</td>
-<td style="text-align: right;">766.40</td>
-<td style="text-align: right;">31.5</td>
-<td style="text-align: right;">5927</td>
+<td style="text-align: right;">750.25</td>
+<td style="text-align: right;">782.55</td>
+<td style="text-align: right;">766.400</td>
+<td style="text-align: right;">32.30</td>
+<td style="text-align: right;">6076</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">781.65</td>
-<td style="text-align: right;">817.15</td>
-<td style="text-align: right;">799.40</td>
-<td style="text-align: right;">35.5</td>
-<td style="text-align: right;">5944</td>
+<td style="text-align: right;">781.25</td>
+<td style="text-align: right;">817.55</td>
+<td style="text-align: right;">799.400</td>
+<td style="text-align: right;">36.30</td>
+<td style="text-align: right;">6086</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">816.65</td>
-<td style="text-align: right;">857.55</td>
-<td style="text-align: right;">837.10</td>
-<td style="text-align: right;">40.9</td>
-<td style="text-align: right;">5901</td>
+<td style="text-align: right;">816.25</td>
+<td style="text-align: right;">858.05</td>
+<td style="text-align: right;">837.150</td>
+<td style="text-align: right;">41.80</td>
+<td style="text-align: right;">6062</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">857.35</td>
-<td style="text-align: right;">905.25</td>
-<td style="text-align: right;">881.30</td>
-<td style="text-align: right;">47.9</td>
-<td style="text-align: right;">5904</td>
+<td style="text-align: right;">856.85</td>
+<td style="text-align: right;">905.65</td>
+<td style="text-align: right;">881.250</td>
+<td style="text-align: right;">48.80</td>
+<td style="text-align: right;">6007</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">905.05</td>
-<td style="text-align: right;">964.65</td>
-<td style="text-align: right;">934.85</td>
-<td style="text-align: right;">59.6</td>
-<td style="text-align: right;">5881</td>
+<td style="text-align: right;">904.55</td>
+<td style="text-align: right;">965.05</td>
+<td style="text-align: right;">934.800</td>
+<td style="text-align: right;">60.50</td>
+<td style="text-align: right;">5967</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">964.35</td>
-<td style="text-align: right;">1049.15</td>
-<td style="text-align: right;">1006.75</td>
-<td style="text-align: right;">84.8</td>
-<td style="text-align: right;">5864</td>
+<td style="text-align: right;">963.85</td>
+<td style="text-align: right;">1049.65</td>
+<td style="text-align: right;">1006.750</td>
+<td style="text-align: right;">85.80</td>
+<td style="text-align: right;">5931</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">1048.95</td>
-<td style="text-align: right;">1200.05</td>
-<td style="text-align: right;">1124.50</td>
-<td style="text-align: right;">151.1</td>
-<td style="text-align: right;">5843</td>
+<td style="text-align: right;">1048.45</td>
+<td style="text-align: right;">1200.48</td>
+<td style="text-align: right;">1124.465</td>
+<td style="text-align: right;">152.03</td>
+<td style="text-align: right;">5867</td>
 </tr>
 </tbody>
 </table>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_windows</span>(optimized, masses)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_windows</span>(optimized, masses)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -1077,20 +1081,20 @@ window widths 18.69 to 151.00 m/z</code></pre>
 <section id="dynamic-swath-windows-with-constraints." class="level1">
 <h1>Dynamic Swath Windows with Constraints.</h1>
 <ul>
-<li>Maximal window width (<code>maxwindow</code>). Windows should not be too large because of optimal collision energy (personal communication by Bernd R.).</li>
-<li>Minimal window width (<code>minwindow</code>).</li>
-<li>Number of windows (<code>nbins</code>).</li>
+<li>Maximal window width (<code>max_window</code>). Windows should not be too large because of optimal collision energy (personal communication by Bernd R.).</li>
+<li>Minimal window width (<code>min_window</code>).</li>
+<li>Number of windows (<code>n_bins</code>).</li>
 <li>Window boundaries can then be moved to regions with few precursors (<code>optimize_windows()</code>).</li>
 </ul>
-<p><code>maxwindow</code>, <code>minwindow</code> and <code>nbins</code> are arguments of <code>Cdsw$new()</code>. <code>method = "sampling"</code> mixes the masses with uniformly spread data and takes the quantile breaks of the mixture, with the smallest share of uniform data for which all windows lie within <code>minwindow</code> and <code>maxwindow</code>. <code>plot_breaks()</code> compares the resulting breaks with the constant and quantile breaks.</p>
+<p><code>max_window</code>, <code>min_window</code> and <code>n_bins</code> are arguments of <code>Cdsw$new()</code>. <code>method = "mixture"</code> mixes the masses with uniformly spread data and takes the quantile breaks of the mixture, with the smallest share of uniform data for which all windows lie within <code>min_window</code> and <code>max_window</code>. <code>plot_breaks()</code> compares the resulting breaks with the constant and quantile breaks.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>cdsw_mixed <span class="ot">&lt;-</span> Cdsw<span class="sc">$</span><span class="fu">new</span>(masses, <span class="at">nbins =</span> <span class="dv">25</span>, <span class="at">method =</span> <span class="st">"sampling"</span>, <span class="at">maxwindow =</span> <span class="dv">100</span>)</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>cdsw_mixed</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>cdsw_mixed <span class="ot">&lt;-</span> Cdsw<span class="sc">$</span><span class="fu">new</span>(masses, <span class="at">n_bins =</span> <span class="dv">25</span>, <span class="at">method =</span> <span class="st">"mixture"</span>, <span class="at">max_window =</span> <span class="dv">100</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>cdsw_mixed</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>&lt;Cdsw&gt; 146,009 masses in 25 windows, method "sampling"
+<pre><code>&lt;Cdsw&gt; 146,009 masses in 25 windows, method "mixture"
 window widths 20.69 to 100.01 m/z</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>cdsw_mixed<span class="sc">$</span><span class="fu">plot_breaks</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>cdsw_mixed<span class="sc">$</span><span class="fu">plot_breaks</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -1100,7 +1104,7 @@ window widths 20.69 to 100.01 m/z</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>cdsw_mixed<span class="sc">$</span><span class="fu">plot</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>cdsw_mixed<span class="sc">$</span><span class="fu">plot</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -1110,7 +1114,7 @@ window widths 20.69 to 100.01 m/z</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(cdsw_mixed<span class="sc">$</span><span class="fu">as_table</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(cdsw_mixed<span class="sc">$</span><span class="fu">as_table</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <thead>
@@ -1119,7 +1123,7 @@ window widths 20.69 to 100.01 m/z</code></pre>
 <th style="text-align: right;">to</th>
 <th style="text-align: right;">mid</th>
 <th style="text-align: right;">width</th>
-<th style="text-align: right;">counts</th>
+<th style="text-align: right;">n_precursors</th>
 </tr>
 </thead>
 <tbody>
@@ -1303,8 +1307,8 @@ window widths 20.69 to 100.01 m/z</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>optimized <span class="ot">&lt;-</span> cdsw_mixed<span class="sc">$</span><span class="fu">optimize_windows</span>(<span class="at">maxbin =</span> <span class="dv">10</span>)</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(optimized)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>optimized <span class="ot">&lt;-</span> cdsw_mixed<span class="sc">$</span><span class="fu">optimize_windows</span>(<span class="at">min_count =</span> <span class="dv">10</span>)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(optimized)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <thead>
@@ -1313,189 +1317,189 @@ window widths 20.69 to 100.01 m/z</code></pre>
 <th style="text-align: right;">to</th>
 <th style="text-align: right;">mid</th>
 <th style="text-align: right;">width</th>
-<th style="text-align: right;">counts</th>
+<th style="text-align: right;">n_precursors</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: right;">350.05</td>
-<td style="text-align: right;">381.35</td>
-<td style="text-align: right;">365.70</td>
-<td style="text-align: right;">31.3</td>
-<td style="text-align: right;">6053</td>
+<td style="text-align: right;">349.63</td>
+<td style="text-align: right;">381.95</td>
+<td style="text-align: right;">365.790</td>
+<td style="text-align: right;">32.32</td>
+<td style="text-align: right;">6177</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">381.05</td>
-<td style="text-align: right;">408.05</td>
-<td style="text-align: right;">394.55</td>
-<td style="text-align: right;">27.0</td>
-<td style="text-align: right;">6191</td>
+<td style="text-align: right;">380.45</td>
+<td style="text-align: right;">408.35</td>
+<td style="text-align: right;">394.400</td>
+<td style="text-align: right;">27.90</td>
+<td style="text-align: right;">6431</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">407.65</td>
-<td style="text-align: right;">432.05</td>
-<td style="text-align: right;">419.85</td>
-<td style="text-align: right;">24.4</td>
-<td style="text-align: right;">6448</td>
+<td style="text-align: right;">407.05</td>
+<td style="text-align: right;">432.35</td>
+<td style="text-align: right;">419.700</td>
+<td style="text-align: right;">25.30</td>
+<td style="text-align: right;">6695</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">431.65</td>
-<td style="text-align: right;">454.15</td>
-<td style="text-align: right;">442.90</td>
-<td style="text-align: right;">22.5</td>
-<td style="text-align: right;">6334</td>
+<td style="text-align: right;">431.15</td>
+<td style="text-align: right;">454.65</td>
+<td style="text-align: right;">442.900</td>
+<td style="text-align: right;">23.50</td>
+<td style="text-align: right;">6613</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">454.05</td>
-<td style="text-align: right;">475.65</td>
-<td style="text-align: right;">464.85</td>
-<td style="text-align: right;">21.6</td>
-<td style="text-align: right;">6387</td>
+<td style="text-align: right;">453.45</td>
+<td style="text-align: right;">476.05</td>
+<td style="text-align: right;">464.750</td>
+<td style="text-align: right;">22.60</td>
+<td style="text-align: right;">6658</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">475.45</td>
-<td style="text-align: right;">496.35</td>
-<td style="text-align: right;">485.90</td>
-<td style="text-align: right;">20.9</td>
-<td style="text-align: right;">6504</td>
+<td style="text-align: right;">474.85</td>
+<td style="text-align: right;">496.85</td>
+<td style="text-align: right;">485.850</td>
+<td style="text-align: right;">22.00</td>
+<td style="text-align: right;">6842</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">496.15</td>
-<td style="text-align: right;">517.05</td>
-<td style="text-align: right;">506.60</td>
-<td style="text-align: right;">20.9</td>
-<td style="text-align: right;">6442</td>
+<td style="text-align: right;">495.45</td>
+<td style="text-align: right;">517.45</td>
+<td style="text-align: right;">506.450</td>
+<td style="text-align: right;">22.00</td>
+<td style="text-align: right;">6774</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">516.45</td>
-<td style="text-align: right;">538.05</td>
-<td style="text-align: right;">527.25</td>
-<td style="text-align: right;">21.6</td>
-<td style="text-align: right;">6668</td>
+<td style="text-align: right;">516.15</td>
+<td style="text-align: right;">538.45</td>
+<td style="text-align: right;">527.300</td>
+<td style="text-align: right;">22.30</td>
+<td style="text-align: right;">6981</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">537.45</td>
-<td style="text-align: right;">559.05</td>
-<td style="text-align: right;">548.25</td>
-<td style="text-align: right;">21.6</td>
-<td style="text-align: right;">6542</td>
+<td style="text-align: right;">537.15</td>
+<td style="text-align: right;">559.45</td>
+<td style="text-align: right;">548.300</td>
+<td style="text-align: right;">22.30</td>
+<td style="text-align: right;">6837</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">558.55</td>
-<td style="text-align: right;">580.05</td>
-<td style="text-align: right;">569.30</td>
-<td style="text-align: right;">21.5</td>
-<td style="text-align: right;">6458</td>
+<td style="text-align: right;">558.15</td>
+<td style="text-align: right;">580.45</td>
+<td style="text-align: right;">569.300</td>
+<td style="text-align: right;">22.30</td>
+<td style="text-align: right;">6741</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">579.55</td>
-<td style="text-align: right;">602.15</td>
-<td style="text-align: right;">590.85</td>
-<td style="text-align: right;">22.6</td>
-<td style="text-align: right;">6581</td>
+<td style="text-align: right;">579.15</td>
+<td style="text-align: right;">602.45</td>
+<td style="text-align: right;">590.800</td>
+<td style="text-align: right;">23.30</td>
+<td style="text-align: right;">6861</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">601.55</td>
-<td style="text-align: right;">625.15</td>
-<td style="text-align: right;">613.35</td>
-<td style="text-align: right;">23.6</td>
-<td style="text-align: right;">6480</td>
+<td style="text-align: right;">601.15</td>
+<td style="text-align: right;">625.45</td>
+<td style="text-align: right;">613.300</td>
+<td style="text-align: right;">24.30</td>
+<td style="text-align: right;">6731</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">624.55</td>
-<td style="text-align: right;">648.45</td>
-<td style="text-align: right;">636.50</td>
-<td style="text-align: right;">23.9</td>
-<td style="text-align: right;">6370</td>
+<td style="text-align: right;">624.15</td>
+<td style="text-align: right;">649.15</td>
+<td style="text-align: right;">636.650</td>
+<td style="text-align: right;">25.00</td>
+<td style="text-align: right;">6639</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">648.15</td>
-<td style="text-align: right;">673.95</td>
-<td style="text-align: right;">661.05</td>
-<td style="text-align: right;">25.8</td>
-<td style="text-align: right;">6351</td>
+<td style="text-align: right;">647.55</td>
+<td style="text-align: right;">674.15</td>
+<td style="text-align: right;">660.850</td>
+<td style="text-align: right;">26.60</td>
+<td style="text-align: right;">6535</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">673.55</td>
-<td style="text-align: right;">699.55</td>
-<td style="text-align: right;">686.55</td>
-<td style="text-align: right;">26.0</td>
-<td style="text-align: right;">6201</td>
+<td style="text-align: right;">672.55</td>
+<td style="text-align: right;">700.15</td>
+<td style="text-align: right;">686.350</td>
+<td style="text-align: right;">27.60</td>
+<td style="text-align: right;">6611</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">699.25</td>
-<td style="text-align: right;">727.55</td>
-<td style="text-align: right;">713.40</td>
-<td style="text-align: right;">28.3</td>
-<td style="text-align: right;">6262</td>
+<td style="text-align: right;">698.75</td>
+<td style="text-align: right;">728.15</td>
+<td style="text-align: right;">713.450</td>
+<td style="text-align: right;">29.40</td>
+<td style="text-align: right;">6485</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">727.25</td>
-<td style="text-align: right;">757.25</td>
-<td style="text-align: right;">742.25</td>
-<td style="text-align: right;">30.0</td>
-<td style="text-align: right;">6049</td>
+<td style="text-align: right;">726.75</td>
+<td style="text-align: right;">757.55</td>
+<td style="text-align: right;">742.150</td>
+<td style="text-align: right;">30.80</td>
+<td style="text-align: right;">6240</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">756.65</td>
-<td style="text-align: right;">789.55</td>
-<td style="text-align: right;">773.10</td>
-<td style="text-align: right;">32.9</td>
-<td style="text-align: right;">6081</td>
+<td style="text-align: right;">756.25</td>
+<td style="text-align: right;">790.15</td>
+<td style="text-align: right;">773.200</td>
+<td style="text-align: right;">33.90</td>
+<td style="text-align: right;">6277</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">789.25</td>
-<td style="text-align: right;">825.25</td>
-<td style="text-align: right;">807.25</td>
-<td style="text-align: right;">36.0</td>
-<td style="text-align: right;">5850</td>
+<td style="text-align: right;">788.65</td>
+<td style="text-align: right;">825.55</td>
+<td style="text-align: right;">807.100</td>
+<td style="text-align: right;">36.90</td>
+<td style="text-align: right;">6019</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">824.65</td>
-<td style="text-align: right;">864.85</td>
-<td style="text-align: right;">844.75</td>
-<td style="text-align: right;">40.2</td>
-<td style="text-align: right;">5623</td>
+<td style="text-align: right;">824.25</td>
+<td style="text-align: right;">865.35</td>
+<td style="text-align: right;">844.800</td>
+<td style="text-align: right;">41.10</td>
+<td style="text-align: right;">5732</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">864.75</td>
-<td style="text-align: right;">910.05</td>
-<td style="text-align: right;">887.40</td>
-<td style="text-align: right;">45.3</td>
-<td style="text-align: right;">5389</td>
+<td style="text-align: right;">864.25</td>
+<td style="text-align: right;">910.55</td>
+<td style="text-align: right;">887.400</td>
+<td style="text-align: right;">46.30</td>
+<td style="text-align: right;">5542</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">909.85</td>
-<td style="text-align: right;">962.15</td>
-<td style="text-align: right;">936.00</td>
-<td style="text-align: right;">52.3</td>
-<td style="text-align: right;">5172</td>
+<td style="text-align: right;">909.35</td>
+<td style="text-align: right;">962.65</td>
+<td style="text-align: right;">936.000</td>
+<td style="text-align: right;">53.30</td>
+<td style="text-align: right;">5284</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">961.85</td>
-<td style="text-align: right;">1024.55</td>
-<td style="text-align: right;">993.20</td>
-<td style="text-align: right;">62.7</td>
-<td style="text-align: right;">4665</td>
+<td style="text-align: right;">961.35</td>
+<td style="text-align: right;">1025.15</td>
+<td style="text-align: right;">993.250</td>
+<td style="text-align: right;">63.80</td>
+<td style="text-align: right;">4745</td>
 </tr>
 <tr class="even">
-<td style="text-align: right;">1024.45</td>
-<td style="text-align: right;">1100.15</td>
-<td style="text-align: right;">1062.30</td>
-<td style="text-align: right;">75.7</td>
-<td style="text-align: right;">4162</td>
+<td style="text-align: right;">1023.85</td>
+<td style="text-align: right;">1100.65</td>
+<td style="text-align: right;">1062.250</td>
+<td style="text-align: right;">76.80</td>
+<td style="text-align: right;">4229</td>
 </tr>
 <tr class="odd">
-<td style="text-align: right;">1099.95</td>
-<td style="text-align: right;">1200.05</td>
-<td style="text-align: right;">1150.00</td>
-<td style="text-align: right;">100.1</td>
-<td style="text-align: right;">3120</td>
+<td style="text-align: right;">1099.45</td>
+<td style="text-align: right;">1200.48</td>
+<td style="text-align: right;">1149.965</td>
+<td style="text-align: right;">101.03</td>
+<td style="text-align: right;">3142</td>
 </tr>
 </tbody>
 </table>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_windows</span>(optimized, masses)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_windows</span>(optimized, masses)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -1505,26 +1509,26 @@ window widths 20.69 to 100.01 m/z</code></pre>
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>mixed_error <span class="ot">&lt;-</span> cdsw_mixed<span class="sc">$</span><span class="fu">error</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>mixed_error <span class="ot">&lt;-</span> cdsw_mixed<span class="sc">$</span><span class="fu">error</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="benchmarking-of-the-methods." class="level1">
 <h1>Benchmarking of the methods.</h1>
 <p>We compare the optimal number of MS1 peaks per SWATH window (same in each window) with the numbers obtained by using all of the 3 methods implemented.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>errors <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="fu">factor</span>(<span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"const"</span>, <span class="st">"quantile"</span>, <span class="st">"mixed"</span>), <span class="dv">2</span>), <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"const"</span>, <span class="st">"quantile"</span>, <span class="st">"mixed"</span>)),</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">metric =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"Manhattan distance"</span>, <span class="st">"Euclidean distance"</span>), <span class="at">each =</span> <span class="dv">3</span>),</span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">value =</span> <span class="fu">c</span>(</span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>    const_error<span class="sc">$</span>score1, quantile_error<span class="sc">$</span>score1, mixed_error<span class="sc">$</span>score1,</span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>    const_error<span class="sc">$</span>score2, quantile_error<span class="sc">$</span>score2, mixed_error<span class="sc">$</span>score2</span>
-<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(errors, <span class="fu">aes</span>(<span class="at">x =</span> method, <span class="at">y =</span> value)) <span class="sc">+</span></span>
-<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">fill =</span> <span class="st">"#0072B2"</span>) <span class="sc">+</span></span>
-<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">signif</span>(value, <span class="dv">2</span>)), <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.3</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
-<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>metric, <span class="at">scales =</span> <span class="st">"free_y"</span>) <span class="sc">+</span></span>
-<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"deviation from equal counts"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>errors <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="fu">factor</span>(<span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"constant"</span>, <span class="st">"quantile"</span>, <span class="st">"mixture"</span>), <span class="dv">2</span>), <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"constant"</span>, <span class="st">"quantile"</span>, <span class="st">"mixture"</span>)),</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">metric =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"Manhattan distance"</span>, <span class="st">"Euclidean distance"</span>), <span class="at">each =</span> <span class="dv">3</span>),</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">value =</span> <span class="fu">c</span>(</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    const_error<span class="sc">$</span>manhattan, quantile_error<span class="sc">$</span>manhattan, mixed_error<span class="sc">$</span>manhattan,</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>    const_error<span class="sc">$</span>euclidean, quantile_error<span class="sc">$</span>euclidean, mixed_error<span class="sc">$</span>euclidean</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(errors, <span class="fu">aes</span>(<span class="at">x =</span> method, <span class="at">y =</span> value)) <span class="sc">+</span></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">fill =</span> <span class="st">"#0072B2"</span>) <span class="sc">+</span></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> <span class="fu">signif</span>(value, <span class="dv">2</span>)), <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.3</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>metric, <span class="at">scales =</span> <span class="st">"free_y"</span>) <span class="sc">+</span></span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"deviation from equal counts"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -1533,7 +1537,7 @@ window widths 20.69 to 100.01 m/z</code></pre>
 </div>
 </div>
 </div>
-<p>The error of the mixed method lies between the two others: it is smaller than that of the equal-width windows, and unlike the quantile windows the mixed windows meet the width limits.</p>
+<p>The error of the <code>"mixture"</code> windows lies between the two others: it is smaller than that of the <code>"constant"</code> (equal-width) windows, and unlike the <code>"quantile"</code> windows the <code>"mixture"</code> windows meet the width limits.</p>
 </section>
 <section id="session-info" class="level1">
 <h1>Session info</h1>
@@ -1560,7 +1564,7 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] ggplot2_4.0.4 prozor_0.4.0 
+[1] ggplot2_4.0.4 prozor_0.5.0 
 
 loaded via a namespace (and not attached):
  [1] vctrs_0.7.3        cli_3.6.6          knitr_1.52         rlang_1.3.0       

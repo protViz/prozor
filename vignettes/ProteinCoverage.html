@@ -83,7 +83,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-63b5708e65d6cd79cd7618c58d0c21e7.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-44f7b187718e43abfea0560aa82c1a71.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-ded4168630e1422961a6247c4ac5fe91.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -326,8 +326,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../man/read_peptide_fasta.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">read_peptide_fasta</span></a>
+  <a href="../man/read_fasta.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">read_fasta</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -446,8 +446,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>file <span class="ot">&lt;-</span> <span class="fu">system.file</span>(<span class="st">"extdata/IDResults.txt.gz"</span>, <span class="at">package =</span> <span class="st">"prozor"</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>peptides <span class="ot">&lt;-</span> <span class="fu">unique</span>(utils<span class="sc">::</span><span class="fu">read.delim</span>(file)<span class="sc">$</span>peptideSeq)</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>canonical <span class="ot">&lt;-</span> <span class="fu">read_peptide_fasta</span>(<span class="fu">system.file</span>(<span class="st">"p1000_db1_example/Annotation_canSeq.fasta.gz"</span>, <span class="at">package =</span> <span class="st">"prozor"</span>))</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>all_sequences <span class="ot">&lt;-</span> <span class="fu">read_peptide_fasta</span>(<span class="fu">system.file</span>(<span class="st">"p1000_db1_example/Annotation_allSeq.fasta.gz"</span>, <span class="at">package =</span> <span class="st">"prozor"</span>))</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>canonical <span class="ot">&lt;-</span> <span class="fu">read_fasta</span>(<span class="fu">system.file</span>(<span class="st">"p1000_db1_example/Annotation_canSeq.fasta.gz"</span>, <span class="at">package =</span> <span class="st">"prozor"</span>))</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>all_sequences <span class="ot">&lt;-</span> <span class="fu">read_fasta</span>(<span class="fu">system.file</span>(<span class="st">"p1000_db1_example/Annotation_allSeq.fasta.gz"</span>, <span class="at">package =</span> <span class="st">"prozor"</span>))</span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">peptides =</span> <span class="fu">length</span>(peptides), <span class="at">canonical =</span> <span class="fu">length</span>(canonical), <span class="at">with_isoforms =</span> <span class="fu">length</span>(all_sequences))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>     peptides     canonical with_isoforms 
@@ -590,7 +590,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><code>greedy_parsimony()</code> keeps the smallest set of proteins that explains all peptides (see <code>vignette("PeptideAnnotationwithProzor", package = "prozor")</code>). The proteins it drops are those whose peptides are all explained by other proteins; they tend to have lower coverage.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>inference <span class="ot">&lt;-</span> <span class="fu">greedy_parsimony</span>(annotation)</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>kept <span class="ot">&lt;-</span> <span class="fu">unique</span>(<span class="fu">unlist</span>(<span class="fu">strsplit</span>(<span class="fu">unlist</span>(inference), <span class="st">";"</span>, <span class="at">fixed =</span> <span class="cn">TRUE</span>)))</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>kept <span class="ot">&lt;-</span> <span class="fu">unique</span>(<span class="fu">unlist</span>(<span class="fu">strsplit</span>(inference, <span class="st">";"</span>, <span class="at">fixed =</span> <span class="cn">TRUE</span>)))</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>coverage<span class="sc">$</span>inference <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(coverage<span class="sc">$</span>protein_id <span class="sc">%in%</span> kept, <span class="st">"kept"</span>, <span class="st">"dropped"</span>)</span>
 <span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(coverage<span class="sc">$</span>inference)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -716,7 +716,7 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] ggplot2_4.0.4 prozor_0.4.0 
+[1] ggplot2_4.0.4 prozor_0.5.0 
 
 loaded via a namespace (and not attached):
  [1] vctrs_0.7.3           cli_3.6.6             knitr_1.52           

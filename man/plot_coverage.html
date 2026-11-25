@@ -81,7 +81,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-63b5708e65d6cd79cd7618c58d0c21e7.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-44f7b187718e43abfea0560aa82c1a71.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-ded4168630e1422961a6247c4ac5fe91.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -324,8 +324,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../man/read_peptide_fasta.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">read_peptide_fasta</span></a>
+  <a href="../man/read_fasta.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">read_fasta</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -423,7 +423,7 @@ A result of <code>residue_coverage()</code>.
 <code id="protein_id">protein_id</code>
 </td>
 <td>
-The protein to plot, one of <code>residues$protein_id</code>.
+The protein to plot: one protein ID, a value of <code>residues$protein_id</code>.
 </td>
 </tr>
 <tr>
@@ -431,7 +431,7 @@ The protein to plot, one of <code>residues$protein_id</code>.
 <code id="width">width</code>
 </td>
 <td>
-Residues per row.
+Residues per row: a positive whole number.
 </td>
 </tr>
 </tbody></table>
@@ -452,7 +452,7 @@ Residues per row.
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>file <span class="ot">&lt;-</span> <span class="fu">system.file</span>(<span class="st">"extdata/IDResults.txt.gz"</span>, <span class="at">package =</span> <span class="st">"prozor"</span>)</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>peptides <span class="ot">&lt;-</span> <span class="fu">unique</span>(utils<span class="sc">::</span><span class="fu">read.delim</span>(file)<span class="sc">$</span>peptideSeq)</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>fasta_file <span class="ot">&lt;-</span> <span class="fu">system.file</span>(<span class="st">"p1000_db1_example/Annotation_canSeq.fasta.gz"</span>, <span class="at">package =</span> <span class="st">"prozor"</span>)</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>annot <span class="ot">&lt;-</span> <span class="fu">annotate_peptides</span>(peptides, <span class="fu">read_peptide_fasta</span>(fasta_file))</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>annot <span class="ot">&lt;-</span> <span class="fu">annotate_peptides</span>(peptides, <span class="fu">read_fasta</span>(fasta_file))</span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>coverage <span class="ot">&lt;-</span> <span class="fu">sequence_coverage</span>(annot)</span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>best <span class="ot">&lt;-</span> coverage<span class="sc">$</span>protein_id[<span class="fu">which.max</span>(coverage<span class="sc">$</span>coverage)]</span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_coverage</span>(<span class="fu">residue_coverage</span>(annot), best)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>

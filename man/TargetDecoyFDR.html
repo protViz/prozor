@@ -81,7 +81,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-63b5708e65d6cd79cd7618c58d0c21e7.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-44f7b187718e43abfea0560aa82c1a71.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-ded4168630e1422961a6247c4ac5fe91.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -324,8 +324,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../man/read_peptide_fasta.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">read_peptide_fasta</span></a>
+  <a href="../man/read_fasta.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">read_fasta</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -403,15 +403,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>An R6 class that estimates the false discovery rate (FDR) of target-decoy search results. When the object is created, the hits are sorted from best to worst score and two FDR estimates are computed at each score:</p>
 <ul>
 <li>
-<p><code>fdr_concatenated</code>: the FDR of a concatenated target-decoy search, estimated as 2 * decoys / all hits (Elias and Gygi).</p>
+<p><code>fdr_concatenated</code>: the FDR of a concatenated target-decoy search, estimated as 2 * decoys / all hits (Elias and Gygi 2007).</p>
 </li>
 <li>
-<p><code>simple_fdr</code>: the FDR estimated as decoys / targets (Kaell).</p>
+<p><code>fdr_simple</code>: the FDR estimated as decoys / targets (Käll et al.&nbsp;2008).</p>
 </li>
 </ul>
+<p>Both estimates are fractions in [0, 1]: values above 1, e.g.&nbsp;where the best hits are decoys, are set to 1.</p>
 <p>The q-value of a hit is the lowest FDR at which it is accepted: the smallest estimate at its own or any worse score. Within tied scores, decoys are ranked before targets, so the result does not depend on the input order and tied targets get the conservative FDR.</p>
 <p>The decoys are given as logical flags. For protein IDs whose decoys start with <code>REV_</code>, pass <code>decoy_hit = grepl(“^REV_”, id)</code>, and <code>id = id</code> to keep the IDs in <code>table</code>.</p>
 <p>The object cannot be changed: its fields are read-only and its methods only read them. <code>clone()</code> copies an object. See <code>vignette(“TargetDecoyFDR_Example”, package = “prozor”)</code>.</p>
+</section>
+<section id="value" class="level3">
+<h3 class="anchored" data-anchor-id="value">Value</h3>
+<p><code>TargetDecoyFDR$new()</code> returns a <code>TargetDecoyFDR</code> R6 object; see Methods.</p>
 </section>
 <section id="active-bindings" class="level3">
 <h3 class="anchored" data-anchor-id="active-bindings">Active bindings</h3>
@@ -445,10 +450,10 @@ Number of hits (read-only).
 <p><code>score</code>, <code>decoy_hit</code>: the sorted input.</p>
 </li>
 <li>
-<p><code>fdr_concatenated</code>, <code>simple_fdr</code>: the FDR estimates at the score.</p>
+<p><code>fdr_concatenated</code>, <code>fdr_simple</code>: the FDR estimates at the score, as fractions in [0, 1].</p>
 </li>
 <li>
-<p><code>q_value_fdr_concatenated</code>, <code>q_value_simple_fdr</code>: the q-values of both estimates, as fractions.</p>
+<p><code>q_value_fdr_concatenated</code>, <code>q_value_fdr_simple</code>: the q-values of both estimates, as fractions in [0, 1].</p>
 </li>
 </ul>
 </dd>
@@ -529,7 +534,7 @@ Returns
 <h4 class="anchored">
 <code>TargetDecoyFDR$print()</code>
 </h4>
-<p>Print the numbers of hits and decoys, <code>larger_better</code>, and the scores at <code>simple_fdr</code> q-values of 0.01 and 0.05 (<code>none</code> if no score reaches them).</p>
+<p>Print the numbers of hits and decoys, <code>larger_better</code>, and the scores at <code>fdr_simple</code> q-values of 0.01 and 0.05 (<code>none</code> if no score reaches them).</p>
 <h5 class="anchored">
 Usage
 </h5>
@@ -565,7 +570,7 @@ Usage
 <div class="r">
 <pre>TargetDecoyFDR\$score_at(
   q_value = 0.01,
-  method = c("simple_fdr", "fdr_concatenated")
+  method = c("fdr_simple", "fdr_concatenated")
 )</pre>
 </div>
 <h5 class="anchored">
@@ -583,7 +588,7 @@ The FDR as a fraction, like the q-values in <code>table</code>: <code>0.01</code
 <code>method</code>
 </dt>
 <dd>
-The FDR estimate to use: <code>“simple_fdr”</code> (default) or <code>“fdr_concatenated”</code>.
+The FDR estimate to use: <code>“fdr_simple”</code> (default) or <code>“fdr_concatenated”</code>.
 </dd>
 </dl>
 </div>
@@ -646,6 +651,15 @@ Whether to make a deep clone.
 </dl>
 </div>
 </section>
+<section id="references" class="level3">
+<h3 class="anchored" data-anchor-id="references">References</h3>
+<p>Elias JE, Gygi SP (2007). Target-decoy search strategy for increased confidence in large-scale protein identifications by mass spectrometry. <em>Nature Methods</em>, 4(3), 207-214. <a href="https://doi.org/10.1038/nmeth1019">doi:10.1038/nmeth1019</a></p>
+<p>Käll L, Storey JD, MacCoss MJ, Noble WS (2008). Assigning significance to peptides identified by tandem mass spectrometry using decoy databases. <em>Journal of Proteome Research</em>, 7(1), 29-34. <a href="https://doi.org/10.1021/pr700600n">doi:10.1021/pr700600n</a></p>
+</section>
+<section id="see-also" class="level3">
+<h3 class="anchored" data-anchor-id="see-also">See Also</h3>
+<p>Other FDR: <code>bcd</code>, <code>fdr_sample</code></p>
+</section>
 <section id="examples" class="level3">
 <h3 class="anchored" data-anchor-id="examples">Examples</h3>
 <div class="cell">
@@ -662,18 +676,18 @@ Whether to make a deep clone.
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>fdr</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;TargetDecoyFDR&gt; hits: 40,000, decoys: 858, larger_better: FALSE
-score at simple_fdr q-value 0.01: 0.03395, at 0.05: 0.09992</code></pre>
+score at fdr_simple q-value 0.01: 0.03395, at 0.05: 0.09992</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(fdr<span class="sc">$</span>table)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>  order                   id        score decoy_hit fdr_concatenated simple_fdr
+<pre><code>  order                   id        score decoy_hit fdr_concatenated fdr_simple
 1   287 sp|P04264|K2C1_HUMAN 8.611747e-21     FALSE                0          0
 2  3581 sp|P04264|K2C1_HUMAN 6.305185e-19     FALSE                0          0
 3 29584 sp|P35527|K1C9_HUMAN 1.750698e-17     FALSE                0          0
 4 26559 sp|P04264|K2C1_HUMAN 3.081044e-16     FALSE                0          0
 5 15524 sp|P02768|ALBU_HUMAN 3.835269e-16     FALSE                0          0
 6 30840 sp|P04264|K2C1_HUMAN 3.845918e-16     FALSE                0          0
-  q_value_fdr_concatenated q_value_simple_fdr
+  q_value_fdr_concatenated q_value_fdr_simple
 1                        0                  0
 2                        0                  0
 3                        0                  0
@@ -698,8 +712,11 @@ score at simple_fdr q-value 0.01: 0.03395, at 0.05: 0.09992</code></pre>
 </div>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># larger scores are better</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>fdr2 <span class="ot">&lt;-</span> TargetDecoyFDR<span class="sc">$</span><span class="fu">new</span>(fdr_sample<span class="sc">$</span>score2, <span class="at">decoy_hit =</span> <span class="fu">grepl</span>(<span class="st">"^REV_"</span>, fdr_sample<span class="sc">$</span>protein_id))</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>fdr2<span class="sc">$</span><span class="fu">score_at</span>(<span class="at">q_value =</span> <span class="fl">0.01</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>fdr2 <span class="ot">&lt;-</span> TargetDecoyFDR<span class="sc">$</span><span class="fu">new</span>(</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  fdr_sample<span class="sc">$</span>neg_log10_score,</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">decoy_hit =</span> <span class="fu">grepl</span>(<span class="st">"^REV_"</span>, fdr_sample<span class="sc">$</span>protein_id)</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>fdr2<span class="sc">$</span><span class="fu">score_at</span>(<span class="at">q_value =</span> <span class="fl">0.01</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 1.469192</code></pre>
 </div>

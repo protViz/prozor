@@ -102,7 +102,7 @@ div.csl-indent {
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-63b5708e65d6cd79cd7618c58d0c21e7.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-44f7b187718e43abfea0560aa82c1a71.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-ded4168630e1422961a6247c4ac5fe91.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -374,8 +374,8 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../man/read_peptide_fasta.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">read_peptide_fasta</span></a>
+  <a href="../man/read_fasta.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">read_fasta</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -474,10 +474,15 @@ window.Quarto = {
 </header>
 
 
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(prozor)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
 <p>Here we describe how you can estimate the false discovery rate (FDR) when matching your spectra against a FASTA sequence database using spectra search engines such as Mascot or Comet. The sequence database contains forward sequences and the same number of reverse sequences.</p>
 <section id="the-data" class="level2">
 <h2 class="anchored" data-anchor-id="the-data">The data</h2>
-<p>The data needs to have two columns, one with a label, to distinguish targets and decoys, the other with a score. Then you also need to know if a larger score or a smaller score is better. In our example data, we have two scores: <code>score</code> and <code>score2</code>. While the <code>score</code> is better if it is smaller (e.g., posterior error probability), <code>score2</code> is better if it is larger.</p>
+<p>The data needs to have two columns, one with a label, to distinguish targets and decoys, the other with a score. Then you also need to know if a larger score or a smaller score is better. In our example data, we have two scores: <code>score</code> and <code>neg_log10_score</code>. While the <code>score</code> is better if it is smaller (e.g., posterior error probability), <code>neg_log10_score</code>, which is <code>-log10(score)</code>, is better if it is larger.</p>
 <div class="cell">
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
@@ -489,10 +494,8 @@ window.Quarto = {
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(prozor)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(fdr_sample)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">head</span>(fdr_sample))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(fdr_sample)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">head</span>(fdr_sample))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <thead>
@@ -500,7 +503,7 @@ window.Quarto = {
 <th style="text-align: left;"></th>
 <th style="text-align: left;">protein_id</th>
 <th style="text-align: right;">score</th>
-<th style="text-align: right;">score2</th>
+<th style="text-align: right;">neg_log10_score</th>
 </tr>
 </thead>
 <tbody>
@@ -546,7 +549,7 @@ window.Quarto = {
 </div>
 <p>What is also required is that the number of Targets and Decoys are the same. This is given for mass spectrometry database searches. Our dataset here is already truncated at a 5% FDR. Therefore the number of decoys is much smaller.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(<span class="fu">grepl</span>(<span class="st">"^REV_"</span>, fdr_sample<span class="sc">$</span>protein_id))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(<span class="fu">grepl</span>(<span class="st">"^REV_"</span>, fdr_sample<span class="sc">$</span>protein_id))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 FALSE  TRUE 
@@ -556,13 +559,13 @@ FALSE  TRUE
 <p>In our example, we will use the package to filter the data further for a 1% FDR.</p>
 <p>Computing the FDR can be done by creating a <code>TargetDecoyFDR</code> object from the scores and the decoy flags. Printing it shows the numbers of hits and decoys and the scores at q-values of 1 % and 5 %. Its <code>plot()</code> method then shows the score distributions of targets and decoys (top) and the q-values of the two FDR estimates (bottom). The score axis is logarithmic because smaller scores are better.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>fdr1 <span class="ot">&lt;-</span> TargetDecoyFDR<span class="sc">$</span><span class="fu">new</span>(fdr_sample<span class="sc">$</span>score, <span class="at">decoy_hit =</span> <span class="fu">grepl</span>(<span class="st">"^REV_"</span>, fdr_sample<span class="sc">$</span>protein_id), <span class="at">larger_better =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>fdr1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>fdr1 <span class="ot">&lt;-</span> TargetDecoyFDR<span class="sc">$</span><span class="fu">new</span>(fdr_sample<span class="sc">$</span>score, <span class="at">decoy_hit =</span> <span class="fu">grepl</span>(<span class="st">"^REV_"</span>, fdr_sample<span class="sc">$</span>protein_id), <span class="at">larger_better =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>fdr1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>&lt;TargetDecoyFDR&gt; hits: 40,000, decoys: 858, larger_better: FALSE
-score at simple_fdr q-value 0.01: 0.03395, at 0.05: 0.09992</code></pre>
+score at fdr_simple q-value 0.01: 0.03395, at 0.05: 0.09992</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>fdr1<span class="sc">$</span><span class="fu">plot</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>fdr1<span class="sc">$</span><span class="fu">plot</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -573,7 +576,7 @@ score at simple_fdr q-value 0.01: 0.03395, at 0.05: 0.09992</code></pre>
 </div>
 <p>The field <code>table</code> holds the results as a data frame, with the hits sorted from best to worst score. We next will briefly discuss its columns.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">head</span>(fdr1<span class="sc">$</span>table))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">head</span>(fdr1<span class="sc">$</span>table))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <colgroup>
@@ -591,9 +594,9 @@ score at simple_fdr q-value 0.01: 0.03395, at 0.05: 0.09992</code></pre>
 <th style="text-align: right;">score</th>
 <th style="text-align: left;">decoy_hit</th>
 <th style="text-align: right;">fdr_concatenated</th>
-<th style="text-align: right;">simple_fdr</th>
+<th style="text-align: right;">fdr_simple</th>
 <th style="text-align: right;">q_value_fdr_concatenated</th>
-<th style="text-align: right;">q_value_simple_fdr</th>
+<th style="text-align: right;">q_value_fdr_simple</th>
 </tr>
 </thead>
 <tbody>
@@ -659,28 +662,30 @@ score at simple_fdr q-value 0.01: 0.03395, at 0.05: 0.09992</code></pre>
 <section id="types-of-fdr" class="level2">
 <h2 class="anchored" data-anchor-id="types-of-fdr">Types of FDR</h2>
 <p>We define</p>
-<pre><code> * false positives (FP) as the number of passing decoy assignments
- * true positives (TP) as the number of passing forward hits.</code></pre>
+<ul>
+<li>false positives (FP) as the number of passing decoy assignments</li>
+<li>true positives (TP) as the number of passing forward hits.</li>
+</ul>
 <section id="fdr-of-a-concatenated-target-decoy-search" class="level3">
 <h3 class="anchored" data-anchor-id="fdr-of-a-concatenated-target-decoy-search">FDR of a concatenated target-decoy search</h3>
 <p>Which is the “Fraction of incorrect assignments above score threshold”. The multiplier 2 is needed here since we assume that also the forward sequences have false assignments.</p>
 <p><span class="math display">\[
 FDR_{concatenated} = \frac{2 \cdot FP}{TP + FP}
 \]</span></p>
-<p>This is taken from the reference by <span class="citation" data-cites="Elias2007">(<a href="#ref-Elias2007" role="doc-biblioref">Elias and Gygi 2007</a>)</span>. It is often called the false positive rate (FPR), which <span class="citation" data-cites="Storey2003">(<a href="#ref-Storey2003" role="doc-biblioref">Storey and Tibshirani 2003</a>)</span> defines differently. Kaell points out that this quantity actually should be named FDR and that “Many proteomics papers incorrectly refer to this quantity as the <em>false positive rate</em>.” <code>TargetDecoyFDR</code> therefore names it <code>fdr_concatenated</code>.</p>
+<p>This is taken from the reference by <span class="citation" data-cites="Elias2007">(<a href="#ref-Elias2007" role="doc-biblioref">Elias and Gygi 2007</a>)</span>. It is often called the false positive rate (FPR), which <span class="citation" data-cites="Storey2003">(<a href="#ref-Storey2003" role="doc-biblioref">Storey and Tibshirani 2003</a>)</span> defines differently. Käll et al. <span class="citation" data-cites="Kaell2008">(<a href="#ref-Kaell2008" role="doc-biblioref">2008</a>)</span> point out that this quantity actually should be named FDR and that “Many proteomics papers incorrectly refer to this quantity as the <em>false positive rate</em>.” <code>TargetDecoyFDR</code> therefore names it <code>fdr_concatenated</code>.</p>
 </section>
 <section id="simple-fdr" class="level3">
 <h3 class="anchored" data-anchor-id="simple-fdr">Simple FDR</h3>
-<p>“The FDR associated with a particular score threshold is defined as the expected percentage of accepted PSMs that are incorrect, where an <em>accepted PSM</em> is one that scores above the threshold (Many proteomics papers incorrectly refer to this quantity as the <em>false positive rate</em>).” (<span class="citation" data-cites="Kaell2007">(<a href="#ref-Kaell2007" role="doc-biblioref">Käll et al. 2007</a>)</span>)</p>
-<p>The Simple FDR introduced by (<span class="citation" data-cites="Kaell2007">(<a href="#ref-Kaell2007" role="doc-biblioref">Käll et al. 2007</a>)</span>) is defined by :</p>
+<p>“The FDR associated with a particular score threshold is defined as the expected percentage of accepted PSMs that are incorrect, where an <em>accepted PSM</em> is one that scores above the threshold (Many proteomics papers incorrectly refer to this quantity as the <em>false positive rate</em>).” (<span class="citation" data-cites="Kaell2008">(<a href="#ref-Kaell2008" role="doc-biblioref">Käll et al. 2008</a>)</span>)</p>
+<p>The Simple FDR introduced by (<span class="citation" data-cites="Kaell2008">(<a href="#ref-Kaell2008" role="doc-biblioref">Käll et al. 2008</a>)</span>) is defined by :</p>
 <p><span class="math display">\[
 SimpleFDR =  \frac{FP}{TP}
 \]</span></p>
-<p>“For a given score threshold, we count the number of decoy PSMs above the threshold and the number of target PSMs above the threshold. We can now estimate the FDR by simply computing the ratio of these two values (SimpleFDR).”<span class="citation" data-cites="Kaell2007">(<a href="#ref-Kaell2007" role="doc-biblioref">Käll et al. 2007</a>)</span></p>
+<p>“For a given score threshold, we count the number of decoy PSMs above the threshold and the number of target PSMs above the threshold. We can now estimate the FDR by simply computing the ratio of these two values (SimpleFDR).”<span class="citation" data-cites="Kaell2008">(<a href="#ref-Kaell2008" role="doc-biblioref">Käll et al. 2008</a>)</span></p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>fdr_curves <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">score =</span> <span class="fu">rep</span>(fdr1<span class="sc">$</span>table<span class="sc">$</span>score, <span class="dv">2</span>),</span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">fdr =</span> <span class="dv">100</span> <span class="sc">*</span> <span class="fu">c</span>(fdr1<span class="sc">$</span>table<span class="sc">$</span>simple_fdr, fdr1<span class="sc">$</span>table<span class="sc">$</span>q_value_simple_fdr),</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">fdr =</span> <span class="dv">100</span> <span class="sc">*</span> <span class="fu">c</span>(fdr1<span class="sc">$</span>table<span class="sc">$</span>fdr_simple, fdr1<span class="sc">$</span>table<span class="sc">$</span>q_value_fdr_simple),</span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">curve =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"SimpleFDR"</span>, <span class="st">"q-value"</span>), <span class="at">each =</span> fdr1<span class="sc">$</span>n)</span>
 <span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(fdr_curves, <span class="fu">aes</span>(<span class="at">x =</span> score, <span class="at">y =</span> fdr, <span class="at">colour =</span> curve)) <span class="sc">+</span></span>
@@ -696,34 +701,34 @@ SimpleFDR =  \frac{FP}{TP}
 </div>
 </div>
 </div>
-<p>Although the score is getting better (smaller) the FDR may increase since the number of TP in the denominator decreases while the number of FP stays the same. Therefore Storey and Tibshirani proposed the <em>q-value</em>, “which in our case is defined as the minimal FDR threshold at which a given PSM is accepted”<span class="citation" data-cites="Kaell2007">(<a href="#ref-Kaell2007" role="doc-biblioref">Käll et al. 2007</a>)</span>.</p>
+<p>Although the score is getting better (smaller) the FDR may increase since the number of TP in the denominator decreases while the number of FP stays the same. Therefore Storey and Tibshirani proposed the <em>q-value</em>, “which in our case is defined as the minimal FDR threshold at which a given PSM is accepted”<span class="citation" data-cites="Kaell2008">(<a href="#ref-Kaell2008" role="doc-biblioref">Käll et al. 2008</a>)</span>.</p>
 </section>
 </section>
 <section id="getting-the-score-for-an-fdr." class="level2">
 <h2 class="anchored" data-anchor-id="getting-the-score-for-an-fdr.">Getting the score for an FDR.</h2>
 <p>Most frequently you will need to get the score for an FDR in order to filter your data. The method <code>score_at()</code> returns it; the q-value is a fraction, <code>0.01</code> for 1 %. To report your data with an FDR of 1% instead of 5% you can execute this code:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>(score05G <span class="ot">&lt;-</span> fdr1<span class="sc">$</span><span class="fu">score_at</span>(<span class="at">q_value =</span> <span class="fl">0.05</span>, <span class="at">method =</span> <span class="st">"fdr_concatenated"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>(score_05_concatenated <span class="ot">&lt;-</span> fdr1<span class="sc">$</span><span class="fu">score_at</span>(<span class="at">q_value =</span> <span class="fl">0.05</span>, <span class="at">method =</span> <span class="st">"fdr_concatenated"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.09991592</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(<span class="fu">filter</span>(fdr_sample, score <span class="sc">&lt;=</span> score05G))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(<span class="fu">filter</span>(fdr_sample, score <span class="sc">&lt;=</span> score_05_concatenated))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 40000     3</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>(score01G <span class="ot">&lt;-</span> fdr1<span class="sc">$</span><span class="fu">score_at</span>(<span class="at">q_value =</span> <span class="fl">0.01</span>, <span class="at">method =</span> <span class="st">"fdr_concatenated"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>(score_01_concatenated <span class="ot">&lt;-</span> fdr1<span class="sc">$</span><span class="fu">score_at</span>(<span class="at">q_value =</span> <span class="fl">0.01</span>, <span class="at">method =</span> <span class="st">"fdr_concatenated"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.008509834</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(<span class="fu">filter</span>(fdr_sample, score <span class="sc">&lt;=</span> score01G))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(<span class="fu">filter</span>(fdr_sample, score <span class="sc">&lt;=</span> score_01_concatenated))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 29180     3</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>(score01K <span class="ot">&lt;-</span> fdr1<span class="sc">$</span><span class="fu">score_at</span>(<span class="at">q_value =</span> <span class="fl">0.01</span>, <span class="at">method =</span> <span class="st">"simple_fdr"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>(score_01_simple <span class="ot">&lt;-</span> fdr1<span class="sc">$</span><span class="fu">score_at</span>(<span class="at">q_value =</span> <span class="fl">0.01</span>, <span class="at">method =</span> <span class="st">"fdr_simple"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.03394749</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(<span class="fu">filter</span>(fdr_sample, score <span class="sc">&lt;=</span> score01K))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(<span class="fu">filter</span>(fdr_sample, score <span class="sc">&lt;=</span> score_01_simple))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 34876     3</code></pre>
 </div>
@@ -753,9 +758,9 @@ SimpleFDR =  \frac{FP}{TP}
 <th style="text-align: right;">score</th>
 <th style="text-align: left;">decoy_hit</th>
 <th style="text-align: right;">fdr_concatenated</th>
-<th style="text-align: right;">simple_fdr</th>
+<th style="text-align: right;">fdr_simple</th>
 <th style="text-align: right;">q_value_fdr_concatenated</th>
-<th style="text-align: right;">q_value_simple_fdr</th>
+<th style="text-align: right;">q_value_fdr_simple</th>
 </tr>
 </thead>
 <tbody>
@@ -851,9 +856,9 @@ SimpleFDR =  \frac{FP}{TP}
 <th style="text-align: right;">score</th>
 <th style="text-align: left;">decoy_hit</th>
 <th style="text-align: right;">fdr_concatenated</th>
-<th style="text-align: right;">simple_fdr</th>
+<th style="text-align: right;">fdr_simple</th>
 <th style="text-align: right;">q_value_fdr_concatenated</th>
-<th style="text-align: right;">q_value_simple_fdr</th>
+<th style="text-align: right;">q_value_fdr_simple</th>
 </tr>
 </thead>
 <tbody>
@@ -948,7 +953,7 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] prozor_0.4.0  dplyr_1.2.1   ggplot2_4.0.4
+[1] ggplot2_4.0.4 dplyr_1.2.1   prozor_0.5.0 
 
 loaded via a namespace (and not attached):
  [1] vctrs_0.7.3        cli_3.6.6          knitr_1.52         rlang_1.3.0       
@@ -973,8 +978,8 @@ loaded via a namespace (and not attached):
 <div id="ref-Elias2007" class="csl-entry" role="listitem">
 Elias, Joshua E, and Steven P Gygi. 2007. <span>“Target-Decoy Search Strategy for Increased Confidence in Large-Scale Protein Identifications by Mass Spectrometry.”</span> <em>Nature Methods</em> 4 (3): 207–14.
 </div>
-<div id="ref-Kaell2007" class="csl-entry" role="listitem">
-Käll, Lukas, John D Storey, Michael J MacCoss, and William Stafford Noble. 2007. <span>“Assigning Significance to Peptides Identified by Tandem Mass Spectrometry Using Decoy Databases.”</span> <em>Journal of Proteome Research</em> 7 (01): 29–34.
+<div id="ref-Kaell2008" class="csl-entry" role="listitem">
+Käll, Lukas, John D Storey, Michael J MacCoss, and William Stafford Noble. 2008. <span>“Assigning Significance to Peptides Identified by Tandem Mass Spectrometry Using Decoy Databases.”</span> <em>Journal of Proteome Research</em> 7 (1): 29–34.
 </div>
 <div id="ref-Storey2003" class="csl-entry" role="listitem">
 Storey, John D, and Robert Tibshirani. 2003. <span>“Statistical Significance for Genomewide Studies.”</span> <em>Proceedings of the National Academy of Sciences</em> 100 (16): 9440–45.

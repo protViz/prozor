@@ -81,7 +81,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-63b5708e65d6cd79cd7618c58d0c21e7.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-44f7b187718e43abfea0560aa82c1a71.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-ded4168630e1422961a6247c4ac5fe91.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -324,8 +324,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./man/read_peptide_fasta.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">read_peptide_fasta</span></a>
+  <a href="./man/read_fasta.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">read_fasta</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -396,7 +396,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 
 
-<p><a href="https://cran.r-project.org/package=prozor"><img src="https://www.r-pkg.org/badges/version/prozor.png" class="img-fluid" alt="CRAN_Status_Badge"></a> <a href="https://cran.r-project.org/package=prozor"><img src="https://cranlogs.r-pkg.org/badges/grand-total/prozor.png" class="img-fluid"></a> <a href="https://github.com/prolfqua/prozor/actions/workflows/R-CMD-check.yaml"><img src="https://github.com/prolfqua/prozor/actions/workflows/R-CMD-check.yaml/badge.svg" class="img-fluid" alt="R-CMD-check"></a> <a href="https://github.com/prolfqua/prozor/actions/workflows/lint.yaml"><img src="https://github.com/prolfqua/prozor/actions/workflows/lint.yaml/badge.svg" class="img-fluid" alt="lint"></a> <a href="https://prolfqua.github.io/prozor/"><img src="https://github.com/prolfqua/prozor/actions/workflows/altdoc.yaml/badge.svg" class="img-fluid" alt="altdoc"></a></p>
+<p><a href="https://cran.r-project.org/package=prozor"><img src="https://www.r-pkg.org/badges/version/prozor.png" class="img-fluid" alt="CRAN_Status_Badge"></a> <a href="https://cran.r-project.org/package=prozor"><img src="https://cranlogs.r-pkg.org/badges/grand-total/prozor.png" class="img-fluid"></a> <a href="https://www.repostatus.org/#active"><img src="https://www.repostatus.org/badges/latest/active.svg" class="img-fluid" alt="Project Status: Active"></a> <a href="https://github.com/prolfqua/prozor/actions/workflows/R-CMD-check.yaml"><img src="https://github.com/prolfqua/prozor/actions/workflows/R-CMD-check.yaml/badge.svg" class="img-fluid" alt="R-CMD-check"></a> <a href="https://app.codecov.io/gh/prolfqua/prozor"><img src="https://codecov.io/gh/prolfqua/prozor/branch/master/graph/badge.svg" class="img-fluid" alt="codecov"></a> <a href="https://github.com/prolfqua/prozor/actions/workflows/lint.yaml"><img src="https://github.com/prolfqua/prozor/actions/workflows/lint.yaml/badge.svg" class="img-fluid" alt="lint"></a> <a href="https://prolfqua.github.io/prozor/"><img src="https://github.com/prolfqua/prozor/actions/workflows/altdoc.yaml/badge.svg" class="img-fluid" alt="altdoc"></a></p>
 <section id="prozor" class="level1">
 <h1>prozor</h1>
 <ul>
@@ -405,6 +405,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>Estimate the false discovery rate for target-decoy search results on PSM, precursor, peptide and protein level.</li>
 <li>Compute dynamic SWATH (DIA) window sizes from the distribution of MS1 masses.</li>
 </ul>
+<p>Terms:</p>
+<ul>
+<li>PSM (peptide-spectrum match): a fragment spectrum that a search engine assigned to a peptide.</li>
+<li>Decoy: a reversed protein sequence added to the database; matches to decoys estimate the number of false matches.</li>
+<li>DIA (data-independent acquisition, also SWATH): the instrument fragments all precursors within a series of m/z windows.</li>
+<li>MS1: the survey scan that measures the m/z of the intact peptide ions (precursors).</li>
+</ul>
+<p>Version 0.5.0 breaks the API of CRAN 0.3.1: functions, arguments and result columns are renamed, and R6 classes compute the DIA windows and the FDR. See <a href="https://github.com/prolfqua/prozor/blob/master/NEWS.md"><code>NEWS.md</code></a>.</p>
 <section id="documentation" class="level2">
 <h2 class="anchored" data-anchor-id="documentation">Documentation</h2>
 <p>The website https://prolfqua.github.io/prozor/ has the function reference, the articles and the <a href="https://prolfqua.github.io/prozor/NEWS.html">changelog</a>.</p>
@@ -430,13 +438,38 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Clone the repository and use the Makefile targets: <code>make document</code> (roxygen2 docs and NAMESPACE), <code>make test</code>, <code>make check</code>, <code>make lint</code> and <code>make format</code> (air).</p>
 </section>
 </section>
+<section id="example" class="level2">
+<h2 class="anchored" data-anchor-id="example">Example</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(prozor)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co"># protein sequences and the peptides identified in a human sample, bundled with prozor</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>fasta <span class="ot">&lt;-</span> <span class="fu">read_fasta</span>(<span class="fu">system.file</span>(<span class="st">"p1000_db1_example/Annotation_canSeq.fasta.gz"</span>, <span class="at">package =</span> <span class="st">"prozor"</span>))</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>peptides <span class="ot">&lt;-</span> <span class="fu">unique</span>(<span class="fu">read.delim</span>(<span class="fu">system.file</span>(<span class="st">"extdata/IDResults.txt.gz"</span>, <span class="at">package =</span> <span class="st">"prozor"</span>))<span class="sc">$</span>peptideSeq)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co"># the proteins each peptide occurs in, then the minimal protein set that explains all peptides</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>annotation <span class="ot">&lt;-</span> <span class="fu">annotate_peptides</span>(peptides, fasta)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>groups <span class="ot">&lt;-</span> <span class="fu">greedy_parsimony</span>(annotation)</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">peptides =</span> <span class="fu">length</span>(peptides), <span class="at">proteins =</span> <span class="fu">length</span>(<span class="fu">unique</span>(annotation<span class="sc">$</span>protein_id)), <span class="at">groups =</span> <span class="fu">length</span>(<span class="fu">unique</span>(groups)))</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; peptides proteins   groups</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     1520      382      244</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="co"># FDR of target-decoy search results: the score at a q-value of 1 % (smaller scores are better)</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>fdr <span class="ot">&lt;-</span> TargetDecoyFDR<span class="sc">$</span><span class="fu">new</span>(fdr_sample<span class="sc">$</span>score, <span class="at">decoy_hit =</span> <span class="fu">grepl</span>(<span class="st">"^REV_"</span>, fdr_sample<span class="sc">$</span>protein_id), <span class="at">larger_better =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>fdr<span class="sc">$</span><span class="fu">score_at</span>(<span class="at">q_value =</span> <span class="fl">0.01</span>)</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.03394749</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The 1,520 peptides match 382 proteins; 244 proteins or protein groups explain all of them.</p>
+</section>
 <section id="creating-a-fasta-database-from-the-command-line" class="level2">
 <h2 class="anchored" data-anchor-id="creating-a-fasta-database-from-the-command-line">Creating a FASTA database from the command line</h2>
 <p>prozor installs the script <code>fgcz_create_fasta.R</code> (it needs the docopt package). It reads all FASTA files and the <code>annotation.txt</code> in a directory, adds contaminants and reversed decoy sequences, and writes one FASTA file:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="va">script</span><span class="op">=</span><span class="va">$(</span><span class="ex">Rscript</span> <span class="at">-e</span> <span class="st">'cat(system.file("script", "fgcz_create_fasta.R", package = "prozor"))'</span><span class="va">)</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Rscript</span> <span class="st">"</span><span class="va">$script</span><span class="st">"</span> <span class="at">-h</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="ex">Rscript</span> <span class="st">"</span><span class="va">$script</span><span class="st">"</span> path/to/database_dir <span class="at">-o</span> path/to/output_dir</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="ex">Rscript</span> <span class="st">"</span><span class="va">$script</span><span class="st">"</span> path/to/database_dir nodecoy <span class="at">-c</span> none <span class="at">-o</span> path/to/output_dir</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="va">script</span><span class="op">=</span><span class="va">$(</span><span class="ex">Rscript</span> <span class="at">-e</span> <span class="st">'cat(system.file("script", "fgcz_create_fasta.R", package = "prozor"))'</span><span class="va">)</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="ex">Rscript</span> <span class="st">"</span><span class="va">$script</span><span class="st">"</span> <span class="at">-h</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="ex">Rscript</span> <span class="st">"</span><span class="va">$script</span><span class="st">"</span> path/to/database_dir <span class="at">-o</span> path/to/output_dir</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="ex">Rscript</span> <span class="st">"</span><span class="va">$script</span><span class="st">"</span> path/to/database_dir nodecoy <span class="at">-c</span> none <span class="at">-o</span> path/to/output_dir</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="citation" class="level2">
+<h2 class="anchored" data-anchor-id="citation">Citation</h2>
+<p>Cite prozor with its DOI <a href="https://doi.org/10.32614/CRAN.package.prozor">10.32614/CRAN.package.prozor</a>; <code>citation("prozor")</code> gives the full reference.</p>
 
 
 </section>

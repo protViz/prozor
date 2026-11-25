@@ -83,7 +83,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-63b5708e65d6cd79cd7618c58d0c21e7.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-44f7b187718e43abfea0560aa82c1a71.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-ded4168630e1422961a6247c4ac5fe91.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -326,8 +326,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../man/read_peptide_fasta.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">read_peptide_fasta</span></a>
+  <a href="../man/read_fasta.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">read_fasta</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -522,33 +522,40 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="define-helper-function" class="level1">
 <h1>Define helper function</h1>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>summarizeLevel <span class="ot">&lt;-</span> <span class="cf">function</span>(data, <span class="at">level =</span> <span class="st">"PSM"</span>, <span class="at">score =</span> <span class="st">"e.value"</span>, <span class="at">protein =</span> <span class="st">"protein"</span>, <span class="at">q_value =</span> <span class="fl">0.01</span>, <span class="at">decoy =</span> <span class="st">"^REV_"</span>) {</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  fdr <span class="ot">&lt;-</span> TargetDecoyFDR<span class="sc">$</span><span class="fu">new</span>(data[[score]], <span class="at">decoy_hit =</span> <span class="fu">grepl</span>(decoy, data[[protein]]), <span class="at">larger_better =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  cutoff <span class="ot">&lt;-</span> fdr<span class="sc">$</span><span class="fu">score_at</span>(<span class="at">q_value =</span> q_value, <span class="at">method =</span> <span class="st">"simple_fdr"</span>)</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  filt <span class="ot">&lt;-</span> <span class="fu">filter</span>(data, .data[[score]] <span class="sc">&lt;=</span> .env<span class="sc">$</span>cutoff)</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  nDecoy <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">grepl</span>(decoy, filt[[protein]]))</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  nConfident <span class="ot">&lt;-</span> <span class="fu">nrow</span>(filt) <span class="sc">-</span> nDecoy</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  res <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">n =</span> <span class="fu">nrow</span>(data),</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">nConfident =</span> nConfident,</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">nDecoy =</span> nDecoy,</span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">fdr =</span> nDecoy <span class="sc">/</span> nConfident,</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">assignmentRate =</span> <span class="fu">nrow</span>(filt) <span class="sc">/</span> <span class="fu">nrow</span>(data) <span class="sc">*</span> <span class="dv">100</span></span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">colnames</span>(res) <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="fu">colnames</span>(res), level)</span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>  res</span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>summarize_level <span class="ot">&lt;-</span> <span class="cf">function</span>(</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  data,</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">level =</span> <span class="st">"psm"</span>,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">score =</span> <span class="st">"e.value"</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">protein =</span> <span class="st">"protein"</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">q_value =</span> <span class="fl">0.01</span>,</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">decoy =</span> <span class="st">"^REV_"</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>) {</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  fdr <span class="ot">&lt;-</span> TargetDecoyFDR<span class="sc">$</span><span class="fu">new</span>(data[[score]], <span class="at">decoy_hit =</span> <span class="fu">grepl</span>(decoy, data[[protein]]), <span class="at">larger_better =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  cutoff <span class="ot">&lt;-</span> fdr<span class="sc">$</span><span class="fu">score_at</span>(<span class="at">q_value =</span> q_value, <span class="at">method =</span> <span class="st">"fdr_simple"</span>)</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  filtered <span class="ot">&lt;-</span> <span class="fu">filter</span>(data, .data[[score]] <span class="sc">&lt;=</span> .env<span class="sc">$</span>cutoff)</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  n_decoy <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">grepl</span>(decoy, filtered[[protein]]))</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  n_confident <span class="ot">&lt;-</span> <span class="fu">nrow</span>(filtered) <span class="sc">-</span> n_decoy</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>  res <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">n =</span> <span class="fu">nrow</span>(data),</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_confident =</span> n_confident,</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">n_decoy =</span> n_decoy,</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">fdr =</span> n_decoy <span class="sc">/</span> n_confident,</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">assignment_rate =</span> <span class="fu">nrow</span>(filtered) <span class="sc">/</span> <span class="fu">nrow</span>(data) <span class="sc">*</span> <span class="dv">100</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">colnames</span>(res) <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="fu">colnames</span>(res), level, <span class="at">sep =</span> <span class="st">"_"</span>)</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>  res</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="psm-level" class="level1">
 <h1>PSM level</h1>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summarizeLevel</span>(bcd)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summarize_level</span>(bcd)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>  nPSM nConfidentPSM nDecoyPSM     fdrPSM assignmentRatePSM
-1 4557          3367        33 0.00980101          74.61049</code></pre>
+<pre><code>  n_psm n_confident_psm n_decoy_psm    fdr_psm assignment_rate_psm
+1  4557            3367          33 0.00980101            74.61049</code></pre>
 </div>
 </div>
 </section>
@@ -556,22 +563,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h1>Peptide FDR</h1>
 <p>Use minimum of e.value of all PSMs matching a peptide as new score for the peptide.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>peptideLevel <span class="ot">&lt;-</span> bcd <span class="sc">|&gt;</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>peptide_level <span class="ot">&lt;-</span> bcd <span class="sc">|&gt;</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">n =</span> <span class="fu">n</span>(), <span class="at">min_e.value =</span> <span class="fu">min</span>(e.value), <span class="at">.by =</span> <span class="fu">c</span>(plain_peptide, protein))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(peptideLevel<span class="sc">$</span>n)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(peptide_level<span class="sc">$</span>n)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
    1    2    3    4    6 
 4180  157   15    3    1 </code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summarizeLevel</span>(peptideLevel, <span class="at">score =</span> <span class="st">"min_e.value"</span>, <span class="at">level =</span> <span class="st">"Peptides"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summarize_level</span>(peptide_level, <span class="at">score =</span> <span class="st">"min_e.value"</span>, <span class="at">level =</span> <span class="st">"peptides"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>  nPeptides nConfidentPeptides nDecoyPeptides fdrPeptides
-1      4356               3180             32  0.01006289
-  assignmentRatePeptides
-1               73.73737</code></pre>
+<pre><code>  n_peptides n_confident_peptides n_decoy_peptides fdr_peptides
+1       4356                 3180               32   0.01006289
+  assignment_rate_peptides
+1                 73.73737</code></pre>
 </div>
 </div>
 </section>
@@ -579,11 +586,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h1>Protein FDR</h1>
 <p>Use minimum of e.value of all PSMs matching a protein as new score for the protein.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>proteinLevel <span class="ot">&lt;-</span> bcd <span class="sc">|&gt;</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>protein_level <span class="ot">&lt;-</span> bcd <span class="sc">|&gt;</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(<span class="at">n =</span> <span class="fu">n</span>(), <span class="at">min_e.value =</span> <span class="fu">min</span>(e.value), <span class="at">.by =</span> protein)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(proteinLevel<span class="sc">$</span>n)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(protein_level<span class="sc">$</span>n)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
    1    2    3    4    5    6    7    8    9   10   11   12   13   14   15   16 
@@ -591,63 +598,73 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   17   18   19   20   21   36 
    1    2    1    2    1    1 </code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summarizeLevel</span>(proteinLevel, <span class="at">score =</span> <span class="st">"min_e.value"</span>, <span class="at">level =</span> <span class="st">"Proteins"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summarize_level</span>(protein_level, <span class="at">score =</span> <span class="st">"min_e.value"</span>, <span class="at">level =</span> <span class="st">"proteins"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>  nProteins nConfidentProteins nDecoyProteins fdrProteins
-1      2629               1562             15 0.009603073
-  assignmentRateProteins
-1               59.98479</code></pre>
+<pre><code>  n_proteins n_confident_proteins n_decoy_proteins fdr_proteins
+1       2629                 1562               15  0.009603073
+  assignment_rate_proteins
+1                 59.98479</code></pre>
 </div>
 </div>
 </section>
 <section id="filter-on-psm-level-only" class="level1">
 <h1>Filter on PSM level only</h1>
-<p>Filter on PSM level and then estimate the FDR on peptide and protein level.</p>
+<p>Filter on PSM level and then estimate the FDR on peptide and protein level. <code>score_cutoff()</code> returns the score at the requested q-value; the code below prints it and keeps the PSMs that pass it.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>filtLevel <span class="ot">&lt;-</span> <span class="cf">function</span>(data, <span class="at">score =</span> <span class="st">"e.value"</span>, <span class="at">larger_better =</span> <span class="cn">FALSE</span>, <span class="at">protein =</span> <span class="st">"protein"</span>, <span class="at">q_value =</span> <span class="fl">0.01</span>, <span class="at">decoy =</span> <span class="st">"^REV_"</span>) {</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  fdr <span class="ot">&lt;-</span> TargetDecoyFDR<span class="sc">$</span><span class="fu">new</span>(data[[score]], <span class="at">decoy_hit =</span> <span class="fu">grepl</span>(decoy, data[[protein]]), <span class="at">larger_better =</span> larger_better)</span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  cutoff <span class="ot">&lt;-</span> fdr<span class="sc">$</span><span class="fu">score_at</span>(<span class="at">q_value =</span> q_value, <span class="at">method =</span> <span class="st">"simple_fdr"</span>)</span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(cutoff)</span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (larger_better) {</span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(data, .data[[score]] <span class="sc">&gt;=</span> .env<span class="sc">$</span>cutoff)</span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(data, .data[[score]] <span class="sc">&lt;=</span> .env<span class="sc">$</span>cutoff)</span>
-<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>summarizeFDRS <span class="ot">&lt;-</span> <span class="cf">function</span>(data, filt, psmFdrCutoff, <span class="at">pep =</span> <span class="st">"plain_peptide"</span>, <span class="at">prot =</span> <span class="st">"protein"</span>, <span class="at">decoy =</span> <span class="st">"^REV_"</span>) {</span>
-<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>  res <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
-<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>  res<span class="sc">$</span>nPSM <span class="ot">&lt;-</span> <span class="fu">nrow</span>(data)</span>
-<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>  res<span class="sc">$</span>psmFdrCutoff <span class="ot">&lt;-</span> psmFdrCutoff</span>
-<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>  res<span class="sc">$</span>nDecoyPSM <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">grepl</span>(decoy, filt[[prot]]))</span>
-<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>  res<span class="sc">$</span>nConfidentPSM <span class="ot">&lt;-</span> <span class="fu">nrow</span>(filt) <span class="sc">-</span> res<span class="sc">$</span>nDecoyPSM</span>
-<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>  res<span class="sc">$</span>fdrPSM <span class="ot">&lt;-</span> res<span class="sc">$</span>nDecoyPSM <span class="sc">/</span> res<span class="sc">$</span>nConfidentPSM</span>
-<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>  <span class="co"># peptide level FDR</span></span>
-<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>  filtPep <span class="ot">&lt;-</span> filt <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="fu">all_of</span>(<span class="fu">c</span>(pep, prot))) <span class="sc">|&gt;</span> <span class="fu">distinct</span>()</span>
-<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a>  res<span class="sc">$</span>nDecoyPeptide <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">grepl</span>(decoy, filtPep[[prot]]))</span>
-<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>  res<span class="sc">$</span>nConfidentPeptide <span class="ot">&lt;-</span> <span class="fu">nrow</span>(filtPep) <span class="sc">-</span> res<span class="sc">$</span>nDecoyPeptide</span>
-<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a>  res<span class="sc">$</span>fdrPeptide <span class="ot">&lt;-</span> res<span class="sc">$</span>nDecoyPeptide <span class="sc">/</span> res<span class="sc">$</span>nConfidentPeptide</span>
-<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a>  <span class="co"># protein level FDR</span></span>
-<span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a>  filtProt <span class="ot">&lt;-</span> filt <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="fu">all_of</span>(prot)) <span class="sc">|&gt;</span> <span class="fu">distinct</span>()</span>
-<span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a>  res<span class="sc">$</span>nDecoyProtein <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">grepl</span>(decoy, filtProt[[prot]]))</span>
-<span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a>  res<span class="sc">$</span>nConfidentProtein <span class="ot">&lt;-</span> <span class="fu">nrow</span>(filtProt) <span class="sc">-</span> res<span class="sc">$</span>nDecoyProtein</span>
-<span id="cb16-30"><a href="#cb16-30" aria-hidden="true" tabindex="-1"></a>  res<span class="sc">$</span>fdrProtein <span class="ot">&lt;-</span> res<span class="sc">$</span>nDecoyProtein <span class="sc">/</span> res<span class="sc">$</span>nConfidentProtein</span>
-<span id="cb16-31"><a href="#cb16-31" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(res)</span>
-<span id="cb16-32"><a href="#cb16-32" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>score_cutoff <span class="ot">&lt;-</span> <span class="cf">function</span>(</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  data,</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">score =</span> <span class="st">"e.value"</span>,</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">larger_better =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">protein =</span> <span class="st">"protein"</span>,</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">q_value =</span> <span class="fl">0.01</span>,</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">decoy =</span> <span class="st">"^REV_"</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>) {</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  fdr <span class="ot">&lt;-</span> TargetDecoyFDR<span class="sc">$</span><span class="fu">new</span>(data[[score]], <span class="at">decoy_hit =</span> <span class="fu">grepl</span>(decoy, data[[protein]]), <span class="at">larger_better =</span> larger_better)</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>  fdr<span class="sc">$</span><span class="fu">score_at</span>(<span class="at">q_value =</span> q_value, <span class="at">method =</span> <span class="st">"fdr_simple"</span>)</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>summarize_fdrs <span class="ot">&lt;-</span> <span class="cf">function</span>(</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>  data,</span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>  filtered,</span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>  psm_fdr_cutoff,</span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">peptide =</span> <span class="st">"plain_peptide"</span>,</span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">protein =</span> <span class="st">"protein"</span>,</span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">decoy =</span> <span class="st">"^REV_"</span></span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>) {</span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>  res <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a>  res<span class="sc">$</span>n_psm <span class="ot">&lt;-</span> <span class="fu">nrow</span>(data)</span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>  res<span class="sc">$</span>psm_fdr_cutoff <span class="ot">&lt;-</span> psm_fdr_cutoff</span>
+<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a>  res<span class="sc">$</span>n_decoy_psm <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">grepl</span>(decoy, filtered[[protein]]))</span>
+<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a>  res<span class="sc">$</span>n_confident_psm <span class="ot">&lt;-</span> <span class="fu">nrow</span>(filtered) <span class="sc">-</span> res<span class="sc">$</span>n_decoy_psm</span>
+<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a>  res<span class="sc">$</span>fdr_psm <span class="ot">&lt;-</span> res<span class="sc">$</span>n_decoy_psm <span class="sc">/</span> res<span class="sc">$</span>n_confident_psm</span>
+<span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a>  <span class="co"># peptide level FDR</span></span>
+<span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a>  filtered_peptides <span class="ot">&lt;-</span> filtered <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="fu">all_of</span>(<span class="fu">c</span>(peptide, protein))) <span class="sc">|&gt;</span> <span class="fu">distinct</span>()</span>
+<span id="cb16-30"><a href="#cb16-30" aria-hidden="true" tabindex="-1"></a>  res<span class="sc">$</span>n_decoy_peptide <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">grepl</span>(decoy, filtered_peptides[[protein]]))</span>
+<span id="cb16-31"><a href="#cb16-31" aria-hidden="true" tabindex="-1"></a>  res<span class="sc">$</span>n_confident_peptide <span class="ot">&lt;-</span> <span class="fu">nrow</span>(filtered_peptides) <span class="sc">-</span> res<span class="sc">$</span>n_decoy_peptide</span>
+<span id="cb16-32"><a href="#cb16-32" aria-hidden="true" tabindex="-1"></a>  res<span class="sc">$</span>fdr_peptide <span class="ot">&lt;-</span> res<span class="sc">$</span>n_decoy_peptide <span class="sc">/</span> res<span class="sc">$</span>n_confident_peptide</span>
+<span id="cb16-33"><a href="#cb16-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-34"><a href="#cb16-34" aria-hidden="true" tabindex="-1"></a>  <span class="co"># protein level FDR</span></span>
+<span id="cb16-35"><a href="#cb16-35" aria-hidden="true" tabindex="-1"></a>  filtered_proteins <span class="ot">&lt;-</span> filtered <span class="sc">|&gt;</span> <span class="fu">select</span>(<span class="fu">all_of</span>(protein)) <span class="sc">|&gt;</span> <span class="fu">distinct</span>()</span>
+<span id="cb16-36"><a href="#cb16-36" aria-hidden="true" tabindex="-1"></a>  res<span class="sc">$</span>n_decoy_protein <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">grepl</span>(decoy, filtered_proteins[[protein]]))</span>
+<span id="cb16-37"><a href="#cb16-37" aria-hidden="true" tabindex="-1"></a>  res<span class="sc">$</span>n_confident_protein <span class="ot">&lt;-</span> <span class="fu">nrow</span>(filtered_proteins) <span class="sc">-</span> res<span class="sc">$</span>n_decoy_protein</span>
+<span id="cb16-38"><a href="#cb16-38" aria-hidden="true" tabindex="-1"></a>  res<span class="sc">$</span>fdr_protein <span class="ot">&lt;-</span> res<span class="sc">$</span>n_decoy_protein <span class="sc">/</span> res<span class="sc">$</span>n_confident_protein</span>
+<span id="cb16-39"><a href="#cb16-39" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(res)</span>
+<span id="cb16-40"><a href="#cb16-40" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <section id="use-e-value" class="level2">
 <h2 class="anchored" data-anchor-id="use-e-value">Use e-value</h2>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># psm level FDR</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>psmFdrCutoff <span class="ot">&lt;-</span> <span class="fl">0.01</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>psm_fdr_cutoff <span class="ot">&lt;-</span> <span class="fl">0.01</span></span>
 <span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>filt <span class="ot">&lt;-</span> <span class="fu">filtLevel</span>(bcd, <span class="at">score =</span> <span class="st">"e.value"</span>, <span class="at">larger_better =</span> <span class="cn">FALSE</span>, <span class="at">q_value =</span> psmFdrCutoff)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>cutoff <span class="ot">&lt;-</span> <span class="fu">score_cutoff</span>(bcd, <span class="at">score =</span> <span class="st">"e.value"</span>, <span class="at">larger_better =</span> <span class="cn">FALSE</span>, <span class="at">q_value =</span> psm_fdr_cutoff)</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>cutoff</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.491</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">summarizeFDRS</span>(bcd, filt, psmFdrCutoff))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>filtered <span class="ot">&lt;-</span> <span class="fu">filter</span>(bcd, e.value <span class="sc">&lt;=</span> cutoff)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">summarize_fdrs</span>(bcd, filtered, psm_fdr_cutoff))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <colgroup>
@@ -655,27 +672,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <col style="width: 9%">
 <col style="width: 7%">
 <col style="width: 10%">
-<col style="width: 6%">
+<col style="width: 5%">
 <col style="width: 10%">
-<col style="width: 13%">
-<col style="width: 8%">
+<col style="width: 12%">
+<col style="width: 7%">
 <col style="width: 10%">
-<col style="width: 13%">
-<col style="width: 8%">
+<col style="width: 12%">
+<col style="width: 7%">
 </colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: right;">nPSM</th>
-<th style="text-align: right;">psmFdrCutoff</th>
-<th style="text-align: right;">nDecoyPSM</th>
-<th style="text-align: right;">nConfidentPSM</th>
-<th style="text-align: right;">fdrPSM</th>
-<th style="text-align: right;">nDecoyPeptide</th>
-<th style="text-align: right;">nConfidentPeptide</th>
-<th style="text-align: right;">fdrPeptide</th>
-<th style="text-align: right;">nDecoyProtein</th>
-<th style="text-align: right;">nConfidentProtein</th>
-<th style="text-align: right;">fdrProtein</th>
+<th style="text-align: right;">n_psm</th>
+<th style="text-align: right;">psm_fdr_cutoff</th>
+<th style="text-align: right;">n_decoy_psm</th>
+<th style="text-align: right;">n_confident_psm</th>
+<th style="text-align: right;">fdr_psm</th>
+<th style="text-align: right;">n_decoy_peptide</th>
+<th style="text-align: right;">n_confident_peptide</th>
+<th style="text-align: right;">fdr_peptide</th>
+<th style="text-align: right;">n_decoy_protein</th>
+<th style="text-align: right;">n_confident_protein</th>
+<th style="text-align: right;">fdr_protein</th>
 </tr>
 </thead>
 <tbody>
@@ -701,13 +718,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="use-sp_score">Use sp_score</h2>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># psm level FDR</span></span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>psmFdrCutoff <span class="ot">&lt;-</span> <span class="fl">0.01</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>psm_fdr_cutoff <span class="ot">&lt;-</span> <span class="fl">0.01</span></span>
 <span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>filt <span class="ot">&lt;-</span> <span class="fu">filtLevel</span>(bcd, <span class="at">score =</span> <span class="st">"sp_score"</span>, <span class="at">larger_better =</span> <span class="cn">TRUE</span>, <span class="at">q_value =</span> psmFdrCutoff)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>cutoff <span class="ot">&lt;-</span> <span class="fu">score_cutoff</span>(bcd, <span class="at">score =</span> <span class="st">"sp_score"</span>, <span class="at">larger_better =</span> <span class="cn">TRUE</span>, <span class="at">q_value =</span> psm_fdr_cutoff)</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>cutoff</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 466.8</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">summarizeFDRS</span>(bcd, filt, psmFdrCutoff))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>filtered <span class="ot">&lt;-</span> <span class="fu">filter</span>(bcd, sp_score <span class="sc">&gt;=</span> cutoff)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">summarize_fdrs</span>(bcd, filtered, psm_fdr_cutoff))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <colgroup>
@@ -715,27 +734,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <col style="width: 9%">
 <col style="width: 7%">
 <col style="width: 10%">
-<col style="width: 6%">
+<col style="width: 5%">
 <col style="width: 10%">
-<col style="width: 13%">
-<col style="width: 8%">
+<col style="width: 12%">
+<col style="width: 7%">
 <col style="width: 10%">
-<col style="width: 13%">
-<col style="width: 8%">
+<col style="width: 12%">
+<col style="width: 7%">
 </colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: right;">nPSM</th>
-<th style="text-align: right;">psmFdrCutoff</th>
-<th style="text-align: right;">nDecoyPSM</th>
-<th style="text-align: right;">nConfidentPSM</th>
-<th style="text-align: right;">fdrPSM</th>
-<th style="text-align: right;">nDecoyPeptide</th>
-<th style="text-align: right;">nConfidentPeptide</th>
-<th style="text-align: right;">fdrPeptide</th>
-<th style="text-align: right;">nDecoyProtein</th>
-<th style="text-align: right;">nConfidentProtein</th>
-<th style="text-align: right;">fdrProtein</th>
+<th style="text-align: right;">n_psm</th>
+<th style="text-align: right;">psm_fdr_cutoff</th>
+<th style="text-align: right;">n_decoy_psm</th>
+<th style="text-align: right;">n_confident_psm</th>
+<th style="text-align: right;">fdr_psm</th>
+<th style="text-align: right;">n_decoy_peptide</th>
+<th style="text-align: right;">n_confident_peptide</th>
+<th style="text-align: right;">fdr_peptide</th>
+<th style="text-align: right;">n_decoy_protein</th>
+<th style="text-align: right;">n_confident_protein</th>
+<th style="text-align: right;">fdr_protein</th>
 </tr>
 </thead>
 <tbody>

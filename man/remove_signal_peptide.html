@@ -81,7 +81,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-63b5708e65d6cd79cd7618c58d0c21e7.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-44f7b187718e43abfea0560aa82c1a71.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-ded4168630e1422961a6247c4ac5fe91.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -324,8 +324,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../man/read_peptide_fasta.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">read_peptide_fasta</span></a>
+  <a href="../man/read_fasta.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">read_fasta</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -404,7 +404,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="usage" class="level3">
 <h3 class="anchored" data-anchor-id="usage">Usage</h3>
-<pre><code class="language-R">remove_signal_peptide(db, signal, id_fun = make_chain_id)
+<pre><code class="language-R">remove_signal_peptide(fasta, signal, id_fun = make_chain_id)
 </code></pre>
 </section>
 <section id="arguments" class="level3">
@@ -412,10 +412,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <table role="presentation">
 <tbody><tr>
 <td style="white-space: collapse; font-family: monospace; vertical-align: top">
-<code id="db">db</code>
+<code id="fasta">fasta</code>
 </td>
 <td>
-A list of UniProt protein sequences, as returned by <code>read_peptide_fasta()</code>, named with UniProt IDs such as <code>“sp|P30443|1A01_HUMAN”</code> (the accession follows the first <code>|</code>).
+A list of UniProt protein sequences, as returned by <code>read_fasta()</code>, named with UniProt IDs such as <code>“sp|P30443|1A01_HUMAN”</code> (the accession follows the first <code>|</code>).
 </td>
 </tr>
 <tr>
@@ -423,7 +423,7 @@ A list of UniProt protein sequences, as returned by <code>read_peptide_fasta()</
 <code id="signal">signal</code>
 </td>
 <td>
-A data frame with one row per entry of <code>db</code>, in the same order, and the columns <code>Entry</code> (the UniProt accession) and <code>Signal.peptide</code> (UniProt’s signal peptide feature, e.g.&nbsp;<code>“SIGNAL 1 20”</code> or <code>“SIGNAL 1..20; /evidence=…”</code>; empty if there is none).
+A data frame with one row per entry of <code>fasta</code>, in the same order, and the columns <code>Entry</code> (the UniProt accession) and <code>Signal.peptide</code> (UniProt’s signal peptide feature, e.g.&nbsp;<code>“SIGNAL 1 20”</code> or <code>“SIGNAL 1..20; /evidence=…”</code>; empty if there is none).
 </td>
 </tr>
 <tr>
@@ -438,11 +438,11 @@ Function that makes the ID of the remaining chain, e.g.&nbsp;<code>make_chain_id
 </section>
 <section id="value" class="level3">
 <h3 class="anchored" data-anchor-id="value">Value</h3>
-<p><code>db</code> with the signal peptides removed. A shortened sequence gets the ID made by <code>id_fun</code> as its list name, its <code>name</code> and the first word of its header; the rest of the header is kept.</p>
+<p><code>fasta</code> with the signal peptides removed. A shortened sequence gets the ID made by <code>id_fun</code> as its list name, its <code>name</code> and the first word of its header; the rest of the header is kept.</p>
 </section>
 <section id="see-also" class="level3">
 <h3 class="anchored" data-anchor-id="see-also">See Also</h3>
-<p>Other FASTA databases: <code>create_decoy_db()</code>, <code>create_fgcz_fasta_db()</code>, <code>load_contaminants()</code>, <code>make_chain_id()</code>, <code>make_chain_id_uniprot()</code>, <code>make_fasta_summary()</code>, <code>read_peptide_fasta()</code>, <code>reverse_seq()</code>, <code>write_fasta()</code></p>
+<p>Other FASTA databases: <code>create_decoy_db()</code>, <code>create_fgcz_fasta_db()</code>, <code>load_contaminants()</code>, <code>make_chain_id()</code>, <code>make_chain_id_uniprot()</code>, <code>make_fasta_summary()</code>, <code>read_fasta()</code>, <code>reverse_seq()</code>, <code>write_fasta()</code></p>
 </section>
 <section id="examples" class="level3">
 <h3 class="anchored" data-anchor-id="examples">Examples</h3>
@@ -450,11 +450,11 @@ Function that makes the ID of the remaining chain, e.g.&nbsp;<code>make_chain_id
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"prozor"</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>file <span class="ot">&lt;-</span> <span class="fu">system.file</span>(<span class="st">"extdata/fgcz_contaminants2021_20210929.fasta.gz"</span>, <span class="at">package =</span> <span class="st">"prozor"</span>)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>db <span class="ot">&lt;-</span> <span class="fu">read_peptide_fasta</span>(file)[<span class="dv">2</span><span class="sc">:</span><span class="dv">3</span>]</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>entry <span class="ot">&lt;-</span> <span class="fu">vapply</span>(<span class="fu">strsplit</span>(<span class="fu">names</span>(db), <span class="at">split =</span> <span class="st">"|"</span>, <span class="at">fixed =</span> <span class="cn">TRUE</span>), <span class="cf">function</span>(x) x[<span class="dv">2</span>], <span class="fu">character</span>(<span class="dv">1</span>))</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>fasta <span class="ot">&lt;-</span> <span class="fu">read_fasta</span>(file)[<span class="dv">2</span><span class="sc">:</span><span class="dv">3</span>]</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>entry <span class="ot">&lt;-</span> <span class="fu">vapply</span>(<span class="fu">strsplit</span>(<span class="fu">names</span>(fasta), <span class="at">split =</span> <span class="st">"|"</span>, <span class="at">fixed =</span> <span class="cn">TRUE</span>), <span class="cf">function</span>(x) x[<span class="dv">2</span>], <span class="fu">character</span>(<span class="dv">1</span>))</span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>signal <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">Entry =</span> entry, <span class="at">Signal.peptide =</span> <span class="fu">c</span>(<span class="st">"SIGNAL 1 20"</span>, <span class="st">""</span>))</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">remove_signal_peptide</span>(db, signal)</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">nchar</span>(db[[<span class="dv">1</span>]])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">remove_signal_peptide</span>(fasta, signal)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">nchar</span>(fasta[[<span class="dv">1</span>]])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 148</code></pre>
 </div>

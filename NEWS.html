@@ -46,7 +46,7 @@ ul.task-list li input[type="checkbox"] {
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-63b5708e65d6cd79cd7618c58d0c21e7.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-44f7b187718e43abfea0560aa82c1a71.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-ded4168630e1422961a6247c4ac5fe91.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -289,8 +289,8 @@ ul.task-list li input[type="checkbox"] {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./man/read_peptide_fasta.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">read_peptide_fasta</span></a>
+  <a href="./man/read_fasta.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">read_fasta</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -361,8 +361,9 @@ ul.task-list li input[type="checkbox"] {
 
 
 
-<section id="prozor-0.4.0" class="level1">
-<h1>prozor 0.4.0</h1>
+<section id="prozor-0.5.0" class="level1">
+<h1>prozor 0.5.0</h1>
+<p>prozor 0.4.0 was not released to CRAN; this section lists all changes since CRAN 0.3.1.</p>
 <section id="breaking-changes" class="level2">
 <h2 class="anchored" data-anchor-id="breaking-changes">Breaking changes</h2>
 <ul>
@@ -394,15 +395,15 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 <tr class="even">
 <td><code>readPeptideFasta()</code>, <code>writeFasta()</code></td>
-<td><code>read_peptide_fasta()</code>, <code>write_fasta()</code></td>
+<td><code>read_fasta()</code>, <code>write_fasta()</code></td>
 </tr>
 <tr class="odd">
 <td><code>loadContaminantsFasta2019()</code>, <code>loadContaminantsFasta2021()</code>, <code>loadContaminantsFGCZ2022()</code>, <code>load_universal_contaminants_2024()</code>, <code>load_special_prot_2024()</code></td>
 <td><code>load_contaminants("fgcz2019")</code>, <code>"fgcz2021"</code>, <code>"fgcz2022"</code>, <code>"universal2024"</code>, <code>"special2024"</code></td>
 </tr>
 <tr class="even">
-<td><code>greedyRes2Matrix()</code></td>
-<td><code>greedy_to_table()</code></td>
+<td><code>greedyRes2Matrix(res)</code></td>
+<td><code>greedy_to_table(groups)</code></td>
 </tr>
 <tr class="odd">
 <td><code>removeSignalPeptide()</code>, <code>makeID()</code>, <code>makeIDUnip()</code></td>
@@ -414,109 +415,240 @@ ul.task-list li input[type="checkbox"] {
 </tr>
 <tr class="odd">
 <td><code>Cdsw</code> methods <code>asTable()</code>, <code>showCycle()</code>, <code>optimizeWindows()</code></td>
-<td><code>as_table()</code>, <code>show_cycle()</code>, <code>optimize_windows()</code></td>
+<td><code>as_table()</code>, <code>plot_cycle()</code>, <code>optimize_windows()</code></td>
+</tr>
+<tr class="even">
+<td><code>Cdsw</code> methods <code>constant_breaks()</code>, <code>quantile_breaks()</code>, <code>sampling_breaks()</code></td>
+<td><code>Cdsw$new(method = "constant")</code>, <code>"quantile"</code>, <code>"mixture"</code></td>
+</tr>
+<tr class="odd">
+<td><code>Cdsw$error()</code> elements <code>score1</code>, <code>score2</code>, <code>counts</code>, <code>optimumN</code></td>
+<td><code>manhattan</code>, <code>euclidean</code>, <code>normalized_counts</code>, <code>equal_counts</code></td>
 </tr>
 <tr class="even">
 <td>arguments <code>useContaminants</code>, <code>revLab</code>, <code>noHuman</code>, <code>databasedirectory</code>, <code>outputdir</code>, <code>resDB</code>, <code>qValue</code>, <code>idfun</code>, <code>ID</code></td>
-<td><code>contaminants</code>, <code>rev_lab</code>, <code>no_human</code>, <code>database_dir</code>, <code>output_dir</code>, <code>db</code>, <code>q_value</code>, <code>id_fun</code>, <code>id</code></td>
+<td><code>contaminants</code>, <code>rev_lab</code>, <code>no_human</code>, <code>database_dir</code>, <code>output_dir</code>, <code>fasta</code>, <code>q_value</code>, <code>id_fun</code>, <code>id</code></td>
 </tr>
 <tr class="odd">
-<td>data set <code>fdrSample</code></td>
-<td><code>fdr_sample</code></td>
+<td>arguments <code>pepinfo</code> of <code>annotatePeptides()</code>, <code>pepseq</code> of <code>annotateAHO()</code></td>
+<td><code>peptides</code></td>
+</tr>
+<tr class="even">
+<td>arguments <code>dbs</code>, <code>annot</code> of <code>createDecoyDB()</code>, <code>db</code> of <code>removeSignalPeptide()</code></td>
+<td><code>files</code>, <code>header</code>, <code>fasta</code></td>
+</tr>
+<tr class="odd">
+<td>arguments <code>wind</code>, <code>ms1data</code>, <code>maxbin</code> of <code>readjustWindows()</code> and <code>Cdsw$optimizeWindows()</code></td>
+<td><code>windows</code>, <code>masses</code>, <code>min_count</code></td>
+</tr>
+<tr class="even">
+<td>column <code>counts</code> of <code>Cdsw$asTable()</code>, <code>Cdsw$optimizeWindows()</code> and <code>readjustWindows()</code></td>
+<td><code>n_precursors</code></td>
+</tr>
+<tr class="odd">
+<td><code>Cdsw</code> arguments and field <code>nbins</code>, <code>maxwindow</code>, <code>minwindow</code></td>
+<td><code>n_bins</code>, <code>max_window</code>, <code>min_window</code></td>
+</tr>
+<tr class="even">
+<td>argument <code>sp</code> of <code>makeID()</code>, <code>makeIDUnip()</code></td>
+<td><code>start</code></td>
+</tr>
+<tr class="odd">
+<td>data set <code>fdrSample</code>, its column <code>score2</code></td>
+<td><code>fdr_sample</code>, column <code>neg_log10_score</code></td>
+</tr>
+<tr class="even">
+<td>column <code>m</code> of the data sets <code>pepprot</code> and <code>protpepmetashort</code></td>
+<td><code>precursor_mz</code></td>
 </tr>
 </tbody>
 </table>
 <ul>
+<li>Renamed since 0.4.0 (GitHub only), without aliases:
+<ul>
+<li><code>read_peptide_fasta()</code> → <code>read_fasta()</code></li>
+<li><code>annotate_peptides(pepinfo)</code>, <code>annotate_aho(pepseq)</code> → <code>annotate_peptides(peptides)</code>, <code>annotate_aho(peptides)</code></li>
+<li><code>create_decoy_db(dbs, annot)</code> → <code>create_decoy_db(files, header)</code></li>
+<li><code>make_fasta_summary(db)</code>, <code>remove_signal_peptide(db)</code>, element <code>db</code> of <code>create_fgcz_fasta_db()</code> → <code>fasta</code></li>
+<li><code>make_fasta_summary()</code> element and summary label <code>nr_sequences</code>, <code>nr sequences</code> → <code>n_sequences</code></li>
+<li><code>readjust_windows(wind, ms1data)</code>, <code>plot_windows(windows, ms1data)</code> → <code>readjust_windows(windows, masses)</code>, <code>plot_windows(windows, masses)</code></li>
+<li><code>maxbin</code> of <code>readjust_windows()</code> and <code>Cdsw$optimize_windows()</code> → <code>min_count</code></li>
+<li>column <code>counts</code> of <code>Cdsw$as_table()</code>, <code>Cdsw$optimize_windows()</code> and <code>readjust_windows()</code> → <code>n_precursors</code></li>
+<li><code>Cdsw$new(nbins, maxwindow, minwindow)</code>, field <code>nbins</code> → <code>n_bins</code>, <code>max_window</code>, <code>min_window</code>, field <code>n_bins</code></li>
+<li><code>Cdsw$new(method = "sampling")</code> → <code>method = "mixture"</code></li>
+<li><code>Cdsw$show_cycle()</code> → <code>Cdsw$plot_cycle()</code></li>
+<li><code>Cdsw$error()</code> elements <code>score1</code>, <code>score2</code>, <code>counts</code>, <code>optimum_n</code> → <code>manhattan</code>, <code>euclidean</code>, <code>normalized_counts</code>, <code>equal_counts</code></li>
+<li><code>greedy_to_table(res)</code>, column <code>protein</code> → <code>greedy_to_table(groups)</code>, column <code>protein_group</code></li>
+<li><code>TargetDecoyFDR</code>: <code>simple_fdr</code> → <code>fdr_simple</code> (method value, columns <code>fdr_simple</code> and <code>q_value_fdr_simple</code>)</li>
+<li><code>make_chain_id(sp)</code>, <code>make_chain_id_uniprot(sp)</code> → <code>start</code></li>
+<li>column <code>m</code> of <code>pepprot</code> and <code>protpepmetashort</code> → <code>precursor_mz</code></li>
+<li>column <code>score2</code> of <code>fdr_sample</code> → <code>neg_log10_score</code></li>
+</ul></li>
 <li>Result columns and list elements are snake_case too:
 <ul>
 <li><code>annotate_aho()</code>, <code>annotate_peptides()</code>: <code>protein_id</code>, <code>offset</code>, <code>protein_sequence</code>, <code>peptide_length</code>, and <code>peptide_seq</code> for vector input (was <code>proteinID</code>, <code>Offset</code>, <code>proteinSequence</code>, <code>lengthPeptide</code>, <code>peptideSeq</code>)</li>
-<li><code>greedy_to_table()</code>: <code>peptide</code>, <code>precursor_charge</code>, <code>protein</code> (was <code>Peptide</code>, <code>precursorCharge</code>, <code>Protein</code>); <code>precursor_charge</code> is an integer instead of a character</li>
-<li><code>make_fasta_summary(as_string = FALSE)</code>: <code>nr_sequences</code>, <code>length_summary</code>, <code>aa_freq</code>; <code>create_fgcz_fasta_db()</code>: <code>db</code>, <code>file_path</code>, <code>summary</code>, <code>call</code>, <code>db_name</code></li>
+<li><code>greedy_to_table()</code>: <code>peptide</code>, <code>precursor_charge</code>, <code>protein_group</code> (was <code>Peptide</code>, <code>precursorCharge</code>, <code>Protein</code>); <code>precursor_charge</code> is an integer instead of a character</li>
+<li><code>make_fasta_summary()</code>: <code>n_sequences</code>, <code>length_summary</code>, <code>aa_freq</code>; <code>create_fgcz_fasta_db()</code>: <code>fasta</code>, <code>file_path</code>, <code>summary</code>, <code>call</code>, <code>db_name</code></li>
 </ul></li>
-<li>The target-decoy FDR functions <code>computeFDR()</code>, <code>computeFDRwithID()</code>, <code>predictScoreFDR()</code> and <code>plotFDR()</code> are replaced by the R6 class <code>TargetDecoyFDR</code>, without aliases. <code>TargetDecoyFDR$new(score, decoy_hit, larger_better = TRUE, id = NULL)</code> sorts the hits and computes both FDR estimates and their q-values once; the read-only fields <code>larger_better</code>, <code>n</code> (number of hits) and <code>table</code> hold the result. <code>table</code> is a data frame in the sorted order with the columns <code>order</code>, <code>id</code> (only when given), <code>score</code>, <code>decoy_hit</code>, <code>fdr_concatenated</code>, <code>simple_fdr</code>, <code>q_value_fdr_concatenated</code> and <code>q_value_simple_fdr</code>; <code>computeFDR()</code> returned a list of vectors with <code>FPR</code>, <code>SimpleFDR</code>, <code>qValue_FPR</code>, <code>qValue_SimpleFDR</code> and, from <code>computeFDRwithID()</code>, <code>ID</code>. <code>FPR</code> became <code>fdr_concatenated</code> because 2 * decoys / all hits estimates the FDR of a concatenated target-decoy search, not a false positive rate. <code>$score_at(q_value = 0.01, method = c("simple_fdr", "fdr_concatenated"))</code> replaces <code>predictScoreFDR()</code>: <code>method</code> takes <code>"simple_fdr"</code> (default) or <code>"fdr_concatenated"</code> (was <code>"SimpleFDR"</code>, <code>"FPR"</code>), and <code>q_value</code> is a fraction like the q-values in <code>table</code>, <code>0.01</code> for 1 % (the default); <code>qValue</code> was in percent, and values outside 0 to 1 stop with an error. <code>$plot()</code> replaces <code>plotFDR()</code>, with the new names in its legend, and <code>print()</code> shows the numbers of hits and decoys and the scores at <code>simple_fdr</code> q-values of 0.01 and 0.05. The decoys are given as flags only: for protein IDs, pass <code>decoy_hit = grepl("^REV_", id), id = id</code>, which counts only IDs starting with <code>REV_</code> as decoys; <code>computeFDRwithID()</code> matched its default <code>decoy = "REV_"</code> anywhere in the ID.</li>
+<li>The data sets <code>fdr_sample</code>, <code>protpepmetashort</code> and <code>pepprot</code> have snake_case columns (<code>protein_id</code>, <code>peptide_seq</code>, <code>peptide_mod_seq</code>, <code>precursor_charge</code>, <code>precursor_mz</code>, <code>protein_length</code>, <code>peptide_length</code>, <code>neg_log10_score</code>); <code>bcd</code> keeps COMET’s column names.</li>
 <li>Default column names follow the results: <code>annotate_peptides(peptide = "peptide_seq")</code>, and <code>greedy_parsimony(peptide = "peptide_seq")</code> reads the proteins from <code>protein_id</code> (was <code>annotatePeptides(peptide = "peptideSeq")</code> and <code>prepareMatrix(proteinID = "proteinID", peptideID = "strippedSequence")</code>).</li>
-<li>The data sets <code>fdr_sample</code>, <code>protpepmetashort</code> and <code>pepprot</code> have snake_case columns (<code>protein_id</code>, <code>peptide_seq</code>, <code>peptide_mod_seq</code>, <code>precursor_charge</code>, <code>protein_length</code>, <code>peptide_length</code>); <code>bcd</code> keeps COMET’s column names.</li>
-<li><code>greedy()</code>, last on CRAN in 0.3.1, has no alias; use <code>greedy_parsimony(annotation, peptide = "peptide_seq")</code>. It takes the peptide-protein matches as a data frame, e.g.&nbsp;the result of <code>annotate_peptides()</code>, instead of a peptide-by-protein matrix: the protein IDs in the column <code>protein_id</code> and the peptide IDs in the column named by <code>peptide</code> (for precursors, add a column such as <code>paste(peptide_seq, precursor_charge, sep = ".")</code>). A peptide-protein pair in several rows counts once, and ties go to the protein first in <code>factor(protein_id)</code>, as with <code>prepareMatrix()</code>. It stops for missing columns, naming them, and for <code>NA</code> IDs, counting them. It returns the same named list as before. <code>prepareMatrix()</code> (<code>prepare_matrix()</code> in the development versions) is removed: since proteins are ranked by their number of peptides (see below), its weightings no longer changed the result. prozor no longer needs Matrix.</li>
-<li><code>make_fasta_summary()</code> has no <code>old</code> argument (it selected a slower implementation with the same counts).</li>
-<li><code>Cdsw</code> is an R6 class whose window breaks are fixed when the object is created. It was a reference class whose methods <code>constant_breaks()</code>, <code>quantile_breaks()</code> and <code>sampling_breaks()</code> overwrote the breaks, so <code>as_table()</code>, <code>plot()</code>, <code>error()</code> and <code>optimize_windows()</code> depended on which of them ran last:
+<li>The R6 class <code>TargetDecoyFDR</code> replaces <code>computeFDR()</code>, <code>computeFDRwithID()</code>, <code>predictScoreFDR()</code> and <code>plotFDR()</code>, without aliases (see <code>?TargetDecoyFDR</code>):
 <ul>
-<li><code>Cdsw$new(masses, nbins = 25, method = c("sampling", "quantile", "constant"), maxwindow = 150, minwindow = 5, digits = 2)</code> computes the breaks once with the chosen method; <code>maxwindow</code> and <code>minwindow</code> apply to <code>"sampling"</code>. The default method is <code>"sampling"</code>; pass <code>method = "constant"</code> for the equal-width windows that <code>Cdsw()</code> started with.</li>
-<li><code>constant_breaks()</code>, <code>quantile_breaks()</code>, <code>sampling_breaks()</code> and <code>copy()</code> are gone: create one object per method or setting, and copy an object with <code>clone()</code>. The fields <code>masses</code>, <code>nbins</code>, <code>method</code> and <code>breaks</code> are read-only; assigning to them stops with an error. <code>as_table()</code>, <code>error()</code>, <code>optimize_windows()</code>, <code>plot()</code>, <code>plot_breaks()</code> and <code>show_cycle()</code> only read the object, and <code>print()</code> shows the number of masses and windows, the method and the range of window widths.</li>
-<li><code>digits</code> means only the number of decimal places of the breaks (the <code>digits</code> field of the old object was never read). <code>readjust_windows()</code>, <code>plot_windows()</code> and <code>Cdsw$optimize_windows()</code> take the bin width of the masses in m/z, <code>bin_width = 0.1</code>, instead of <code>digits = 1</code> (bins of <code>1 / 10^digits</code>); <code>bin_width = 0.1</code> gives the results of <code>digits = 1</code>.</li>
-<li><code>readjust_windows()</code> returns a data frame instead of a list, like <code>Cdsw$as_table()</code> and <code>Cdsw$optimize_windows()</code>.</li>
+<li><code>computeFDR(score, decoy_hit)</code> → <code>fdr &lt;- TargetDecoyFDR$new(score, decoy_hit)</code>; the data frame <code>fdr$table</code> holds the hits in score order with both FDR estimates and their q-values (was a list of vectors).</li>
+<li><code>FPR</code>, <code>SimpleFDR</code>, <code>qValue_FPR</code>, <code>qValue_SimpleFDR</code> → <code>fdr_concatenated</code>, <code>fdr_simple</code>, <code>q_value_fdr_concatenated</code>, <code>q_value_fdr_simple</code>; 2 * decoys / all hits estimates the FDR of a concatenated search, not a false positive rate.</li>
+<li><code>predictScoreFDR(fdr, qValue = 1)</code> → <code>fdr$score_at(q_value = 0.01)</code>: <code>q_value</code> is a fraction, not a percentage. <code>method = "SimpleFDR"</code> (default) and <code>"FPR"</code> → <code>"fdr_simple"</code> and <code>"fdr_concatenated"</code>.</li>
+<li><code>plotFDR(fdr)</code> → <code>fdr$plot()</code>.</li>
+<li><code>computeFDRwithID(score, ID)</code> → <code>TargetDecoyFDR$new(score, decoy_hit = grepl("^REV_", ID), id = ID)</code>; only IDs starting with <code>REV_</code> count as decoys (<code>decoy = "REV_"</code> matched anywhere in the ID).</li>
 </ul></li>
-<li><code>Cdsw$new(method = "sampling")</code> is deterministic: it mixes the masses with uniformly spread data and takes the quantile breaks of the mixture, with the smallest share of uniform data for which all windows lie within <code>minwindow</code> and <code>maxwindow</code> (the quantile breaks themselves when they fit). It used to add random uniform masses until the quantile windows fitted, so the breaks changed from call to call unless a seed was set, and it took seconds to minutes, or never returned, when <code>maxwindow</code> was close to the width of equal windows (more than 120 s at 1.02 times that width; now 0.05 s). The breaks differ from those of earlier versions; the counts per window are as even as before: on <code>masses</code> with <code>maxwindow = 100</code> they range from 3,120 to 6,391 (coefficient of variation 0.14), with the random mixing from about 3,050 to 6,420 (0.14).</li>
-<li>Precursors per window are counted one way: the masses <code>m</code> with <code>from &lt; m &lt;= to</code>, the intervals of <code>hist()</code>. <code>Cdsw$as_table()</code> left out masses on a window boundary (<code>from &lt; m &lt; to</code>), and <code>readjust_windows()</code> and <code>Cdsw$optimize_windows()</code> counted them in both neighboring windows (<code>from &lt;= m &lt;= to</code>). <code>Cdsw$plot()</code> and <code>Cdsw$error()</code> count as before, because the breaks of every method enclose the masses. Counts change only for masses exactly on a boundary, e.g.&nbsp;in one of 25 windows of <code>Cdsw$new(masses, method = "quantile")$as_table(overlap = 0)</code>.</li>
-<li><code>write_fasta(fasta, file)</code> takes one list of sequences, data first (was <code>writeFasta(file, ...)</code>); combine several lists with <code>c()</code>.</li>
-<li>Plots use ggplot2, now in Imports. <code>TargetDecoyFDR$plot()</code>, <code>Cdsw$plot()</code> and <code>Cdsw$show_cycle()</code> return ggplot objects and draw nothing themselves. The <code>plot</code> argument of the old <code>Cdsw$sampling_breaks()</code>, of <code>Cdsw$optimize_windows()</code> and of <code>readjust_windows()</code> is gone; use <code>Cdsw$plot_breaks()</code> and <code>plot_windows()</code>.</li>
-<li><code>annotate_peptides()</code> sets <code>matched</code> for each occurrence of a peptide in a protein. It used to give every occurrence in a protein the same value, so a second, non-tryptic occurrence was flagged as tryptic.</li>
-<li><code>annotate_aho()</code> and <code>annotate_peptides()</code> stop for peptides with characters other than upper-case letters (AhoCorasickTrie 0.1.3 crashed R on them) and for duplicated protein names in <code>fasta</code> (they multiplied the result rows).</li>
-<li><code>annotate_aho()</code> no longer removes whitespace around the peptides: it stops and shows the peptide escaped, e.g.&nbsp;<code>"PEPTIDEK\r"</code>. <code>annotate_peptides()</code> still accepts such peptides: it removes the whitespace first.</li>
-<li><code>annotate_peptides()</code> stops, naming the columns, when <code>pepinfo</code> has a column named like a result column (<code>protein_id</code>, <code>offset</code>, <code>protein_sequence</code>, <code>matched</code>, <code>peptide_length</code>). A <code>protein_id</code> or <code>offset</code> column, e.g.&nbsp;of search engine output, gave <code>protein_id.x</code> and <code>protein_id.y</code> instead of <code>protein_id</code>; a <code>peptide_length</code> column was overwritten.</li>
 <li><code>TargetDecoyFDR</code> ranks decoys before targets within tied scores, so q-values no longer depend on the input order.</li>
-<li><code>TargetDecoyFDR$score_at()</code> stops with an error when no score reaches the requested FDR; <code>predictScoreFDR()</code> returned <code>Inf</code> with a warning.</li>
-<li><code>create_fgcz_fasta_db()</code> requires <code>output_dir</code> (it used to write next to the database directory by default). <code>inst/script/fgcz_create_fasta.R</code> still writes next to the FASTA directory when <code>-o</code> is not given.</li>
+<li><code>TargetDecoyFDR$score_at()</code> stops when no score reaches the requested FDR; <code>predictScoreFDR()</code> returned <code>Inf</code> with a warning.</li>
+<li><code>greedy_parsimony(annotation, peptide = "peptide_seq")</code> replaces <code>greedy()</code> and <code>prepareMatrix()</code> (<code>prepare_matrix()</code> on GitHub), without aliases. It takes the peptide-protein matches as a data frame, e.g.&nbsp;from <code>annotate_peptides()</code>, instead of a peptide-by-protein matrix (see <code>?greedy_parsimony</code>).
+<ul>
+<li>For precursors, add a column such as <code>paste(peptide_seq, precursor_charge, sep = ".")</code> and pass its name as <code>peptide</code>.</li>
+<li>The weightings of <code>prepareMatrix()</code> are gone: they no longer change the result, since proteins are ranked by their number of peptides.</li>
+</ul></li>
+<li><code>greedy_parsimony()</code> returns a named character vector instead of a named list of single strings; drop <code>unlist()</code> on its result.</li>
+<li><code>greedy_parsimony()</code> ranks proteins by the number of peptides they explain, as documented. <code>greedy()</code> ranked them by the sum of their matrix entries, so with <code>prepareMatrix(weighting = "inverse")</code> a protein with fewer but less shared peptides could win the shared ones.</li>
 <li><code>greedy_parsimony()</code> no longer prints its run time.</li>
-<li><code>greedy_parsimony()</code> ranks proteins by the number of peptides they explain, as documented. <code>greedy()</code> ranked them by the sum of their matrix entries, so with <code>prepareMatrix(weighting = "inverse")</code> a protein with fewer but less shared peptides could win the shared ones, and ties were decided by comparing sums of fractions.</li>
-<li>prozor requires R 4.4.0 or later.</li>
-<li>prozor no longer imports seqinr: <code>read_peptide_fasta()</code> and <code>write_fasta()</code> use base R. The entries are still <code>SeqFastaAA</code> objects with the attributes <code>name</code> and <code>Annot</code>, so seqinr’s <code>getAnnot()</code>, <code>getName()</code> and <code>getLength()</code> work on them as before. <code>library(prozor)</code> no longer loads seqinr, so <code>summary()</code> of an entry gives R’s default summary of a string unless seqinr is loaded (it used to dispatch to seqinr’s method, which returns the length, the composition and the amino-acid properties).</li>
-<li><code>create_decoy_db()</code> and <code>create_fgcz_fasta_db()</code> add the contaminant sets <code>"special2024"</code> and <code>"universal2024"</code> by default, like <code>inst/script/fgcz_create_fasta.R</code> (was <code>"fgcz2022"</code>).</li>
+<li><code>annotate_aho()</code> and <code>annotate_peptides()</code> return a data frame with 0 rows and the result columns when no peptide occurs in <code>fasta</code>, instead of <code>NULL</code>; <code>annotate_peptides()</code> still warns. <code>residue_coverage()</code> and <code>sequence_coverage()</code> return 0 rows for such a result.</li>
+<li><code>annotate_aho()</code> and <code>annotate_peptides()</code> stop for peptides with characters other than upper-case letters (AhoCorasickTrie 0.1.3 crashed R on them) and for duplicated protein names in <code>fasta</code> (they multiplied the result rows).</li>
+<li><code>annotate_aho()</code> stops for peptides with whitespace around them and shows the peptide escaped, e.g.&nbsp;<code>"PEPTIDEK\r"</code>; it used to remove the whitespace. <code>annotate_peptides()</code> still removes it.</li>
+<li><code>annotate_peptides()</code> stops, naming the columns, when <code>peptides</code> has a column named like a result column (<code>protein_id</code>, <code>offset</code>, <code>protein_sequence</code>, <code>matched</code>, <code>peptide_length</code>).
+<ul>
+<li>Such columns, e.g.&nbsp;of search engine output, gave <code>protein_id.x</code> and <code>protein_id.y</code> instead of <code>protein_id</code>, or were overwritten.</li>
+</ul></li>
+<li><code>annotate_peptides()</code> sets <code>matched</code> for each occurrence of a peptide in a protein; a second, non-tryptic occurrence was flagged as tryptic.</li>
+<li><code>make_fasta_summary(fasta)</code> always returns the list; the arguments <code>as_string</code> and <code>old</code> are gone. The summary of <code>create_fgcz_fasta_db(make_summary = TRUE)</code> lists the sequence lengths and amino-acid counts one per line.</li>
+<li><code>create_fgcz_fasta_db(database_dir, output_dir, ...)</code> requires <code>output_dir</code>, now its second argument; it used to write next to <code>database_dir</code> by default. <code>inst/script/fgcz_create_fasta.R</code> still does when <code>-o</code> is not given.</li>
+<li><code>create_decoy_db()</code> and <code>create_fgcz_fasta_db()</code> add the contaminant sets <code>"special2024"</code> and <code>"universal2024"</code> by default, like <code>inst/script/fgcz_create_fasta.R</code> (was <code>"fgcz2021"</code> in CRAN 0.3.1, <code>"fgcz2022"</code> in 0.4.0).</li>
+<li><code>write_fasta(fasta, file)</code> takes one list of sequences, data first, and returns <code>file</code> invisibly (was <code>writeFasta(file, ...)</code>); combine several lists with <code>c()</code>.</li>
+<li><code>Cdsw</code> is an R6 class whose window breaks are computed once, by <code>Cdsw$new()</code> (see <code>?Cdsw</code>). It was a reference class whose <code>*_breaks()</code> methods overwrote the breaks, so the results of the other methods depended on which of them ran last.
+<ul>
+<li><code>constant_breaks()</code>, <code>quantile_breaks()</code>, <code>sampling_breaks()</code> → <code>Cdsw$new(masses, method = "constant")</code>, <code>"quantile"</code>, <code>"mixture"</code> (the default); create one object per method. <code>Cdsw(masses)</code> started with <code>"constant"</code>.</li>
+<li><code>copy()</code> → <code>clone()</code>. The fields <code>masses</code>, <code>n_bins</code>, <code>method</code> and <code>breaks</code> are read-only.</li>
+</ul></li>
+<li><code>Cdsw$new(method = "mixture")</code> is deterministic and fast (see <code>?Cdsw</code>). It added random masses until the windows fitted, so the breaks changed from call to call, and it could take minutes or never return.
+<ul>
+<li>The breaks differ from those of earlier versions; the counts per window are as even as before.</li>
+</ul></li>
+<li><code>readjust_windows()</code>, <code>plot_windows()</code> and <code>Cdsw$optimize_windows()</code> take the bin width of the masses in m/z, <code>bin_width = 0.1</code>, instead of <code>digits = 1</code>; <code>digits</code> of <code>Cdsw$new()</code> sets only the decimal places of the breaks.
+<ul>
+<li>Replace <code>digits = d</code> with <code>bin_width = 10^-d</code>.</li>
+</ul></li>
+<li><code>readjust_windows()</code> returns a data frame instead of a list, like <code>Cdsw$as_table()</code> and <code>Cdsw$optimize_windows()</code>.</li>
+<li><code>Cdsw$optimize_windows()</code> widens the windows by <code>overlap = 1</code> m/z by default, as <code>as_table()</code> and <code>plot_cycle()</code> do (was 0).</li>
+<li>Precursors per window are counted as the masses <code>m</code> with <code>from &lt; m &lt;= to</code>, the intervals of <code>hist()</code>. <code>Cdsw$as_table()</code> left out masses on a window boundary, and <code>readjust_windows()</code> and <code>Cdsw$optimize_windows()</code> counted them in both windows. Counts change only for masses exactly on a boundary.</li>
+<li>Plots use ggplot2: <code>TargetDecoyFDR$plot()</code>, <code>Cdsw$plot()</code> and <code>Cdsw$plot_cycle()</code> return ggplot objects and draw nothing themselves.
+<ul>
+<li>The <code>plot</code> argument of <code>readjust_windows()</code>, <code>Cdsw$optimize_windows()</code> and the old <code>sampling_breaks()</code> is gone; use <code>plot_windows()</code> and <code>Cdsw$plot_breaks()</code>.</li>
+</ul></li>
+<li><code>read_fasta()</code> and <code>write_fasta()</code> use base R instead of seqinr. The entries are still <code>SeqFastaAA</code> objects with the attributes <code>name</code> and <code>Annot</code>, so seqinr’s <code>getAnnot()</code>, <code>getName()</code> and <code>getLength()</code> work on them.
+<ul>
+<li><code>library(prozor)</code> no longer loads seqinr; load it to get seqinr’s <code>summary()</code> of an entry.</li>
+</ul></li>
+<li>prozor requires R 4.4.0 or later (was R 3.1.0).</li>
 </ul>
 </section>
 <section id="new-features" class="level2">
 <h2 class="anchored" data-anchor-id="new-features">New features</h2>
 <ul>
 <li><code>load_contaminants(set, no_human)</code> loads any of the bundled contaminant sets.</li>
-<li><code>plot_windows()</code> shows the precursor masses with the DIA window boundaries; <code>Cdsw$plot_breaks()</code> compares the breaks of the object with the constant and quantile breaks of the same masses.</li>
-<li><code>residue_coverage()</code>, <code>sequence_coverage()</code> and <code>plot_coverage()</code> compute and plot the peptide coverage of protein sequences from the result of <code>annotate_peptides()</code>; the new vignette “Protein Sequence Coverage” shows them, including coverage of the minimal protein set and of isoforms.</li>
+<li><code>plot_windows()</code> shows the precursor masses with the DIA window boundaries.</li>
+<li><code>Cdsw$plot_breaks()</code> compares the breaks of the object with the constant and quantile breaks of the same masses.</li>
+<li><code>residue_coverage()</code>, <code>sequence_coverage()</code> and <code>plot_coverage()</code> compute and plot the peptide coverage of protein sequences from the result of <code>annotate_peptides()</code>; the new vignette “Protein Sequence Coverage” shows them.</li>
+<li><code>citation("prozor")</code> cites the package with its CRAN DOI.</li>
 </ul>
 </section>
 <section id="minor-improvements-and-fixes" class="level2">
 <h2 class="anchored" data-anchor-id="minor-improvements-and-fixes">Minor improvements and fixes</h2>
 <ul>
-<li><code>greedy_parsimony()</code> assigns every peptide that matches a protein again. When several proteins tie, only those explaining exactly the same peptides are reported together (<code>"A;B"</code>); the others compete in later rounds. Since 2023 (GitHub only, not on CRAN), unrelated tied proteins were merged into one group and their remaining peptides were left without a protein.</li>
-<li><code>greedy_parsimony()</code> is 250 to 400 times faster on thousands of peptides, e.g.&nbsp;0.02 s instead of 5.6 s for 6,000 and 0.05 s instead of 21 s for 12,000 peptides; 48,000 peptides take 0.26 s. It compared tied proteins one at a time, which made it quadratic in the number of peptides, and recounted the peptides of all proteins in every round; it now updates the counts of the proteins that lose peptides.</li>
-<li><code>greedy_to_table()</code> works with modified peptides: the charge is taken after the last dot, so <code>"AC[+57.0]K.2"</code> gives peptide <code>AC[+57.0]K</code> and charge 2. Such names used to fail with “length of ‘dimnames’ [2] not equal to array extent”.</li>
-<li><code>greedy_to_table()</code> stops, naming the offending IDs, when a peptide ID does not end in a dot and a charge, e.g.&nbsp;for a <code>greedy_parsimony()</code> result on plain peptide sequences. It used to copy the peptide into <code>precursor_charge</code>, or split a modified peptide such as <code>"AC[+57.0]K"</code> into <code>AC[+57</code> and <code>0]K</code>.</li>
-<li><code>TargetDecoyFDR$new()</code> stops for <code>NA</code> scores or decoy flags, a <code>decoy_hit</code> that is not logical, and a <code>decoy_hit</code> or <code>id</code> of another length than <code>score</code>. One <code>NA</code> decoy flag used to make all q-values <code>NA</code>, and <code>predictScoreFDR()</code> then returned <code>NA</code> without an error; <code>"TRUE"</code>/<code>"FALSE"</code> strings gave a warning and <code>NA</code> q-values.</li>
-<li><code>TargetDecoyFDR$plot()</code> uses a logarithmic score axis only when all scores are positive. Scores of 0 (e.g.&nbsp;PEP or rounded E-values) used to vanish from the histogram and the q-value curves with a warning.</li>
-<li><code>annotate_peptides()</code> and <code>greedy_parsimony()</code> accept tibbles; a tibble passed to <code>annotatePeptides()</code> or <code>prepareMatrix()</code> used to crash R or fail with “cannot xtfrm data frames”.</li>
-<li><code>write_fasta()</code> keeps a <code>&gt;</code> inside a header (<code>ADP&gt;ATP</code> used to become <code>ADPATP</code>).</li>
-<li><code>remove_signal_peptide()</code> reads UniProt’s current signal peptide format <code>SIGNAL 1..20</code>, and works on a database with a single entry.</li>
-<li><code>remove_signal_peptide()</code> stops when a name of <code>db</code> has no <code>|</code> and so no UniProt accession, or <code>signal$Entry</code> is <code>NA</code>; such entries skipped the check that <code>signal</code> lists the entries in the order of <code>db</code>.</li>
-<li><code>remove_signal_peptide()</code> gives a shortened sequence its new ID as list name too, so <code>annotate_aho()</code> and the written FASTA file report the same ID, and keeps the description in its header (it used to keep the old ID as list name and drop the description).</li>
-<li><code>Cdsw$new(method = "sampling")</code> stops with an error when even equal-width windows violate <code>minwindow</code> or <code>maxwindow</code>; <code>sampling_breaks()</code> used to warn and then never return.</li>
-<li>Constant breaks enclose the masses for any <code>digits</code>, and <code>readjust_windows()</code> and <code>Cdsw$optimize_windows()</code> work for any bin width. The mass range was rounded to 2 decimals in <code>constant_breaks()</code> and to 1 in <code>readjust_windows()</code>, whatever <code>digits</code> was, so the outer breaks could lie inside the range of the masses: <code>constant_breaks(digits = 3)</code> followed by <code>$plot()</code> or <code>$error()</code>, and <code>readjust_windows(digits = 2)</code>, failed with “some ‘x’ not counted; maybe ‘breaks’ do not span range of ‘x’” for about 38 % of data sets. The range is now rounded outward to multiples of <code>1 / 10^digits</code> (of <code>bin_width</code> in <code>readjust_windows()</code>) and padded by one such unit. With the default <code>digits</code> the breaks are the same; other values give slightly different breaks (on <code>masses</code>, by at most one unit of the last digit for <code>digits</code> 0 and 1, and 0.004 m/z for 3 and 4), and the bins of <code>readjust_windows(bin_width = 1)</code> start at whole m/z values.</li>
-<li><code>readjust_windows()</code> and <code>Cdsw$optimize_windows()</code> also move a window start down to the first empty bin and a window end up to the last one; such boundaries stayed in place when that bin was the nearest. On <code>masses</code>, the first window of <code>optimize_windows(maxbin = 10)</code> starts at 350.05 instead of 350.13. When no bin is empty, e.g.&nbsp;with <code>maxbin = 0</code>, the windows are returned unchanged; this failed with “argument is of length zero”.</li>
-<li>The breaks of <code>Cdsw</code> are unnamed for all methods, so <code>Cdsw$as_table()</code> has row numbers instead of the quantile names <code>0%</code>, <code>4%</code>, …, which did not describe mixed breaks.</li>
-<li><code>annotate_peptides()</code> removes whitespace around the peptides, e.g.&nbsp;the <code>"\r"</code> of a file with Windows line endings, before it counts, searches and merges them. Such peptides were found but then dropped from the result without a warning; when all peptides had whitespace, the result was an empty data frame.</li>
-<li><code>annotate_aho()</code> and <code>annotate_peptides()</code> search proteins with lower-case residues or characters other than letters, such as the stop codon <code>*</code> of translated databases: the sequences are searched in upper case, with <code>X</code> for each other character, so the offsets stay the same. One such protein used to stop the whole search with “character ’*’ is not in the trie’s alphabet”.</li>
-<li>The help of <code>annotate_peptides()</code> says what <code>matched</code> checks: by default, that the peptide is preceded by K or R or the protein N-terminus (or by the Met at position 1). The end of the peptide is not checked.</li>
-<li><code>annotate_aho()</code> is faster: 0.02 s instead of 0.12 s for the 1,520 bundled peptides against 1,072 proteins.</li>
+<li><code>greedy_parsimony()</code> assigns every peptide that matches a protein again: only proteins that explain exactly the same peptides are reported together (<code>"A;B"</code>). Since 2023 (GitHub only), unrelated tied proteins were merged into one group and their other peptides were left without a protein.</li>
+<li><code>greedy_parsimony()</code> is 250 to 400 times faster on thousands of peptides, e.g.&nbsp;0.05 s instead of 21 s for 12,000 peptides.</li>
+<li><code>greedy_parsimony()</code> ignores unused factor levels of the ID columns, so it works on subsets of the bundled data sets; <code>prepareMatrix()</code> failed on them or gave rows or columns without entries.</li>
+<li><code>annotate_peptides()</code> and <code>greedy_parsimony()</code> accept tibbles; <code>annotatePeptides()</code> and <code>prepareMatrix()</code> crashed R or failed on them.</li>
+<li><code>greedy_to_table()</code> takes the charge after the last dot, so modified peptides such as <code>"AC[+57.0]K.2"</code> work; they failed with “length of ‘dimnames’ [2] not equal to array extent”.</li>
+<li><code>greedy_to_table()</code> stops, naming the IDs, when a peptide ID does not end in a dot and a charge, e.g.&nbsp;for a <code>greedy_parsimony()</code> result on plain peptide sequences; it used to return a wrong <code>precursor_charge</code>.</li>
+<li><code>TargetDecoyFDR$new()</code> checks its input: it stops for a <code>score</code> that is not numeric, a <code>decoy_hit</code> that is not logical, <code>NA</code> in either, a <code>decoy_hit</code> or <code>id</code> of another length than <code>score</code>, and a <code>larger_better</code> other than <code>TRUE</code> or <code>FALSE</code>.
+<ul>
+<li>Character scores were sorted as text, and one <code>NA</code> decoy flag made all q-values <code>NA</code>.</li>
+</ul></li>
+<li><code>TargetDecoyFDR</code> caps both FDR estimates and their q-values at 1; when the best hit was a decoy, <code>fdr_simple</code> was <code>Inf</code> and q-values exceeded 1.</li>
+<li><code>TargetDecoyFDR$plot()</code> uses a logarithmic score axis only when all scores are positive; scores of 0 (e.g.&nbsp;PEP or rounded E-values) vanished from the plot with a warning.</li>
+<li><code>annotate_peptides()</code> removes whitespace around the peptides, e.g.&nbsp;the <code>"\r"</code> of a file with Windows line endings, before it searches them; such peptides were dropped from the result without a warning.</li>
+<li><code>annotate_aho()</code> and <code>annotate_peptides()</code> search proteins with lower-case residues or characters other than letters, such as the stop codon <code>*</code> of translated databases, with unchanged offsets; one such protein stopped the search with “character ’*’ is not in the trie’s alphabet”.</li>
+<li><code>annotate_aho()</code> is about 6 times faster on the bundled example.</li>
 <li><code>annotate_aho()</code> and <code>annotate_peptides()</code> no longer print dplyr’s “Joining with <code>by = join_by(proteinID)</code>” message, nor dplyr’s <code>funs()</code> deprecation warning.</li>
-<li>Error messages name the argument and the offending value, e.g.&nbsp;for an unknown <code>method</code> of <code>TargetDecoyFDR$score_at()</code>.</li>
-<li><code>greedy_parsimony()</code> ignores unused factor levels of the ID columns, so it works on subsets of the bundled data sets. <code>prepareMatrix()</code> failed on them with “length of Dimnames[[2]] (250) is not equal to Dim[2] (239)”, or gave a peptide row or protein column without entries.</li>
-<li><code>write_fasta()</code>, <code>make_fasta_summary()</code> and <code>reverse_seq()</code> are faster and give the same output: for 82,000 proteins and their decoys, writing takes 0.9 s instead of 11 s, the summary 0.6 s instead of 10 s and the reversal 1.2 s instead of 3.8 s, and <code>create_fgcz_fasta_db()</code> 4.7 s instead of 30 s.</li>
-<li><code>read_peptide_fasta()</code> gives an entry without sequence lines (a header followed directly by the next header, or a header on the last line) the empty string. It used to return the next header pasted to this one, e.g.&nbsp;<code>"&gt;b&gt;a"</code>, or <code>"NA&gt;b"</code> for the last entry, which <code>write_fasta()</code> then wrote as an extra header line.</li>
-<li><code>make_fasta_summary()</code> gives an empty sequence the length 0 in the length summary (it counted 1).</li>
+<li><code>readjust_windows()</code> and <code>plot_windows()</code> stop for <code>masses</code> with <code>NA</code> or non-numeric values, as <code>Cdsw$new()</code> does, and for <code>windows</code> without the column <code>from</code> or <code>to</code>.</li>
+<li><code>plot_coverage()</code> stops unless <code>width</code> is a positive whole number.</li>
+<li><code>Cdsw$new(method = "mixture")</code> stops when even equal-width windows violate <code>min_window</code> or <code>max_window</code>; <code>sampling_breaks()</code> warned and then never returned.</li>
+<li>Constant breaks enclose the masses for any <code>digits</code>, and <code>readjust_windows()</code> and <code>Cdsw$optimize_windows()</code> work for any bin width. <code>constant_breaks(digits = 3)</code> followed by <code>$plot()</code> or <code>$error()</code>, and <code>readjust_windows(digits = 2)</code>, failed with “some ‘x’ not counted” for about 38 % of data sets.
+<ul>
+<li>With the default <code>digits</code> the breaks are unchanged; other values give slightly different breaks.</li>
+</ul></li>
+<li><code>readjust_windows()</code> and <code>Cdsw$optimize_windows()</code> also move a window start down to the first empty bin and a window end up to the last one; such boundaries stayed in place when that bin was the nearest.</li>
+<li><code>readjust_windows()</code> and <code>Cdsw$optimize_windows()</code> return the windows unchanged when no bin is empty, e.g.&nbsp;with <code>min_count = 0</code>; they failed with “argument is of length zero”.</li>
+<li>The breaks of <code>Cdsw</code> are unnamed for all methods, so <code>Cdsw$as_table()</code> has row numbers instead of the quantile names <code>0%</code>, <code>4%</code>, …</li>
+<li><code>write_fasta()</code> keeps a <code>&gt;</code> inside a header (<code>ADP&gt;ATP</code> used to become <code>ADPATP</code>).</li>
+<li><code>write_fasta()</code>, <code>make_fasta_summary()</code> and <code>reverse_seq()</code> are faster and give the same output; <code>create_fgcz_fasta_db()</code> takes 4.7 s instead of 30 s for 82,000 proteins.</li>
+<li><code>read_fasta()</code> gives an entry without sequence lines the empty string; it returned the next header pasted to this one, e.g.&nbsp;<code>"&gt;b&gt;a"</code>, which <code>write_fasta()</code> then wrote as an extra header line.</li>
+<li><code>make_fasta_summary()</code> counts an empty sequence as length 0 (was 1).</li>
+<li><code>remove_signal_peptide()</code> reads UniProt’s current signal peptide format <code>SIGNAL 1..20</code>, and works on a database with a single entry.</li>
+<li><code>remove_signal_peptide()</code> stops when a name of <code>fasta</code> has no <code>|</code> and so no UniProt accession, or <code>signal$Entry</code> is <code>NA</code>; such entries skipped the check that <code>signal</code> lists the entries in the order of <code>fasta</code>.</li>
+<li><code>remove_signal_peptide()</code> gives a shortened sequence its new ID as list name too, so <code>annotate_aho()</code> and the written FASTA file report the same ID, and keeps the description in its header.</li>
 <li><code>load_contaminants("special2024")</code> works: the bundled <code>fgcz_special_prot_20241112.fasta.gz</code> is a plain gzipped FASTA file again instead of a gzipped tar archive (<a href="https://github.com/prolfqua/prozor/issues/7">#7</a>).</li>
-<li><code>create_fgcz_fasta_db()</code> reads only FASTA files (<code>*.fasta</code>, <code>*.fa</code> or <code>*.faa</code>, optionally gzipped) and the file <code>annotation.txt</code>, and stops when <code>database_dir</code> holds no FASTA file or when <code>output_dir</code> is <code>database_dir</code>. It used to read every file with <code>fasta</code> in its name: a <code>*.fa.gz</code> database was skipped and the output held only the contaminants, and a second run read the database written into <code>database_dir</code> as targets, so target sequences were labeled as decoys (<code>REV_REV_</code>).</li>
-<li><code>create_decoy_db()</code> keeps only the first entry of each name, as <code>create_fgcz_fasta_db()</code> did. It used to return duplicated names, e.g.&nbsp;1010 when a target file holds the default contaminants, and <code>annotate_aho()</code> refused the result.</li>
 <li><code>load_contaminants(no_human = TRUE)</code> also drops entries whose header says <code>Homo sapiens</code>; it kept 7 human keratins of the <code>"fgcz2019"</code>, <code>"fgcz2021"</code> and <code>"fgcz2022"</code> sets.</li>
-<li><code>inst/script/fgcz_create_fasta.R --contamin</code> takes every set of <code>load_contaminants()</code>, also <code>universal2024</code> and <code>special2024</code>, besides <code>special</code>, <code>none</code> and a FASTA file, and stops early naming the sets for an unknown value. The parameter log of a <code>nodecoy</code> run says <code>revLab: NULL</code> instead of <code>REV_</code>.</li>
-<li>The summary of <code>create_fgcz_fasta_db()</code> and the parameter log of <code>fgcz_create_fasta.R</code> record the argument values, e.g.&nbsp;<code>contaminants : 505 sequences</code>, instead of the call, which showed <code>contaminants = contaminants</code> when run from the script. The summary no longer contains a link to the FGCZ intranet.</li>
-<li>The dummy entry <code>CRAPCRAPCRAP</code> that <code>create_decoy_db()</code> puts first has the attributes it gets when the written file is read back: <code>Annot</code> starts with <code>&gt;</code> and <code>name</code> is the first word of the header (it was the whole annotation line). The written files are unchanged.</li>
+<li><code>create_fgcz_fasta_db()</code> reads only FASTA files (<code>*.fasta</code>, <code>*.fa</code> or <code>*.faa</code>, optionally gzipped) and <code>annotation.txt</code>, and stops when <code>database_dir</code> holds no FASTA file or is <code>output_dir</code>.
+<ul>
+<li>It read every file with <code>fasta</code> in its name, so a <code>*.fa.gz</code> database was skipped, and a second run read the written database as targets (<code>REV_REV_</code> decoys).</li>
+</ul></li>
+<li><code>create_decoy_db()</code> keeps only the first entry of each name, as <code>create_fgcz_fasta_db()</code> did; duplicated names made <code>annotate_aho()</code> refuse the result.</li>
+<li>The summary of <code>create_fgcz_fasta_db()</code> and the parameter log of <code>fgcz_create_fasta.R</code> record the argument values, e.g.&nbsp;<code>contaminants : 505 sequences</code>, instead of the call, and no longer link to the FGCZ intranet.</li>
+<li>The dummy entry <code>CRAPCRAPCRAP</code> that <code>create_decoy_db()</code> puts first has the attributes it gets when the written file is read back: <code>Annot</code> starts with <code>&gt;</code> and <code>name</code> is the first word of the header. The written files are unchanged.</li>
+<li><code>inst/script/fgcz_create_fasta.R --contamin</code> takes every set of <code>load_contaminants()</code> besides <code>special</code>, <code>none</code> and a FASTA file, and stops early, naming the sets, for an unknown value. The parameter log of a <code>nodecoy</code> run says <code>revLab: NULL</code> instead of <code>REV_</code>.</li>
 <li>The FGCZ shell wrappers (<code>inst/script/*.sh</code>) and the notes in <code>inst/creatingDBs/</code> are no longer part of the package; <code>inst/script/fgcz_create_fasta.R</code> stays.</li>
-<li><code>load_contaminants()</code> cites the source of the <code>"universal2024"</code> set; <code>inst/COPYRIGHTS</code> lists its origin.</li>
-<li>Help pages use markdown, link related functions in families, and describe the actual return values (e.g.&nbsp;the columns of <code>TargetDecoyFDR$table</code>).</li>
-<li><code>?create_fgcz_fasta_db</code> gives the memory a build needs (about 4 KB per written sequence), and <code>?greedy_parsimony</code> says that protein groups are formed on the peptides left in each round. <code>pepprot</code> is titled “Precursors of identified peptides”, as it holds no proteins.</li>
-<li>New or runnable examples for <code>create_fgcz_fasta_db()</code>, <code>greedy_to_table()</code>, <code>remove_signal_peptide()</code> and <code>write_fasta()</code>; removed debugging code from examples and vignettes.</li>
-<li>The vignettes use the new names and ggplot2; “Peptide Annotation and Protein Inference” builds again. “Creating Target Decoy Databases” finds the FASTA files as <code>create_fgcz_fasta_db()</code> does, writes to <code>tempdir()</code> and ends with the one-call <code>create_fgcz_fasta_db()</code>.</li>
-<li>The <code>Cdsw</code> help page documents each method with its usage and arguments; it documented method arguments without a usage section (r-devel NOTE).</li>
+<li>The example database <code>inst/p1000_db1_example</code> is described as human in its <code>annotation.txt</code>; it said mouse.</li>
+<li>Errors raised by exported functions show their call; errors from internal checks and R6 methods show none, so <code>residue_coverage()</code> no longer reports <code>.check_annotation()</code>.</li>
+<li>Error messages name the argument and the offending value, and put column names in backticks.</li>
+<li><code>library(prozor)</code> no longer prints the package version.</li>
 <li>Removed the undocumented debug data set <code>mm</code>.</li>
-<li>Fewer dependencies: Matrix, protViz, purrr, rlang and seqinr are no longer needed, so a default install also skips the five packages only seqinr needed, RcppArmadillo among them; dplyr and docopt moved to Suggests (dplyr is only used by the vignettes and tests, docopt only by <code>inst/script/fgcz_create_fasta.R</code>).</li>
 </ul>
 </section>
+<section id="documentation" class="level2">
+<h2 class="anchored" data-anchor-id="documentation">Documentation</h2>
+<ul>
+<li>Help pages use markdown, link related functions in families, and describe the actual return values, e.g.&nbsp;the columns of <code>TargetDecoyFDR$table</code>. The data sets are listed with the functions of their family, e.g.&nbsp;<code>fdr_sample</code> and <code>bcd</code> with <code>TargetDecoyFDR</code>.</li>
+<li><code>?prozor</code> gives an overview of the functions and vignettes by topic.</li>
+<li><code>?TargetDecoyFDR</code> cites Elias and Gygi (2007) and Käll et al.&nbsp;(2008), with DOIs. <code>?load_contaminants</code> cites the source of the <code>"universal2024"</code> set, and <code>inst/COPYRIGHTS</code> lists its origin.</li>
+<li>The <code>Cdsw</code> help page documents each method with its usage and arguments; it documented method arguments without a usage section (r-devel NOTE).</li>
+<li><code>?annotate_peptides</code> says what <code>matched</code> checks: by default, that the peptide is preceded by K or R or the protein N-terminus (or by the Met at position 1). The end of the peptide is not checked.</li>
+<li><code>?create_fgcz_fasta_db</code> gives the memory a build needs, and <code>?greedy_parsimony</code> says that protein groups are formed on the peptides left in each round. <code>pepprot</code> is titled “Precursors of identified peptides”, as it holds no proteins.</li>
+<li>New or runnable examples for <code>create_fgcz_fasta_db()</code>, <code>greedy_to_table()</code>, <code>remove_signal_peptide()</code> and <code>write_fasta()</code>; removed debugging code from examples and vignettes.</li>
+<li>The vignettes use the new names, snake_case code and ggplot2; “Peptide Annotation and Protein Inference” builds again. “Creating Target Decoy Databases” finds the FASTA files as <code>create_fgcz_fasta_db()</code> does, writes to <code>tempdir()</code> and ends with the one-call <code>create_fgcz_fasta_db()</code>.</li>
+<li>The README has an R example and a citation section.</li>
+</ul>
+</section>
+<section id="dependencies" class="level2">
+<h2 class="anchored" data-anchor-id="dependencies">Dependencies</h2>
+<p>Compared with CRAN 0.3.1:</p>
+<ul>
+<li>Removed from Imports: Matrix, methods, purrr, readr, rlang, seqinr and stringr.</li>
+<li>Moved to Suggests: docopt, used only by <code>inst/script/fgcz_create_fasta.R</code>, and dplyr, used only by the vignettes and tests.</li>
+<li>Added to Imports: ggplot2 and R6; the base packages graphics, stats and utils are now declared too.</li>
+<li>Added to Suggests: altdoc, testthat and withr.</li>
+<li>protViz, imported by the GitHub versions from 2023 on, is no longer needed; no CRAN release depended on it.</li>
+</ul>
+</section>
+</section>
+<section id="prozor-0.3.1" class="level1">
+<h1>prozor 0.3.1</h1>
+<p>CRAN release after 0.2.11 (0.2.15 was prepared for Bioconductor and not released to CRAN). Changes since 0.2.15:</p>
+<ul>
+<li>Removed <code>loadContaminantsFasta()</code> and <code>loadContaminantsNoHumanFasta()</code>, the FGCZ contaminants of 2015. <code>createDecoyDB()</code> adds <code>loadContaminantsFasta2021()</code> by default, as <code>create_fgcz_fasta_db()</code> did already.</li>
+<li>The example FASTA files moved from <code>inst/extdata</code> to <code>inst/p1000_db1_example</code>; several bundled files were removed and the data files made smaller to reduce the package size.</li>
+<li>Removed the internal helpers that copied FASTA files to an FGCZ server and registered them in B-Fabric; ssh and reticulate are no longer suggested.</li>
+<li>prozor requires R 3.1.0 or later (was R 4.1.0).</li>
+<li>The maintainer address is wewolski@gmail.com.</li>
+</ul>
 </section>
 <section id="prozor-0.2.15" class="level1">
 <h1>prozor 0.2.15</h1>

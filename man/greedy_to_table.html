@@ -81,7 +81,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-63b5708e65d6cd79cd7618c58d0c21e7.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-44f7b187718e43abfea0560aa82c1a71.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-ded4168630e1422961a6247c4ac5fe91.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -324,8 +324,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../man/read_peptide_fasta.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">read_peptide_fasta</span></a>
+  <a href="../man/read_fasta.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">read_fasta</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -404,7 +404,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="usage" class="level3">
 <h3 class="anchored" data-anchor-id="usage">Usage</h3>
-<pre><code class="language-R">greedy_to_table(res)
+<pre><code class="language-R">greedy_to_table(groups)
 </code></pre>
 </section>
 <section id="arguments" class="level3">
@@ -412,7 +412,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <table role="presentation">
 <tbody><tr>
 <td style="white-space: collapse; font-family: monospace; vertical-align: top">
-<code id="res">res</code>
+<code id="groups">groups</code>
 </td>
 <td>
 A result of <code>greedy_parsimony()</code> whose names have the form <code>peptide.charge</code>, i.e.&nbsp;end in a dot and an integer charge; an error otherwise. The charge is taken after the last dot, so modified peptides such as <code>“AC[+57.0]K.2”</code> work.
@@ -422,11 +422,11 @@ A result of <code>greedy_parsimony()</code> whose names have the form <code>pept
 </section>
 <section id="value" class="level3">
 <h3 class="anchored" data-anchor-id="value">Value</h3>
-<p>A data frame with the columns <code>peptide</code>, <code>precursor_charge</code> (integer) and <code>protein</code>, and the precursor IDs as row names.</p>
+<p>A data frame with the columns <code>peptide</code>, <code>precursor_charge</code> (integer) and <code>protein_group</code>, and the precursor IDs as row names.</p>
 </section>
 <section id="see-also" class="level3">
 <h3 class="anchored" data-anchor-id="see-also">See Also</h3>
-<p>Other protein inference: <code>annotate_aho()</code>, <code>annotate_peptides()</code>, <code>greedy_parsimony()</code></p>
+<p>Other protein inference: <code>annotate_aho()</code>, <code>annotate_peptides()</code>, <code>greedy_parsimony()</code>, <code>pepprot</code>, <code>protpepmetashort</code></p>
 </section>
 <section id="examples" class="level3">
 <h3 class="anchored" data-anchor-id="examples">Examples</h3>
@@ -448,7 +448,7 @@ AADKDTC[+57.0]FSTEGPNLVTR.4 AADKDTC[+57.0]FSTEGPNLVTR                4
 AETFTFHSDIC[+57.0]TLPEK.2     AETFTFHSDIC[+57.0]TLPEK                2
 AETFTFHSDIC[+57.0]TLPEK.3     AETFTFHSDIC[+57.0]TLPEK                3
 AETFTFHSDIC[+57.0]TLPEKEK.2 AETFTFHSDIC[+57.0]TLPEKEK                2
-                                         protein
+                                   protein_group
 AADKDTC[+57.0]FSTEGPNLVTR.2 sp|P07724|ALBU_MOUSE
 AADKDTC[+57.0]FSTEGPNLVTR.3 sp|P07724|ALBU_MOUSE
 AADKDTC[+57.0]FSTEGPNLVTR.4 sp|P07724|ALBU_MOUSE

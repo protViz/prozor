@@ -81,7 +81,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-63b5708e65d6cd79cd7618c58d0c21e7.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-44f7b187718e43abfea0560aa82c1a71.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-ded4168630e1422961a6247c4ac5fe91.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -324,8 +324,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../man/read_peptide_fasta.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">read_peptide_fasta</span></a>
+  <a href="../man/read_fasta.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">read_fasta</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -405,7 +405,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="usage" class="level3">
 <h3 class="anchored" data-anchor-id="usage">Usage</h3>
 <pre><code class="language-R">annotate_peptides(
-  pepinfo,
+  peptides,
   fasta,
   peptide = "peptide_seq",
   prefix = "(([RK])|(^)|(^M))",
@@ -418,10 +418,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <table role="presentation">
 <tbody><tr>
 <td style="white-space: collapse; font-family: monospace; vertical-align: top">
-<code id="pepinfo">pepinfo</code>
+<code id="peptides">peptides</code>
 </td>
 <td>
-A character vector of peptide sequences, or a data frame (or tibble) with the column <code>peptide</code> and any further columns, such as the charge state, which are kept. It must not have the columns <code>protein_id</code>, <code>offset</code>, <code>protein_sequence</code>, <code>matched</code> or <code>peptide_length</code>, which the result adds.
+A character vector of peptide sequences, or a data frame (or tibble) with the column named by <code>peptide</code> and any further columns, such as the charge state, which are kept. It must not have the columns <code>protein_id</code>, <code>offset</code>, <code>protein_sequence</code>, <code>matched</code> or <code>peptide_length</code>, which the result adds.
 </td>
 </tr>
 <tr>
@@ -429,7 +429,7 @@ A character vector of peptide sequences, or a data frame (or tibble) with the co
 <code id="fasta">fasta</code>
 </td>
 <td>
-A list of protein sequences with unique names, as returned by <code>read_peptide_fasta()</code>.
+A list of protein sequences with unique names, as returned by <code>read_fasta()</code>.
 </td>
 </tr>
 <tr>
@@ -465,11 +465,11 @@ Regular expression the residues after a match must start with.
 </section>
 <section id="value" class="level3">
 <h3 class="anchored" data-anchor-id="value">Value</h3>
-<p>A data frame with one row per row of <code>pepinfo</code> and protein occurrence: the columns of <code>pepinfo</code>, <code>protein_id</code>, <code>offset</code> (1-based start of the peptide), <code>protein_sequence</code> (as searched, see <code>annotate_aho()</code>), <code>matched</code> and <code>peptide_length</code>. <code>NULL</code>, with a warning, if no peptide occurs in <code>fasta</code>.</p>
+<p>A data frame with one row per row of <code>peptides</code> and protein occurrence: the columns of <code>peptides</code>, <code>protein_id</code>, <code>offset</code> (1-based start of the peptide), <code>protein_sequence</code> (as searched, see <code>annotate_aho()</code>), <code>matched</code> and <code>peptide_length</code>. With 0 rows and a warning if no peptide occurs in <code>fasta</code>.</p>
 </section>
 <section id="see-also" class="level3">
 <h3 class="anchored" data-anchor-id="see-also">See Also</h3>
-<p>Other protein inference: <code>annotate_aho()</code>, <code>greedy_parsimony()</code>, <code>greedy_to_table()</code></p>
+<p>Other protein inference: <code>annotate_aho()</code>, <code>greedy_parsimony()</code>, <code>greedy_to_table()</code>, <code>pepprot</code>, <code>protpepmetashort</code></p>
 </section>
 <section id="examples" class="level3">
 <h3 class="anchored" data-anchor-id="examples">Examples</h3>
@@ -479,7 +479,7 @@ Regular expression the residues after a match must start with.
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>file <span class="ot">&lt;-</span> <span class="fu">system.file</span>(<span class="st">"extdata/IDResults.txt.gz"</span>, <span class="at">package =</span> <span class="st">"prozor"</span>)</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>peptides <span class="ot">&lt;-</span> <span class="fu">unique</span>(utils<span class="sc">::</span><span class="fu">read.delim</span>(file)<span class="sc">$</span>peptideSeq)</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>fasta_file <span class="ot">&lt;-</span> <span class="fu">system.file</span>(<span class="st">"p1000_db1_example/Annotation_canSeq.fasta.gz"</span>, <span class="at">package =</span> <span class="st">"prozor"</span>)</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>fasta <span class="ot">&lt;-</span> <span class="fu">read_peptide_fasta</span>(fasta_file)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>fasta <span class="ot">&lt;-</span> <span class="fu">read_fasta</span>(fasta_file)</span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>annot <span class="ot">&lt;-</span> <span class="fu">annotate_peptides</span>(peptides[<span class="dv">1</span><span class="sc">:</span><span class="dv">20</span>], fasta)</span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(annot[, <span class="fu">c</span>(<span class="st">"protein_id"</span>, <span class="st">"peptide_seq"</span>, <span class="st">"offset"</span>, <span class="st">"peptide_length"</span>, <span class="st">"matched"</span>)])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">

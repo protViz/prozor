@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Witold Wolski">
-<meta name="dcterms.date" content="2017-03-16">
+<meta name="dcterms.date" content="2026-11-25">
 
 <title>Peptide Annotation and Protein Inference – prozor</title>
 <style>
@@ -83,7 +83,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-63b5708e65d6cd79cd7618c58d0c21e7.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-44f7b187718e43abfea0560aa82c1a71.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-ded4168630e1422961a6247c4ac5fe91.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -326,8 +326,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../man/read_peptide_fasta.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">read_peptide_fasta</span></a>
+  <a href="../man/read_fasta.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">read_fasta</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -414,7 +414,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">March 16, 2017</p>
+      <p class="date">November 25, 2026</p>
     </div>
   </div>
   
@@ -435,8 +435,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>file <span class="ot">&lt;-</span> <span class="fu">system.file</span>(<span class="st">"extdata/IDResults.txt.gz"</span>, <span class="at">package =</span> <span class="st">"prozor"</span>)</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>specMeta <span class="ot">&lt;-</span> utils<span class="sc">::</span><span class="fu">read.delim</span>(file)</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(specMeta) <span class="sc">|&gt;</span> knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>id_results <span class="ot">&lt;-</span> utils<span class="sc">::</span><span class="fu">read.delim</span>(file)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(id_results) <span class="sc">|&gt;</span> knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <colgroup>
@@ -558,12 +558,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 </div>
 </div>
-<p>Annotate peptide sequences with protein sequences from two FASTA files, one with reviewed entries only (sp) and the other with reviewed and Trembl entries (sp/tr).</p>
+<p>Annotate peptide sequences with protein sequences from two FASTA files, one with reviewed entries only (sp) and the other with reviewed and TrEMBL entries (sp/tr).</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>resAll <span class="ot">&lt;-</span> <span class="fu">read_peptide_fasta</span>(<span class="fu">system.file</span>(<span class="st">"p1000_db1_example/Annotation_allSeq.fasta.gz"</span>, <span class="at">package =</span> <span class="st">"prozor"</span>))</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>resCan <span class="ot">&lt;-</span> <span class="fu">read_peptide_fasta</span>(<span class="fu">system.file</span>(<span class="st">"p1000_db1_example/Annotation_canSeq.fasta.gz"</span>, <span class="at">package =</span> <span class="st">"prozor"</span>))</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>fasta_all <span class="ot">&lt;-</span> <span class="fu">read_fasta</span>(<span class="fu">system.file</span>(<span class="st">"p1000_db1_example/Annotation_allSeq.fasta.gz"</span>, <span class="at">package =</span> <span class="st">"prozor"</span>))</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>fasta_canonical <span class="ot">&lt;-</span> <span class="fu">read_fasta</span>(<span class="fu">system.file</span>(<span class="st">"p1000_db1_example/Annotation_canSeq.fasta.gz"</span>, <span class="at">package =</span> <span class="st">"prozor"</span>))</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>db_sizes <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">database =</span> <span class="fu">c</span>(<span class="st">"All"</span>, <span class="st">"Canonical"</span>), <span class="at">proteins =</span> <span class="fu">c</span>(<span class="fu">length</span>(resAll), <span class="fu">length</span>(resCan)))</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>db_sizes <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">database =</span> <span class="fu">c</span>(<span class="st">"All"</span>, <span class="st">"Canonical"</span>), <span class="at">proteins =</span> <span class="fu">c</span>(<span class="fu">length</span>(fasta_all), <span class="fu">length</span>(fasta_canonical)))</span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(db_sizes, <span class="fu">aes</span>(<span class="at">x =</span> database, <span class="at">y =</span> proteins)) <span class="sc">+</span></span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">fill =</span> <span class="st">"#0072B2"</span>) <span class="sc">+</span></span>
 <span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> proteins), <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.3</span>) <span class="sc">+</span></span>
@@ -578,13 +578,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(<span class="fu">unique</span>(specMeta<span class="sc">$</span>peptideSeq))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>peptides <span class="ot">&lt;-</span> <span class="fu">unique</span>(id_results<span class="sc">$</span>peptideSeq)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(peptides)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 1520</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>upeptide <span class="ot">&lt;-</span> <span class="fu">unique</span>(specMeta<span class="sc">$</span>peptideSeq)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>annotAll <span class="ot">&lt;-</span> <span class="fu">annotate_peptides</span>(upeptide, resAll)</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">select</span>(annotAll, <span class="sc">!</span>protein_sequence)) <span class="sc">|&gt;</span> knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>annotation_all <span class="ot">&lt;-</span> <span class="fu">annotate_peptides</span>(peptides, fasta_all)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">select</span>(annotation_all, <span class="sc">!</span>protein_sequence)) <span class="sc">|&gt;</span> knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <colgroup>
@@ -649,10 +649,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>annotCan <span class="ot">&lt;-</span> <span class="fu">annotate_peptides</span>(upeptide, resCan)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>annotation_canonical <span class="ot">&lt;-</span> <span class="fu">annotate_peptides</span>(peptides, fasta_canonical)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>matches <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">database =</span> <span class="fu">c</span>(<span class="st">"All"</span>, <span class="st">"Canonical"</span>), <span class="at">matches =</span> <span class="fu">c</span>(<span class="fu">nrow</span>(annotAll), <span class="fu">nrow</span>(annotCan)))</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>matches <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">database =</span> <span class="fu">c</span>(<span class="st">"All"</span>, <span class="st">"Canonical"</span>), <span class="at">matches =</span> <span class="fu">c</span>(<span class="fu">nrow</span>(annotation_all), <span class="fu">nrow</span>(annotation_canonical)))</span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(matches, <span class="fu">aes</span>(<span class="at">x =</span> database, <span class="at">y =</span> matches)) <span class="sc">+</span></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">fill =</span> <span class="st">"#0072B2"</span>) <span class="sc">+</span></span>
 <span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> matches), <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.3</span>) <span class="sc">+</span></span>
@@ -671,8 +671,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>proteotypic <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">database =</span> <span class="fu">c</span>(<span class="st">"All"</span>, <span class="st">"Canonical"</span>),</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">percent =</span> <span class="fu">c</span>(</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sum</span>(<span class="fu">table</span>(annotAll<span class="sc">$</span>peptide_seq) <span class="sc">==</span> <span class="dv">1</span>) <span class="sc">/</span> <span class="fu">length</span>(<span class="fu">table</span>(annotAll<span class="sc">$</span>peptide_seq)) <span class="sc">*</span> <span class="dv">100</span>,</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sum</span>(<span class="fu">table</span>(annotCan<span class="sc">$</span>peptide_seq) <span class="sc">==</span> <span class="dv">1</span>) <span class="sc">/</span> <span class="fu">length</span>(<span class="fu">table</span>(annotCan<span class="sc">$</span>peptide_seq)) <span class="sc">*</span> <span class="dv">100</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mean</span>(<span class="fu">table</span>(annotation_all<span class="sc">$</span>peptide_seq) <span class="sc">==</span> <span class="dv">1</span>) <span class="sc">*</span> <span class="dv">100</span>,</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mean</span>(<span class="fu">table</span>(annotation_canonical<span class="sc">$</span>peptide_seq) <span class="sc">==</span> <span class="dv">1</span>) <span class="sc">*</span> <span class="dv">100</span></span>
 <span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  )</span>
 <span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(proteotypic, <span class="fu">aes</span>(<span class="at">x =</span> database, <span class="at">y =</span> percent)) <span class="sc">+</span></span>
@@ -683,7 +683,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="PeptideAnnotationwithProzor_files/figure-html/proteotypicPetides-1.png" class="img-fluid figure-img" width="576"></p>
+<p><img src="PeptideAnnotationwithProzor_files/figure-html/proteotypic-peptides-1.png" class="img-fluid figure-img" width="576"></p>
 <figcaption>Proportion of proteotypic peptides.</figcaption>
 </figure>
 </div>
@@ -694,7 +694,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h1>Protein Inference</h1>
 <p>We can now identify a minimal set of proteins explaining all the peptides observed for both databases. <code>greedy_parsimony()</code> takes a table with one row per peptide-protein match; a peptide observed as several precursors gives repeated rows, which count once.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>precursors <span class="ot">&lt;-</span> <span class="fu">distinct</span>(specMeta, peptideModSeq, precursorCharge, peptideSeq)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>precursors <span class="ot">&lt;-</span> <span class="fu">distinct</span>(id_results, peptideModSeq, precursorCharge, peptideSeq)</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co"># peptide protein matches as points; rows and columns sorted by their number of matches</span></span>
 <span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>plot_matches <span class="ot">&lt;-</span> <span class="cf">function</span>(annotation) {</span>
@@ -708,16 +708,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <section id="protein-inference-for-database-with-trembl-identifiers" class="level2">
-<h2 class="anchored" data-anchor-id="protein-inference-for-database-with-trembl-identifiers">Protein Inference for database with Trembl identifiers</h2>
+<h2 class="anchored" data-anchor-id="protein-inference-for-database-with-trembl-identifiers">Protein Inference for database with TrEMBL identifiers</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>annotatedPrecursors <span class="ot">&lt;-</span> <span class="fu">inner_join</span>(</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>annotated_precursors <span class="ot">&lt;-</span> <span class="fu">inner_join</span>(</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  precursors,</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(annotAll, peptide_seq, protein_id),</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(annotation_all, peptide_seq, protein_id),</span>
 <span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">by =</span> <span class="fu">join_by</span>(peptideSeq <span class="sc">==</span> peptide_seq),</span>
 <span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">relationship =</span> <span class="st">"many-to-many"</span></span>
 <span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(annotatedPrecursors) <span class="sc">|&gt;</span> knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(annotated_precursors) <span class="sc">|&gt;</span> knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <colgroup>
@@ -775,48 +775,54 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 <p>Peptide protein matches for the All database. Rows - peptides, columns - proteins, point - peptide protein match.</p>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">peptides =</span> <span class="fu">n_distinct</span>(annotatedPrecursors<span class="sc">$</span>peptideSeq), <span class="at">proteins =</span> <span class="fu">n_distinct</span>(annotatedPrecursors<span class="sc">$</span>protein_id))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">peptides =</span> <span class="fu">n_distinct</span>(annotated_precursors<span class="sc">$</span>peptideSeq),</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">proteins =</span> <span class="fu">n_distinct</span>(annotated_precursors<span class="sc">$</span>protein_id)</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>peptides proteins 
     1433     1072 </code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_matches</span>(annotatedPrecursors)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_matches</span>(annotated_precursors)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="PeptideAnnotationwithProzor_files/figure-html/greedyTrembl-1.png" class="img-fluid figure-img" width="576"></p>
+<p><img src="PeptideAnnotationwithProzor_files/figure-html/greedy-trembl-1.png" class="img-fluid figure-img" width="576"></p>
 <figcaption>Peptide protein matches for the All database. Rows - peptides, columns - proteins, point - peptide protein match.</figcaption>
 </figure>
 </div>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>xxAll <span class="ot">&lt;-</span> <span class="fu">greedy_parsimony</span>(annotatedPrecursors, <span class="at">peptide =</span> <span class="st">"peptideSeq"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>groups_all <span class="ot">&lt;-</span> <span class="fu">greedy_parsimony</span>(annotated_precursors, <span class="at">peptide =</span> <span class="st">"peptideSeq"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="protein-inference-for-reviewedcanonical-database" class="level2">
 <h2 class="anchored" data-anchor-id="protein-inference-for-reviewedcanonical-database">Protein Inference for Reviewed/Canonical database</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>annotatedPrecursors <span class="ot">&lt;-</span> <span class="fu">inner_join</span>(</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>annotated_precursors <span class="ot">&lt;-</span> <span class="fu">inner_join</span>(</span>
 <span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  precursors,</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(annotCan, peptide_seq, protein_id),</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(annotation_canonical, peptide_seq, protein_id),</span>
 <span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">by =</span> <span class="fu">join_by</span>(peptideSeq <span class="sc">==</span> peptide_seq),</span>
 <span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">relationship =</span> <span class="st">"many-to-many"</span></span>
 <span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">peptides =</span> <span class="fu">n_distinct</span>(annotatedPrecursors<span class="sc">$</span>peptideSeq), <span class="at">proteins =</span> <span class="fu">n_distinct</span>(annotatedPrecursors<span class="sc">$</span>protein_id))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">peptides =</span> <span class="fu">n_distinct</span>(annotated_precursors<span class="sc">$</span>peptideSeq),</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">proteins =</span> <span class="fu">n_distinct</span>(annotated_precursors<span class="sc">$</span>protein_id)</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>peptides proteins 
     1430      382 </code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_matches</span>(annotatedPrecursors)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_matches</span>(annotated_precursors)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="PeptideAnnotationwithProzor_files/figure-html/greedyCanonical-1.png" class="img-fluid figure-img" width="576"></p>
+<p><img src="PeptideAnnotationwithProzor_files/figure-html/greedy-canonical-1.png" class="img-fluid figure-img" width="576"></p>
 <figcaption>Peptide protein matches for the Canonical database. Rows - peptides, columns - proteins, point - peptide protein match.</figcaption>
 </figure>
 </div>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>xxCAN <span class="ot">&lt;-</span> <span class="fu">greedy_parsimony</span>(annotatedPrecursors, <span class="at">peptide =</span> <span class="st">"peptideSeq"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>groups_canonical <span class="ot">&lt;-</span> <span class="fu">greedy_parsimony</span>(annotated_precursors, <span class="at">peptide =</span> <span class="st">"peptideSeq"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 </section>
@@ -828,8 +834,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">database =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"All"</span>, <span class="st">"Canonical"</span>), <span class="at">each =</span> <span class="dv">2</span>),</span>
 <span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">stage =</span> <span class="fu">factor</span>(<span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"before"</span>, <span class="st">"after"</span>), <span class="dv">2</span>), <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"before"</span>, <span class="st">"after"</span>)),</span>
 <span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">proteins =</span> <span class="fu">c</span>(</span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">length</span>(<span class="fu">unique</span>(annotAll<span class="sc">$</span>protein_id)), <span class="fu">length</span>(<span class="fu">unique</span>(<span class="fu">unlist</span>(xxAll))),</span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">length</span>(<span class="fu">unique</span>(annotCan<span class="sc">$</span>protein_id)), <span class="fu">length</span>(<span class="fu">unique</span>(<span class="fu">unlist</span>(xxCAN)))</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">length</span>(<span class="fu">unique</span>(annotation_all<span class="sc">$</span>protein_id)), <span class="fu">length</span>(<span class="fu">unique</span>(groups_all)),</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">length</span>(<span class="fu">unique</span>(annotation_canonical<span class="sc">$</span>protein_id)), <span class="fu">length</span>(<span class="fu">unique</span>(groups_canonical))</span>
 <span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  )</span>
 <span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(inference, <span class="fu">aes</span>(<span class="at">x =</span> stage, <span class="at">y =</span> proteins)) <span class="sc">+</span></span>
@@ -846,10 +852,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-</section>
-<section id="todo" class="level1">
-<h1>TODO</h1>
-<p><a href="https://www.dropbox.com/s/a4kqyc4gxln8sfj/scaffold_protein_grouping_clustering.pdf?dl=1">Protein Grouping and Clustering in Scaffold</a></p>
 </section>
 <section id="session-info" class="level1">
 <h1>Session Info</h1>
@@ -877,7 +879,7 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] ggplot2_4.0.4 dplyr_1.2.1   prozor_0.4.0 
+[1] ggplot2_4.0.4 dplyr_1.2.1   prozor_0.5.0 
 
 loaded via a namespace (and not attached):
  [1] vctrs_0.7.3           cli_3.6.6             knitr_1.52           

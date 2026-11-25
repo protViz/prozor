@@ -81,7 +81,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-63b5708e65d6cd79cd7618c58d0c21e7.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-44f7b187718e43abfea0560aa82c1a71.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-ded4168630e1422961a6247c4ac5fe91.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -324,8 +324,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../man/read_peptide_fasta.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">read_peptide_fasta</span></a>
+  <a href="../man/read_fasta.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">read_fasta</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -400,10 +400,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="unnumbered anchored" data-anchor-id="compute-dynamic-swath-dia-windows">Compute dynamic SWATH (DIA) windows</h2>
 <section id="description" class="level3">
 <h3 class="anchored" data-anchor-id="description">Description</h3>
-<p>An R6 class that splits the MS1 mass range into <code>nbins</code> windows with about equal numbers of precursors. The window boundaries (breaks) are computed once, when the object is created, with one of three methods:</p>
+<p>An R6 class that splits the MS1 mass range into <code>n_bins</code> windows with about equal numbers of precursors. The window boundaries (breaks) are computed once, when the object is created, with one of three methods:</p>
 <ul>
 <li>
-<p><code>“sampling”</code> (default): the quantile breaks of the masses mixed with uniformly spread data, with the smallest share of uniform data that keeps all window widths within <code style="white-space: pre;">[minwindow, maxwindow]</code>; the quantile breaks themselves if they fit. Stops if even windows of equal width violate the limits.</p>
+<p><code>“mixture”</code> (default): the quantile breaks of the masses mixed with uniformly spread data, with the smallest share of uniform data that keeps all window widths within <code style="white-space: pre;">[min_window, max_window]</code>; the quantile breaks themselves if they fit. Stops if even windows of equal width violate the limits.</p>
 </li>
 <li>
 <p><code>“quantile”</code>: windows with equal numbers of masses, of any width.</p>
@@ -414,6 +414,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 <p>The breaks are rounded to <code>digits</code> decimals, and the outer breaks are rounded outward and padded by <code>1 / 10^digits</code>, so that the windows enclose all masses.</p>
 <p>The object cannot be changed: its fields are read-only and its methods only read them, so their results do not depend on the order in which they are called. To compare methods or settings, create one object for each. <code>clone()</code> copies an object.</p>
+</section>
+<section id="value" class="level3">
+<h3 class="anchored" data-anchor-id="value">Value</h3>
+<p><code>Cdsw$new()</code> returns a <code>Cdsw</code> R6 object; see Methods.</p>
 </section>
 <section id="active-bindings" class="level3">
 <h3 class="anchored" data-anchor-id="active-bindings">Active bindings</h3>
@@ -426,7 +430,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 MS1 masses (read-only).
 </dd>
 <dt>
-<code>nbins</code>
+<code>n_bins</code>
 </dt>
 <dd>
 Number of windows (read-only).
@@ -441,7 +445,7 @@ Method that placed the breaks (read-only).
 <code>breaks</code>
 </dt>
 <dd>
-Window boundaries, <code>nbins + 1</code> values (read-only).
+Window boundaries, <code>n_bins + 1</code> values (read-only).
 </dd>
 </dl>
 </div>
@@ -474,7 +478,7 @@ Public methods
 <p><a href="#method-Cdsw-plot_breaks"><code>Cdsw$plot_breaks()</code></a></p>
 </li>
 <li>
-<p><a href="#method-Cdsw-show_cycle"><code>Cdsw$show_cycle()</code></a></p>
+<p><a href="#method-Cdsw-plot_cycle"><code>Cdsw$plot_cycle()</code></a></p>
 </li>
 <li>
 <p><a href="#method-Cdsw-clone"><code>Cdsw$clone()</code></a></p>
@@ -485,17 +489,17 @@ Public methods
 <h4 class="anchored">
 <code>Cdsw$new()</code>
 </h4>
-<p>Compute the breaks of <code>nbins</code> windows over the masses with <code>method</code>.</p>
+<p>Compute the breaks of <code>n_bins</code> windows over the masses with <code>method</code>.</p>
 <h5 class="anchored">
 Usage
 </h5>
 <div class="r">
 <pre>Cdsw\$new(
   masses,
-  nbins = 25,
-  method = c("sampling", "quantile", "constant"),
-  maxwindow = 150,
-  minwindow = 5,
+  n_bins = 25,
+  method = c("mixture", "quantile", "constant"),
+  max_window = 150,
+  min_window = 5,
   digits = 2
 )</pre>
 </div>
@@ -511,7 +515,7 @@ Arguments
 MS1 masses (m/z): a numeric vector of finite values.
 </dd>
 <dt>
-<code>nbins</code>
+<code>n_bins</code>
 </dt>
 <dd>
 Number of windows.
@@ -520,13 +524,13 @@ Number of windows.
 <code>method</code>
 </dt>
 <dd>
-How to place the breaks: <code>“sampling”</code> (default), <code>“quantile”</code> or <code>“constant”</code>; see Description.
+How to place the breaks: <code>“mixture”</code> (default), <code>“quantile”</code> or <code>“constant”</code>; see Description.
 </dd>
 <dt>
-<code>maxwindow, minwindow</code>
+<code>max_window, min_window</code>
 </dt>
 <dd>
-Largest and smallest window width in m/z; used by <code>method = “sampling”</code> only.
+Largest and smallest window width in m/z; used by <code>method = “mixture”</code> only.
 </dd>
 <dt>
 <code>digits</code>
@@ -597,7 +601,7 @@ Overlap of neighboring windows in m/z: each window is widened by <code>overlap /
 <h5 class="anchored">
 Returns
 </h5>
-<p>A data frame with one row per window: start <code>from</code>, end <code>to</code>, center <code>mid</code>, <code>width</code> and the number of precursors with <code style="white-space: pre;">from &lt; m/z &lt;= to</code> (<code>counts</code>).</p>
+<p>A data frame with one row per window: start <code>from</code>, end <code>to</code>, center <code>mid</code>, <code>width</code> and the number of precursors with <code style="white-space: pre;">from &lt; m/z &lt;= to</code> (<code>n_precursors</code>).</p>
 <hr>
 <p><a id="method-Cdsw-error"></a></p>
 <h4 class="anchored">
@@ -613,7 +617,7 @@ Usage
 <h5 class="anchored">
 Returns
 </h5>
-<p>A list with <code>score1</code> (Manhattan distance), <code>score2</code> (Euclidean distance), <code>counts</code> (precursors per window) and <code>optimum_n</code> (equal counts), both counts normalized to length 1.</p>
+<p>A list with <code>manhattan</code> (Manhattan distance), <code>euclidean</code> (Euclidean distance), <code>normalized_counts</code> (precursors per window) and <code>equal_counts</code> (the counts of windows with equal numbers of precursors), both counts normalized to length 1.</p>
 <hr>
 <p><a id="method-Cdsw-optimize_windows"></a></p>
 <h4 class="anchored">
@@ -624,7 +628,7 @@ Returns
 Usage
 </h5>
 <div class="r">
-<pre>Cdsw\$optimize_windows(bin_width = 0.1, maxbin = 15, overlap = 0)</pre>
+<pre>Cdsw\$optimize_windows(bin_width = 0.1, min_count = 15, overlap = 1)</pre>
 </div>
 <h5 class="anchored">
 Arguments
@@ -638,10 +642,10 @@ Arguments
 Width of the bins (m/z) into which the masses are binned.
 </dd>
 <dt>
-<code>maxbin</code>
+<code>min_count</code>
 </dt>
 <dd>
-Bins with fewer than <code>maxbin</code> precursors count as empty.
+Bins with fewer than <code>min_count</code> precursors count as empty.
 </dd>
 <dt>
 <code>overlap</code>
@@ -688,16 +692,16 @@ Returns
 </h5>
 <p>A ggplot object.</p>
 <hr>
-<p><a id="method-Cdsw-show_cycle"></a></p>
+<p><a id="method-Cdsw-plot_cycle"></a></p>
 <h4 class="anchored">
-<code>Cdsw$show_cycle()</code>
+<code>Cdsw$plot_cycle()</code>
 </h4>
 <p>Plot the DIA cycle, one window per step.</p>
 <h5 class="anchored">
 Usage
 </h5>
 <div class="r">
-<pre>Cdsw\$show_cycle(overlap = 1)</pre>
+<pre>Cdsw\$plot_cycle(overlap = 1)</pre>
 </div>
 <h5 class="anchored">
 Arguments
@@ -744,7 +748,7 @@ Whether to make a deep clone.
 </section>
 <section id="see-also" class="level3">
 <h3 class="anchored" data-anchor-id="see-also">See Also</h3>
-<p>Other DIA windows: <code>plot_windows()</code>, <code>readjust_windows()</code></p>
+<p>Other DIA windows: <code>masses</code>, <code>plot_windows()</code>, <code>readjust_windows()</code></p>
 </section>
 <section id="examples" class="level3">
 <h3 class="anchored" data-anchor-id="examples">Examples</h3>
@@ -752,10 +756,10 @@ Whether to make a deep clone.
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"prozor"</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(masses)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>cdsw <span class="ot">&lt;-</span> Cdsw<span class="sc">$</span><span class="fu">new</span>(masses, <span class="at">maxwindow =</span> <span class="dv">100</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>cdsw <span class="ot">&lt;-</span> Cdsw<span class="sc">$</span><span class="fu">new</span>(masses, <span class="at">max_window =</span> <span class="dv">100</span>)</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>cdsw</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>&lt;Cdsw&gt; 146,009 masses in 25 windows, method "sampling"
+<pre><code>&lt;Cdsw&gt; 146,009 masses in 25 windows, method "mixture"
 window widths 20.69 to 100.01 m/z</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>cdsw<span class="sc">$</span><span class="fu">plot_breaks</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -776,25 +780,25 @@ window widths 20.69 to 100.01 m/z</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(cdsw<span class="sc">$</span><span class="fu">as_table</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>    from     to     mid width counts
-1 349.63 381.69 365.660 32.06   6098
-2 380.69 408.26 394.475 27.57   6377
-3 407.26 432.22 419.740 24.96   6531
-4 431.22 454.62 442.920 23.40   6588
-5 453.62 476.03 464.825 22.41   6627
-6 475.03 496.74 485.885 21.71   6715</code></pre>
+<pre><code>    from     to     mid width n_precursors
+1 349.63 381.69 365.660 32.06         6098
+2 380.69 408.26 394.475 27.57         6377
+3 407.26 432.22 419.740 24.96         6531
+4 431.22 454.62 442.920 23.40         6588
+5 453.62 476.03 464.825 22.41         6627
+6 475.03 496.74 485.885 21.71         6715</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(cdsw<span class="sc">$</span><span class="fu">optimize_windows</span>())</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>    from     to    mid width counts
-1 350.05 381.35 365.70  31.3   6053
-2 381.05 407.95 394.50  26.9   6189
-3 407.65 431.85 419.75  24.2   6425
-4 431.65 454.15 442.90  22.5   6334
-5 454.05 475.65 464.85  21.6   6387
-6 475.45 496.35 485.90  20.9   6504</code></pre>
+<pre><code>    from     to    mid width n_precursors
+1 349.63 381.95 365.79 32.32         6177
+2 380.65 408.35 394.50 27.70         6395
+3 407.15 432.35 419.75 25.20         6695
+4 431.15 454.65 442.90 23.50         6613
+5 453.45 476.05 464.75 22.60         6658
+6 474.85 496.85 485.85 22.00         6842</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>cdsw<span class="sc">$</span><span class="fu">show_cycle</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>cdsw<span class="sc">$</span><span class="fu">plot_cycle</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -804,9 +808,9 @@ window widths 20.69 to 100.01 m/z</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># one object per method</span></span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>quantile_windows <span class="ot">&lt;-</span> Cdsw<span class="sc">$</span><span class="fu">new</span>(masses, <span class="at">method =</span> <span class="st">"quantile"</span>)</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">sampling =</span> cdsw<span class="sc">$</span><span class="fu">error</span>()<span class="sc">$</span>score1, <span class="at">quantile =</span> quantile_windows<span class="sc">$</span><span class="fu">error</span>()<span class="sc">$</span>score1)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">mixture =</span> cdsw<span class="sc">$</span><span class="fu">error</span>()<span class="sc">$</span>manhattan, <span class="at">quantile =</span> quantile_windows<span class="sc">$</span><span class="fu">error</span>()<span class="sc">$</span>manhattan)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>   sampling    quantile 
+<pre><code>    mixture    quantile 
 0.086158661 0.002159576 </code></pre>
 </div>
 </div>

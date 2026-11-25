@@ -81,7 +81,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-63b5708e65d6cd79cd7618c58d0c21e7.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-44f7b187718e43abfea0560aa82c1a71.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-ded4168630e1422961a6247c4ac5fe91.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -324,8 +324,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../man/read_peptide_fasta.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">read_peptide_fasta</span></a>
+  <a href="../man/read_fasta.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">read_fasta</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -404,7 +404,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="usage" class="level3">
 <h3 class="anchored" data-anchor-id="usage">Usage</h3>
-<pre><code class="language-R">make_chain_id_uniprot(sequence, id, sp)
+<pre><code class="language-R">make_chain_id_uniprot(sequence, id, start)
 </code></pre>
 </section>
 <section id="arguments" class="level3">
@@ -428,7 +428,7 @@ The UniProt ID of the protein, e.g.&nbsp;<code>“sp|P30443|1A01_HUMAN”</code>
 </tr>
 <tr>
 <td style="white-space: collapse; font-family: monospace; vertical-align: top">
-<code id="sp">sp</code>
+<code id="start">start</code>
 </td>
 <td>
 Start position of the chain.
@@ -438,11 +438,11 @@ Start position of the chain.
 </section>
 <section id="value" class="level3">
 <h3 class="anchored" data-anchor-id="value">Value</h3>
-<p>The first two fields of <code>id</code>, followed by <code>sp</code>, <code>-</code> and the length of <code>sequence</code>, e.g. <code>“sp|P30443|24-5”</code>.</p>
+<p>The first two fields of <code>id</code>, followed by <code>start</code>, <code>-</code> and the length of <code>sequence</code>, e.g. <code>“sp|P30443|24-5”</code>.</p>
 </section>
 <section id="see-also" class="level3">
 <h3 class="anchored" data-anchor-id="see-also">See Also</h3>
-<p>Other FASTA databases: <code>create_decoy_db()</code>, <code>create_fgcz_fasta_db()</code>, <code>load_contaminants()</code>, <code>make_chain_id()</code>, <code>make_fasta_summary()</code>, <code>read_peptide_fasta()</code>, <code>remove_signal_peptide()</code>, <code>reverse_seq()</code>, <code>write_fasta()</code></p>
+<p>Other FASTA databases: <code>create_decoy_db()</code>, <code>create_fgcz_fasta_db()</code>, <code>load_contaminants()</code>, <code>make_chain_id()</code>, <code>make_fasta_summary()</code>, <code>read_fasta()</code>, <code>remove_signal_peptide()</code>, <code>reverse_seq()</code>, <code>write_fasta()</code></p>
 </section>
 <section id="examples" class="level3">
 <h3 class="anchored" data-anchor-id="examples">Examples</h3>
