@@ -9,8 +9,8 @@ test_that("create_fgcz_fasta_db() writes a dated decoy database to output_dir", 
   expect_equal(normalizePath(dirname(res$file_path)), normalizePath(outdir))
   expect_match(basename(res$file_path), "^p1000_db1_example_d_[0-9]{8}\\.fasta$")
   expect_equal(res$db_name, "p1000_db1_example_d")
-  expect_length(res$db, 3155)
-  expect_length(back, 3155)
+  expect_length(res$db, 2941)
+  expect_length(back, 2941)
   expect_false(anyDuplicated(names(back)) > 0)
 })
 
@@ -21,7 +21,7 @@ test_that("create_fgcz_fasta_db() without rev_lab writes targets and contaminant
   res <- suppressMessages(create_fgcz_fasta_db(example, rev_lab = NULL, output_dir = outdir, make_summary = FALSE))
 
   expect_match(basename(res$file_path), "^p1000_db1_example_[0-9]{8}\\.fasta$")
-  expect_length(res$db, 1578)
+  expect_length(res$db, 1471)
   expect_false(any(grepl("^REV_", names(res$db))))
 })
 

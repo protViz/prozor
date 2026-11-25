@@ -71,7 +71,7 @@ make_fasta_summary <- function(db, as_string = TRUE) {
 #' unlink(res$file_path)
 create_fgcz_fasta_db <- function(
   database_dir,
-  contaminants = load_contaminants("fgcz2022"),
+  contaminants = c(load_contaminants("special2024"), load_contaminants("universal2024")),
   rev_lab = "REV_",
   output_dir,
   make_summary = TRUE

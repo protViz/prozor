@@ -6,7 +6,7 @@
 \usage{
 create_fgcz_fasta_db(
   database_dir,
-  contaminants = load_contaminants("fgcz2022"),
+  contaminants = c(load_contaminants("special2024"), load_contaminants("universal2024")),
   rev_lab = "REV_",
   output_dir,
   make_summary = TRUE

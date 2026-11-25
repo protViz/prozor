@@ -48,6 +48,7 @@
 * prozor requires R 4.4.0 or later.
 * `prepare_matrix()` applies `use.last.ij` to numeric weights too: by default a repeated peptide-protein pair keeps the weight of its last row, as it keeps a single entry for the other weightings. It summed the weights; pass `use.last.ij = FALSE` for the sum.
 * prozor no longer imports seqinr: `read_peptide_fasta()` and `write_fasta()` use base R. The entries are still `SeqFastaAA` objects with the attributes `name` and `Annot`, so seqinr's `getAnnot()`, `getName()` and `getLength()` work on them as before. `library(prozor)` no longer loads seqinr, so `summary()` of an entry gives R's default summary of a string unless seqinr is loaded (it used to dispatch to seqinr's method, which returns the length, the composition and the amino-acid properties).
+* `create_decoy_db()` and `create_fgcz_fasta_db()` add the contaminant sets `"special2024"` and `"universal2024"` by default, like `inst/script/fgcz_create_fasta.R` (was `"fgcz2022"`).
 
 ## New features
 

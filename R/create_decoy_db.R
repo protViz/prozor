@@ -18,14 +18,14 @@
 #' cont <- load_contaminants("fgcz2022")
 #'
 #' # the file, read twice, holds the same entries as the default contaminants: each is kept once
-#' db <- create_decoy_db(c(file, file))
+#' db <- create_decoy_db(c(file, file), contaminants = cont)
 #' stopifnot(length(db) == 1 + 2 * length(targets), identical(names(targets), names(cont)))
 #'
 #' db <- create_decoy_db(file, rev_lab = NULL, contaminants = NULL)
 #' stopifnot(length(db) == 1 + length(targets))
 create_decoy_db <- function(
   dbs,
-  contaminants = load_contaminants("fgcz2022"),
+  contaminants = c(load_contaminants("special2024"), load_contaminants("universal2024")),
   rev_lab = "REV_",
   annot = "zz|sourceOf|database"
 ) {
