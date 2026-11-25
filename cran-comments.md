@@ -9,11 +9,13 @@ The NOTE on r-devel ("Rd files without \usage: 'Cdsw-class.Rd'") is fixed.
 ## Test environments
 
 * local macOS (aarch64), R 4.6.2
-* GitHub Actions: ubuntu-latest (R-release, R-devel), windows-latest (R-release), macos-latest (R-release)
+* GitHub Actions: ubuntu-latest (R-devel, R-release, R-oldrel-1, R 4.4.x), windows-latest (R-release), macos-latest (R-release)
 
 ## R CMD check results
 
 0 errors | 0 warnings | 0 notes
+
+The URL check can report HTTP 429 for the ror.org links that R generates from the ROR IDs in Authors@R. ror.org rate-limits automated requests; both IDs are active (api.ror.org).
 
 ## Reverse dependencies
 
