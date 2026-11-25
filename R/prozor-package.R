@@ -25,6 +25,8 @@
 #' `vignette("cdsw", package = "prozor")`.
 #'
 #' @keywords internal
-#' @importFrom ggplot2 .data
 #' @importFrom R6 R6Class
 "_PACKAGE"
+
+# The `.data` pronoun of ggplot2's aes(), declared instead of imported, so that ggplot2 loads only at the first plot
+utils::globalVariables(".data")

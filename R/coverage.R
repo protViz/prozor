@@ -1,28 +1,42 @@
 # Stop unless `annotation` has the columns the coverage functions read.
 .check_annotation <- function(annotation, peptide) {
-  needed <- c("protein_id", "protein_sequence", "offset", peptide)
-  missing_cols <- setdiff(needed, colnames(annotation))
-  if (length(missing_cols) > 0) {
-    stop(
-      "`annotation` must have the columns ",
-      paste0("`", needed, "`", collapse = ", "),
-      " (as returned by annotate_peptides()); missing: ",
-      paste0("`", missing_cols, "`", collapse = ", "),
-      ".",
-      call. = FALSE
-    )
-  }
+  .check_columns(annotation, c("protein_id", "protein_sequence", "offset", peptide), "annotation")
 }
 
-# One row per peptide occurrence: repeated rows of the same occurrence (e.g. charge states) count once.
-.peptide_occurrences <- function(annotation, peptide) {
-  occurrences <- data.frame(
-    protein_id = as.character(annotation$protein_id),
-    peptide = as.character(annotation[[peptide]]),
-    offset = as.integer(annotation$offset),
-    protein_sequence = as.character(annotation$protein_sequence)
+# The residues covered by each distinct peptide of each protein. Returns the proteins (`protein_id`, in the order of
+# factor(protein_id)), their sequences, their numbers of distinct peptides and, in `residue`, the covered residues: one
+# entry per peptide and residue it covers, the residue numbered along the concatenated protein sequences, and in
+# `protein` the protein of each entry. Repeated rows (e.g. charge states) and overlapping occurrences of a peptide
+# count once; positions outside the protein are dropped.
+.covered_residues <- function(annotation, peptide) {
+  protein_id <- as.character(annotation$protein_id)
+  proteins <- sort(unique(protein_id))
+  protein_sequence <- as.character(annotation$protein_sequence)[match(proteins, protein_id)]
+  protein_length <- nchar(protein_sequence)
+  peptides <- as.character(annotation[[peptide]])
+  protein <- match(protein_id, proteins)
+  peptide_index <- match(peptides, peptides)
+  from <- as.integer(annotation$offset)
+  to <- from + nchar(peptides) - 1L
+  ordered <- order(protein, peptide_index, from, method = "radix")
+  protein <- protein[ordered]
+  peptide_index <- peptide_index[ordered]
+  from <- from[ordered]
+  to <- to[ordered]
+  # In this order, the occurrences of a peptide in a protein follow each other by offset; as they have the same
+  # length, the previous one ends last, so each one adds only the residues after its end.
+  same_pair <- protein == c(0L, utils::head(protein, -1)) & peptide_index == c(0L, utils::head(peptide_index, -1))
+  from[same_pair] <- pmax(from[same_pair], to[which(same_pair) - 1L] + 1L)
+  from <- pmax(from, 1L)
+  to <- pmin(to, protein_length[protein])
+  n_residues <- pmax(to - from + 1L, 0L)
+  list(
+    protein_id = proteins,
+    protein_sequence = protein_sequence,
+    n_peptides = tabulate(protein[!same_pair], length(proteins)),
+    protein = rep.int(protein, n_residues),
+    residue = sequence(n_residues, from = c(0L, cumsum(protein_length))[protein] + from)
   )
-  occurrences[!duplicated(occurrences[, c("protein_id", "peptide", "offset")]), ]
 }
 
 
@@ -49,28 +63,14 @@
 #' head(residues)
 residue_coverage <- function(annotation, peptide = "peptide_seq") {
   .check_annotation(annotation, peptide)
-  occurrences <- .peptide_occurrences(annotation, peptide)
-  per_protein <- lapply(split(occurrences, occurrences$protein_id), function(x) {
-    protein_seq <- x$protein_sequence[1]
-    len <- nchar(protein_seq)
-    ends <- x$offset + nchar(x$peptide) - 1L
-    # residues covered by each distinct peptide, so overlapping occurrences of one peptide count once
-    covered <- lapply(split(seq_len(nrow(x)), x$peptide), function(i) {
-      unique(unlist(Map(seq.int, x$offset[i], ends[i]), use.names = FALSE))
-    })
-    depth <- tabulate(unlist(covered, use.names = FALSE), len)
-    data.frame(
-      protein_id = x$protein_id[1],
-      position = seq_len(len),
-      residue = strsplit(protein_seq, "", fixed = TRUE)[[1]],
-      n_peptides = as.integer(depth)
-    )
-  })
-  # rbind() drops the 0-row template unless there are no proteins, which gives a 0-row result
-  template <- data.frame(protein_id = character(), position = integer(), residue = character(), n_peptides = integer())
-  res <- do.call(rbind, c(list(template), unname(per_protein)))
-  rownames(res) <- NULL
-  res
+  covered <- .covered_residues(annotation, peptide)
+  protein_length <- nchar(covered$protein_sequence)
+  data.frame(
+    protein_id = rep.int(covered$protein_id, protein_length),
+    position = sequence(protein_length),
+    residue = strsplit(paste(covered$protein_sequence, collapse = ""), "", fixed = TRUE)[[1]],
+    n_peptides = tabulate(covered$residue, sum(protein_length))
+  )
 }
 
 
@@ -93,16 +93,14 @@ residue_coverage <- function(annotation, peptide = "peptide_seq") {
 #' coverage <- sequence_coverage(annot)
 #' head(coverage[order(coverage$coverage, decreasing = TRUE), ])
 sequence_coverage <- function(annotation, peptide = "peptide_seq") {
-  residues <- residue_coverage(annotation, peptide = peptide)
-  occurrences <- .peptide_occurrences(annotation, peptide)
-  depth <- split(residues$n_peptides, residues$protein_id)
-  n_peptides <- tapply(occurrences$peptide, occurrences$protein_id, function(p) length(unique(p)))
-  n_covered <- vapply(depth, function(d) sum(d > 0), integer(1), USE.NAMES = FALSE)
-  protein_length <- lengths(depth, use.names = FALSE)
+  .check_annotation(annotation, peptide)
+  covered <- .covered_residues(annotation, peptide)
+  protein_length <- nchar(covered$protein_sequence)
+  n_covered <- tabulate(covered$protein[!duplicated(covered$residue)], length(protein_length))
   data.frame(
-    protein_id = names(depth),
+    protein_id = covered$protein_id,
     protein_length = protein_length,
-    n_peptides = as.integer(n_peptides[names(depth)]),
+    n_peptides = covered$n_peptides,
     n_covered = n_covered,
     coverage = n_covered / protein_length
   )
@@ -129,16 +127,9 @@ sequence_coverage <- function(annotation, peptide = "peptide_seq") {
 #' best <- coverage$protein_id[which.max(coverage$coverage)]
 #' plot_coverage(residue_coverage(annot), best)
 plot_coverage <- function(residues, protein_id, width = 50) {
-  missing_cols <- setdiff(c("protein_id", "position", "residue", "n_peptides"), colnames(residues))
-  if (length(missing_cols) > 0) {
-    stop(
-      "`residues` must be a result of residue_coverage(); missing columns: ",
-      paste0("`", missing_cols, "`", collapse = ", "),
-      "."
-    )
-  }
+  .check_columns(residues, c("protein_id", "position", "residue", "n_peptides"), "residues")
   if (length(protein_id) != 1 || !protein_id %in% residues$protein_id) {
-    stop("`protein_id` must be one protein of `residues`, not \"", paste(protein_id, collapse = "\", \""), "\".")
+    stop("`protein_id` must be one protein of `residues`, not ", .quoted(protein_id, "\""), ".")
   }
   .check_number(width, "width", positive = TRUE, whole = TRUE)
   x <- residues[residues$protein_id == protein_id, ]

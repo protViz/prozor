@@ -79,6 +79,15 @@ test_that("greedy_parsimony() counts a repeated peptide-protein pair once", {
   expect_identical(res, greedy_parsimony(unique(data)))
 })
 
+test_that("greedy_parsimony() breaks ties between character IDs in C-locale order in any locale", {
+  # a {p1, p2} and B {p2, p3} tie; "B" comes first in C-locale order, "a" in en_US collation
+  suppressWarnings(withr::local_collate("en_US.UTF-8"))
+  skip_if_not(Sys.getlocale("LC_COLLATE") == "en_US.UTF-8", "no en_US.UTF-8 locale")
+  data <- data.frame(protein_id = c("a", "a", "B", "B"), peptide_seq = c("p1", "p2", "p2", "p3"))
+
+  expect_identical(greedy_parsimony(data), c(p2 = "B", p3 = "B", p1 = "a"))
+})
+
 test_that("greedy_parsimony() gives the same result for a tibble and a data frame", {
   skip_if_not_installed("dplyr")
   data <- data.frame(protein_id = c("A", "B", "B"), peptide_seq = c("p1", "p1", "p2"))
@@ -115,7 +124,7 @@ test_that("greedy_parsimony() stops, naming them, for missing columns", {
 
   expect_error(
     greedy_parsimony(data),
-    "must have the columns `protein_id` and `peptide_seq`.*; missing: `protein_id`\\.$"
+    "must have the columns `protein_id`, `peptide_seq`; missing: `protein_id`\\.$"
   )
   expect_error(greedy_parsimony(data, peptide = "precursor"), "missing: `protein_id`, `precursor`\\.$")
 })
@@ -127,7 +136,7 @@ test_that("greedy_parsimony() stops, counting them, for NA IDs", {
   expect_error(greedy_parsimony(data[1:2, ]), "found 1 in `protein_id`\\.$")
 })
 
-test_that("greedy_parsimony() handles 20000 peptides in about a second", {
+test_that("greedy_parsimony() handles 20000 peptides in under 5 s", {
   skip_on_cran()
   # Genes with 1 + Poisson(1) isoforms that share most of their peptides, a tenth of the peptides also match a second
   # gene: thousands of proteins tie in the late rounds. Comparing tied proteins one at a time took 18 s for 5000
@@ -162,7 +171,6 @@ test_that("greedy_parsimony() handles 20000 peptides in about a second", {
 
 test_that("greedy_parsimony() assigns every precursor of the example data", {
   data(protpepmetashort, package = "prozor", envir = environment())
-
   res <- greedy_parsimony(protpepmetashort, peptide = "peptide_mod_seq")
 
   expect_length(res, length(unique(protpepmetashort$peptide_mod_seq)))

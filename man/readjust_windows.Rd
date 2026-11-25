@@ -13,14 +13,15 @@ readjust_windows(windows, masses, bin_width = 0.1, min_count = 15)
 
 \item{bin_width}{Width of the bins (m/z) into which the masses are binned.}
 
-\item{min_count}{Bins with fewer than \code{min_count} precursors count as empty.}
+\item{min_count}{Bins with fewer than \code{min_count} precursors count as empty; a number, at least 0.}
 }
 \value{
 A data frame with one row per window and the columns \code{from}, \code{to}, \code{mid}, \code{width} and \code{n_precursors}
 (precursors with \verb{from < m/z <= to}).
 }
 \description{
-Move DIA window boundaries to regions with few precursors
+Moves each window start down, and each window end up, to the mid of the nearest empty bin. A boundary already on
+such a mid stays, so \code{readjust_windows()} returns its own result unchanged.
 }
 \examples{
 data(masses)

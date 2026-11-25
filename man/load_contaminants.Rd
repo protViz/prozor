@@ -4,11 +4,14 @@
 \alias{load_contaminants}
 \title{Load a bundled set of contaminant sequences}
 \usage{
-load_contaminants(set, no_human = FALSE)
+load_contaminants(
+  set = c("fgcz2024", "fgcz2019", "fgcz2021", "fgcz2022", "universal2024", "special2024"),
+  no_human = FALSE
+)
 }
 \arguments{
-\item{set}{Name of the contaminant set: \code{"fgcz2019"}, \code{"fgcz2021"}, \code{"fgcz2022"}, \code{"universal2024"} or
-\code{"special2024"}.}
+\item{set}{Name of the contaminant set: \code{"fgcz2024"} (default), \code{"fgcz2019"}, \code{"fgcz2021"}, \code{"fgcz2022"},
+\code{"universal2024"} or \code{"special2024"}.}
 
 \item{no_human}{If \code{TRUE}, drop the sequences whose header contains \code{HUMAN} or \verb{Homo sapiens}.}
 }
@@ -18,6 +21,8 @@ A named list of \code{SeqFastaAA} objects.
 \description{
 The sets:
 \itemize{
+\item \code{"fgcz2024"} (default): the FGCZ default, the sets \code{"special2024"} and \code{"universal2024"} together; used by
+\code{\link[=create_decoy_db]{create_decoy_db()}}, \code{\link[=create_fgcz_fasta_db]{create_fgcz_fasta_db()}} and \code{inst/script/fgcz_create_fasta.R}.
 \item \code{"fgcz2019"}, \code{"fgcz2021"}, \code{"fgcz2022"}: FGCZ contaminant lists of 2019, 2021 and 2022.
 \item \code{"universal2024"}: universal contaminants from
 \url{https://github.com/HaoGroup-ProtContLib/Protein-Contaminant-Libraries-for-DDA-and-DIA-Proteomics},
@@ -26,6 +31,7 @@ described by Frankenfield et al. (2022). See \code{system.file("COPYRIGHTS", pac
 }
 }
 \examples{
+length(load_contaminants())
 cont <- load_contaminants("fgcz2022")
 length(cont)
 length(load_contaminants("fgcz2022", no_human = TRUE))

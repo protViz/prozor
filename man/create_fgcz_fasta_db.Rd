@@ -7,7 +7,7 @@
 create_fgcz_fasta_db(
   database_dir,
   output_dir,
-  contaminants = c(load_contaminants("special2024"), load_contaminants("universal2024")),
+  contaminants = load_contaminants(),
   rev_lab = "REV_",
   make_summary = TRUE
 )
@@ -15,7 +15,7 @@ create_fgcz_fasta_db(
 \arguments{
 \item{database_dir}{Directory with the FASTA files and \code{annotation.txt}.}
 
-\item{output_dir}{Directory the FASTA file is written to; must not be \code{database_dir}, where the next run
+\item{output_dir}{Existing directory the FASTA file is written to; must not be \code{database_dir}, where the next run
 would read the written database as targets.}
 
 \item{contaminants}{Contaminant sequences to add, e.g. from \code{\link[=load_contaminants]{load_contaminants()}}, or \code{NULL} for none.}

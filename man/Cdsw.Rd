@@ -12,7 +12,8 @@ boundaries (breaks) are computed once, when the object is created, with one of t
 \itemize{
 \item \code{"mixture"} (default): the quantile breaks of the masses mixed with uniformly spread data, with the smallest share
 of uniform data that keeps all window widths within \verb{[min_window, max_window]}; the quantile breaks themselves if
-they fit. Stops if even windows of equal width violate the limits.
+they fit. The limits hold for the rounded and padded breaks. Stops if even windows of equal width violate the
+limits.
 \item \code{"quantile"}: windows with equal numbers of masses, of any width.
 \item \code{"constant"}: windows of equal width.
 }
@@ -139,7 +140,8 @@ Other DIA windows:
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
-      \item{\code{overlap}}{Overlap of neighboring windows in m/z: each window is widened by \code{overlap / 2} on both sides.}
+      \item{\code{overlap}}{Overlap of neighboring windows in m/z, at least 0: each window is widened by \code{overlap / 2} on both
+sides.}
     }
     \if{html}{\out{</div>}}
   }

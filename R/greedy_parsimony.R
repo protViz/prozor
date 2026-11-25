@@ -1,3 +1,13 @@
+# IDs as a factor whose level order breaks ties in .greedy_counts(): the used levels of a factor in their order; the
+# values of a character vector in C-locale order, independent of the session's collation
+.as_ids <- function(x) {
+  if (is.factor(x)) {
+    return(factor(x))
+  }
+  factor(x, levels = sort(unique(x), method = "radix"))
+}
+
+
 .greedy_counts <- function(peptides, proteins) {
   n_pep <- nlevels(peptides)
   n_prot <- nlevels(proteins)
@@ -8,18 +18,32 @@
   # peptides of each protein and proteins of each peptide, both in ascending order
   peps_of <- split(pep, factor(prot, levels = seq_len(n_prot)))
   prots_of <- split(prot, factor(pep, levels = seq_len(n_pep)))
-  # unexplained peptides per protein; -1 once the protein is assigned
+  # unexplained peptides per protein
   counts <- lengths(peps_of, use.names = FALSE)
   alive <- rep(TRUE, n_pep)
   mark <- logical(n_pep)
   res <- vector(n_prot, mode = "list")
   n_groups <- 0
+  # The proteins at the highest count `level`, listed in index order when the level is reached. Counts only
+  # decrease, so the first listed protein still at `level` is which.max(counts), without a scan of all proteins in
+  # every round; when none is left, the level drops.
+  candidates <- integer(0)
+  k <- 1L
+  level <- 0L
   repeat {
-    first <- which.max(counts)
-    # stop when no protein explains an unexplained peptide
-    if (length(first) == 0 || counts[first] <= 0) {
-      break
+    while (k <= length(candidates) && counts[candidates[k]] != level) {
+      k <- k + 1L
     }
+    if (k > length(candidates)) {
+      level <- max(counts, 0L)
+      # stop when no protein explains an unexplained peptide
+      if (level == 0L) {
+        break
+      }
+      candidates <- which(counts == level)
+      k <- 1L
+    }
+    first <- candidates[k]
     explained <- peps_of[[first]][alive[peps_of[[first]]]]
     # the proteins of each explained peptide
     affected <- unlist(prots_of[explained], use.names = FALSE)
@@ -27,16 +51,16 @@
     # Tie: proteins explaining the same peptides as the first tied protein are indistinguishable and reported
     # together; the other tied proteins compete in the next rounds. Such proteins share the explained peptides and
     # explain equally many, so those whose unexplained peptides are all explained by the first one explain exactly
-    # them.
+    # them. They all contain the first explained peptide, whose proteins come first in `sharing`, in index order, so
+    # the group is in index order too.
     mark[explained] <- TRUE
     tied <- sharing[counts[sharing] == counts[first]]
     same <- vapply(tied, function(j) all(mark[peps_of[[j]][alive[peps_of[[j]]]]]), logical(1))
-    group <- sort(tied[same])
+    group <- tied[same]
     n_groups <- n_groups + 1
     res[[n_groups]] <- list(prot = paste(levels(proteins)[group], collapse = ";"), peps = levels(peptides)[explained])
-    # the explained peptides no longer count for the proteins that contain them
+    # the explained peptides no longer count for the proteins that contain them; the group's counts drop to 0
     counts[sharing] <- counts[sharing] - tabulate(match(affected, sharing), length(sharing))
-    counts[group] <- -1L
     alive[explained] <- FALSE
     mark[explained] <- FALSE
   }
@@ -52,8 +76,9 @@
 #' `"B;C"` for p5 and p6 after protein A has taken p1 and p2.
 #'
 #' Proteins are ranked by the number of distinct peptides they explain; a peptide-protein pair that occurs in
-#' several rows counts once. Of the proteins that tie, the one first in `factor(annotation$protein_id)` is taken
-#' first: alphabetical order for a character column, the level order for a factor column.
+#' several rows counts once. Of the proteins that tie, the one first in the order of the IDs is taken first. The
+#' IDs of a character column are in C-locale order, as by `sort(method = "radix")`, whatever the locale: upper case
+#' before lower case; those of a factor column in the level order.
 #'
 #' @param annotation A data frame (or tibble) with one row per peptide-protein match, e.g. from
 #'   [annotate_peptides()]: the protein IDs in the column `protein_id` and the peptide IDs in the column named by
@@ -62,7 +87,7 @@
 #'   `paste(peptide_seq, precursor_charge, sep = ".")` and pass its name.
 #' @return A named character vector with one element per distinct peptide ID, named by the peptide ID: the protein,
 #'   or `;`-separated protein group, it is assigned to. The elements are in the order in which the groups are chosen,
-#'   and the peptides of a group in the order of `factor(annotation[[peptide]])`.
+#'   and the peptides of a group, like the proteins of a group, in the order of the IDs.
 #' @family protein inference
 #' @export
 #' @examples
@@ -80,16 +105,7 @@ greedy_parsimony <- function(annotation, peptide = "peptide_seq") {
     )
   }
   columns <- c("protein_id", peptide)
-  missing_columns <- setdiff(columns, names(annotation))
-  if (length(missing_columns) > 0) {
-    stop(
-      "`annotation` must have the columns `protein_id` and `",
-      peptide,
-      "` (argument `peptide`); missing: ",
-      paste0("`", missing_columns, "`", collapse = ", "),
-      "."
-    )
-  }
+  .check_columns(annotation, columns, "annotation")
   n_na <- vapply(columns, function(column) sum(is.na(annotation[[column]])), integer(1))
   if (any(n_na > 0)) {
     stop(
@@ -98,8 +114,7 @@ greedy_parsimony <- function(annotation, peptide = "peptide_seq") {
       "."
     )
   }
-  # factor() drops unused levels of factor columns and keeps the order of the used ones
-  groups <- .greedy_counts(factor(annotation[[peptide]]), factor(annotation[["protein_id"]]))
+  groups <- .greedy_counts(.as_ids(annotation[[peptide]]), .as_ids(annotation[["protein_id"]]))
   peps <- lapply(groups, function(g) g$peps)
   prots <- vapply(groups, function(g) g$prot, character(1))
   stats::setNames(rep(prots, lengths(peps)), unlist(peps))
@@ -129,7 +144,7 @@ greedy_to_table <- function(groups) {
   if (length(no_charge) > 0) {
     stop(
       "The names of `groups` must have the form `peptide.charge`, e.g. \"PEPTIDEK.2\"; found: ",
-      paste0("\"", utils::head(no_charge, 5), "\"", collapse = ", "),
+      .quoted(utils::head(no_charge, 5), "\""),
       "."
     )
   }

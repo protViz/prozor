@@ -30,12 +30,44 @@ make_fasta_summary <- function(fasta) {
   aa_freq <- fasta_summary$aa_freq
   paste0(
     "length summary:\n",
-    paste0(sprintf("%15s : %s\n", names(length_summary), signif(unclass(length_summary), 6)), collapse = ""),
+    paste(sprintf("%15s : %s\n", names(length_summary), signif(unclass(length_summary), 6)), collapse = ""),
     "AA frequencies:\n",
-    paste0(sprintf("%15s : %s\n", names(aa_freq), aa_freq), collapse = "")
+    paste(sprintf("%15s : %s\n", names(aa_freq), aa_freq), collapse = "")
   )
 }
 
+# The FASTA files in `database_dir` and the first line of its `annotation.txt`, as list(files, annotation); stops
+# unless `database_dir` and `output_dir` are existing, different directories and `database_dir` holds both
+.database_files <- function(database_dir, output_dir) {
+  if (!dir.exists(database_dir)) {
+    stop("`database_dir` must be an existing directory, not \"", database_dir, "\".", call. = FALSE)
+  }
+  if (!dir.exists(output_dir)) {
+    stop("`output_dir` must be an existing directory, not \"", output_dir, "\".", call. = FALSE)
+  }
+  if (normalizePath(output_dir) == normalizePath(database_dir)) {
+    stop(
+      "`output_dir` must not be `database_dir` (\"",
+      database_dir,
+      "\"): the next run would read the database written there as targets.",
+      call. = FALSE
+    )
+  }
+  files <- list.files(database_dir, pattern = "\\.(fasta|fa|faa)(\\.gz)?$", full.names = TRUE)
+  if (length(files) == 0) {
+    stop(
+      "`database_dir` must contain FASTA files (*.fasta, *.fa or *.faa, optionally gzipped), found none in \"",
+      database_dir,
+      "\".",
+      call. = FALSE
+    )
+  }
+  annot_file <- file.path(database_dir, "annotation.txt")
+  if (!file.exists(annot_file)) {
+    stop("`database_dir` must contain the file `annotation.txt`; \"", database_dir, "\" has none.", call. = FALSE)
+  }
+  list(files = files, annotation = readLines(annot_file, warn = FALSE)[1])
+}
 
 #' Create an FGCZ FASTA database from a directory of FASTA files
 #'
@@ -49,7 +81,7 @@ make_fasta_summary <- function(fasta) {
 #' sequences with decoys, a 320 MB file) take 2.2 GB.
 #'
 #' @param database_dir Directory with the FASTA files and `annotation.txt`.
-#' @param output_dir Directory the FASTA file is written to; must not be `database_dir`, where the next run
+#' @param output_dir Existing directory the FASTA file is written to; must not be `database_dir`, where the next run
 #'   would read the written database as targets.
 #' @param contaminants Contaminant sequences to add, e.g. from [load_contaminants()], or `NULL` for none.
 #' @inheritParams create_decoy_db
@@ -70,39 +102,16 @@ make_fasta_summary <- function(fasta) {
 create_fgcz_fasta_db <- function(
   database_dir,
   output_dir,
-  contaminants = c(load_contaminants("special2024"), load_contaminants("universal2024")),
+  contaminants = load_contaminants(),
   rev_lab = "REV_",
   make_summary = TRUE
 ) {
   mcall <- match.call()
+  input <- .database_files(database_dir, output_dir)
+  annotation <- input$annotation
+  fasta <- create_decoy_db(input$files, contaminants = contaminants, rev_lab = rev_lab, header = annotation)
 
-  if (!dir.exists(database_dir)) {
-    stop("`database_dir` must be an existing directory, not \"", database_dir, "\".")
-  }
-  if (normalizePath(output_dir, mustWork = FALSE) == normalizePath(database_dir)) {
-    stop(
-      "`output_dir` must not be `database_dir` (\"",
-      database_dir,
-      "\"): the next run would read the database written there as targets."
-    )
-  }
   db_name <- basename(database_dir)
-  files <- list.files(database_dir, pattern = "\\.(fasta|fa|faa)(\\.gz)?$", full.names = TRUE)
-  if (length(files) == 0) {
-    stop(
-      "`database_dir` must contain FASTA files (*.fasta, *.fa or *.faa, optionally gzipped), found none in \"",
-      database_dir,
-      "\"."
-    )
-  }
-  annot_file <- file.path(database_dir, "annotation.txt")
-  if (!file.exists(annot_file)) {
-    stop("`database_dir` must contain the file `annotation.txt`; \"", database_dir, "\" has none.")
-  }
-  annotation <- readLines(annot_file)[1]
-
-  fasta <- create_decoy_db(files, contaminants = contaminants, rev_lab = rev_lab, header = annotation)
-
   if (!is.null(rev_lab)) {
     db_name <- paste0(db_name, "_d")
   }
@@ -123,7 +132,7 @@ create_fgcz_fasta_db <- function(
     "Database created with prozor ",
     utils::packageVersion("prozor"),
     "\n",
-    paste0(sprintf("%15s : %s\n", names(values), values), collapse = "")
+    paste(sprintf("%15s : %s\n", names(values), values), collapse = "")
   )
 
   if (make_summary) {

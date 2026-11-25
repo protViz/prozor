@@ -1,14 +1,15 @@
-# Moves each window start down to the nearest empty bin below it; starts without an empty bin below stay.
-# `empty` holds the sorted mids of the empty bins.
+# Moves each window start down to the nearest empty-bin mid at or below it, so a start already on such a mid stays;
+# starts without an empty bin below stay too. `empty` holds the sorted mids of the empty bins.
 .move_starts <- function(starts, empty) {
-  below <- findInterval(starts, empty, left.open = TRUE)
+  below <- findInterval(starts, empty)
   starts[below > 0] <- empty[below[below > 0]]
   starts
 }
 
-# Moves each window end up to the nearest empty bin above it; ends without an empty bin above stay
+# Moves each window end up to the nearest empty-bin mid at or above it, so an end already on such a mid stays; ends
+# without an empty bin above stay too
 .move_ends <- function(ends, empty) {
-  above <- findInterval(ends, empty) + 1L
+  above <- findInterval(ends, empty, left.open = TRUE) + 1L
   moved <- above <= length(empty)
   ends[moved] <- empty[above[moved]]
   ends
@@ -19,23 +20,18 @@
   if (!is.list(windows)) {
     stop("`windows` must be a data frame or list, not ", class(windows)[1], ".", call. = FALSE)
   }
-  missing_cols <- setdiff(c("from", "to"), names(windows))
-  if (length(missing_cols) > 0) {
-    stop(
-      "`windows` must have the columns `from` and `to`; missing: ",
-      paste0("`", missing_cols, "`", collapse = ", "),
-      ".",
-      call. = FALSE
-    )
-  }
+  .check_columns(windows, c("from", "to"), "windows")
 }
 
 #' Move DIA window boundaries to regions with few precursors
 #'
+#' Moves each window start down, and each window end up, to the mid of the nearest empty bin. A boundary already on
+#' such a mid stays, so `readjust_windows()` returns its own result unchanged.
+#'
 #' @param windows A data frame or list with the columns `from` and `to`, e.g. from `Cdsw$as_table()`.
 #' @param masses Precursor masses (m/z): a numeric vector of finite values.
 #' @param bin_width Width of the bins (m/z) into which the masses are binned.
-#' @param min_count Bins with fewer than `min_count` precursors count as empty.
+#' @param min_count Bins with fewer than `min_count` precursors count as empty; a number, at least 0.
 #' @return A data frame with one row per window and the columns `from`, `to`, `mid`, `width` and `n_precursors`
 #'   (precursors with `from < m/z <= to`).
 #' @family DIA windows
@@ -49,6 +45,7 @@ readjust_windows <- function(windows, masses, bin_width = 0.1, min_count = 15) {
   .check_windows(windows)
   .check_masses(masses)
   .check_number(bin_width, "bin_width", positive = TRUE, whole = FALSE)
+  .check_number(min_count, "min_count", positive = FALSE, whole = FALSE)
   mass_range <- .padded_range(masses, 1 / bin_width)
   breaks <- seq(mass_range[1], mass_range[2], by = bin_width)
   reshist <- graphics::hist(masses, breaks = breaks, plot = FALSE)

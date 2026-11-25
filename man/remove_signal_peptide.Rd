@@ -14,8 +14,8 @@ such as \code{"sp|P30443|1A01_HUMAN"} (the accession follows the first \code{|})
 UniProt accession) and \code{Signal.peptide} (UniProt's signal peptide feature, e.g. \code{"SIGNAL 1 20"} or
 \code{"SIGNAL 1..20; /evidence=..."}; empty if there is none).}
 
-\item{id_fun}{Function that makes the ID of the remaining chain, e.g. \code{\link[=make_chain_id]{make_chain_id()}} or
-\code{\link[=make_chain_id_uniprot]{make_chain_id_uniprot()}}.}
+\item{id_fun}{Function that makes the ID of the remaining chain from the protein sequence, its ID and the start of
+the chain, e.g. \code{\link[=make_chain_id]{make_chain_id()}} or \code{\link[=make_chain_id_uniprot]{make_chain_id_uniprot()}}.}
 }
 \value{
 \code{fasta} with the signal peptides removed. A shortened sequence gets the ID made by \code{id_fun} as its list
@@ -27,8 +27,11 @@ Remove signal peptides from protein sequences
 \examples{
 file <- system.file("extdata/fgcz_contaminants2021_20210929.fasta.gz", package = "prozor")
 fasta <- read_fasta(file)[2:3]
-entry <- vapply(strsplit(names(fasta), split = "|", fixed = TRUE), function(x) x[2], character(1))
-signal <- data.frame(Entry = entry, Signal.peptide = c("SIGNAL 1 20", ""))
+names(fasta)
+signal <- data.frame(
+  Entry = c("Y-FGCZCont00001", "Y-FGCZCont00002"),
+  Signal.peptide = c("SIGNAL 1 20", "")
+)
 res <- remove_signal_peptide(fasta, signal)
 nchar(fasta[[1]])
 nchar(res[[1]])

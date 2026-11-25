@@ -78,7 +78,7 @@ fdr$score_at(q_value = 0.01)
 #> [1] 0.03394749
 ```
 
-The 1,520 peptides match 382 proteins; 244 proteins or protein groups explain all of them.
+1,430 of the 1,520 peptides match 382 proteins; 244 proteins or protein groups explain all of them.
 
 ## Creating a FASTA database from the command line
 

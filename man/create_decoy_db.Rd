@@ -6,7 +6,7 @@
 \usage{
 create_decoy_db(
   files,
-  contaminants = c(load_contaminants("special2024"), load_contaminants("universal2024")),
+  contaminants = load_contaminants(),
   rev_lab = "REV_",
   header = "zz|sourceOf|database"
 )
@@ -34,7 +34,7 @@ file <- system.file("extdata/fgcz_contaminants2022_20220405.fasta.gz", package =
 targets <- read_fasta(file)
 cont <- load_contaminants("fgcz2022")
 
-# the file, read twice, holds the same entries as the default contaminants: each is kept once
+# the file, read twice, holds the same entries as `cont`: each is kept once
 db <- create_decoy_db(c(file, file), contaminants = cont)
 stopifnot(length(db) == 1 + 2 * length(targets), identical(names(targets), names(cont)))
 

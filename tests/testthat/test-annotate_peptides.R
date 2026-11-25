@@ -9,12 +9,29 @@ test_that("annotate_aho() finds every occurrence with 1-based offsets", {
 })
 
 test_that("annotate_aho() rejects peptides with characters other than upper-case letters", {
-  # AhoCorasickTrie 0.1.3 crashes R on such peptides
+  # AhoCorasickTrie 0.1.3 crashes R on such peptides, 0.1.4 gives a less specific error
   expect_error(
     annotate_aho(c("PEPTIDEK", "peptidek"), toy_fasta()),
     "`peptides` must consist of upper-case letters only.*\"peptidek\""
   )
   expect_error(annotate_aho("AC[+57.0]K", toy_fasta()), "\"AC\\[\\+57\\.0\\]K\"")
+})
+
+test_that("annotate_aho() rejects empty and NA peptides", {
+  # AhoCorasickTrie gives wrong hits for them: "" at most positions, NA as the string "NA"
+  expect_error(annotate_aho(c("PEPTIDEK", ""), toy_fasta()), "upper-case letters only.*; found: \"\"\\.")
+  expect_error(annotate_aho(c("PEPTIDEK", NA_character_), toy_fasta()), "upper-case letters only.*; found: NA\\.")
+})
+
+test_that("annotate_aho() gives offsets in the sequences of `fasta`, also after blanks", {
+  res <- annotate_aho("PEPTIDEK", list(P1 = "  MKPEPTIDEK"))
+
+  expect_equal(res$offset, 5)
+  expect_equal(res$protein_sequence, "XXMKPEPTIDEK")
+})
+
+test_that("annotate_aho() stops for a `fasta` without names", {
+  expect_error(annotate_aho("PEPTIDEK", unname(toy_fasta())), "`fasta` must be a named list .*; it has no names\\.")
 })
 
 test_that("annotate_aho() rejects peptides with whitespace and shows it escaped", {
@@ -37,7 +54,7 @@ test_that("annotate_aho() searches proteins with lower-case residues or characte
 test_that("annotate_aho() rejects duplicated protein names", {
   fasta <- c(toy_fasta(), toy_fasta()["P1"])
 
-  expect_error(annotate_aho("PEPTIDEK", fasta), "must be unique; duplicated: P1")
+  expect_error(annotate_aho("PEPTIDEK", fasta), "must be unique; duplicated: \"P1\"\\.")
 })
 
 test_that("annotate_peptides() flags each occurrence by the residue before it", {
@@ -103,6 +120,12 @@ test_that("annotate_peptides() gives the same result for a tibble and a data fra
   from_tibble <- annotate_peptides(dplyr::as_tibble(peptides), toy_fasta())
 
   expect_equal(as.data.frame(from_tibble), from_df)
+})
+
+test_that("annotate_peptides() stops when `peptides` lacks the column `peptide`", {
+  peptides <- data.frame(seq = c("PEPTIDEK", "GGGR"))
+
+  expect_error(annotate_peptides(peptides, toy_fasta()), "`peptides` must have the columns `peptide_seq`; missing:")
 })
 
 test_that("annotate_peptides() reads the peptide column given by `peptide`", {

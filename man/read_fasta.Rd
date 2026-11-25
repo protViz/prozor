@@ -11,7 +11,8 @@ read_fasta(file)
 }
 \value{
 A named list with one \code{SeqFastaAA} object per sequence: the sequence as a string, with the attributes
-\code{name} (the first word of the header, without \code{>}, also the list name) and \code{Annot} (the header line).
+\code{name} (the first word of the header, up to the first whitespace, without \code{>}; also the list name) and \code{Annot}
+(the header line).
 }
 \description{
 Reads amino-acid sequences, each sequence as one string. Lines starting with \verb{;} and lines before the first

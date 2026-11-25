@@ -21,7 +21,7 @@ Precursors of \link{pepprot}, annotated with \code{\link[=annotate_peptides]{ann
 contaminants.
 }
 \description{
-Peptide-protein pairs for 250 mouse proteins; small, so the examples stay fast.
+Peptide-protein pairs for 241 mouse proteins and 9 FGCZ contaminants; small, so the examples stay fast.
 }
 \seealso{
 Other protein inference:

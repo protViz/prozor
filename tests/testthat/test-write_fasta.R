@@ -28,6 +28,29 @@ test_that("write_fasta() writes the Annot header and 60 residues per line", {
   expect_equal(readLines(file), c(">x some protein", strrep("A", 60), strrep("A", 10)))
 })
 
+test_that("write_fasta() adds the '>' to a header without one", {
+  fasta <- list(seq_fasta_aa("AAA", "x", "x some protein"))
+  file <- withr::local_tempfile(fileext = ".fasta")
+
+  write_fasta(fasta, file)
+
+  expect_equal(readLines(file), c(">x some protein", "AAA"))
+})
+
+test_that("write_fasta() stops for an entry without one Annot string, before writing", {
+  file <- withr::local_tempfile(fileext = ".fasta")
+
+  expect_error(
+    write_fasta(list(a = "PEPTIDE"), file),
+    "Each entry of `fasta` must have the attribute `Annot`, a single string, .*; entry 1 does not\\."
+  )
+  expect_error(
+    write_fasta(list(seq_fasta_aa("AAA", "x"), seq_fasta_aa("CC", "y", c(">y", ">z"))), file),
+    "entry 2 does not\\."
+  )
+  expect_false(file.exists(file))
+})
+
 test_that("write_fasta() keeps a '>' inside the header", {
   fasta <- list(seq_fasta_aa("AAA", "x", ">x ADP>ATP converter"))
   file <- withr::local_tempfile(fileext = ".fasta")

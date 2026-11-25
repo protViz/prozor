@@ -7,7 +7,7 @@
 make_chain_id(sequence, id, start)
 }
 \arguments{
-\item{sequence}{The chain sequence, as one string; not used.}
+\item{sequence}{The protein sequence, as one string; not used.}
 
 \item{id}{The ID of the protein, e.g. \code{"sp|P30443|1A01_HUMAN"}.}
 

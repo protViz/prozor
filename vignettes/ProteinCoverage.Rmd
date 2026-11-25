@@ -15,7 +15,6 @@ editor_options:
 knitr::opts_chunk$set(
   echo = TRUE,
   message = FALSE,
-  warning = FALSE,
   fig.width = 7
 )
 ```

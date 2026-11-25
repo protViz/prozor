@@ -37,7 +37,8 @@ Guide for coding agents working in prozor. The workspace guide `../AGENTS.md` ap
 - Plots use ggplot2 and return ggplot objects; no base graphics, no `plot = TRUE` arguments
 - `Depends: R (>= 4.4.0)`
 - The CLI options of `inst/script/fgcz_create_fasta.R` (`--revLab`, `--contamin`, ...) stay as they are: the FGCZ wrappers (slurmworker `config/prozor/script/`, moved out of prozor in 0.4.0) and FGCZ jobs call them
-- `annotate_aho()` rejects peptides outside `^[A-Z]+$` because AhoCorasickTrie 0.1.3 crashes R on them (upstream fix: chambm/AhoCorasickTrie#5); drop the check once a fixed version is on CRAN
+- `annotate_aho()` rejects peptides outside `^[A-Z]+$`: modifications, whitespace and lower case (AhoCorasickTrie 0.1.3 crashes R on them, 0.1.4 gives a less specific error), and `""` and `NA` (wrong hits in both versions)
+- Dev tools other than altdoc stay out of Suggests, unlike the workspace rule: the Makefile calls devtools, covr and lintr from the local library, and CI installs its tools through `extra-packages`
 
 ## Git
 

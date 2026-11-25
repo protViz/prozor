@@ -7,21 +7,21 @@
 make_chain_id_uniprot(sequence, id, start)
 }
 \arguments{
-\item{sequence}{The chain sequence, as one string.}
+\item{sequence}{The protein sequence, as one string; the chain ends at its last residue.}
 
 \item{id}{The UniProt ID of the protein, e.g. \code{"sp|P30443|1A01_HUMAN"}.}
 
 \item{start}{Start position of the chain.}
 }
 \value{
-The first two fields of \code{id}, followed by \code{start}, \code{-} and the length of \code{sequence}, e.g.
-\code{"sp|P30443|24-5"}.
+The first two fields of \code{id}, followed by the range of the chain as UniProt writes it: \code{start}, \code{-} and the
+length of \code{sequence} (the end of the chain), e.g. \code{"sp|P30443|21-148"}.
 }
 \description{
 Make a UniProt-style ID for a protein chain
 }
 \examples{
-make_chain_id_uniprot("ABCDE", "sp|P30443|1A01_HUMAN", 24)
+make_chain_id_uniprot(strrep("A", 148), "sp|P30443|1A01_HUMAN", 21)
 }
 \seealso{
 Other FASTA databases:

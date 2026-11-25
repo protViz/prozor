@@ -1,22 +1,21 @@
 #' Make a UniProt-style ID for a protein chain
 #'
-#' @param sequence The chain sequence, as one string.
+#' @param sequence The protein sequence, as one string; the chain ends at its last residue.
 #' @param id The UniProt ID of the protein, e.g. `"sp|P30443|1A01_HUMAN"`.
 #' @param start Start position of the chain.
-#' @return The first two fields of `id`, followed by `start`, `-` and the length of `sequence`, e.g.
-#'   `"sp|P30443|24-5"`.
+#' @return The first two fields of `id`, followed by the range of the chain as UniProt writes it: `start`, `-` and the
+#'   length of `sequence` (the end of the chain), e.g. `"sp|P30443|21-148"`.
 #' @family FASTA databases
 #' @export
 #' @examples
-#' make_chain_id_uniprot("ABCDE", "sp|P30443|1A01_HUMAN", 24)
+#' make_chain_id_uniprot(strrep("A", 148), "sp|P30443|1A01_HUMAN", 21)
 make_chain_id_uniprot <- function(sequence, id, start) {
-  fields <- strsplit(id, split = "|", fixed = TRUE)[[1]][1:2]
-  paste0(paste0(fields, "|", collapse = ""), start, "-", nchar(sequence))
+  paste0(sub("^([^|]*[|][^|]*).*$", "\\1", id), "|", start, "-", nchar(sequence))
 }
 
 #' Make an ID for a protein chain
 #'
-#' @param sequence The chain sequence, as one string; not used.
+#' @param sequence The protein sequence, as one string; not used.
 #' @param id The ID of the protein, e.g. `"sp|P30443|1A01_HUMAN"`.
 #' @inheritParams make_chain_id_uniprot
 #' @return `id` followed by `s` and `start`, e.g. `"sp|P30443|1A01_HUMANs24"`.
@@ -33,9 +32,14 @@ make_chain_id <- function(sequence, id, start) {
   # the header is ">" and the ID, then the description, which is kept
   .as_seq_fasta_aa(
     substring(sequence, first = chain_start),
-    name = new_id,
-    annot = paste0(">", new_id, sub("^>?\\S*", "", attr(sequence, "Annot")))
-  )
+    paste0(">", new_id, sub("^>?\\S*", "", attr(sequence, "Annot")))
+  )[[1]]
+}
+
+# The UniProt accessions of the IDs `ids`, e.g. "P30443" of "sp|P30443|1A01_HUMAN": the field after the first `|`, NA
+# if there is none
+.uniprot_accession <- function(ids) {
+  vapply(strsplit(ids, split = "|", fixed = TRUE), function(x) x[2], character(1))
 }
 
 #' Remove signal peptides from protein sequences
@@ -45,8 +49,8 @@ make_chain_id <- function(sequence, id, start) {
 #' @param signal A data frame with one row per entry of `fasta`, in the same order, and the columns `Entry` (the
 #'   UniProt accession) and `Signal.peptide` (UniProt's signal peptide feature, e.g. `"SIGNAL 1 20"` or
 #'   `"SIGNAL 1..20; /evidence=..."`; empty if there is none).
-#' @param id_fun Function that makes the ID of the remaining chain, e.g. [make_chain_id()] or
-#'   [make_chain_id_uniprot()].
+#' @param id_fun Function that makes the ID of the remaining chain from the protein sequence, its ID and the start of
+#'   the chain, e.g. [make_chain_id()] or [make_chain_id_uniprot()].
 #' @return `fasta` with the signal peptides removed. A shortened sequence gets the ID made by `id_fun` as its list
 #'   name, its `name` and the first word of its header; the rest of the header is kept.
 #' @family FASTA databases
@@ -54,13 +58,16 @@ make_chain_id <- function(sequence, id, start) {
 #' @examples
 #' file <- system.file("extdata/fgcz_contaminants2021_20210929.fasta.gz", package = "prozor")
 #' fasta <- read_fasta(file)[2:3]
-#' entry <- vapply(strsplit(names(fasta), split = "|", fixed = TRUE), function(x) x[2], character(1))
-#' signal <- data.frame(Entry = entry, Signal.peptide = c("SIGNAL 1 20", ""))
+#' names(fasta)
+#' signal <- data.frame(
+#'   Entry = c("Y-FGCZCont00001", "Y-FGCZCont00002"),
+#'   Signal.peptide = c("SIGNAL 1 20", "")
+#' )
 #' res <- remove_signal_peptide(fasta, signal)
 #' nchar(fasta[[1]])
 #' nchar(res[[1]])
 remove_signal_peptide <- function(fasta, signal, id_fun = make_chain_id) {
-  entries <- vapply(strsplit(names(fasta), split = "|", fixed = TRUE), function(x) x[2], character(1))
+  entries <- .uniprot_accession(names(fasta))
   no_accession <- which(is.na(entries))
   if (length(no_accession) > 0) {
     stop(
@@ -70,6 +77,7 @@ remove_signal_peptide <- function(fasta, signal, id_fun = make_chain_id) {
       "\" has none."
     )
   }
+  .check_columns(signal, c("Entry", "Signal.peptide"), "signal")
   if (length(entries) != nrow(signal)) {
     stop("`signal` must have one row per entry of `fasta` (", length(entries), "), not ", nrow(signal), ".")
   }
@@ -88,12 +96,13 @@ remove_signal_peptide <- function(fasta, signal, id_fun = make_chain_id) {
   parts <- regmatches(signal$Signal.peptide, regexec("^SIGNAL [0-9]+(\\.\\.| )([0-9]+)", signal$Signal.peptide))
   signal_end <- vapply(parts, function(p) if (length(p) == 3) as.numeric(p[3]) else NA_real_, numeric(1))
 
-  res <- fasta
-  for (i in seq_along(signal_end)) {
-    if (!is.na(signal_end[i])) {
-      res[[i]] <- .make_sig(fasta[[i]], signal_end[i] + 1, id_fun = id_fun)
-      names(res)[i] <- attr(res[[i]], "name")
-    }
-  }
-  res
+  with_signal <- which(!is.na(signal_end))
+  fasta[with_signal] <- Map(
+    .make_sig,
+    fasta[with_signal],
+    signal_end[with_signal] + 1,
+    MoreArgs = list(id_fun = id_fun)
+  )
+  names(fasta)[with_signal] <- vapply(fasta[with_signal], attr, character(1), "name")
+  fasta
 }

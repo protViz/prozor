@@ -25,7 +25,7 @@ are dropped.
 }
 \details{
 The protein sequences are searched in upper case, with each character other than a letter, such as the stop
-codon \code{*} of a translated database, replaced by \code{X}. The offsets are those of the sequences in \code{fasta}.
+codon \code{*} of a translated database or a blank, replaced by \code{X}. The offsets are those of the sequences in \code{fasta}.
 }
 \examples{
 file <- system.file("extdata/IDResults.txt.gz", package = "prozor")

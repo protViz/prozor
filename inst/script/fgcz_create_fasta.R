@@ -12,13 +12,13 @@ Usage:
 
 Options:
   -o --output_dir=<output_dir> output directory, default next to fasta_dir
-  -c --contamin=<contamin> add contaminants: special (special2024 and universal2024), `none`, a set of
-                           load_contaminants() such as fgcz2022, or a FASTA file [default: special]
+  -c --contamin=<contamin> add contaminants: special (the set fgcz2024: special2024 and universal2024), `none`, a
+                           set of load_contaminants() such as fgcz2022, or a FASTA file [default: special]
   -r --revLab=<revLab> create reverse sequences with prefix [default: REV_].
 
 
 Arguments:
-  fasta_dir input file
+  fasta_dir directory with the FASTA files and annotation.txt
 "
 
 opt <- docopt(doc)
@@ -50,7 +50,7 @@ cat(params_text)
 
 contaminants <- switch(
   contamin,
-  special = c(load_contaminants("special2024"), load_contaminants("universal2024")),
+  special = load_contaminants("fgcz2024"),
   none = NULL,
   if (file.exists(contamin)) read_fasta(contamin) else load_contaminants(contamin)
 )
@@ -65,7 +65,8 @@ res_db <- create_fgcz_fasta_db(
 
 cat(res_db$summary)
 
+# the parameter log goes next to the FASTA file, with the same name
 writeLines(
   c(paste0("fgcz_create_fasta.R run with params\n", params_text), paste(res_db$summary, collapse = "")),
-  con = paste0(res_db$db_name, ".txt")
+  con = sub("\\.fasta$", ".txt", res_db$file_path)
 )

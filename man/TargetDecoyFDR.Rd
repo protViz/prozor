@@ -18,8 +18,8 @@ Gygi 2007).
 Both estimates are fractions in [0, 1]: values above 1, e.g. where the best hits are decoys, are set to 1.
 
 The q-value of a hit is the lowest FDR at which it is accepted: the smallest estimate at its own or any worse
-score. Within tied scores, decoys are ranked before targets, so the result does not depend on the input order and
-tied targets get the conservative FDR.
+score. The estimate at a score counts all hits with that score or a better one, so tied hits share their estimates
+and q-values, whatever the input order; within a tie, decoys are listed before targets.
 
 The decoys are given as logical flags. For protein IDs whose decoys start with \code{REV_}, pass
 \code{decoy_hit = grepl("^REV_", id)}, and \code{id = id} to keep the IDs in \code{table}.
@@ -103,7 +103,7 @@ Other FDR:
   \subsection{Arguments}{
     \if{html}{\out{<div class="arguments">}}
     \describe{
-      \item{\code{score}}{Search engine scores, without \code{NA}.}
+      \item{\code{score}}{Search engine scores, at least one, without \code{NA}.}
       \item{\code{decoy_hit}}{Logical, \code{TRUE} for decoy hits, one per score, without \code{NA}.}
       \item{\code{larger_better}}{\code{TRUE} if a larger score is better, \code{FALSE} if a smaller score is better.}
       \item{\code{id}}{IDs of the hits, e.g. protein IDs, one per score; \code{NULL} (default) for none.}
@@ -170,7 +170,8 @@ Other FDR:
 \subsection{\code{TargetDecoyFDR$plot()}}{
   Plot the score distributions and q-values: two panels on a shared score axis, the histogram of target and decoy
 scores, and the q-values of both FDR estimates in percent. When smaller scores are better and all scores are
-positive, the score axis is logarithmic.
+positive, the score axis is logarithmic. Every hit is drawn: one million hits take about 2 s to render as PDF
+and 20 s as PNG.
   \subsection{Usage}{
     \if{html}{\out{<div class="r">}}
     \preformatted{TargetDecoyFDR$plot(bins = 100)}

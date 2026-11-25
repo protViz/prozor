@@ -7,7 +7,8 @@
 write_fasta(fasta, file)
 }
 \arguments{
-\item{fasta}{A list of \code{SeqFastaAA} objects, e.g. from \code{\link[=read_fasta]{read_fasta()}} or \code{\link[=create_decoy_db]{create_decoy_db()}}.}
+\item{fasta}{A list of \code{SeqFastaAA} objects, e.g. from \code{\link[=read_fasta]{read_fasta()}} or \code{\link[=create_decoy_db]{create_decoy_db()}}; each needs the
+attribute \code{Annot}, a single string.}
 
 \item{file}{Path of the FASTA file to write.}
 }
@@ -15,7 +16,7 @@ write_fasta(fasta, file)
 \code{file}, invisibly.
 }
 \description{
-Writes each sequence with its \code{Annot} header and 60 residues per line.
+Writes each sequence with its \code{Annot} header and 60 residues per line. A header without the leading \code{>} gets one.
 }
 \examples{
 file <- system.file("extdata/fgcz_contaminants2021_20210929.fasta.gz", package = "prozor")

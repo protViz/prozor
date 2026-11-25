@@ -1,5 +1,5 @@
 # Stops unless `score` is numeric, `decoy_hit` is logical, `score`, `decoy_hit` and `id` (if given) have the same
-# length, `score` and `decoy_hit` have no NA, and `larger_better` is TRUE or FALSE
+# length, at least 1, `score` and `decoy_hit` have no NA, and `larger_better` is TRUE or FALSE
 .check_target_decoy <- function(score, decoy_hit, larger_better, id) {
   if (!is.numeric(score)) {
     stop("`score` must be numeric, not ", class(score)[1], ".", call. = FALSE)
@@ -16,6 +16,9 @@
       ".",
       call. = FALSE
     )
+  }
+  if (length(score) == 0) {
+    stop("`score` and `decoy_hit` must not be empty.", call. = FALSE)
   }
   if (!is.null(id) && length(id) != length(score)) {
     stop("`score` and `id` must have the same length, not ", length(score), " and ", length(id), ".", call. = FALSE)
@@ -51,8 +54,8 @@
 #' Both estimates are fractions in \[0, 1\]: values above 1, e.g. where the best hits are decoys, are set to 1.
 #'
 #' The q-value of a hit is the lowest FDR at which it is accepted: the smallest estimate at its own or any worse
-#' score. Within tied scores, decoys are ranked before targets, so the result does not depend on the input order and
-#' tied targets get the conservative FDR.
+#' score. The estimate at a score counts all hits with that score or a better one, so tied hits share their estimates
+#' and q-values, whatever the input order; within a tie, decoys are listed before targets.
 #'
 #' The decoys are given as logical flags. For protein IDs whose decoys start with `REV_`, pass
 #' `decoy_hit = grepl("^REV_", id)`, and `id = id` to keep the IDs in `table`.
@@ -95,7 +98,7 @@ TargetDecoyFDR <- R6::R6Class(
   public = list(
     #' @description
     #' Sort the hits from best to worst score and compute both FDR estimates and their q-values.
-    #' @param score Search engine scores, without `NA`.
+    #' @param score Search engine scores, at least one, without `NA`.
     #' @param decoy_hit Logical, `TRUE` for decoy hits, one per score, without `NA`.
     #' @param larger_better `TRUE` if a larger score is better, `FALSE` if a smaller score is better.
     #' @param id IDs of the hits, e.g. protein IDs, one per score; `NULL` (default) for none.
@@ -104,8 +107,12 @@ TargetDecoyFDR <- R6::R6Class(
       .check_target_decoy(score, decoy_hit, larger_better, id)
       ord <- order(score, decoy_hit, decreasing = c(larger_better, TRUE), method = "radix")
       decoy_hit <- decoy_hit[ord]
-      fp <- cumsum(decoy_hit)
-      tp <- seq_along(ord) - fp
+      sorted <- score[ord]
+      # each row of a tie gets the counts at the end of the tie: the FDR of accepting its score
+      tie <- cumsum(c(TRUE, sorted[-1] != sorted[-length(sorted)]))
+      accepted <- cumsum(tabulate(tie))[tie]
+      fp <- cumsum(decoy_hit)[accepted]
+      tp <- accepted - fp
       # capped at 1: fp / tp is Inf while all hits are decoys
       fdr_concatenated <- pmin(1, (2 * fp) / (tp + fp))
       fdr_simple <- pmin(1, fp / tp)
@@ -113,7 +120,7 @@ TargetDecoyFDR <- R6::R6Class(
         list(order = ord),
         if (!is.null(id)) list(id = id[ord]),
         list(
-          score = score[ord],
+          score = sorted,
           decoy_hit = decoy_hit,
           fdr_concatenated = fdr_concatenated,
           fdr_simple = fdr_simple,
@@ -155,7 +162,7 @@ TargetDecoyFDR <- R6::R6Class(
     #' @return The least strict score whose q-value is at most `q_value`. An error if no score reaches it.
     score_at = function(q_value = 0.01, method = c("fdr_simple", "fdr_concatenated")) {
       .check_q_value(q_value)
-      method <- .match_method(method, c("fdr_simple", "fdr_concatenated"))
+      method <- .match_method(method, c("fdr_simple", "fdr_concatenated"), arg = "method")
       q <- private$.table[[paste0("q_value_", method)]]
       valid_scores <- private$.table$score[q <= q_value]
       if (length(valid_scores) == 0) {
@@ -166,7 +173,8 @@ TargetDecoyFDR <- R6::R6Class(
     #' @description
     #' Plot the score distributions and q-values: two panels on a shared score axis, the histogram of target and decoy
     #' scores, and the q-values of both FDR estimates in percent. When smaller scores are better and all scores are
-    #' positive, the score axis is logarithmic.
+    #' positive, the score axis is logarithmic. Every hit is drawn: one million hits take about 2 s to render as PDF
+    #' and 20 s as PNG.
     #' @param bins Number of histogram bins.
     #' @return A ggplot object.
     plot = function(bins = 100) {
@@ -214,31 +222,16 @@ TargetDecoyFDR <- R6::R6Class(
   ),
   active = list(
     #' @field larger_better `TRUE` if a larger score is better (read-only).
-    larger_better = function(value) {
-      if (!missing(value)) {
-        .stop_read_only("larger_better", "TargetDecoyFDR")
-      }
-      private$.larger_better
-    },
+    larger_better = function(value) .read_only(value, "larger_better", "TargetDecoyFDR", private$.larger_better),
     #' @field n Number of hits (read-only).
-    n = function(value) {
-      if (!missing(value)) {
-        .stop_read_only("n", "TargetDecoyFDR")
-      }
-      nrow(private$.table)
-    },
+    n = function(value) .read_only(value, "n", "TargetDecoyFDR", nrow(private$.table)),
     #' @field table The hits from best to worst score, as a data frame (read-only) with the columns:
     #' * `order`: the position of the hit in the input.
     #' * `id`: the ID of the hit; only when `id` was given.
     #' * `score`, `decoy_hit`: the sorted input.
     #' * `fdr_concatenated`, `fdr_simple`: the FDR estimates at the score, as fractions in \[0, 1\].
     #' * `q_value_fdr_concatenated`, `q_value_fdr_simple`: the q-values of both estimates, as fractions in \[0, 1\].
-    table = function(value) {
-      if (!missing(value)) {
-        .stop_read_only("table", "TargetDecoyFDR")
-      }
-      private$.table
-    }
+    table = function(value) .read_only(value, "table", "TargetDecoyFDR", private$.table)
   ),
   private = list(
     .larger_better = NULL,

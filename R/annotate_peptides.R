@@ -35,11 +35,12 @@ annotate_peptides <- function(peptides, fasta, peptide = "peptide_seq", prefix =
     peptides <- data.frame(peptides)
     colnames(peptides) <- peptide
   }
+  .check_columns(peptides, peptide, "peptides")
   clashes <- intersect(colnames(peptides), c("protein_id", "offset", "protein_sequence", "matched", "peptide_length"))
   if (length(clashes) > 0) {
     stop(
       "`peptides` must not have columns named like result columns; rename ",
-      paste0("`", clashes, "`", collapse = ", "),
+      .quoted(clashes, "`"),
       "."
     )
   }
@@ -63,7 +64,7 @@ annotate_peptides <- function(peptides, fasta, peptide = "peptide_seq", prefix =
 #' are dropped.
 #'
 #' The protein sequences are searched in upper case, with each character other than a letter, such as the stop
-#' codon `*` of a translated database, replaced by `X`. The offsets are those of the sequences in `fasta`.
+#' codon `*` of a translated database or a blank, replaced by `X`. The offsets are those of the sequences in `fasta`.
 #'
 #' @param peptides Peptide sequences: upper-case letters only, without whitespace or modifications.
 #'   [annotate_peptides()] removes surrounding whitespace before it calls this function.
@@ -85,24 +86,28 @@ annotate_aho <- function(peptides, fasta, peptide = "peptide_seq") {
   peptides <- unique(peptides)
   invalid <- peptides[!grepl("^[A-Z]+$", peptides)]
   if (length(invalid) > 0) {
-    # AhoCorasickTrie 0.1.3 crashes R on keywords outside A-Z (https://github.com/chambm/AhoCorasickTrie/pull/5)
+    # rejects modifications, whitespace and lower case (AhoCorasickTrie 0.1.3 crashes R on them, 0.1.4 gives a less
+    # specific error), and "" and NA (wrong hits in both versions)
     stop(
       "`peptides` must consist of upper-case letters only, without whitespace or modifications; found: ",
-      paste(encodeString(utils::head(invalid, 5), quote = "\""), collapse = ", "),
+      .quoted(utils::head(invalid, 5), "\""),
       "."
     )
   }
   protein_ids <- names(fasta)
+  if (is.null(protein_ids)) {
+    stop("`fasta` must be a named list of protein sequences, as returned by read_fasta(); it has no names.")
+  }
   duplicated_ids <- unique(protein_ids[duplicated(protein_ids)])
   if (length(duplicated_ids) > 0) {
     stop(
       "The names of `fasta` must be unique; duplicated: ",
-      paste(utils::head(duplicated_ids, 5), collapse = ", "),
+      .quoted(utils::head(duplicated_ids, 5), "\""),
       "."
     )
   }
   # AhoCorasickTrie stops on characters outside A-Z, such as the stop codon `*`; one X per character keeps the offsets
-  sequences <- gsub("[^A-Z]", "X", toupper(trimws(unlist(fasta, use.names = FALSE))), perl = TRUE)
+  sequences <- gsub("[^A-Z]", "X", toupper(unlist(fasta, use.names = FALSE)), perl = TRUE)
   names(sequences) <- protein_ids
 
   res <- AhoCorasickTrie::AhoCorasickSearch(peptides, sequences, alphabet = "aminoacid")

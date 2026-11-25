@@ -17,7 +17,7 @@ greedy_parsimony(annotation, peptide = "peptide_seq")
 \value{
 A named character vector with one element per distinct peptide ID, named by the peptide ID: the protein,
 or \verb{;}-separated protein group, it is assigned to. The elements are in the order in which the groups are chosen,
-and the peptides of a group in the order of \code{factor(annotation[[peptide]])}.
+and the peptides of a group, like the proteins of a group, in the order of the IDs.
 }
 \description{
 Repeatedly assigns all unexplained peptides of the protein that explains the most of them. Proteins that
@@ -27,8 +27,9 @@ on the peptides that remain in each round: proteins B (peptides p1, p5, p6) and 
 }
 \details{
 Proteins are ranked by the number of distinct peptides they explain; a peptide-protein pair that occurs in
-several rows counts once. Of the proteins that tie, the one first in \code{factor(annotation$protein_id)} is taken
-first: alphabetical order for a character column, the level order for a factor column.
+several rows counts once. Of the proteins that tie, the one first in the order of the IDs is taken first. The
+IDs of a character column are in C-locale order, as by \code{sort(method = "radix")}, whatever the locale: upper case
+before lower case; those of a factor column in the level order.
 }
 \examples{
 data(protpepmetashort)

@@ -17,7 +17,7 @@
 #' targets <- read_fasta(file)
 #' cont <- load_contaminants("fgcz2022")
 #'
-#' # the file, read twice, holds the same entries as the default contaminants: each is kept once
+#' # the file, read twice, holds the same entries as `cont`: each is kept once
 #' db <- create_decoy_db(c(file, file), contaminants = cont)
 #' stopifnot(length(db) == 1 + 2 * length(targets), identical(names(targets), names(cont)))
 #'
@@ -25,12 +25,12 @@
 #' stopifnot(length(db) == 1 + length(targets))
 create_decoy_db <- function(
   files,
-  contaminants = c(load_contaminants("special2024"), load_contaminants("universal2024")),
+  contaminants = load_contaminants(),
   rev_lab = "REV_",
   header = "zz|sourceOf|database"
 ) {
   dummy_header <- paste0(">", sub("^>", "", header))
-  dummy <- .as_seq_fasta_aa("CRAPCRAPCRAP", name = substring(sub(" .*", "", dummy_header), 2), annot = dummy_header)
+  dummy <- .as_seq_fasta_aa("CRAPCRAPCRAP", dummy_header)[[1]]
   db <- do.call(
     c,
     lapply(files, function(file) {

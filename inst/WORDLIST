@@ -42,9 +42,9 @@ TrEMBL
 UniProt
 UniProt's
 WS
+Zenodo
 al
 altdoc
-blib
 cdot
 changelog
 codecov
@@ -84,3 +84,4 @@ trie's
 tryptic
 withr
 xcorr
+zenodo

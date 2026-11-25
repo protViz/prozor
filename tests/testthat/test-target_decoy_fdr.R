@@ -48,6 +48,28 @@ test_that("TargetDecoyFDR ranks decoys first within tied scores, whatever the in
   expect_equal(smaller$table$decoy_hit, c(TRUE, FALSE, FALSE))
 })
 
+test_that("TargetDecoyFDR computes the FDR per score: tied hits share the counts at the end of the tie", {
+  # 100 targets at 10; 10 decoys and 1 target at 5: accepting 5 gives 10 decoys / 101 targets
+  fdr <- TargetDecoyFDR$new(c(rep(10, 100), rep(5, 11)), c(rep(FALSE, 100), rep(TRUE, 10), FALSE))
+
+  expect_equal(fdr$score_at(q_value = 0.01), 10)
+  expect_equal(unique(fdr$table$fdr_simple[fdr$table$score == 5]), 10 / 101)
+})
+
+test_that("TargetDecoyFDR gives one q-value per score on tied bcd scores", {
+  decoy <- grepl("^REV_", bcd$protein)
+  fdr <- TargetDecoyFDR$new(round(bcd$xcorr, 1), decoy)
+  tab <- fdr$table
+
+  n_q_simple <- tapply(tab$q_value_fdr_simple, tab$score, function(q) length(unique(q)))
+  n_q_concatenated <- tapply(tab$q_value_fdr_concatenated, tab$score, function(q) length(unique(q)))
+  expect_true(all(n_q_simple == 1))
+  expect_true(all(n_q_concatenated == 1))
+  # per row, the cut-offs were 1.7 (1.07 % realized) and 1.3 (5.04 %)
+  expect_equal(fdr$score_at(q_value = 0.01), 1.8)
+  expect_equal(fdr$score_at(q_value = 0.05), 1.4)
+})
+
 test_that("TargetDecoyFDR on fdr_sample: sorted scores and monotone q-values", {
   decoy <- grepl("^REV_", fdr_sample$protein_id)
 
@@ -82,6 +104,10 @@ test_that("TargetDecoyFDR stops for NA, non-logical decoy flags and unequal leng
     TargetDecoyFDR$new(score, decoy, id = c("a", "REV_b")),
     "`score` and `id` must have the same length, not 4 and 2\\."
   )
+})
+
+test_that("TargetDecoyFDR stops for zero hits", {
+  expect_error(TargetDecoyFDR$new(numeric(), logical()), "`score` and `decoy_hit` must not be empty\\.")
 })
 
 test_that("TargetDecoyFDR stops for scores that are not numeric", {
@@ -164,6 +190,10 @@ test_that("TargetDecoyFDR$score_at() returns the least strict score within the F
   expect_equal(fdr$score_at(q_value = 0.4, method = "fdr_simple"), 1)
   expect_equal(fdr$score_at(q_value = 0.4, method = "fdr_concatenated"), 3)
   expect_equal(smaller$score_at(q_value = 0.2), 2)
+  # q-values equal to `q_value` are accepted; 0 and 1 are valid
+  expect_equal(fdr$score_at(q_value = 1 / 3), 1)
+  expect_equal(fdr$score_at(q_value = 0), 3)
+  expect_equal(fdr$score_at(q_value = 1), 1)
 })
 
 test_that("TargetDecoyFDR$score_at() takes q_value as a fraction, like the q-values in table", {
@@ -173,6 +203,11 @@ test_that("TargetDecoyFDR$score_at() takes q_value as a fraction, like the q-val
 
   # 1 % FDR; read as percent, 0.01 gave a 0.01 % cut-off with 18339 hits
   expect_equal(sum(fdr$table$score >= cutoff), 34876)
+})
+
+test_that("TargetDecoyFDR$score_at() stops for a q_value that is not a fraction", {
+  fdr <- TargetDecoyFDR$new(fdr_sample$neg_log10_score, decoy_hit = grepl("^REV_", fdr_sample$protein_id))
+
   expect_error(fdr$score_at(q_value = 5), "`q_value` must be a fraction between 0 and 1 .*, not 5\\.")
   expect_error(fdr$score_at(q_value = NA), "`q_value` must be a fraction between 0 and 1 .*, not NA\\.")
 })
@@ -193,15 +228,18 @@ test_that("TargetDecoyFDR$score_at() rejects unknown methods", {
 })
 
 test_that("TargetDecoyFDR$print() shows hits, decoys, larger_better and the scores at 1 % and 5 %", {
-  # fdr_simple q-values 0, 0, 0, 0, 1/4: the score at 0.01 and 0.05 is 2
-  fdr <- TargetDecoyFDR$new(c(5, 4, 3, 2, 1), c(FALSE, FALSE, FALSE, FALSE, TRUE))
+  # scores 40 to 1: 33 targets, 1 decoy, 1 target, 4 decoys, 1 target; fdr_simple q-values 0 for scores 40 to 8,
+  # 1/34 at 7 and 6, then 2/34 and more; fdr_concatenated q-values 2/35 at 7 and 6
+  fdr <- TargetDecoyFDR$new(40:1, rep(c(FALSE, TRUE, FALSE, TRUE, FALSE), c(33, 1, 1, 4, 1)))
   none <- TargetDecoyFDR$new(c(1, 2), c(TRUE, FALSE), larger_better = FALSE)
 
   expect_output(
     expect_invisible(print(fdr)),
-    "<TargetDecoyFDR> hits: 5, decoys: 1, larger_better: TRUE\nscore at fdr_simple q-value 0.01: 2, at 0.05: 2",
+    "<TargetDecoyFDR> hits: 40, decoys: 5, larger_better: TRUE\nscore at fdr_simple q-value 0.01: 8, at 0.05: 6",
     fixed = TRUE
   )
+  expect_equal(fdr$score_at(q_value = 0.05, method = "fdr_concatenated"), 8)
+  expect_equal(fdr$score_at(q_value = 0.2), 1)
   expect_output(
     print(none),
     "<TargetDecoyFDR> hits: 2, decoys: 1, larger_better: FALSE\nscore at fdr_simple q-value 0.01: none, at 0.05: none",

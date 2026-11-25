@@ -1,11 +1,3 @@
-.reverse_single_seq <- function(fasta, rev_lab) {
-  .as_seq_fasta_aa(
-    intToUtf8(rev(utf8ToInt(fasta))),
-    name = paste0(rev_lab, attr(fasta, "name")),
-    annot = paste0(">", rev_lab, sub("^>", "", attr(fasta, "Annot")))
-  )
-}
-
 #' Reverse protein sequences to create decoys
 #'
 #' @param fasta A list of `SeqFastaAA` objects.
@@ -28,7 +20,12 @@
 #' )
 #' reverse_seq(list(tag), rev_lab = "DECOY_")
 reverse_seq <- function(fasta, rev_lab = "REV_") {
-  res <- lapply(fasta, .reverse_single_seq, rev_lab = rev_lab)
-  names(res) <- vapply(res, function(x) attributes(x)$name, character(1))
-  res
+  sequences <- vapply(
+    unlist(fasta, use.names = FALSE),
+    function(sequence) intToUtf8(rev(utf8ToInt(sequence))),
+    character(1),
+    USE.NAMES = FALSE
+  )
+  annots <- vapply(fasta, attr, character(1), "Annot", USE.NAMES = FALSE)
+  .as_seq_fasta_aa(sequences, paste0(">", rev_lab, sub("^>", "", annots), recycle0 = TRUE))
 }

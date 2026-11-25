@@ -64,11 +64,12 @@
   c(sorted[1], inner, sorted[n])
 }
 
-# Unrounded breaks with all widths within [min_window, max_window]: the quantile breaks if they fit, otherwise the
-# mixture breaks with the smallest share of uniform data that fits, found by bisection to 1e-9. `equal` (share 1) must
-# fit; the search keeps the last layout that fit, so it returns one even if fitting is not monotone in the share.
-.fitting_mixture_breaks <- function(x, n_bins, equal, min_window, max_window) {
-  quantiles <- .mass_quantiles(x, n_bins)
+# Breaks rounded to `digits` with all widths within [min_window, max_window]: the quantile breaks if they fit,
+# otherwise the mixture breaks with the smallest share of uniform data that fits, found by bisection to 1e-9. The
+# limits are checked on the rounded, padded breaks. `equal` (share 1, rounded) must fit; the search keeps the last
+# layout that fit, so it returns one even if fitting is not monotone in the share.
+.fitting_mixture_breaks <- function(x, n_bins, equal, min_window, max_window, digits) {
+  quantiles <- .adjust_breaks(.mass_quantiles(x, n_bins), digits = digits)
   if (.hard_constrain(quantiles, min_window = min_window, max_window = max_window)) {
     return(quantiles)
   }
@@ -78,7 +79,7 @@
   upper <- 1
   while (upper - lower > 1e-9) {
     share <- (lower + upper) / 2
-    breaks <- .mixture_quantiles(sorted, n_bins, share)
+    breaks <- .adjust_breaks(.mixture_quantiles(sorted, n_bins, share), digits = digits)
     if (.hard_constrain(breaks, min_window = min_window, max_window = max_window)) {
       fitting <- breaks
       upper <- share
@@ -100,17 +101,21 @@
   .adjust_breaks(.mass_quantiles(masses, n_bins), digits = digits)
 }
 
-# Quantile breaks of the masses mixed with uniformly spread data, with the smallest share of uniform data that keeps
-# all widths within [min_window, max_window], rounded to `digits`. Stops if even equal-width windows violate the limits.
+# Quantile breaks of the masses mixed with uniformly spread data, rounded to `digits`, with the smallest share of
+# uniform data that keeps all widths of the rounded breaks within [min_window, max_window]. Stops if even equal-width
+# windows violate the limits.
 .mixture_breaks <- function(masses, n_bins, max_window, min_window, digits) {
-  equal <- seq(min(masses), max(masses), length.out = n_bins + 1)
+  equal <- .adjust_breaks(seq(min(masses), max(masses), length.out = n_bins + 1), digits = digits)
   if (!.hard_constrain(equal, min_window = min_window, max_window = max_window)) {
+    widths <- round(range(diff(equal)), digits = digits)
     stop(
       "No window layout satisfies the limits: ",
       n_bins,
-      " windows of equal width are ",
-      round(diff(equal)[1], digits = 2),
-      " wide, outside [`min_window`, `max_window`] = [",
+      " windows of equal width, with the breaks rounded to `digits`, are ",
+      widths[1],
+      " to ",
+      widths[2],
+      " wide, not all within [`min_window`, `max_window`] = [",
       min_window,
       ", ",
       max_window,
@@ -118,8 +123,7 @@
       call. = FALSE
     )
   }
-  mixed <- .fitting_mixture_breaks(masses, n_bins, equal, min_window = min_window, max_window = max_window)
-  .adjust_breaks(mixed, digits = digits)
+  .fitting_mixture_breaks(masses, n_bins, equal, min_window = min_window, max_window = max_window, digits = digits)
 }
 
 
@@ -130,7 +134,8 @@
 #' boundaries (breaks) are computed once, when the object is created, with one of three methods:
 #' * `"mixture"` (default): the quantile breaks of the masses mixed with uniformly spread data, with the smallest share
 #'   of uniform data that keeps all window widths within `[min_window, max_window]`; the quantile breaks themselves if
-#'   they fit. Stops if even windows of equal width violate the limits.
+#'   they fit. The limits hold for the rounded and padded breaks. Stops if even windows of equal width violate the
+#'   limits.
 #' * `"quantile"`: windows with equal numbers of masses, of any width.
 #' * `"constant"`: windows of equal width.
 #'
@@ -175,7 +180,7 @@ Cdsw <- R6::R6Class(
       min_window = 5,
       digits = 2
     ) {
-      method <- .match_method(method, c("mixture", "quantile", "constant"))
+      method <- .match_method(method, c("mixture", "quantile", "constant"), arg = "method")
       .check_masses(masses)
       .check_number(n_bins, "n_bins", positive = TRUE, whole = TRUE)
       .check_number(max_window, "max_window", positive = TRUE, whole = FALSE)
@@ -205,10 +210,12 @@ Cdsw <- R6::R6Class(
     },
     #' @description
     #' The windows as a data frame.
-    #' @param overlap Overlap of neighboring windows in m/z: each window is widened by `overlap / 2` on both sides.
+    #' @param overlap Overlap of neighboring windows in m/z, at least 0: each window is widened by `overlap / 2` on both
+    #'   sides.
     #' @return A data frame with one row per window: start `from`, end `to`, center `mid`, `width` and the number of
     #'   precursors with `from < m/z <= to` (`n_precursors`).
     as_table = function(overlap = 1) {
+      .check_number(overlap, "overlap", positive = FALSE, whole = FALSE)
       from <- utils::head(private$.breaks, -1) - overlap * 0.5
       to <- utils::tail(private$.breaks, -1) + overlap * 0.5
       width <- to - from
@@ -236,12 +243,9 @@ Cdsw <- R6::R6Class(
     #' Plot the precursors per window (`from < m/z <= to`); the dashed line marks equal counts.
     #' @return A ggplot object.
     plot = function() {
-      from <- utils::head(private$.breaks, -1)
-      to <- utils::tail(private$.breaks, -1)
-      windows <- data.frame(from = from, to = to, count = .window_counts(private$.masses, from, to))
-      ggplot2::ggplot(windows) +
+      ggplot2::ggplot(self$as_table(overlap = 0)) +
         ggplot2::geom_rect(
-          ggplot2::aes(xmin = .data$from, xmax = .data$to, ymin = 0, ymax = .data$count),
+          ggplot2::aes(xmin = .data$from, xmax = .data$to, ymin = 0, ymax = .data$n_precursors),
           fill = "#56B4E9",
           colour = "white"
         ) +
@@ -300,33 +304,13 @@ Cdsw <- R6::R6Class(
   ),
   active = list(
     #' @field masses MS1 masses (read-only).
-    masses = function(value) {
-      if (!missing(value)) {
-        .stop_read_only("masses", "Cdsw")
-      }
-      private$.masses
-    },
+    masses = function(value) .read_only(value, "masses", "Cdsw", private$.masses),
     #' @field n_bins Number of windows (read-only).
-    n_bins = function(value) {
-      if (!missing(value)) {
-        .stop_read_only("n_bins", "Cdsw")
-      }
-      private$.n_bins
-    },
+    n_bins = function(value) .read_only(value, "n_bins", "Cdsw", private$.n_bins),
     #' @field method Method that placed the breaks (read-only).
-    method = function(value) {
-      if (!missing(value)) {
-        .stop_read_only("method", "Cdsw")
-      }
-      private$.method
-    },
+    method = function(value) .read_only(value, "method", "Cdsw", private$.method),
     #' @field breaks Window boundaries, `n_bins + 1` values (read-only).
-    breaks = function(value) {
-      if (!missing(value)) {
-        .stop_read_only("breaks", "Cdsw")
-      }
-      private$.breaks
-    }
+    breaks = function(value) .read_only(value, "breaks", "Cdsw", private$.breaks)
   ),
   private = list(
     .masses = NULL,

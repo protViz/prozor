@@ -13,7 +13,7 @@
 
 #' Peptide-protein assignments
 #'
-#' Peptide-protein pairs for 250 mouse proteins; small, so the examples stay fast.
+#' Peptide-protein pairs for 241 mouse proteins and 9 FGCZ contaminants; small, so the examples stay fast.
 #'
 #' @format A data frame with 423 rows and 7 columns:
 #' * `peptide_seq`: peptide sequence.

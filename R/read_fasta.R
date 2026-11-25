@@ -5,7 +5,8 @@
 #'
 #' @param file Path to a FASTA file, optionally gzip-compressed.
 #' @return A named list with one `SeqFastaAA` object per sequence: the sequence as a string, with the attributes
-#'   `name` (the first word of the header, without `>`, also the list name) and `Annot` (the header line).
+#'   `name` (the first word of the header, up to the first whitespace, without `>`; also the list name) and `Annot`
+#'   (the header line).
 #' @family FASTA databases
 #' @export
 #' @examples
@@ -14,7 +15,7 @@
 #' length(fasta)
 #' attributes(fasta[[1]])
 read_fasta <- function(file) {
-  fasta_lines <- readLines(file)
+  fasta_lines <- readLines(file, warn = FALSE)
   fasta_lines <- fasta_lines[!startsWith(fasta_lines, ";")]
   is_header <- startsWith(fasta_lines, ">")
   if (!any(is_header)) {
@@ -24,16 +25,23 @@ read_fasta <- function(file) {
   in_sequence <- !is_header & entry > 0
   groups <- factor(entry[in_sequence], levels = seq_len(sum(is_header)))
   sequences <- vapply(split(fasta_lines[in_sequence], groups), paste, character(1), collapse = "", USE.NAMES = FALSE)
-  headers <- fasta_lines[is_header]
-  ids <- substring(sub(" .*", "", headers), 2)
-  res <- mapply(.as_seq_fasta_aa, sequences, ids, headers, SIMPLIFY = FALSE, USE.NAMES = FALSE)
-  names(res) <- ids
-  res
+  .as_seq_fasta_aa(sequences, fasta_lines[is_header])
 }
 
-# A FASTA entry as read_fasta() returns it; the class and attributes of seqinr's as.SeqFastaAA().
-# Header convention of all producers: `annot` is the whole header line, starting with ">"; `name` is its first
-# word without ">". write_fasta() writes `Annot` with one leading ">", so it also accepts headers without it.
-.as_seq_fasta_aa <- function(sequence, name, annot) {
-  structure(sequence, name = name, Annot = annot, class = "SeqFastaAA")
+# FASTA entries as read_fasta() returns them, with the class and attributes of seqinr's as.SeqFastaAA(): the
+# `sequences` with their header lines `annots`, which start with ">". The `name` attribute and the list name are the
+# first word of the header, up to the first whitespace, without ">". write_fasta() writes `Annot` with one leading
+# ">", so it also accepts hand-built entries without it.
+.as_seq_fasta_aa <- function(sequences, annots) {
+  ids <- substring(sub("[[:space:]].*", "", annots), 2)
+  res <- mapply(
+    function(sequence, name, annot) structure(sequence, name = name, Annot = annot, class = "SeqFastaAA"),
+    sequences,
+    ids,
+    annots,
+    SIMPLIFY = FALSE,
+    USE.NAMES = FALSE
+  )
+  names(res) <- ids
+  res
 }

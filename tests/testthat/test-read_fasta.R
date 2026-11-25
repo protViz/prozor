@@ -5,9 +5,18 @@ test_that("read_fasta() returns one SeqFastaAA entry per header", {
   res <- read_fasta(file)
 
   expect_equal(res[["sp|P1|A"]], seq_fasta_aa("MKVLLL", "sp|P1|A", ">sp|P1|A desc"))
-  # only a space ends the name
-  expect_equal(res[["P2\ttab"]], seq_fasta_aa("PP", "P2\ttab"))
-  expect_named(res, c("sp|P1|A", "P2\ttab"))
+  # a tab ends the name too
+  expect_equal(res[["P2"]], seq_fasta_aa("PP", "P2", ">P2\ttab"))
+  expect_named(res, c("sp|P1|A", "P2"))
+})
+
+test_that("read_fasta() reads a file without a final newline without a warning", {
+  file <- withr::local_tempfile(fileext = ".fasta")
+  cat(">a", "MKV", sep = "\n", file = file)
+
+  expect_no_warning(res <- read_fasta(file))
+
+  expect_equal(res, list(a = seq_fasta_aa("MKV", "a")))
 })
 
 test_that("read_fasta() gives an entry without sequence lines the empty string", {

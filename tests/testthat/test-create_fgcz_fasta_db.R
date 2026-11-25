@@ -9,6 +9,7 @@ test_that("create_fgcz_fasta_db() writes a dated decoy database to output_dir", 
   expect_equal(normalizePath(dirname(res$file_path)), normalizePath(outdir))
   expect_match(basename(res$file_path), "^p1000_db1_example_d_[0-9]{8}\\.fasta$")
   expect_equal(res$db_name, "p1000_db1_example_d")
+  # the dummy entry + 2 x 1470 (distinct targets and contaminants, and their decoys)
   expect_length(res$fasta, 2941)
   expect_length(back, 2941)
   expect_false(anyDuplicated(names(back)) > 0)
@@ -21,6 +22,7 @@ test_that("create_fgcz_fasta_db() without rev_lab writes targets and contaminant
   res <- suppressMessages(create_fgcz_fasta_db(example, rev_lab = NULL, output_dir = outdir, make_summary = FALSE))
 
   expect_match(basename(res$file_path), "^p1000_db1_example_[0-9]{8}\\.fasta$")
+  # the dummy entry + 1470 distinct targets and contaminants
   expect_length(res$fasta, 1471)
   expect_false(any(grepl("^REV_", names(res$fasta))))
 })
@@ -32,6 +34,7 @@ test_that("create_fgcz_fasta_db() appends the FASTA summary when make_summary = 
   res <- suppressMessages(create_fgcz_fasta_db(example, output_dir = outdir, make_summary = TRUE))
 
   expect_length(res$summary, 1)
+  # the dummy entry + 2 x 1470
   expect_match(res$summary, "n_sequences : 2941\nlength summary:\n           Min. : 8\n", fixed = TRUE)
   expect_match(res$summary, "AA frequencies:\n              A : 141949\n", fixed = TRUE)
 })
@@ -76,12 +79,50 @@ test_that("create_fgcz_fasta_db() requires output_dir, an existing directory and
   no_annotation <- withr::local_tempdir()
   file.copy(file.path(example, "Annotation_canSeq.fasta.gz"), no_annotation)
 
-  expect_error(suppressMessages(create_fgcz_fasta_db(example)), "output_dir")
+  expect_error(suppressMessages(create_fgcz_fasta_db(example)), 'argument "output_dir" is missing')
   expect_error(create_fgcz_fasta_db(file.path(outdir, "missing"), output_dir = outdir), "must be an existing directory")
   expect_error(
     create_fgcz_fasta_db(no_annotation, output_dir = outdir),
     "`database_dir` must contain the file `annotation.txt`"
   )
+})
+
+test_that("create_fgcz_fasta_db() stops for a missing output_dir before it builds the database", {
+  database_dir <- toy_database_dir()
+  outdir <- file.path(withr::local_tempdir(), "missing")
+
+  # the build would print "Reading database ..." and fail only when writing, with "cannot open file"
+  expect_error(
+    create_fgcz_fasta_db(database_dir, output_dir = outdir),
+    "`output_dir` must be an existing directory, not \"[^\"]*missing\""
+  )
+})
+
+test_that("create_fgcz_fasta_db() reads annotation.txt without a final newline without a warning", {
+  database_dir <- toy_database_dir()
+  cat("zz|p1000_toydb|20261124 toy database", file = file.path(database_dir, "annotation.txt"))
+  outdir <- withr::local_tempdir()
+
+  expect_no_warning(
+    res <- suppressMessages(
+      create_fgcz_fasta_db(database_dir, contaminants = NULL, rev_lab = NULL, output_dir = outdir, make_summary = FALSE)
+    )
+  )
+
+  expect_equal(attr(res$fasta[[1]], "Annot"), ">zz|p1000_toydb|20261124 toy database")
+})
+
+test_that("create_fgcz_fasta_db() takes the dummy header from the first line of annotation.txt", {
+  database_dir <- toy_database_dir()
+  writeLines(c("zz|first|line", "zz|second|line"), file.path(database_dir, "annotation.txt"))
+  outdir <- withr::local_tempdir()
+
+  res <- suppressMessages(
+    create_fgcz_fasta_db(database_dir, contaminants = NULL, rev_lab = NULL, output_dir = outdir, make_summary = FALSE)
+  )
+
+  expect_equal(attributes(res$fasta[[1]])[c("name", "Annot")], list(name = "zz|first|line", Annot = ">zz|first|line"))
+  expect_match(res$summary, "annotation : zz|first|line\n", fixed = TRUE)
 })
 
 test_that("create_fgcz_fasta_db() reads *.fa, *.faa and gzipped FASTA files", {
@@ -152,6 +193,12 @@ test_that("make_fasta_summary() counts sequences and amino acids", {
   expect_equal(res$n_sequences, 2)
   expect_equal(res$aa_freq, c(A = 2, C = 2, D = 1))
   expect_equal(unname(res$length_summary[c("Min.", "Max.")]), c(2, 3))
+})
+
+test_that("make_fasta_summary() counts the residues of all chunks of 20,000 sequences", {
+  fasta <- rep(list(seq_fasta_aa("AK", "p")), 20001)
+
+  expect_identical(make_fasta_summary(fasta)$aa_freq, c(A = 20001, K = 20001))
 })
 
 test_that("make_fasta_summary() counts every character and empty sequences", {
