@@ -63,7 +63,7 @@ Authors:
 
 Other contributors:
 \itemize{
-  \item Jonas Grossmann [contributor]
+  \item Jonas Grossmann (\href{https://orcid.org/0000-0002-6899-9020}{ORCID}) [contributor]
   \item Functional Genomics Center Zurich (\href{https://ror.org/04tgr1802}{ROR}) [funder]
   \item University of Zurich (\href{https://ror.org/02crff812}{ROR}) [copyright holder]
 }
