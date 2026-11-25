@@ -8,7 +8,9 @@ project:
 
 website:
   title: "$ALTDOC_PACKAGE_NAME"
-  code-links: true
+  repo-url: $ALTDOC_PACKAGE_URL_GITHUB
+  repo-branch: master
+  repo-actions: [source]
   navbar:
     search: true
     right:
@@ -20,7 +22,13 @@ website:
     contents:
       - text: Home
         file: index.md
-      - section: $ALTDOC_VIGNETTE_BLOCK
+      - section: Articles
+        contents:
+          - vignettes/CreatingDecoyDB.Rmd
+          - vignettes/PeptideAnnotationwithProzor.Rmd
+          - vignettes/TargetDecoyFDR_Example.Rmd
+          - vignettes/TargetDecoyComet.Rmd
+          - vignettes/cdsw.Rmd
       - section: $ALTDOC_MAN_BLOCK
       - text: News
         file: $ALTDOC_NEWS

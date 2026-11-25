@@ -35,7 +35,7 @@ jobs:
       _R_CHECK_RD_CONTENTS_USAGE_: ${{ matrix.config.rd-usage || 'false' }}
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6.0.3
 
       - uses: r-lib/actions/setup-pandoc@v2
 
@@ -43,13 +43,34 @@ jobs:
         with:
           r-version: ${{ matrix.config.r }}
           http-user-agent: ${{ matrix.config.http-user-agent }}
-          use-public-rspm: true
+          # "always" also routes macOS through Posit Package Manager. Workaround:
+          # CRAN's macOS builder now ships zstd-compressed .tgz binaries, which the
+          # pak/pkgdepends version this action installs cannot extract
+          # (https://github.com/r-lib/pkgdepends/issues/485). P3M still serves gzip.
+          # Revert to "true" once pkgdepends understands zstd archives.
+          use-public-rspm: always
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: any::rcmdcheck
+          extra-packages: any::rcmdcheck, any::goodpractice
           needs: check
 
       - uses: r-lib/actions/check-r-package@v2
         with:
           upload-snapshots: true
+
+      - name: Run goodpractice report
+        if: ${{ always() && runner.os == 'Linux' && matrix.config.r == 'release' }}
+        continue-on-error: true
+        run: |
+          mkdir -p goodpractice-report
+          Rscript -e 'pkgload::load_all(quiet = TRUE); result <- goodpractice::gp("."); print(result); saveRDS(result, "goodpractice-report/result.rds")' \
+            > goodpractice-report/report.txt 2>&1
+
+      - name: Upload goodpractice report
+        if: ${{ always() && runner.os == 'Linux' && matrix.config.r == 'release' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: goodpractice-${{ runner.os }}-R-${{ matrix.config.r }}
+          path: goodpractice-report
+          if-no-files-found: warn
