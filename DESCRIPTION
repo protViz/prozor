@@ -33,8 +33,7 @@ Imports:
     AhoCorasickTrie,
     ggplot2,
     graphics,
-    Matrix,
-    methods,
+    R6,
     stats,
     utils
 Suggests:

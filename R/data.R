@@ -44,7 +44,7 @@ NULL
 
 #' Search engine scores with protein IDs
 #'
-#' Target and decoy hits with two scores, for the FDR functions.
+#' Target and decoy hits with two scores, the input of [TargetDecoyFDR].
 #'
 #' @format A data frame with 40,000 rows and 3 columns:
 #' * `protein_id`: protein ID (factor); decoys start with `REV_`.

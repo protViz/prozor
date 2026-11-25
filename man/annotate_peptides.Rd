@@ -55,7 +55,6 @@ head(annot[, c("protein_id", "peptide_seq", "offset", "peptide_length", "matched
 Other protein inference:
 \code{\link[=annotate_aho]{annotate_aho()}},
 \code{\link[=greedy_parsimony]{greedy_parsimony()}},
-\code{\link[=greedy_to_table]{greedy_to_table()}},
-\code{\link[=prepare_matrix]{prepare_matrix()}}
+\code{\link[=greedy_to_table]{greedy_to_table()}}
 }
 \concept{protein inference}

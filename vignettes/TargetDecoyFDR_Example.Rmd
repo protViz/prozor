@@ -73,17 +73,18 @@ table(grepl("^REV_", fdr_sample$protein_id))
 
 In our example, we will use the package to filter the data further for a 1% FDR.
 
-Computing the FDR can be done by calling the function `compute_fdr()`. `plot_fdr()` then shows the score distributions of targets and decoys (top) and the q-values of the two FDR estimates (bottom). The score axis is logarithmic because smaller scores are better.
+Computing the FDR can be done by creating a `TargetDecoyFDR` object from the scores and the decoy flags. Printing it shows the numbers of hits and decoys and the scores at q-values of 1 % and 5 %. Its `plot()` method then shows the score distributions of targets and decoys (top) and the q-values of the two FDR estimates (bottom). The score axis is logarithmic because smaller scores are better.
 
 ```{r fig.width=7, fig.height=6}
-fdr1 <- compute_fdr(fdr_sample$score, grepl("^REV_", fdr_sample$protein_id), larger_better = FALSE)
-plot_fdr(fdr1)
+fdr1 <- TargetDecoyFDR$new(fdr_sample$score, decoy_hit = grepl("^REV_", fdr_sample$protein_id), larger_better = FALSE)
+fdr1
+fdr1$plot()
 ```
 
-The output is a named list which can be easily converted into a data frame. We next will briefly discuss the elements of the output.
+The field `table` holds the results as a data frame, with the hits sorted from best to worst score. We next will briefly discuss its columns.
 
 ```{r}
-knitr::kable(head(data.frame(fdr1)))
+knitr::kable(head(fdr1$table))
 ```
 
 
@@ -103,7 +104,7 @@ $$
 FDR_{concatenated} = \frac{2 \cdot FP}{TP + FP}
 $$
 
-This is taken from the reference by [@Elias2007]. It is often called the false positive rate (FPR), which [@Storey2003] defines differently. Kaell points out that this quantity actually should be named FDR and that "Many proteomics papers incorrectly refer to this quantity as the _false positive rate_." `compute_fdr()` therefore returns it as `fdr_concatenated`.
+This is taken from the reference by [@Elias2007]. It is often called the false positive rate (FPR), which [@Storey2003] defines differently. Kaell points out that this quantity actually should be named FDR and that "Many proteomics papers incorrectly refer to this quantity as the _false positive rate_." `TargetDecoyFDR` therefore names it `fdr_concatenated`.
 
 
 ### Simple FDR
@@ -129,9 +130,9 @@ number of target PSMs above the threshold. We can now estimate the FDR by simply
 
 ```{r fig.width=7, fig.height=4}
 fdr_curves <- data.frame(
-  score = rep(fdr1$score, 2),
-  fdr = 100 * c(fdr1$simple_fdr, fdr1$q_value_simple_fdr),
-  curve = rep(c("SimpleFDR", "q-value"), each = length(fdr1$score))
+  score = rep(fdr1$table$score, 2),
+  fdr = 100 * c(fdr1$table$simple_fdr, fdr1$table$q_value_simple_fdr),
+  curve = rep(c("SimpleFDR", "q-value"), each = fdr1$n)
 )
 ggplot(fdr_curves, aes(x = score, y = fdr, colour = curve)) +
   geom_line() +
@@ -144,35 +145,40 @@ Although the score is getting better (smaller) the FDR may increase since the nu
 
 ## Getting the score for an FDR.
 
-Most frequently you will need to get the score for an FDR in order to filter your data. To report your data with an FDR of 1% instead of 5% you can execute this code:
+Most frequently you will need to get the score for an FDR in order to filter your data. The method `score_at()` returns it; the q-value is a fraction, `0.01` for 1 %. To report your data with an FDR of 1% instead of 5% you can execute this code:
 
 ```{r}
 
-(score05G <- predict_score_fdr(fdr1, q_value = 0.05, method = "fdr_concatenated"))
+(score05G <- fdr1$score_at(q_value = 0.05, method = "fdr_concatenated"))
 dim(filter(fdr_sample, score <= score05G))
 
-(score01G <- predict_score_fdr(fdr1, q_value = 0.01, method = "fdr_concatenated"))
+(score01G <- fdr1$score_at(q_value = 0.01, method = "fdr_concatenated"))
 dim(filter(fdr_sample, score <= score01G))
 
-(score01K <- predict_score_fdr(fdr1, q_value = 0.01, method = "simple_fdr"))
+(score01K <- fdr1$score_at(q_value = 0.01, method = "simple_fdr"))
 dim(filter(fdr_sample, score <= score01K))
 
 ```
 
 ## The order column
 
-Since the scores are sorted to compute the FDR, we return also the _order_ column.
+Since the scores are sorted to compute the FDR, the table also has the _order_ column, the position of each hit in the input.
 This column can be used to align the ID's with the scores.
 
 ```{r}
-knitr::kable(head(data.frame(id = fdr_sample$protein_id[fdr1$order], fdr1)))
+knitr::kable(head(data.frame(id = fdr_sample$protein_id[fdr1$table$order], fdr1$table)))
 ```
 
-For convenience we provide the function `compute_fdr_with_id()` which integrates the reordering of the ID's.
+For convenience, pass the ID's as `id`: the table then has them, in the sorted order, in the column `id`.
 
 ```{r}
-fdr1 <- compute_fdr_with_id(fdr_sample$score, fdr_sample$protein_id, decoy = "^REV_", larger_better = FALSE)
-knitr::kable(head(data.frame(fdr1)))
+fdr1 <- TargetDecoyFDR$new(
+  fdr_sample$score,
+  decoy_hit = grepl("^REV_", fdr_sample$protein_id),
+  larger_better = FALSE,
+  id = fdr_sample$protein_id
+)
+knitr::kable(head(fdr1$table))
 ```
 
 # Session Info

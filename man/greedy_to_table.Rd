@@ -25,14 +25,12 @@ protpepmetashort$precursor <- paste(
   protpepmetashort$precursor_charge,
   sep = "."
 )
-pepprot <- prepare_matrix(protpepmetashort, peptide_id = "precursor")
-head(greedy_to_table(greedy_parsimony(pepprot)))
+head(greedy_to_table(greedy_parsimony(protpepmetashort, peptide = "precursor")))
 }
 \seealso{
 Other protein inference:
 \code{\link[=annotate_aho]{annotate_aho()}},
 \code{\link[=annotate_peptides]{annotate_peptides()}},
-\code{\link[=greedy_parsimony]{greedy_parsimony()}},
-\code{\link[=prepare_matrix]{prepare_matrix()}}
+\code{\link[=greedy_parsimony]{greedy_parsimony()}}
 }
 \concept{protein inference}

@@ -85,17 +85,17 @@ ggplot(proteotypic, aes(x = database, y = percent)) +
 # Protein Inference 
 
 
-We can now identify a minimal set of proteins explaining all the peptides observed for both databases
+We can now identify a minimal set of proteins explaining all the peptides observed for both databases. `greedy_parsimony()` takes a table with one row per peptide-protein match; a peptide observed as several precursors gives repeated rows, which count once.
 
 ```{r}
 precursors <- distinct(specMeta, peptideModSeq, precursorCharge, peptideSeq)
 
 # peptide protein matches as points; rows and columns sorted by their number of matches
-plot_matches <- function(pepprot) {
-  peptide_rank <- rank(-Matrix::rowSums(pepprot > 0), ties.method = "first")
-  protein_rank <- rank(-Matrix::colSums(pepprot > 0), ties.method = "first")
-  nonzero <- Matrix::summary(pepprot)
-  ggplot(data.frame(peptide = peptide_rank[nonzero$i], protein = protein_rank[nonzero$j])) +
+plot_matches <- function(annotation) {
+  pairs <- distinct(annotation, peptide = factor(peptideSeq), protein = factor(protein_id))
+  peptide_rank <- rank(-tabulate(pairs$peptide, nlevels(pairs$peptide)), ties.method = "first")
+  protein_rank <- rank(-tabulate(pairs$protein, nlevels(pairs$protein)), ties.method = "first")
+  ggplot(data.frame(peptide = peptide_rank[pairs$peptide], protein = protein_rank[pairs$protein])) +
     geom_point(aes(x = protein, y = peptide), shape = 15, size = 0.5) +
     scale_y_reverse() +
     labs(x = "proteins, most peptides first", y = "peptides, most proteins first")
@@ -112,11 +112,10 @@ annotatedPrecursors <- inner_join(
   relationship = "many-to-many"
 )
 
-xx <- prepare_matrix(annotatedPrecursors, peptide_id = "peptideSeq")
-plot_matches(xx)
-dim(xx)
-xx[1:10, 1:100]
-xxAll <- greedy_parsimony(xx)
+head(annotatedPrecursors) |> knitr::kable()
+c(peptides = n_distinct(annotatedPrecursors$peptideSeq), proteins = n_distinct(annotatedPrecursors$protein_id))
+plot_matches(annotatedPrecursors)
+xxAll <- greedy_parsimony(annotatedPrecursors, peptide = "peptideSeq")
 ```
 
 ## Protein Inference for Reviewed/Canonical database
@@ -129,10 +128,9 @@ annotatedPrecursors <- inner_join(
   relationship = "many-to-many"
 )
 
-xx <- prepare_matrix(annotatedPrecursors, peptide_id = "peptideSeq")
-plot_matches(xx)
-xx[80:100, 1:10]
-xxCAN <- greedy_parsimony(xx)
+c(peptides = n_distinct(annotatedPrecursors$peptideSeq), proteins = n_distinct(annotatedPrecursors$protein_id))
+plot_matches(annotatedPrecursors)
+xxCAN <- greedy_parsimony(annotatedPrecursors, peptide = "peptideSeq")
 ```
 
 # Conclusion

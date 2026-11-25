@@ -17,6 +17,8 @@ editor_options:
 
 Function optimizes Extraction windows for DIA/SWATH so we have the same number of precursor per window. This optimization is based on spectral library data or non redundant .blib files (Bibliospec).
 
+`Cdsw$new()` computes the window boundaries (breaks) once, with one of three methods: `"constant"`, `"quantile"` or `"sampling"` (the default). The object cannot be changed afterwards, so we create one object per method and compare them at the end.
+
 # Prerequisites
 
 ```{r echo=FALSE}
@@ -29,18 +31,19 @@ library(ggplot2)
 
 ```{r fig.retina=3}
 data("masses")
-cdsw <- Cdsw(masses, nbins = 25)
-cdsw$plot()
+cdsw_const <- Cdsw$new(masses, nbins = 25, method = "constant")
+cdsw_const
+cdsw_const$plot()
 ```
 
 
 ```{r, results='markup'}
-knitr::kable(cdsw$as_table())
+knitr::kable(cdsw_const$as_table())
 ```
 
 
 ```{r}
-const_error <- cdsw$error()
+const_error <- cdsw_const$error()
 ```
 
 # Classical Method based on `quantile`
@@ -48,20 +51,21 @@ const_error <- cdsw$error()
 Same number of MS1 precursors in each window
 
 ```{r}
-cdsw$quantile_breaks()
+cdsw_quantile <- Cdsw$new(masses, nbins = 25, method = "quantile")
+cdsw_quantile
 ```
 
 ```{r fig.retina=3, warning=FALSE}
-cdsw$plot()
+cdsw_quantile$plot()
 ```
 
 ```{r, results='markup'}
-knitr::kable(cdsw$as_table())
+knitr::kable(cdsw_quantile$as_table())
 ```
 
 
 ```{r}
-quantile_error <- cdsw$error()
+quantile_error <- cdsw_quantile$error()
 ```
 
 # Adjust windows
@@ -69,7 +73,7 @@ quantile_error <- cdsw$error()
 Using this method the window start and end is shifted to a mass range with as few MS1 peaks as possible.
 
 ```{r fig.retina=3, fig.width=7, fig.height=4}
-optimized <- cdsw$optimize_windows(maxbin = 10)
+optimized <- cdsw_quantile$optimize_windows(maxbin = 10)
 knitr::kable(optimized)
 plot_windows(optimized, masses)
 ```
@@ -78,33 +82,34 @@ plot_windows(optimized, masses)
 
 - Maximal window width (`maxwindow`). Windows should not be too large because of optimal collision energy (personal communication by Bernd R.).
 - Minimal window width (`minwindow`).
-- Number of windows (`nbins`, set in `Cdsw()`).
+- Number of windows (`nbins`).
 - Window boundaries can then be moved to regions with few precursors (`optimize_windows()`).
 
-`sampling_breaks()` mixes the masses with uniformly spread data and takes the quantile breaks of the mixture, with the smallest share of uniform data for which all windows lie within `minwindow` and `maxwindow`.
+`maxwindow`, `minwindow` and `nbins` are arguments of `Cdsw$new()`. `method = "sampling"` mixes the masses with uniformly spread data and takes the quantile breaks of the mixture, with the smallest share of uniform data for which all windows lie within `minwindow` and `maxwindow`. `plot_breaks()` compares the resulting breaks with the constant and quantile breaks.
 
 
 ```{r fig.retina=3}
-cdsw$sampling_breaks(maxwindow = 100)
-cdsw$plot_breaks()
+cdsw_mixed <- Cdsw$new(masses, nbins = 25, method = "sampling", maxwindow = 100)
+cdsw_mixed
+cdsw_mixed$plot_breaks()
 ```
 
 ```{r fig.retina=3}
-cdsw$plot()
+cdsw_mixed$plot()
 ```
 
 ```{r, results='markup'}
-knitr::kable(cdsw$as_table())
+knitr::kable(cdsw_mixed$as_table())
 ```
 
 ```{r fig.retina=3, fig.width=7, fig.height=4}
-optimized <- cdsw$optimize_windows(maxbin = 10)
+optimized <- cdsw_mixed$optimize_windows(maxbin = 10)
 knitr::kable(optimized)
 plot_windows(optimized, masses)
 ```
 
 ```{r}
-mixed_error <- cdsw$error()
+mixed_error <- cdsw_mixed$error()
 ```
 
 

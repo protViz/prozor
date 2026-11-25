@@ -39,7 +39,6 @@ dim(hits)
 Other protein inference:
 \code{\link[=annotate_peptides]{annotate_peptides()}},
 \code{\link[=greedy_parsimony]{greedy_parsimony()}},
-\code{\link[=greedy_to_table]{greedy_to_table()}},
-\code{\link[=prepare_matrix]{prepare_matrix()}}
+\code{\link[=greedy_to_table]{greedy_to_table()}}
 }
 \concept{protein inference}

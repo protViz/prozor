@@ -1,22 +1,44 @@
-.greedy2 <- function(pepprot) {
-  # a protein explains the peptides with a positive entry; the weights themselves do not count
-  pepprot <- pepprot > 0
-  res <- vector(ncol(pepprot), mode = "list")
+.greedy_counts <- function(peptides, proteins) {
+  n_pep <- nlevels(peptides)
+  n_prot <- nlevels(proteins)
+  # one number per distinct peptide-protein pair, sorted by protein and then by peptide
+  pair <- sort(unique((as.integer(proteins) - 1) * n_pep + as.integer(peptides)))
+  pep <- as.integer((pair - 1) %% n_pep) + 1L
+  prot <- as.integer((pair - 1) %/% n_pep) + 1L
+  # peptides of each protein and proteins of each peptide, both in ascending order
+  peps_of <- split(pep, factor(prot, levels = seq_len(n_prot)))
+  prots_of <- split(prot, factor(pep, levels = seq_len(n_pep)))
+  # unexplained peptides per protein; -1 once the protein is assigned
+  counts <- lengths(peps_of, use.names = FALSE)
+  alive <- rep(TRUE, n_pep)
+  mark <- logical(n_pep)
+  res <- vector(n_prot, mode = "list")
   n_groups <- 0
-  # stops when no peptide-protein pair is left: no peptide, no protein, or only peptides without a protein
-  while (any(pepprot)) {
-    peps_per_prot <- colSums(pepprot)
-    idx <- which(peps_per_prot == max(peps_per_prot))
-    explained <- pepprot[, idx[1]]
-    # Tie: proteins explaining the same peptides as the first tied protein are indistinguishable and reported
-    # together; the other tied proteins compete in the next rounds. Tied proteins explain equally many peptides,
-    # so those explaining all peptides of the first one explain exactly them.
-    if (length(idx) > 1) {
-      idx <- idx[colSums(pepprot[explained, idx, drop = FALSE]) == sum(explained)]
+  repeat {
+    first <- which.max(counts)
+    # stop when no protein explains an unexplained peptide
+    if (length(first) == 0 || counts[first] <= 0) {
+      break
     }
+    explained <- peps_of[[first]][alive[peps_of[[first]]]]
+    # the proteins of each explained peptide
+    affected <- unlist(prots_of[explained], use.names = FALSE)
+    sharing <- unique(affected)
+    # Tie: proteins explaining the same peptides as the first tied protein are indistinguishable and reported
+    # together; the other tied proteins compete in the next rounds. Such proteins share the explained peptides and
+    # explain equally many, so those whose unexplained peptides are all explained by the first one explain exactly
+    # them.
+    mark[explained] <- TRUE
+    tied <- sharing[counts[sharing] == counts[first]]
+    same <- vapply(tied, function(j) all(mark[peps_of[[j]][alive[peps_of[[j]]]]]), logical(1))
+    group <- sort(tied[same])
     n_groups <- n_groups + 1
-    res[[n_groups]] <- list(prot = paste(colnames(pepprot)[idx], collapse = ";"), peps = rownames(pepprot)[explained])
-    pepprot <- pepprot[!explained, -idx, drop = FALSE]
+    res[[n_groups]] <- list(prot = paste(levels(proteins)[group], collapse = ";"), peps = levels(peptides)[explained])
+    # the explained peptides no longer count for the proteins that contain them
+    counts[sharing] <- counts[sharing] - tabulate(match(affected, sharing), length(sharing))
+    counts[group] <- -1L
+    alive[explained] <- FALSE
+    mark[explained] <- FALSE
   }
   res[seq_len(n_groups)]
 }
@@ -29,34 +51,58 @@
 #' on the peptides that remain in each round: proteins B (peptides p1, p5, p6) and C (p2, p5, p6) form the group
 #' `"B;C"` for p5 and p6 after protein A has taken p1 and p2.
 #'
-#' A protein explains a peptide when their entry in `pepprot` is positive. Proteins are ranked by the number of
-#' peptides they explain, not by the sum of their weights, so a matrix from `prepare_matrix(weighting = "inverse")`
-#' gives the same result as one with weights 1.
+#' Proteins are ranked by the number of distinct peptides they explain; a peptide-protein pair that occurs in
+#' several rows counts once. Of the proteins that tie, the one first in `factor(annotation$protein_id)` is taken
+#' first: alphabetical order for a character column, the level order for a factor column.
 #'
-#' @param pepprot A peptide-by-protein matrix with peptide row names and protein column names, as returned by
-#'   [prepare_matrix()].
-#' @return A named list with one element per peptide that matches a protein (row of `pepprot` with a positive
-#'   entry): the protein, or `;`-separated protein group, it is assigned to. Peptides without a protein are left
-#'   out.
+#' @param annotation A data frame (or tibble) with one row per peptide-protein match, e.g. from
+#'   [annotate_peptides()]: the protein IDs in the column `protein_id` and the peptide IDs in the column named by
+#'   `peptide` (character or factor columns, without `NA`; unused factor levels are ignored).
+#' @param peptide Name of the column with the peptide IDs. For precursors, add a column such as
+#'   `paste(peptide_seq, precursor_charge, sep = ".")` and pass its name.
+#' @return A named list with one element per distinct peptide ID: the protein, or `;`-separated protein group, it
+#'   is assigned to. The elements are in the order in which the groups are chosen, and the peptides of a group in
+#'   the order of `factor(annotation[[peptide]])`.
 #' @family protein inference
 #' @export
 #' @examples
 #' data(protpepmetashort)
-#' pepprot <- prepare_matrix(protpepmetashort, peptide_id = "peptide_mod_seq")
-#' groups <- greedy_parsimony(pepprot)
-#' # every precursor is assigned to exactly one protein group
-#' stopifnot(setequal(names(groups), rownames(pepprot)))
+#' groups <- greedy_parsimony(protpepmetashort, peptide = "peptide_mod_seq")
+#' # every modified peptide is assigned to exactly one protein group
+#' stopifnot(setequal(names(groups), protpepmetashort$peptide_mod_seq))
 #' head(unlist(groups))
-greedy_parsimony <- function(pepprot) {
-  no_names <- c("row", "column")[c(is.null(rownames(pepprot)), is.null(colnames(pepprot)))]
-  if (length(no_names) > 0) {
+greedy_parsimony <- function(annotation, peptide = "peptide_seq") {
+  if (!is.data.frame(annotation)) {
     stop(
-      "`pepprot` must have peptide row names and protein column names; it has no ",
-      paste(no_names, collapse = " and "),
-      " names."
+      "`annotation` must be a data frame of peptide-protein matches, e.g. from annotate_peptides(), not a ",
+      class(annotation)[1],
+      ".",
+      call. = FALSE
     )
   }
-  groups <- .greedy2(pepprot)
+  columns <- c("protein_id", peptide)
+  missing_columns <- setdiff(columns, names(annotation))
+  if (length(missing_columns) > 0) {
+    stop(
+      "`annotation` must have the columns `protein_id` and `",
+      peptide,
+      "` (argument `peptide`); missing: ",
+      paste0("`", missing_columns, "`", collapse = ", "),
+      ".",
+      call. = FALSE
+    )
+  }
+  n_na <- vapply(columns, function(column) sum(is.na(annotation[[column]])), integer(1))
+  if (any(n_na > 0)) {
+    stop(
+      "`annotation` must not have NA IDs; found ",
+      paste0(n_na[n_na > 0], " in `", columns[n_na > 0], "`", collapse = " and "),
+      ".",
+      call. = FALSE
+    )
+  }
+  # factor() drops unused levels of factor columns and keeps the order of the used ones
+  groups <- .greedy_counts(factor(annotation[[peptide]]), factor(annotation[["protein_id"]]))
   peps <- lapply(groups, function(g) g$peps)
   prots <- vapply(groups, function(g) g$prot, character(1))
   stats::setNames(as.list(rep(prots, lengths(peps))), unlist(peps))
@@ -79,8 +125,7 @@ greedy_parsimony <- function(pepprot) {
 #'   protpepmetashort$precursor_charge,
 #'   sep = "."
 #' )
-#' pepprot <- prepare_matrix(protpepmetashort, peptide_id = "precursor")
-#' head(greedy_to_table(greedy_parsimony(pepprot)))
+#' head(greedy_to_table(greedy_parsimony(protpepmetashort, peptide = "precursor")))
 greedy_to_table <- function(res) {
   precursor <- names(res)
   no_charge <- precursor[!grepl("\\.[0-9]+$", precursor)]

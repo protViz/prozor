@@ -13,6 +13,6 @@ A data frame with 40,000 rows and 3 columns:
 }
 }
 \description{
-Target and decoy hits with two scores, for the FDR functions.
+Target and decoy hits with two scores, the input of \link{TargetDecoyFDR}.
 }
 \keyword{data}

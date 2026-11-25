@@ -4,33 +4,33 @@
 \alias{readjust_windows}
 \title{Move DIA window boundaries to regions with few precursors}
 \usage{
-readjust_windows(wind, ms1data, digits = 1, maxbin = 15)
+readjust_windows(wind, ms1data, bin_width = 0.1, maxbin = 15)
 }
 \arguments{
 \item{wind}{A data frame or list with the columns \code{from} and \code{to}, e.g. from \code{Cdsw$as_table()}.}
 
 \item{ms1data}{Precursor masses (m/z).}
 
-\item{digits}{Mass accuracy: the masses are binned into bins of width \code{1 / 10^digits}.}
+\item{bin_width}{Width of the bins (m/z) into which the masses are binned.}
 
 \item{maxbin}{Bins with fewer than \code{maxbin} precursors count as empty.}
 }
 \value{
-A list with the elements \code{from}, \code{to}, \code{mid}, \code{width} and \code{counts} (precursors with \verb{from < m/z <= to}).
+A data frame with one row per window and the columns \code{from}, \code{to}, \code{mid}, \code{width} and \code{counts} (precursors
+with \verb{from < m/z <= to}).
 }
 \description{
 Move DIA window boundaries to regions with few precursors
 }
 \examples{
 data(masses)
-cdsw <- Cdsw(masses)
-breaks <- cdsw$sampling_breaks(maxwindow = 100)
+cdsw <- Cdsw$new(masses, maxwindow = 100)
 windows <- cdsw$as_table()
-head(data.frame(readjust_windows(windows, masses, maxbin = 10)))
+head(readjust_windows(windows, masses, maxbin = 10))
 }
 \seealso{
 Other DIA windows:
-\code{\link{Cdsw-class}},
+\code{\link{Cdsw}},
 \code{\link[=plot_windows]{plot_windows()}}
 }
 \concept{DIA windows}

@@ -52,8 +52,8 @@ bcd |>
 
 ```{r}
 summarizeLevel <- function(data, level = "PSM", score = "e.value", protein = "protein", q_value = 0.01, decoy = "^REV_") {
-  fdr <- compute_fdr(data[[score]], grepl(decoy, data[[protein]]), larger_better = FALSE)
-  cutoff <- predict_score_fdr(fdr, q_value = q_value, method = "simple_fdr")
+  fdr <- TargetDecoyFDR$new(data[[score]], decoy_hit = grepl(decoy, data[[protein]]), larger_better = FALSE)
+  cutoff <- fdr$score_at(q_value = q_value, method = "simple_fdr")
 
   filt <- filter(data, .data[[score]] <= .env$cutoff)
   nDecoy <- sum(grepl(decoy, filt[[protein]]))
@@ -112,8 +112,8 @@ Filter on PSM level and then estimate the FDR on peptide and protein level.
 
 ```{r}
 filtLevel <- function(data, score = "e.value", larger_better = FALSE, protein = "protein", q_value = 0.01, decoy = "^REV_") {
-  fdr <- compute_fdr(data[[score]], grepl(decoy, data[[protein]]), larger_better = larger_better)
-  cutoff <- predict_score_fdr(fdr, q_value = q_value, method = "simple_fdr")
+  fdr <- TargetDecoyFDR$new(data[[score]], decoy_hit = grepl(decoy, data[[protein]]), larger_better = larger_better)
+  cutoff <- fdr$score_at(q_value = q_value, method = "simple_fdr")
   print(cutoff)
   if (larger_better) {
     filter(data, .data[[score]] >= .env$cutoff)

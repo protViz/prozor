@@ -76,7 +76,7 @@ knitr::kable(head(best, 10), digits = 2, row.names = FALSE, caption = "The ten b
 `greedy_parsimony()` keeps the smallest set of proteins that explains all peptides (see `vignette("PeptideAnnotationwithProzor", package = "prozor")`). The proteins it drops are those whose peptides are all explained by other proteins; they tend to have lower coverage.
 
 ```{r inference}
-inference <- greedy_parsimony(prepare_matrix(annotation))
+inference <- greedy_parsimony(annotation)
 kept <- unique(unlist(strsplit(unlist(inference), ";", fixed = TRUE)))
 coverage$inference <- ifelse(coverage$protein_id %in% kept, "kept", "dropped")
 table(coverage$inference)

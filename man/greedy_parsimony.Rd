@@ -4,16 +4,20 @@
 \alias{greedy_parsimony}
 \title{Find a minimal protein set with a greedy algorithm}
 \usage{
-greedy_parsimony(pepprot)
+greedy_parsimony(annotation, peptide = "peptide_seq")
 }
 \arguments{
-\item{pepprot}{A peptide-by-protein matrix with peptide row names and protein column names, as returned by
-\code{\link[=prepare_matrix]{prepare_matrix()}}.}
+\item{annotation}{A data frame (or tibble) with one row per peptide-protein match, e.g. from
+\code{\link[=annotate_peptides]{annotate_peptides()}}: the protein IDs in the column \code{protein_id} and the peptide IDs in the column named by
+\code{peptide} (character or factor columns, without \code{NA}; unused factor levels are ignored).}
+
+\item{peptide}{Name of the column with the peptide IDs. For precursors, add a column such as
+\code{paste(peptide_seq, precursor_charge, sep = ".")} and pass its name.}
 }
 \value{
-A named list with one element per peptide that matches a protein (row of \code{pepprot} with a positive
-entry): the protein, or \verb{;}-separated protein group, it is assigned to. Peptides without a protein are left
-out.
+A named list with one element per distinct peptide ID: the protein, or \verb{;}-separated protein group, it
+is assigned to. The elements are in the order in which the groups are chosen, and the peptides of a group in
+the order of \code{factor(annotation[[peptide]])}.
 }
 \description{
 Repeatedly assigns all unexplained peptides of the protein that explains the most of them. Proteins that
@@ -22,23 +26,21 @@ on the peptides that remain in each round: proteins B (peptides p1, p5, p6) and 
 \code{"B;C"} for p5 and p6 after protein A has taken p1 and p2.
 }
 \details{
-A protein explains a peptide when their entry in \code{pepprot} is positive. Proteins are ranked by the number of
-peptides they explain, not by the sum of their weights, so a matrix from \code{prepare_matrix(weighting = "inverse")}
-gives the same result as one with weights 1.
+Proteins are ranked by the number of distinct peptides they explain; a peptide-protein pair that occurs in
+several rows counts once. Of the proteins that tie, the one first in \code{factor(annotation$protein_id)} is taken
+first: alphabetical order for a character column, the level order for a factor column.
 }
 \examples{
 data(protpepmetashort)
-pepprot <- prepare_matrix(protpepmetashort, peptide_id = "peptide_mod_seq")
-groups <- greedy_parsimony(pepprot)
-# every precursor is assigned to exactly one protein group
-stopifnot(setequal(names(groups), rownames(pepprot)))
+groups <- greedy_parsimony(protpepmetashort, peptide = "peptide_mod_seq")
+# every modified peptide is assigned to exactly one protein group
+stopifnot(setequal(names(groups), protpepmetashort$peptide_mod_seq))
 head(unlist(groups))
 }
 \seealso{
 Other protein inference:
 \code{\link[=annotate_aho]{annotate_aho()}},
 \code{\link[=annotate_peptides]{annotate_peptides()}},
-\code{\link[=greedy_to_table]{greedy_to_table()}},
-\code{\link[=prepare_matrix]{prepare_matrix()}}
+\code{\link[=greedy_to_table]{greedy_to_table()}}
 }
 \concept{protein inference}

@@ -4,7 +4,7 @@
 \alias{plot_windows}
 \title{Plot precursor masses with DIA window boundaries}
 \usage{
-plot_windows(windows, ms1data, digits = 1)
+plot_windows(windows, ms1data, bin_width = 0.1)
 }
 \arguments{
 \item{windows}{A data frame or list with the columns \code{from} and \code{to}, e.g. from \code{Cdsw$as_table()} or
@@ -12,7 +12,7 @@ plot_windows(windows, ms1data, digits = 1)
 
 \item{ms1data}{Precursor masses (m/z).}
 
-\item{digits}{The histogram bin width is \code{1 / 10^digits} m/z.}
+\item{bin_width}{Width of the histogram bins (m/z).}
 }
 \value{
 A ggplot object.
@@ -22,9 +22,8 @@ Plot precursor masses with DIA window boundaries
 }
 \examples{
 data(masses)
-cdsw <- Cdsw(masses)
-breaks <- cdsw$sampling_breaks(maxwindow = 100)
-windows <- readjust_windows(cdsw$as_table(), masses, maxbin = 10)
+cdsw <- Cdsw$new(masses, maxwindow = 100)
+windows <- cdsw$optimize_windows(maxbin = 10)
 plot_windows(windows, masses)
 # zoom into one window
 start <- windows$from[5]
@@ -32,7 +31,7 @@ plot_windows(windows, masses) + ggplot2::coord_cartesian(xlim = c(start - 3, sta
 }
 \seealso{
 Other DIA windows:
-\code{\link{Cdsw-class}},
+\code{\link{Cdsw}},
 \code{\link[=readjust_windows]{readjust_windows()}}
 }
 \concept{DIA windows}
