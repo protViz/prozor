@@ -234,20 +234,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../man/Cdsw-class.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Cdsw-class</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../man/compute_fdr_with_id.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">compute_fdr_with_id</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../man/compute_fdr.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">compute_fdr</span></a>
+  <a href="../man/Cdsw.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Cdsw</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -324,26 +312,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../man/plot_fdr.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">plot_fdr</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
   <a href="../man/plot_windows.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">plot_windows</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../man/predict_score_fdr.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">predict_score_fdr</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../man/prepare_matrix.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">prepare_matrix</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -390,6 +360,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../man/TargetDecoyFDR.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">TargetDecoyFDR</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../man/write_fasta.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">write_fasta</span></a>
   </div>
@@ -428,7 +404,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="usage" class="level3">
 <h3 class="anchored" data-anchor-id="usage">Usage</h3>
-<pre><code class="language-R">plot_windows(windows, ms1data, digits = 1)
+<pre><code class="language-R">plot_windows(windows, ms1data, bin_width = 0.1)
 </code></pre>
 </section>
 <section id="arguments" class="level3">
@@ -452,10 +428,10 @@ Precursor masses (m/z).
 </tr>
 <tr>
 <td style="white-space: collapse; font-family: monospace; vertical-align: top">
-<code id="digits">digits</code>
+<code id="bin_width">bin_width</code>
 </td>
 <td>
-The histogram bin width is <code>1 / 10^digits</code> m/z.
+Width of the histogram bins (m/z).
 </td>
 </tr>
 </tbody></table>
@@ -466,7 +442,7 @@ The histogram bin width is <code>1 / 10^digits</code> m/z.
 </section>
 <section id="see-also" class="level3">
 <h3 class="anchored" data-anchor-id="see-also">See Also</h3>
-<p>Other DIA windows: <code>Cdsw-class</code>, <code>readjust_windows()</code></p>
+<p>Other DIA windows: <code>Cdsw</code>, <code>readjust_windows()</code></p>
 </section>
 <section id="examples" class="level3">
 <h3 class="anchored" data-anchor-id="examples">Examples</h3>
@@ -474,10 +450,9 @@ The histogram bin width is <code>1 / 10^digits</code> m/z.
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"prozor"</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(masses)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>cdsw <span class="ot">&lt;-</span> <span class="fu">Cdsw</span>(masses)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>breaks <span class="ot">&lt;-</span> cdsw<span class="sc">$</span><span class="fu">sampling_breaks</span>(<span class="at">maxwindow =</span> <span class="dv">100</span>)</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>windows <span class="ot">&lt;-</span> <span class="fu">readjust_windows</span>(cdsw<span class="sc">$</span><span class="fu">as_table</span>(), masses, <span class="at">maxbin =</span> <span class="dv">10</span>)</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_windows</span>(windows, masses)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>cdsw <span class="ot">&lt;-</span> Cdsw<span class="sc">$</span><span class="fu">new</span>(masses, <span class="at">maxwindow =</span> <span class="dv">100</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>windows <span class="ot">&lt;-</span> cdsw<span class="sc">$</span><span class="fu">optimize_windows</span>(<span class="at">maxbin =</span> <span class="dv">10</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_windows</span>(windows, masses)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">

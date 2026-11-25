@@ -236,20 +236,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../man/Cdsw-class.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Cdsw-class</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../man/compute_fdr_with_id.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">compute_fdr_with_id</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../man/compute_fdr.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">compute_fdr</span></a>
+  <a href="../man/Cdsw.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Cdsw</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -326,26 +314,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../man/plot_fdr.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">plot_fdr</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
   <a href="../man/plot_windows.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">plot_windows</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../man/predict_score_fdr.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">predict_score_fdr</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../man/prepare_matrix.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">prepare_matrix</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -388,6 +358,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <div class="sidebar-item-container"> 
   <a href="../man/sequence_coverage.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">sequence_coverage</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../man/TargetDecoyFDR.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">TargetDecoyFDR</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -547,8 +523,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h1>Define helper function</h1>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>summarizeLevel <span class="ot">&lt;-</span> <span class="cf">function</span>(data, <span class="at">level =</span> <span class="st">"PSM"</span>, <span class="at">score =</span> <span class="st">"e.value"</span>, <span class="at">protein =</span> <span class="st">"protein"</span>, <span class="at">q_value =</span> <span class="fl">0.01</span>, <span class="at">decoy =</span> <span class="st">"^REV_"</span>) {</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  fdr <span class="ot">&lt;-</span> <span class="fu">compute_fdr</span>(data[[score]], <span class="fu">grepl</span>(decoy, data[[protein]]), <span class="at">larger_better =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  cutoff <span class="ot">&lt;-</span> <span class="fu">predict_score_fdr</span>(fdr, <span class="at">q_value =</span> q_value, <span class="at">method =</span> <span class="st">"simple_fdr"</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  fdr <span class="ot">&lt;-</span> TargetDecoyFDR<span class="sc">$</span><span class="fu">new</span>(data[[score]], <span class="at">decoy_hit =</span> <span class="fu">grepl</span>(decoy, data[[protein]]), <span class="at">larger_better =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  cutoff <span class="ot">&lt;-</span> fdr<span class="sc">$</span><span class="fu">score_at</span>(<span class="at">q_value =</span> q_value, <span class="at">method =</span> <span class="st">"simple_fdr"</span>)</span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  filt <span class="ot">&lt;-</span> <span class="fu">filter</span>(data, .data[[score]] <span class="sc">&lt;=</span> .env<span class="sc">$</span>cutoff)</span>
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  nDecoy <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">grepl</span>(decoy, filt[[protein]]))</span>
@@ -629,8 +605,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>Filter on PSM level and then estimate the FDR on peptide and protein level.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>filtLevel <span class="ot">&lt;-</span> <span class="cf">function</span>(data, <span class="at">score =</span> <span class="st">"e.value"</span>, <span class="at">larger_better =</span> <span class="cn">FALSE</span>, <span class="at">protein =</span> <span class="st">"protein"</span>, <span class="at">q_value =</span> <span class="fl">0.01</span>, <span class="at">decoy =</span> <span class="st">"^REV_"</span>) {</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  fdr <span class="ot">&lt;-</span> <span class="fu">compute_fdr</span>(data[[score]], <span class="fu">grepl</span>(decoy, data[[protein]]), <span class="at">larger_better =</span> larger_better)</span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  cutoff <span class="ot">&lt;-</span> <span class="fu">predict_score_fdr</span>(fdr, <span class="at">q_value =</span> q_value, <span class="at">method =</span> <span class="st">"simple_fdr"</span>)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  fdr <span class="ot">&lt;-</span> TargetDecoyFDR<span class="sc">$</span><span class="fu">new</span>(data[[score]], <span class="at">decoy_hit =</span> <span class="fu">grepl</span>(decoy, data[[protein]]), <span class="at">larger_better =</span> larger_better)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  cutoff <span class="ot">&lt;-</span> fdr<span class="sc">$</span><span class="fu">score_at</span>(<span class="at">q_value =</span> q_value, <span class="at">method =</span> <span class="st">"simple_fdr"</span>)</span>
 <span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(cutoff)</span>
 <span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (larger_better) {</span>
 <span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(data, .data[[score]] <span class="sc">&gt;=</span> .env<span class="sc">$</span>cutoff)</span>

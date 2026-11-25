@@ -284,20 +284,8 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../man/Cdsw-class.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Cdsw-class</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../man/compute_fdr_with_id.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">compute_fdr_with_id</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../man/compute_fdr.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">compute_fdr</span></a>
+  <a href="../man/Cdsw.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Cdsw</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -374,26 +362,8 @@ window.Quarto = {
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../man/plot_fdr.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">plot_fdr</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
   <a href="../man/plot_windows.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">plot_windows</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../man/predict_score_fdr.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">predict_score_fdr</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../man/prepare_matrix.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">prepare_matrix</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -436,6 +406,12 @@ window.Quarto = {
   <div class="sidebar-item-container"> 
   <a href="../man/sequence_coverage.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">sequence_coverage</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../man/TargetDecoyFDR.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">TargetDecoyFDR</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -578,10 +554,15 @@ FALSE  TRUE
 </div>
 </div>
 <p>In our example, we will use the package to filter the data further for a 1% FDR.</p>
-<p>Computing the FDR can be done by calling the function <code>compute_fdr()</code>. <code>plot_fdr()</code> then shows the score distributions of targets and decoys (top) and the q-values of the two FDR estimates (bottom). The score axis is logarithmic because smaller scores are better.</p>
+<p>Computing the FDR can be done by creating a <code>TargetDecoyFDR</code> object from the scores and the decoy flags. Printing it shows the numbers of hits and decoys and the scores at q-values of 1 % and 5 %. Its <code>plot()</code> method then shows the score distributions of targets and decoys (top) and the q-values of the two FDR estimates (bottom). The score axis is logarithmic because smaller scores are better.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>fdr1 <span class="ot">&lt;-</span> <span class="fu">compute_fdr</span>(fdr_sample<span class="sc">$</span>score, <span class="fu">grepl</span>(<span class="st">"^REV_"</span>, fdr_sample<span class="sc">$</span>protein_id), <span class="at">larger_better =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_fdr</span>(fdr1)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>fdr1 <span class="ot">&lt;-</span> TargetDecoyFDR<span class="sc">$</span><span class="fu">new</span>(fdr_sample<span class="sc">$</span>score, <span class="at">decoy_hit =</span> <span class="fu">grepl</span>(<span class="st">"^REV_"</span>, fdr_sample<span class="sc">$</span>protein_id), <span class="at">larger_better =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>fdr1</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;TargetDecoyFDR&gt; hits: 40,000, decoys: 858, larger_better: FALSE
+score at simple_fdr q-value 0.01: 0.03395, at 0.05: 0.09992</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>fdr1<span class="sc">$</span><span class="fu">plot</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -590,27 +571,25 @@ FALSE  TRUE
 </div>
 </div>
 </div>
-<p>The output is a named list which can be easily converted into a data frame. We next will briefly discuss the elements of the output.</p>
+<p>The field <code>table</code> holds the results as a data frame, with the hits sorted from best to worst score. We next will briefly discuss its columns.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">head</span>(<span class="fu">data.frame</span>(fdr1)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">head</span>(fdr1<span class="sc">$</span>table))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <colgroup>
-<col style="width: 12%">
-<col style="width: 5%">
-<col style="width: 9%">
-<col style="width: 5%">
-<col style="width: 15%">
+<col style="width: 6%">
+<col style="width: 6%">
 <col style="width: 10%">
-<col style="width: 23%">
-<col style="width: 17%">
+<col style="width: 18%">
+<col style="width: 11%">
+<col style="width: 26%">
+<col style="width: 20%">
 </colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: left;">larger_better</th>
 <th style="text-align: right;">order</th>
-<th style="text-align: left;">decoy_hit</th>
 <th style="text-align: right;">score</th>
+<th style="text-align: left;">decoy_hit</th>
 <th style="text-align: right;">fdr_concatenated</th>
 <th style="text-align: right;">simple_fdr</th>
 <th style="text-align: right;">q_value_fdr_concatenated</th>
@@ -619,60 +598,54 @@ FALSE  TRUE
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">FALSE</td>
 <td style="text-align: right;">287</td>
-<td style="text-align: left;">FALSE</td>
 <td style="text-align: right;">0</td>
+<td style="text-align: left;">FALSE</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">FALSE</td>
 <td style="text-align: right;">3581</td>
-<td style="text-align: left;">FALSE</td>
 <td style="text-align: right;">0</td>
+<td style="text-align: left;">FALSE</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">FALSE</td>
 <td style="text-align: right;">29584</td>
-<td style="text-align: left;">FALSE</td>
 <td style="text-align: right;">0</td>
+<td style="text-align: left;">FALSE</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">FALSE</td>
 <td style="text-align: right;">26559</td>
-<td style="text-align: left;">FALSE</td>
 <td style="text-align: right;">0</td>
+<td style="text-align: left;">FALSE</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">FALSE</td>
 <td style="text-align: right;">15524</td>
-<td style="text-align: left;">FALSE</td>
 <td style="text-align: right;">0</td>
+<td style="text-align: left;">FALSE</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">FALSE</td>
 <td style="text-align: right;">30840</td>
-<td style="text-align: left;">FALSE</td>
 <td style="text-align: right;">0</td>
+<td style="text-align: left;">FALSE</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
@@ -694,7 +667,7 @@ FALSE  TRUE
 <p><span class="math display">\[
 FDR_{concatenated} = \frac{2 \cdot FP}{TP + FP}
 \]</span></p>
-<p>This is taken from the reference by <span class="citation" data-cites="Elias2007">(<a href="#ref-Elias2007" role="doc-biblioref">Elias and Gygi 2007</a>)</span>. It is often called the false positive rate (FPR), which <span class="citation" data-cites="Storey2003">(<a href="#ref-Storey2003" role="doc-biblioref">Storey and Tibshirani 2003</a>)</span> defines differently. Kaell points out that this quantity actually should be named FDR and that “Many proteomics papers incorrectly refer to this quantity as the <em>false positive rate</em>.” <code>compute_fdr()</code> therefore returns it as <code>fdr_concatenated</code>.</p>
+<p>This is taken from the reference by <span class="citation" data-cites="Elias2007">(<a href="#ref-Elias2007" role="doc-biblioref">Elias and Gygi 2007</a>)</span>. It is often called the false positive rate (FPR), which <span class="citation" data-cites="Storey2003">(<a href="#ref-Storey2003" role="doc-biblioref">Storey and Tibshirani 2003</a>)</span> defines differently. Kaell points out that this quantity actually should be named FDR and that “Many proteomics papers incorrectly refer to this quantity as the <em>false positive rate</em>.” <code>TargetDecoyFDR</code> therefore names it <code>fdr_concatenated</code>.</p>
 </section>
 <section id="simple-fdr" class="level3">
 <h3 class="anchored" data-anchor-id="simple-fdr">Simple FDR</h3>
@@ -705,16 +678,16 @@ SimpleFDR =  \frac{FP}{TP}
 \]</span></p>
 <p>“For a given score threshold, we count the number of decoy PSMs above the threshold and the number of target PSMs above the threshold. We can now estimate the FDR by simply computing the ratio of these two values (SimpleFDR).”<span class="citation" data-cites="Kaell2007">(<a href="#ref-Kaell2007" role="doc-biblioref">Käll et al. 2007</a>)</span></p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>fdr_curves <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">score =</span> <span class="fu">rep</span>(fdr1<span class="sc">$</span>score, <span class="dv">2</span>),</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">fdr =</span> <span class="dv">100</span> <span class="sc">*</span> <span class="fu">c</span>(fdr1<span class="sc">$</span>simple_fdr, fdr1<span class="sc">$</span>q_value_simple_fdr),</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">curve =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"SimpleFDR"</span>, <span class="st">"q-value"</span>), <span class="at">each =</span> <span class="fu">length</span>(fdr1<span class="sc">$</span>score))</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(fdr_curves, <span class="fu">aes</span>(<span class="at">x =</span> score, <span class="at">y =</span> fdr, <span class="at">colour =</span> curve)) <span class="sc">+</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.002</span>), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.05</span>)) <span class="sc">+</span></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_colour_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="at">SimpleFDR =</span> <span class="st">"black"</span>, <span class="st">"q-value"</span> <span class="ot">=</span> <span class="st">"#E69F00"</span>)) <span class="sc">+</span></span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"score (smaller is better)"</span>, <span class="at">y =</span> <span class="st">"FDR (%)"</span>, <span class="at">colour =</span> <span class="cn">NULL</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>fdr_curves <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">score =</span> <span class="fu">rep</span>(fdr1<span class="sc">$</span>table<span class="sc">$</span>score, <span class="dv">2</span>),</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">fdr =</span> <span class="dv">100</span> <span class="sc">*</span> <span class="fu">c</span>(fdr1<span class="sc">$</span>table<span class="sc">$</span>simple_fdr, fdr1<span class="sc">$</span>table<span class="sc">$</span>q_value_simple_fdr),</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">curve =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"SimpleFDR"</span>, <span class="st">"q-value"</span>), <span class="at">each =</span> fdr1<span class="sc">$</span>n)</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(fdr_curves, <span class="fu">aes</span>(<span class="at">x =</span> score, <span class="at">y =</span> fdr, <span class="at">colour =</span> curve)) <span class="sc">+</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_cartesian</span>(<span class="at">xlim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.002</span>), <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.05</span>)) <span class="sc">+</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_colour_manual</span>(<span class="at">values =</span> <span class="fu">c</span>(<span class="at">SimpleFDR =</span> <span class="st">"black"</span>, <span class="st">"q-value"</span> <span class="ot">=</span> <span class="st">"#E69F00"</span>)) <span class="sc">+</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"score (smaller is better)"</span>, <span class="at">y =</span> <span class="st">"FDR (%)"</span>, <span class="at">colour =</span> <span class="cn">NULL</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -728,29 +701,29 @@ SimpleFDR =  \frac{FP}{TP}
 </section>
 <section id="getting-the-score-for-an-fdr." class="level2">
 <h2 class="anchored" data-anchor-id="getting-the-score-for-an-fdr.">Getting the score for an FDR.</h2>
-<p>Most frequently you will need to get the score for an FDR in order to filter your data. To report your data with an FDR of 1% instead of 5% you can execute this code:</p>
+<p>Most frequently you will need to get the score for an FDR in order to filter your data. The method <code>score_at()</code> returns it; the q-value is a fraction, <code>0.01</code> for 1 %. To report your data with an FDR of 1% instead of 5% you can execute this code:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>(score05G <span class="ot">&lt;-</span> <span class="fu">predict_score_fdr</span>(fdr1, <span class="at">q_value =</span> <span class="fl">0.05</span>, <span class="at">method =</span> <span class="st">"fdr_concatenated"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>(score05G <span class="ot">&lt;-</span> fdr1<span class="sc">$</span><span class="fu">score_at</span>(<span class="at">q_value =</span> <span class="fl">0.05</span>, <span class="at">method =</span> <span class="st">"fdr_concatenated"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.09991592</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(<span class="fu">filter</span>(fdr_sample, score <span class="sc">&lt;=</span> score05G))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(<span class="fu">filter</span>(fdr_sample, score <span class="sc">&lt;=</span> score05G))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 40000     3</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>(score01G <span class="ot">&lt;-</span> <span class="fu">predict_score_fdr</span>(fdr1, <span class="at">q_value =</span> <span class="fl">0.01</span>, <span class="at">method =</span> <span class="st">"fdr_concatenated"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>(score01G <span class="ot">&lt;-</span> fdr1<span class="sc">$</span><span class="fu">score_at</span>(<span class="at">q_value =</span> <span class="fl">0.01</span>, <span class="at">method =</span> <span class="st">"fdr_concatenated"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.008509834</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(<span class="fu">filter</span>(fdr_sample, score <span class="sc">&lt;=</span> score01G))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(<span class="fu">filter</span>(fdr_sample, score <span class="sc">&lt;=</span> score01G))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 29180     3</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>(score01K <span class="ot">&lt;-</span> <span class="fu">predict_score_fdr</span>(fdr1, <span class="at">q_value =</span> <span class="fl">0.01</span>, <span class="at">method =</span> <span class="st">"simple_fdr"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>(score01K <span class="ot">&lt;-</span> fdr1<span class="sc">$</span><span class="fu">score_at</span>(<span class="at">q_value =</span> <span class="fl">0.01</span>, <span class="at">method =</span> <span class="st">"simple_fdr"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.03394749</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(<span class="fu">filter</span>(fdr_sample, score <span class="sc">&lt;=</span> score01K))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(<span class="fu">filter</span>(fdr_sample, score <span class="sc">&lt;=</span> score01K))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 34876     3</code></pre>
 </div>
@@ -758,29 +731,27 @@ SimpleFDR =  \frac{FP}{TP}
 </section>
 <section id="the-order-column" class="level2">
 <h2 class="anchored" data-anchor-id="the-order-column">The order column</h2>
-<p>Since the scores are sorted to compute the FDR, we return also the <em>order</em> column. This column can be used to align the ID’s with the scores.</p>
+<p>Since the scores are sorted to compute the FDR, the table also has the <em>order</em> column, the position of each hit in the input. This column can be used to align the ID’s with the scores.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">head</span>(<span class="fu">data.frame</span>(<span class="at">id =</span> fdr_sample<span class="sc">$</span>protein_id[fdr1<span class="sc">$</span>order], fdr1)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">head</span>(<span class="fu">data.frame</span>(<span class="at">id =</span> fdr_sample<span class="sc">$</span>protein_id[fdr1<span class="sc">$</span>table<span class="sc">$</span>order], fdr1<span class="sc">$</span>table)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <colgroup>
-<col style="width: 22%">
-<col style="width: 10%">
+<col style="width: 24%">
 <col style="width: 4%">
-<col style="width: 7%">
 <col style="width: 4%">
-<col style="width: 12%">
-<col style="width: 7%">
-<col style="width: 17%">
+<col style="width: 8%">
 <col style="width: 13%">
+<col style="width: 8%">
+<col style="width: 20%">
+<col style="width: 15%">
 </colgroup>
 <thead>
 <tr class="header">
 <th style="text-align: left;">id</th>
-<th style="text-align: left;">larger_better</th>
 <th style="text-align: right;">order</th>
-<th style="text-align: left;">decoy_hit</th>
 <th style="text-align: right;">score</th>
+<th style="text-align: left;">decoy_hit</th>
 <th style="text-align: right;">fdr_concatenated</th>
 <th style="text-align: right;">simple_fdr</th>
 <th style="text-align: right;">q_value_fdr_concatenated</th>
@@ -790,10 +761,9 @@ SimpleFDR =  \frac{FP}{TP}
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">sp|P04264|K2C1_HUMAN</td>
-<td style="text-align: left;">FALSE</td>
 <td style="text-align: right;">287</td>
-<td style="text-align: left;">FALSE</td>
 <td style="text-align: right;">0</td>
+<td style="text-align: left;">FALSE</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
@@ -801,10 +771,9 @@ SimpleFDR =  \frac{FP}{TP}
 </tr>
 <tr class="even">
 <td style="text-align: left;">sp|P04264|K2C1_HUMAN</td>
-<td style="text-align: left;">FALSE</td>
 <td style="text-align: right;">3581</td>
-<td style="text-align: left;">FALSE</td>
 <td style="text-align: right;">0</td>
+<td style="text-align: left;">FALSE</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
@@ -812,10 +781,9 @@ SimpleFDR =  \frac{FP}{TP}
 </tr>
 <tr class="odd">
 <td style="text-align: left;">sp|P35527|K1C9_HUMAN</td>
-<td style="text-align: left;">FALSE</td>
 <td style="text-align: right;">29584</td>
-<td style="text-align: left;">FALSE</td>
 <td style="text-align: right;">0</td>
+<td style="text-align: left;">FALSE</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
@@ -823,10 +791,9 @@ SimpleFDR =  \frac{FP}{TP}
 </tr>
 <tr class="even">
 <td style="text-align: left;">sp|P04264|K2C1_HUMAN</td>
-<td style="text-align: left;">FALSE</td>
 <td style="text-align: right;">26559</td>
-<td style="text-align: left;">FALSE</td>
 <td style="text-align: right;">0</td>
+<td style="text-align: left;">FALSE</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
@@ -834,10 +801,9 @@ SimpleFDR =  \frac{FP}{TP}
 </tr>
 <tr class="odd">
 <td style="text-align: left;">sp|P02768|ALBU_HUMAN</td>
-<td style="text-align: left;">FALSE</td>
 <td style="text-align: right;">15524</td>
-<td style="text-align: left;">FALSE</td>
 <td style="text-align: right;">0</td>
+<td style="text-align: left;">FALSE</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
@@ -845,10 +811,9 @@ SimpleFDR =  \frac{FP}{TP}
 </tr>
 <tr class="even">
 <td style="text-align: left;">sp|P04264|K2C1_HUMAN</td>
-<td style="text-align: left;">FALSE</td>
 <td style="text-align: right;">30840</td>
-<td style="text-align: left;">FALSE</td>
 <td style="text-align: right;">0</td>
+<td style="text-align: left;">FALSE</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
@@ -858,102 +823,99 @@ SimpleFDR =  \frac{FP}{TP}
 </table>
 </div>
 </div>
-<p>For convenience we provide the function <code>compute_fdr_with_id()</code> which integrates the reordering of the ID’s.</p>
+<p>For convenience, pass the ID’s as <code>id</code>: the table then has them, in the sorted order, in the column <code>id</code>.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>fdr1 <span class="ot">&lt;-</span> <span class="fu">compute_fdr_with_id</span>(fdr_sample<span class="sc">$</span>score, fdr_sample<span class="sc">$</span>protein_id, <span class="at">decoy =</span> <span class="st">"^REV_"</span>, <span class="at">larger_better =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">head</span>(<span class="fu">data.frame</span>(fdr1)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>fdr1 <span class="ot">&lt;-</span> TargetDecoyFDR<span class="sc">$</span><span class="fu">new</span>(</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  fdr_sample<span class="sc">$</span>score,</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">decoy_hit =</span> <span class="fu">grepl</span>(<span class="st">"^REV_"</span>, fdr_sample<span class="sc">$</span>protein_id),</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">larger_better =</span> <span class="cn">FALSE</span>,</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">id =</span> fdr_sample<span class="sc">$</span>protein_id</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">head</span>(fdr1<span class="sc">$</span>table))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <colgroup>
-<col style="width: 10%">
 <col style="width: 4%">
-<col style="width: 7%">
+<col style="width: 24%">
 <col style="width: 4%">
-<col style="width: 12%">
-<col style="width: 7%">
-<col style="width: 17%">
+<col style="width: 8%">
 <col style="width: 13%">
-<col style="width: 22%">
+<col style="width: 8%">
+<col style="width: 20%">
+<col style="width: 15%">
 </colgroup>
 <thead>
 <tr class="header">
-<th style="text-align: left;">larger_better</th>
 <th style="text-align: right;">order</th>
-<th style="text-align: left;">decoy_hit</th>
+<th style="text-align: left;">id</th>
 <th style="text-align: right;">score</th>
+<th style="text-align: left;">decoy_hit</th>
 <th style="text-align: right;">fdr_concatenated</th>
 <th style="text-align: right;">simple_fdr</th>
 <th style="text-align: right;">q_value_fdr_concatenated</th>
 <th style="text-align: right;">q_value_simple_fdr</th>
-<th style="text-align: left;">id</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td style="text-align: left;">FALSE</td>
 <td style="text-align: right;">287</td>
+<td style="text-align: left;">sp|P04264|K2C1_HUMAN</td>
+<td style="text-align: right;">0</td>
 <td style="text-align: left;">FALSE</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: left;">sp|P04264|K2C1_HUMAN</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">FALSE</td>
 <td style="text-align: right;">3581</td>
+<td style="text-align: left;">sp|P04264|K2C1_HUMAN</td>
+<td style="text-align: right;">0</td>
 <td style="text-align: left;">FALSE</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: left;">sp|P04264|K2C1_HUMAN</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">FALSE</td>
 <td style="text-align: right;">29584</td>
+<td style="text-align: left;">sp|P35527|K1C9_HUMAN</td>
+<td style="text-align: right;">0</td>
 <td style="text-align: left;">FALSE</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: left;">sp|P35527|K1C9_HUMAN</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">FALSE</td>
 <td style="text-align: right;">26559</td>
+<td style="text-align: left;">sp|P04264|K2C1_HUMAN</td>
+<td style="text-align: right;">0</td>
 <td style="text-align: left;">FALSE</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: left;">sp|P04264|K2C1_HUMAN</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">FALSE</td>
 <td style="text-align: right;">15524</td>
+<td style="text-align: left;">sp|P02768|ALBU_HUMAN</td>
+<td style="text-align: right;">0</td>
 <td style="text-align: left;">FALSE</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: left;">sp|P02768|ALBU_HUMAN</td>
 </tr>
 <tr class="even">
-<td style="text-align: left;">FALSE</td>
 <td style="text-align: right;">30840</td>
+<td style="text-align: left;">sp|P04264|K2C1_HUMAN</td>
+<td style="text-align: right;">0</td>
 <td style="text-align: left;">FALSE</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
 <td style="text-align: right;">0</td>
-<td style="text-align: right;">0</td>
-<td style="text-align: left;">sp|P04264|K2C1_HUMAN</td>
 </tr>
 </tbody>
 </table>
@@ -963,7 +925,7 @@ SimpleFDR =  \frac{FP}{TP}
 <section id="session-info" class="level1">
 <h1>Session Info</h1>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>R version 4.6.2 (2026-10-29)
 Platform: x86_64-pc-linux-gnu
@@ -994,10 +956,9 @@ loaded via a namespace (and not attached):
  [9] jsonlite_2.0.0     labeling_0.4.3     glue_1.8.1         htmltools_0.5.9   
 [13] scales_1.4.0       rmarkdown_2.32     grid_4.6.2         tibble_3.3.1      
 [17] evaluate_1.0.5     fastmap_1.2.0      yaml_2.3.12        lifecycle_1.0.5   
-[21] compiler_4.6.2     RColorBrewer_1.1-3 pkgconfig_2.0.3    lattice_0.23-1    
-[25] farver_2.1.2       digest_0.6.39      R6_2.6.1           tidyselect_1.2.1  
-[29] pillar_1.11.1      magrittr_2.0.5     Matrix_1.7-6       withr_3.0.3       
-[33] tools_4.6.2        gtable_0.3.6      </code></pre>
+[21] compiler_4.6.2     RColorBrewer_1.1-3 pkgconfig_2.0.3    farver_2.1.2      
+[25] digest_0.6.39      R6_2.6.1           tidyselect_1.2.1   pillar_1.11.1     
+[29] magrittr_2.0.5     withr_3.0.3        tools_4.6.2        gtable_0.3.6      </code></pre>
 </div>
 </div>
 </section>

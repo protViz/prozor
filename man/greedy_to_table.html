@@ -234,20 +234,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../man/Cdsw-class.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Cdsw-class</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../man/compute_fdr_with_id.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">compute_fdr_with_id</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../man/compute_fdr.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">compute_fdr</span></a>
+  <a href="../man/Cdsw.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Cdsw</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -324,26 +312,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../man/plot_fdr.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">plot_fdr</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
   <a href="../man/plot_windows.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">plot_windows</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../man/predict_score_fdr.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">predict_score_fdr</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../man/prepare_matrix.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">prepare_matrix</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -386,6 +356,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <div class="sidebar-item-container"> 
   <a href="../man/sequence_coverage.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">sequence_coverage</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../man/TargetDecoyFDR.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">TargetDecoyFDR</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -450,7 +426,7 @@ A result of <code>greedy_parsimony()</code> whose names have the form <code>pept
 </section>
 <section id="see-also" class="level3">
 <h3 class="anchored" data-anchor-id="see-also">See Also</h3>
-<p>Other protein inference: <code>annotate_aho()</code>, <code>annotate_peptides()</code>, <code>greedy_parsimony()</code>, <code>prepare_matrix()</code></p>
+<p>Other protein inference: <code>annotate_aho()</code>, <code>annotate_peptides()</code>, <code>greedy_parsimony()</code></p>
 </section>
 <section id="examples" class="level3">
 <h3 class="anchored" data-anchor-id="examples">Examples</h3>
@@ -463,8 +439,7 @@ A result of <code>greedy_parsimony()</code> whose names have the form <code>pept
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  protpepmetashort<span class="sc">$</span>precursor_charge,</span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">sep =</span> <span class="st">"."</span></span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>pepprot <span class="ot">&lt;-</span> <span class="fu">prepare_matrix</span>(protpepmetashort, <span class="at">peptide_id =</span> <span class="st">"precursor"</span>)</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">greedy_to_table</span>(<span class="fu">greedy_parsimony</span>(pepprot)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">greedy_to_table</span>(<span class="fu">greedy_parsimony</span>(protpepmetashort, <span class="at">peptide =</span> <span class="st">"precursor"</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                                              peptide precursor_charge
 AADKDTC[+57.0]FSTEGPNLVTR.2 AADKDTC[+57.0]FSTEGPNLVTR                2

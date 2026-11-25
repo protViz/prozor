@@ -234,20 +234,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../man/Cdsw-class.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Cdsw-class</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../man/compute_fdr_with_id.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">compute_fdr_with_id</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../man/compute_fdr.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">compute_fdr</span></a>
+  <a href="../man/Cdsw.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Cdsw</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -324,26 +312,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../man/plot_fdr.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">plot_fdr</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
   <a href="../man/plot_windows.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">plot_windows</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../man/predict_score_fdr.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">predict_score_fdr</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../man/prepare_matrix.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">prepare_matrix</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -390,6 +360,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../man/TargetDecoyFDR.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">TargetDecoyFDR</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../man/write_fasta.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">write_fasta</span></a>
   </div>
@@ -428,7 +404,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="usage" class="level3">
 <h3 class="anchored" data-anchor-id="usage">Usage</h3>
-<pre><code class="language-R">greedy_parsimony(pepprot)
+<pre><code class="language-R">greedy_parsimony(annotation, peptide = "peptide_seq")
 </code></pre>
 </section>
 <section id="arguments" class="level3">
@@ -436,25 +412,33 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <table role="presentation">
 <tbody><tr>
 <td style="white-space: collapse; font-family: monospace; vertical-align: top">
-<code id="pepprot">pepprot</code>
+<code id="annotation">annotation</code>
 </td>
 <td>
-A peptide-by-protein matrix with peptide row names and protein column names, as returned by <code>prepare_matrix()</code>.
+A data frame (or tibble) with one row per peptide-protein match, e.g.&nbsp;from <code>annotate_peptides()</code>: the protein IDs in the column <code>protein_id</code> and the peptide IDs in the column named by <code>peptide</code> (character or factor columns, without <code>NA</code>; unused factor levels are ignored).
+</td>
+</tr>
+<tr>
+<td style="white-space: collapse; font-family: monospace; vertical-align: top">
+<code id="peptide">peptide</code>
+</td>
+<td>
+Name of the column with the peptide IDs. For precursors, add a column such as <code>paste(peptide_seq, precursor_charge, sep = “.”)</code> and pass its name.
 </td>
 </tr>
 </tbody></table>
 </section>
 <section id="details" class="level3">
 <h3 class="anchored" data-anchor-id="details">Details</h3>
-<p>A protein explains a peptide when their entry in <code>pepprot</code> is positive. Proteins are ranked by the number of peptides they explain, not by the sum of their weights, so a matrix from <code>prepare_matrix(weighting = “inverse”)</code> gives the same result as one with weights 1.</p>
+<p>Proteins are ranked by the number of distinct peptides they explain; a peptide-protein pair that occurs in several rows counts once. Of the proteins that tie, the one first in <code>factor(annotation$protein_id)</code> is taken first: alphabetical order for a character column, the level order for a factor column.</p>
 </section>
 <section id="value" class="level3">
 <h3 class="anchored" data-anchor-id="value">Value</h3>
-<p>A named list with one element per peptide that matches a protein (row of <code>pepprot</code> with a positive entry): the protein, or <code style="white-space: pre;">;</code>-separated protein group, it is assigned to. Peptides without a protein are left out.</p>
+<p>A named list with one element per distinct peptide ID: the protein, or <code style="white-space: pre;">;</code>-separated protein group, it is assigned to. The elements are in the order in which the groups are chosen, and the peptides of a group in the order of <code>factor(annotation[[peptide]])</code>.</p>
 </section>
 <section id="see-also" class="level3">
 <h3 class="anchored" data-anchor-id="see-also">See Also</h3>
-<p>Other protein inference: <code>annotate_aho()</code>, <code>annotate_peptides()</code>, <code>greedy_to_table()</code>, <code>prepare_matrix()</code></p>
+<p>Other protein inference: <code>annotate_aho()</code>, <code>annotate_peptides()</code>, <code>greedy_to_table()</code></p>
 </section>
 <section id="examples" class="level3">
 <h3 class="anchored" data-anchor-id="examples">Examples</h3>
@@ -462,11 +446,10 @@ A peptide-by-protein matrix with peptide row names and protein column names, as 
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"prozor"</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(protpepmetashort)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>pepprot <span class="ot">&lt;-</span> <span class="fu">prepare_matrix</span>(protpepmetashort, <span class="at">peptide_id =</span> <span class="st">"peptide_mod_seq"</span>)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>groups <span class="ot">&lt;-</span> <span class="fu">greedy_parsimony</span>(pepprot)</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># every precursor is assigned to exactly one protein group</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">stopifnot</span>(<span class="fu">setequal</span>(<span class="fu">names</span>(groups), <span class="fu">rownames</span>(pepprot)))</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">unlist</span>(groups))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>groups <span class="ot">&lt;-</span> <span class="fu">greedy_parsimony</span>(protpepmetashort, <span class="at">peptide =</span> <span class="st">"peptide_mod_seq"</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># every modified peptide is assigned to exactly one protein group</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">stopifnot</span>(<span class="fu">setequal</span>(<span class="fu">names</span>(groups), protpepmetashort<span class="sc">$</span>peptide_mod_seq))</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(<span class="fu">unlist</span>(groups))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>            AAVFNHFISDGVK        AC[+57.0]EPGVDYVYK        ADIGC[+57.0]TPGSGK 
     "sp|P01027|CO3_MOUSE"     "sp|P01027|CO3_MOUSE"     "sp|P01027|CO3_MOUSE" 

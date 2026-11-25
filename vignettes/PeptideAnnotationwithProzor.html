@@ -236,20 +236,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../man/Cdsw-class.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Cdsw-class</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../man/compute_fdr_with_id.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">compute_fdr_with_id</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../man/compute_fdr.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">compute_fdr</span></a>
+  <a href="../man/Cdsw.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Cdsw</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -326,26 +314,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../man/plot_fdr.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">plot_fdr</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
   <a href="../man/plot_windows.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">plot_windows</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../man/predict_score_fdr.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">predict_score_fdr</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../man/prepare_matrix.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">prepare_matrix</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -388,6 +358,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <div class="sidebar-item-container"> 
   <a href="../man/sequence_coverage.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">sequence_coverage</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../man/TargetDecoyFDR.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">TargetDecoyFDR</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -716,16 +692,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="protein-inference" class="level1">
 <h1>Protein Inference</h1>
-<p>We can now identify a minimal set of proteins explaining all the peptides observed for both databases</p>
+<p>We can now identify a minimal set of proteins explaining all the peptides observed for both databases. <code>greedy_parsimony()</code> takes a table with one row per peptide-protein match; a peptide observed as several precursors gives repeated rows, which count once.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>precursors <span class="ot">&lt;-</span> <span class="fu">distinct</span>(specMeta, peptideModSeq, precursorCharge, peptideSeq)</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co"># peptide protein matches as points; rows and columns sorted by their number of matches</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>plot_matches <span class="ot">&lt;-</span> <span class="cf">function</span>(pepprot) {</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  peptide_rank <span class="ot">&lt;-</span> <span class="fu">rank</span>(<span class="sc">-</span>Matrix<span class="sc">::</span><span class="fu">rowSums</span>(pepprot <span class="sc">&gt;</span> <span class="dv">0</span>), <span class="at">ties.method =</span> <span class="st">"first"</span>)</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  protein_rank <span class="ot">&lt;-</span> <span class="fu">rank</span>(<span class="sc">-</span>Matrix<span class="sc">::</span><span class="fu">colSums</span>(pepprot <span class="sc">&gt;</span> <span class="dv">0</span>), <span class="at">ties.method =</span> <span class="st">"first"</span>)</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  nonzero <span class="ot">&lt;-</span> Matrix<span class="sc">::</span><span class="fu">summary</span>(pepprot)</span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">data.frame</span>(<span class="at">peptide =</span> peptide_rank[nonzero<span class="sc">$</span>i], <span class="at">protein =</span> protein_rank[nonzero<span class="sc">$</span>j])) <span class="sc">+</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>plot_matches <span class="ot">&lt;-</span> <span class="cf">function</span>(annotation) {</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  pairs <span class="ot">&lt;-</span> <span class="fu">distinct</span>(annotation, <span class="at">peptide =</span> <span class="fu">factor</span>(peptideSeq), <span class="at">protein =</span> <span class="fu">factor</span>(protein_id))</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  peptide_rank <span class="ot">&lt;-</span> <span class="fu">rank</span>(<span class="sc">-</span><span class="fu">tabulate</span>(pairs<span class="sc">$</span>peptide, <span class="fu">nlevels</span>(pairs<span class="sc">$</span>peptide)), <span class="at">ties.method =</span> <span class="st">"first"</span>)</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  protein_rank <span class="ot">&lt;-</span> <span class="fu">rank</span>(<span class="sc">-</span><span class="fu">tabulate</span>(pairs<span class="sc">$</span>protein, <span class="fu">nlevels</span>(pairs<span class="sc">$</span>protein)), <span class="at">ties.method =</span> <span class="st">"first"</span>)</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">data.frame</span>(<span class="at">peptide =</span> peptide_rank[pairs<span class="sc">$</span>peptide], <span class="at">protein =</span> protein_rank[pairs<span class="sc">$</span>protein])) <span class="sc">+</span></span>
 <span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> protein, <span class="at">y =</span> peptide), <span class="at">shape =</span> <span class="dv">15</span>, <span class="at">size =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
 <span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_y_reverse</span>() <span class="sc">+</span></span>
 <span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"proteins, most peptides first"</span>, <span class="at">y =</span> <span class="st">"peptides, most proteins first"</span>)</span>
@@ -741,8 +717,70 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">relationship =</span> <span class="st">"many-to-many"</span></span>
 <span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>)</span>
 <span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>xx <span class="ot">&lt;-</span> <span class="fu">prepare_matrix</span>(annotatedPrecursors, <span class="at">peptide_id =</span> <span class="st">"peptideSeq"</span>)</span>
-<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_matches</span>(xx)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(annotatedPrecursors) <span class="sc">|&gt;</span> knitr<span class="sc">::</span><span class="fu">kable</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 18%">
+<col style="width: 20%">
+<col style="width: 16%">
+<col style="width: 44%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">peptideModSeq</th>
+<th style="text-align: right;">precursorCharge</th>
+<th style="text-align: left;">peptideSeq</th>
+<th style="text-align: left;">protein_id</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">GPDVLTATVSGK</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">GPDVLTATVSGK</td>
+<td style="text-align: left;">sp|Q14624|ITIH4_HUMAN</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">GPDVLTATVSGK</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">GPDVLTATVSGK</td>
+<td style="text-align: left;">tr|H7C0L5|H7C0L5_HUMAN</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">GPDVLTATVSGK</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">GPDVLTATVSGK</td>
+<td style="text-align: left;">sp|Q14624-3|ITIH4_HUMAN</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">GPDVLTATVSGK</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">GPDVLTATVSGK</td>
+<td style="text-align: left;">sp|Q14624-4|ITIH4_HUMAN</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">GPDVLTATVSGK</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">GPDVLTATVSGK</td>
+<td style="text-align: left;">sp|Q14624-2|ITIH4_HUMAN</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">GPDVLTATVSGK</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: left;">GPDVLTATVSGK</td>
+<td style="text-align: left;">tr|B7ZKJ8|B7ZKJ8_HUMAN</td>
+</tr>
+</tbody>
+</table>
+<p>Peptide protein matches for the All database. Rows - peptides, columns - proteins, point - peptide protein match.</p>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">peptides =</span> <span class="fu">n_distinct</span>(annotatedPrecursors<span class="sc">$</span>peptideSeq), <span class="at">proteins =</span> <span class="fu">n_distinct</span>(annotatedPrecursors<span class="sc">$</span>protein_id))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>peptides proteins 
+    1433     1072 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_matches</span>(annotatedPrecursors)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -751,75 +789,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </figure>
 </div>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dim</span>(xx)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 1433 1072</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>xx[<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">100</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>10 x 100 sparse Matrix of class "dgCMatrix"</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>                                                                              
-AACAQLNDFLQEYGTQGCQV . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-AAFTECCQAADK         . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-AAFTECCQAADKAACLLPK  . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-AAIQALR              . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-AAISGENAGLVR         . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-AAPSVTLFPPSSEELQANK  . . . . . . . . . . . . . . . . . . . . . . . . . . 1 . .
-AAQVTIQSSGTFSSK      . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-AASGTQNNVLR          . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-AATGECTATVGK         . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-AATGECTATVGKR        . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-                                                                              
-AACAQLNDFLQEYGTQGCQV . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-AAFTECCQAADK         . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-AAFTECCQAADKAACLLPK  . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-AAIQALR              . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-AAISGENAGLVR         . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-AAPSVTLFPPSSEELQANK  . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-AAQVTIQSSGTFSSK      . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-AASGTQNNVLR          . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-AATGECTATVGK         . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-AATGECTATVGKR        . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-                                                                              
-AACAQLNDFLQEYGTQGCQV . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-AAFTECCQAADK         . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-AAFTECCQAADKAACLLPK  . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-AAIQALR              . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-AAISGENAGLVR         . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-AAPSVTLFPPSSEELQANK  . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-AAQVTIQSSGTFSSK      . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-AASGTQNNVLR          . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-AATGECTATVGK         . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-AATGECTATVGKR        . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-                                              
-AACAQLNDFLQEYGTQGCQV . . . . . . . . . . . . .
-AAFTECCQAADK         . . . . . . . . . . . . .
-AAFTECCQAADKAACLLPK  . . . . . . . . . . . . .
-AAIQALR              . . . . . . . . . . . . .
-AAISGENAGLVR         . . . . . . . . . . . . .
-AAPSVTLFPPSSEELQANK  . . . . . . . . . . . . .
-AAQVTIQSSGTFSSK      . . . . . . . . . . . . .
-AASGTQNNVLR          . . . . . . . . . . . . .
-AATGECTATVGK         . . . . . . . . . . . . .
-AATGECTATVGKR        . . . . . . . . . . . . .</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>xxAll <span class="ot">&lt;-</span> <span class="fu">greedy_parsimony</span>(xx)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>xxAll <span class="ot">&lt;-</span> <span class="fu">greedy_parsimony</span>(annotatedPrecursors, <span class="at">peptide =</span> <span class="st">"peptideSeq"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="protein-inference-for-reviewedcanonical-database" class="level2">
 <h2 class="anchored" data-anchor-id="protein-inference-for-reviewedcanonical-database">Protein Inference for Reviewed/Canonical database</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>annotatedPrecursors <span class="ot">&lt;-</span> <span class="fu">inner_join</span>(</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  precursors,</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(annotCan, peptide_seq, protein_id),</span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">by =</span> <span class="fu">join_by</span>(peptideSeq <span class="sc">==</span> peptide_seq),</span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">relationship =</span> <span class="st">"many-to-many"</span></span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>xx <span class="ot">&lt;-</span> <span class="fu">prepare_matrix</span>(annotatedPrecursors, <span class="at">peptide_id =</span> <span class="st">"peptideSeq"</span>)</span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_matches</span>(xx)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>annotatedPrecursors <span class="ot">&lt;-</span> <span class="fu">inner_join</span>(</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  precursors,</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(annotCan, peptide_seq, protein_id),</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">by =</span> <span class="fu">join_by</span>(peptideSeq <span class="sc">==</span> peptide_seq),</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">relationship =</span> <span class="st">"many-to-many"</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">peptides =</span> <span class="fu">n_distinct</span>(annotatedPrecursors<span class="sc">$</span>peptideSeq), <span class="at">proteins =</span> <span class="fu">n_distinct</span>(annotatedPrecursors<span class="sc">$</span>protein_id))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>peptides proteins 
+    1430      382 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_matches</span>(annotatedPrecursors)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -828,35 +816,7 @@ AATGECTATVGKR        . . . . . . . . . . . . .</code></pre>
 </figure>
 </div>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>xx[<span class="dv">80</span><span class="sc">:</span><span class="dv">100</span>, <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>21 x 10 sparse Matrix of class "dgCMatrix"</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>                                                                 
-ASFTCTCKPGWQGEK                               . . . . . . . . . .
-ASLENSLEETKGR                                 . . . . . . . . . .
-ASPAFLASQNTK                                  . . . . . . . . . .
-ASSIIDELFQDR                                  . . . . . . . . . .
-ASSLESGVPSR                                   . . . . . . . . . .
-ASVGQDSPEPR                                   . . . . . . . . . .
-ASYLDCIR                                      . . . . . . . . . .
-ATEDEGSEQKIPEATNR                             . . . . . . . . . .
-ATEHLSTLSEK                                   . . . . . . . . . .
-ATFGCHDGYSLDGPEEIECTK                         . . . . . . . . . .
-ATGIPAR                                       . . . . . 1 1 . . .
-ATGIPDRFSGSGSGTDFTLTISR                       . . . . . . . . . .
-ATGVLYDYVNK                                   . . . . . . . . . .
-ATLDVDEAGTEAAAATSFAIK                         . . . . . . . . . .
-ATLYALSHAVNNYHK                               . . . . . . . . . .
-ATMQNLNDR                                     . . . . . . . . . .
-ATTVTGTPCQDWAAQEPHR                           . . . . . . . . . .
-ATVLNYLPK                                     . . . . . . . . . .
-ATVVYQGER                                     . . . . . . . . . .
-ATWSGAVLAGR                                   . . . . . . . . . .
-AVANFFSGSCAPCADGTDFPQLCQLCPGCGCSTLNQYFGYSGAFK . . . . . . . . . .</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>xxCAN <span class="ot">&lt;-</span> <span class="fu">greedy_parsimony</span>(xx)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>xxCAN <span class="ot">&lt;-</span> <span class="fu">greedy_parsimony</span>(annotatedPrecursors, <span class="at">peptide =</span> <span class="st">"peptideSeq"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 </section>
@@ -864,19 +824,19 @@ AVANFFSGSCAPCADGTDFPQLCQLCPGCGCSTLNQYFGYSGAFK . . . . . . . . . .</code></pre>
 <h1>Conclusion</h1>
 <p>We see that the number of proteins needed to explain all the peptides is practically identical for both databases. Also in practice using a database with more entries does not lead to more identified proteins. On the contrary, it might even reduce the number of proteins identified.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>inference <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">database =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"All"</span>, <span class="st">"Canonical"</span>), <span class="at">each =</span> <span class="dv">2</span>),</span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">stage =</span> <span class="fu">factor</span>(<span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"before"</span>, <span class="st">"after"</span>), <span class="dv">2</span>), <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"before"</span>, <span class="st">"after"</span>)),</span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">proteins =</span> <span class="fu">c</span>(</span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">length</span>(<span class="fu">unique</span>(annotAll<span class="sc">$</span>protein_id)), <span class="fu">length</span>(<span class="fu">unique</span>(<span class="fu">unlist</span>(xxAll))),</span>
-<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">length</span>(<span class="fu">unique</span>(annotCan<span class="sc">$</span>protein_id)), <span class="fu">length</span>(<span class="fu">unique</span>(<span class="fu">unlist</span>(xxCAN)))</span>
-<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(inference, <span class="fu">aes</span>(<span class="at">x =</span> stage, <span class="at">y =</span> proteins)) <span class="sc">+</span></span>
-<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">fill =</span> <span class="st">"#0072B2"</span>) <span class="sc">+</span></span>
-<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> proteins), <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.3</span>) <span class="sc">+</span></span>
-<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>database) <span class="sc">+</span></span>
-<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"protein inference"</span>, <span class="at">y =</span> <span class="st">"proteins"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>inference <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">database =</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"All"</span>, <span class="st">"Canonical"</span>), <span class="at">each =</span> <span class="dv">2</span>),</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">stage =</span> <span class="fu">factor</span>(<span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"before"</span>, <span class="st">"after"</span>), <span class="dv">2</span>), <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"before"</span>, <span class="st">"after"</span>)),</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">proteins =</span> <span class="fu">c</span>(</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">length</span>(<span class="fu">unique</span>(annotAll<span class="sc">$</span>protein_id)), <span class="fu">length</span>(<span class="fu">unique</span>(<span class="fu">unlist</span>(xxAll))),</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">length</span>(<span class="fu">unique</span>(annotCan<span class="sc">$</span>protein_id)), <span class="fu">length</span>(<span class="fu">unique</span>(<span class="fu">unlist</span>(xxCAN)))</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(inference, <span class="fu">aes</span>(<span class="at">x =</span> stage, <span class="at">y =</span> proteins)) <span class="sc">+</span></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">fill =</span> <span class="st">"#0072B2"</span>) <span class="sc">+</span></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="fu">aes</span>(<span class="at">label =</span> proteins), <span class="at">vjust =</span> <span class="sc">-</span><span class="fl">0.3</span>) <span class="sc">+</span></span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>database) <span class="sc">+</span></span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"protein inference"</span>, <span class="at">y =</span> <span class="st">"proteins"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
@@ -894,7 +854,7 @@ AVANFFSGSCAPCADGTDFPQLCQLCPGCGCSTLNQYFGYSGAFK . . . . . . . . . .</code></pre>
 <section id="session-info" class="level1">
 <h1>Session Info</h1>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>R version 4.6.2 (2026-10-29)
 Platform: x86_64-pc-linux-gnu
@@ -928,10 +888,10 @@ loaded via a namespace (and not attached):
 [16] grid_4.6.2            tibble_3.3.1          evaluate_1.0.5       
 [19] fastmap_1.2.0         yaml_2.3.12           lifecycle_1.0.5      
 [22] compiler_4.6.2        RColorBrewer_1.1-3    Rcpp_1.1.2           
-[25] pkgconfig_2.0.3       farver_2.1.2          lattice_0.23-1       
-[28] digest_0.6.39         R6_2.6.1              tidyselect_1.2.1     
-[31] pillar_1.11.1         magrittr_2.0.5        Matrix_1.7-6         
-[34] withr_3.0.3           tools_4.6.2           gtable_0.3.6         </code></pre>
+[25] pkgconfig_2.0.3       farver_2.1.2          digest_0.6.39        
+[28] R6_2.6.1              tidyselect_1.2.1      pillar_1.11.1        
+[31] magrittr_2.0.5        withr_3.0.3           tools_4.6.2          
+[34] gtable_0.3.6         </code></pre>
 </div>
 </div>
 
