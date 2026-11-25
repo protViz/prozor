@@ -99,7 +99,6 @@ test_that("greedy_parsimony() gives the same result for a tibble and a data fram
 })
 
 test_that("greedy_parsimony() ignores unused factor levels", {
-  data(protpepmetashort, package = "prozor", envir = environment())
   # most protein and peptide levels are unused in the first rows; the first peptide level is unused without it
   first_rows <- protpepmetashort[1:50, ]
   without_first <- protpepmetashort[protpepmetashort$peptide_seq != levels(protpepmetashort$peptide_seq)[1], ]
@@ -170,7 +169,6 @@ test_that("greedy_parsimony() handles 20000 peptides in under 5 s", {
 })
 
 test_that("greedy_parsimony() assigns every precursor of the example data", {
-  data(protpepmetashort, package = "prozor", envir = environment())
   res <- greedy_parsimony(protpepmetashort, peptide = "peptide_mod_seq")
 
   expect_length(res, length(unique(protpepmetashort$peptide_mod_seq)))
@@ -200,7 +198,6 @@ test_that("greedy_to_table() splits the charge at the last dot", {
 })
 
 test_that("greedy_to_table() stops for names without a charge", {
-  data(protpepmetashort, package = "prozor", envir = environment())
   peptide_level <- greedy_parsimony(protpepmetashort)
 
   expect_error(
@@ -211,7 +208,6 @@ test_that("greedy_to_table() stops for names without a charge", {
 })
 
 test_that("greedy_to_table() handles modified precursors of the example data", {
-  data(protpepmetashort, package = "prozor", envir = environment())
   protpepmetashort$precursor <- paste(protpepmetashort$peptide_mod_seq, protpepmetashort$precursor_charge, sep = ".")
   groups <- greedy_parsimony(protpepmetashort, peptide = "precursor")
 

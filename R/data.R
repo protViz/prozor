@@ -16,20 +16,17 @@
 #' Peptide-protein pairs for 241 mouse proteins and 9 FGCZ contaminants; small, so the examples stay fast.
 #'
 #' @format A data frame with 423 rows and 7 columns:
-#' * `peptide_seq`: peptide sequence.
+#' * `peptide_seq`: peptide sequence (factor).
 #' * `protein_length`: length of the protein sequence.
-#' * `protein_id`: UniProt protein ID, e.g. `sp|Q62009|POSTN_MOUSE`.
-#' * `peptide_mod_seq`: modified peptide sequence.
+#' * `protein_id`: UniProt protein ID (factor), e.g. `sp|Q62009|POSTN_MOUSE`.
+#' * `peptide_mod_seq`: modified peptide sequence (factor).
 #' * `precursor_charge`: precursor charge (integer).
 #' * `precursor_mz`: precursor m/z.
 #' * `peptide_length`: length of the peptide sequence.
 #' @source Precursors of [pepprot], annotated with [annotate_peptides()] against mouse UniProt sequences and FGCZ
 #'   contaminants.
 #' @family protein inference
-#' @name protpepmetashort
-#' @docType data
-#' @keywords datasets
-NULL
+"protpepmetashort"
 
 #' MS1 precursor masses
 #'

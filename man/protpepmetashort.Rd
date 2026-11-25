@@ -7,10 +7,10 @@
 \format{
 A data frame with 423 rows and 7 columns:
 \itemize{
-\item \code{peptide_seq}: peptide sequence.
+\item \code{peptide_seq}: peptide sequence (factor).
 \item \code{protein_length}: length of the protein sequence.
-\item \code{protein_id}: UniProt protein ID, e.g. \code{sp|Q62009|POSTN_MOUSE}.
-\item \code{peptide_mod_seq}: modified peptide sequence.
+\item \code{protein_id}: UniProt protein ID (factor), e.g. \code{sp|Q62009|POSTN_MOUSE}.
+\item \code{peptide_mod_seq}: modified peptide sequence (factor).
 \item \code{precursor_charge}: precursor charge (integer).
 \item \code{precursor_mz}: precursor m/z.
 \item \code{peptide_length}: length of the peptide sequence.
@@ -19,6 +19,9 @@ A data frame with 423 rows and 7 columns:
 \source{
 Precursors of \link{pepprot}, annotated with \code{\link[=annotate_peptides]{annotate_peptides()}} against mouse UniProt sequences and FGCZ
 contaminants.
+}
+\usage{
+protpepmetashort
 }
 \description{
 Peptide-protein pairs for 241 mouse proteins and 9 FGCZ contaminants; small, so the examples stay fast.
