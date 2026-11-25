@@ -702,16 +702,28 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>precursors <span class="ot">&lt;-</span> <span class="fu">distinct</span>(id_results, peptideModSeq, precursorCharge, peptideSeq)</span>
 <span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co"># peptide protein matches as points; rows and columns sorted by their number of matches</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>plot_matches <span class="ot">&lt;-</span> <span class="cf">function</span>(annotation) {</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  pairs <span class="ot">&lt;-</span> <span class="fu">distinct</span>(annotation, <span class="at">peptide =</span> <span class="fu">factor</span>(peptideSeq), <span class="at">protein =</span> <span class="fu">factor</span>(protein_id))</span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  peptide_rank <span class="ot">&lt;-</span> <span class="fu">rank</span>(<span class="sc">-</span><span class="fu">tabulate</span>(pairs<span class="sc">$</span>peptide, <span class="fu">nlevels</span>(pairs<span class="sc">$</span>peptide)), <span class="at">ties.method =</span> <span class="st">"first"</span>)</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  protein_rank <span class="ot">&lt;-</span> <span class="fu">rank</span>(<span class="sc">-</span><span class="fu">tabulate</span>(pairs<span class="sc">$</span>protein, <span class="fu">nlevels</span>(pairs<span class="sc">$</span>protein)), <span class="at">ties.method =</span> <span class="st">"first"</span>)</span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">data.frame</span>(<span class="at">peptide =</span> peptide_rank[pairs<span class="sc">$</span>peptide], <span class="at">protein =</span> protein_rank[pairs<span class="sc">$</span>protein])) <span class="sc">+</span></span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> protein, <span class="at">y =</span> peptide), <span class="at">shape =</span> <span class="dv">15</span>, <span class="at">size =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_y_reverse</span>() <span class="sc">+</span></span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"proteins, most peptides first"</span>, <span class="at">y =</span> <span class="st">"peptides, most proteins first"</span>)</span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co"># peptide protein matches as points; rows and columns sorted by their number of matches,</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="co"># proteotypic peptides (one protein) in red</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>plot_matches <span class="ot">&lt;-</span> <span class="cf">function</span>(annotation) {</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  pairs <span class="ot">&lt;-</span> <span class="fu">distinct</span>(annotation, <span class="at">peptide =</span> <span class="fu">factor</span>(peptideSeq), <span class="at">protein =</span> <span class="fu">factor</span>(protein_id))</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  peptide_matches <span class="ot">&lt;-</span> <span class="fu">tabulate</span>(pairs<span class="sc">$</span>peptide, <span class="fu">nlevels</span>(pairs<span class="sc">$</span>peptide))</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  peptide_rank <span class="ot">&lt;-</span> <span class="fu">rank</span>(<span class="sc">-</span>peptide_matches, <span class="at">ties.method =</span> <span class="st">"first"</span>)</span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  protein_rank <span class="ot">&lt;-</span> <span class="fu">rank</span>(<span class="sc">-</span><span class="fu">tabulate</span>(pairs<span class="sc">$</span>protein, <span class="fu">nlevels</span>(pairs<span class="sc">$</span>protein)), <span class="at">ties.method =</span> <span class="st">"first"</span>)</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  matches <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">peptide =</span> peptide_rank[pairs<span class="sc">$</span>peptide],</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">protein =</span> protein_rank[pairs<span class="sc">$</span>protein],</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">proteotypic =</span> peptide_matches[pairs<span class="sc">$</span>peptide] <span class="sc">==</span> <span class="dv">1</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(matches) <span class="sc">+</span></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">x =</span> protein, <span class="at">y =</span> peptide, <span class="at">colour =</span> proteotypic), <span class="at">shape =</span> <span class="dv">15</span>, <span class="at">size =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_colour_manual</span>(</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>      <span class="at">name =</span> <span class="cn">NULL</span>,</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>      <span class="at">values =</span> <span class="fu">c</span>(<span class="st">`</span><span class="at">FALSE</span><span class="st">`</span> <span class="ot">=</span> <span class="st">"black"</span>, <span class="st">`</span><span class="at">TRUE</span><span class="st">`</span> <span class="ot">=</span> <span class="st">"red"</span>),</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>      <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">`</span><span class="at">FALSE</span><span class="st">`</span> <span class="ot">=</span> <span class="st">"shared"</span>, <span class="st">`</span><span class="at">TRUE</span><span class="st">`</span> <span class="ot">=</span> <span class="st">"proteotypic"</span>)</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">scale_y_reverse</span>() <span class="sc">+</span></span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"proteins, most peptides first"</span>, <span class="at">y =</span> <span class="st">"peptides, most proteins first"</span>)</span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <section id="protein-inference-for-database-with-trembl-identifiers" class="level2">
 <h2 class="anchored" data-anchor-id="protein-inference-for-database-with-trembl-identifiers">Protein Inference for database with TrEMBL identifiers</h2>
@@ -779,7 +791,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 </tbody>
 </table>
-<p>Peptide protein matches for the All database. Rows - peptides, columns - proteins, point - peptide protein match.</p>
+<p>Peptide protein matches for the All database. Rows - peptides, columns - proteins, point - peptide protein match, red - proteotypic peptide.</p>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(</span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">peptides =</span> <span class="fu">n_distinct</span>(annotated_precursors<span class="sc">$</span>peptideSeq),</span>
@@ -794,7 +806,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="PeptideAnnotationwithProzor_files/figure-html/greedy-trembl-1.png" class="img-fluid figure-img" width="576"></p>
-<figcaption>Peptide protein matches for the All database. Rows - peptides, columns - proteins, point - peptide protein match.</figcaption>
+<figcaption>Peptide protein matches for the All database. Rows - peptides, columns - proteins, point - peptide protein match, red - proteotypic peptide.</figcaption>
 </figure>
 </div>
 </div>
@@ -824,7 +836,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
 <p><img src="PeptideAnnotationwithProzor_files/figure-html/greedy-canonical-1.png" class="img-fluid figure-img" width="576"></p>
-<figcaption>Peptide protein matches for the Canonical database. Rows - peptides, columns - proteins, point - peptide protein match.</figcaption>
+<figcaption>Peptide protein matches for the Canonical database. Rows - peptides, columns - proteins, point - peptide protein match, red - proteotypic peptide.</figcaption>
 </figure>
 </div>
 </div>
