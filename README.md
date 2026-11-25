@@ -1,5 +1,6 @@
 [![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/prozor)](https://cran.r-project.org/package=prozor)
 [![](https://cranlogs.r-pkg.org/badges/grand-total/prozor)](https://cran.r-project.org/package=prozor)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.24535408.svg)](https://doi.org/10.5281/zenodo.24535408)
 [![Project Status: Active](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 [![R-CMD-check](https://github.com/prolfqua/prozor/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/prolfqua/prozor/actions/workflows/R-CMD-check.yaml)
 [![codecov](https://codecov.io/gh/prolfqua/prozor/branch/master/graph/badge.svg)](https://app.codecov.io/gh/prolfqua/prozor)
